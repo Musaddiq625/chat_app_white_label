@@ -1,5 +1,7 @@
-import 'package:chat_app_white_label/src/app.dart';
 import 'package:flutter/material.dart';
+import 'package:chat_app_white_label/src/screens/calls_screen.dart';
+import 'package:chat_app_white_label/src/screens/chatscreen.dart';
+import 'package:chat_app_white_label/src/screens/status_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,13 +16,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-
+        fontFamily: 'Helvetica',
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Home(),
+      initialRoute: ChatScreen.id,
+      routes: {
+        ChatScreen.id: (ctx) => const ChatScreen(),
+        StatusScreen.id: (ctx) => const StatusScreen(),
+        CallScreen.id: (ctx) => const CallScreen(),
+      },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
-
-
