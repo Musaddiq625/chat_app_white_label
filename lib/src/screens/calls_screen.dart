@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:chat_app_white_label/components/calls_tiles.dart';
-import 'package:chat_app_white_label/components/divider.dart';
-import 'package:chat_app_white_label/src/screens/chatscreen.dart';
+import 'package:chat_app_white_label/src/components/calls_tile_component.dart';
+import 'package:chat_app_white_label/src/components/divider.dart';
+import 'package:chat_app_white_label/src/screens/chat_screen.dart';
 import 'package:chat_app_white_label/src/screens/status_screen.dart';
 
 import '../dummy data/whatsapp_data.dart';

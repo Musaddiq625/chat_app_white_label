@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:chat_app_white_label/components/status_tiles_component.dart';
-import 'package:chat_app_white_label/src/screens/chatscreen.dart';
+import 'package:chat_app_white_label/src/components/status_tiles_component.dart';
+import 'package:chat_app_white_label/src/screens/chat_screen.dart';
 
 import 'calls_screen.dart';
 

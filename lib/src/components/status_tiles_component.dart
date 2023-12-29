@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chat_app_white_label/components/divider.dart';
+import 'package:chat_app_white_label/src/components/divider.dart';
 import 'package:chat_app_white_label/src/dummy%20data/whatsapp_data.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'dart:math';

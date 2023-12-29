@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_app_white_label/components/message_bubble_component.dart';
-import 'package:chat_app_white_label/src/screens/chatscreen.dart';
+import 'package:chat_app_white_label/src/components/message_bubble_component.dart';
+import 'package:chat_app_white_label/src/screens/chat_screen.dart';
 import '../dummy data/whatsapp_data.dart';
 
 Data data = Data();
