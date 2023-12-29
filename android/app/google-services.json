@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "242769182821",
+    "project_id": "weuno-chat-app",
+    "storage_bucket": "weuno-chat-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242769182821:android:51043f2f19ee0a8f0e868c",
+        "android_client_info": {
+          "package_name": "com.example.chat_app_white_label"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLGyHA5ZhnCNiEdGqHscdixDktxnl5Tk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
