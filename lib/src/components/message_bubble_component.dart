@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 class MessageBubbleComponent extends StatelessWidget {
@@ -16,23 +17,23 @@ class MessageBubbleComponent extends StatelessWidget {
               isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
               constraints: BoxConstraints(
                   minWidth: 0,
                   maxWidth: MediaQuery.of(context).size.width * 0.7),
-              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
               decoration: BoxDecoration(
-                  color: isMe ? Color(0xffccfbc6) : Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+                  color: isMe ? ColorConstants.greenLight : Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(10))),
               child: Text(
                 message,
                 softWrap: true,
-                style: TextStyle(color: Colors.black, fontSize: 18),
+                style: const TextStyle(color: Colors.black, fontSize: 18),
               ),
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         )
       ],

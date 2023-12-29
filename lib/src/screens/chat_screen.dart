@@ -1,8 +1,9 @@
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app_white_label/src/components/chat_tile_component.dart';
 import 'package:chat_app_white_label/src/components/divider.dart';
-import 'package:chat_app_white_label/src/screens/calls_screen.dart';
-import 'package:chat_app_white_label/src/screens/status_screen.dart';
 import 'package:chat_app_white_label/src/dummy%20data/whatsapp_data.dart';
 
 Data data = Data();
@@ -10,14 +11,12 @@ Data data = Data();
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
 
-  static const String id = 'chat screen';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xff075e54),
+        backgroundColor: ColorConstants.primary,
         title: const Text(
           'WhatsApp',
           style: TextStyle(
@@ -42,13 +41,11 @@ class ChatScreen extends StatelessWidget {
         ],
         bottom: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xff075e54),
-          leading: Container(
-            child: Icon(
-              Icons.camera_alt_rounded,
-              color: Colors.white.withOpacity(0.5),
-              size: 28,
-            ),
+          backgroundColor: ColorConstants.primary,
+          leading: Icon(
+            Icons.camera_alt_rounded,
+            color: Colors.white.withOpacity(0.5),
+            size: 28,
           ),
           actions: [
             Container(
@@ -93,7 +90,8 @@ class ChatScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, StatusScreen.id);
+                        NavigationUtil.push(
+                            context, RouteConstants.statusScreen);
                       },
                       child: Text(
                         'STATUS',
@@ -122,7 +120,7 @@ class ChatScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, CallScreen.id);
+                        NavigationUtil.push(context, RouteConstants.callScreen);
                       },
                       child: Text(
                         'CALLS',
@@ -145,7 +143,7 @@ class ChatScreen extends StatelessWidget {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {},
-            backgroundColor: const Color(0xff25D366),
+            backgroundColor: ColorConstants.green,
             child: const Icon(
               Icons.message,
             ),
