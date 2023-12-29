@@ -1,8 +1,9 @@
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app_white_label/src/components/calls_tile_component.dart';
 import 'package:chat_app_white_label/src/components/divider.dart';
-import 'package:chat_app_white_label/src/screens/chat_screen.dart';
-import 'package:chat_app_white_label/src/screens/status_screen.dart';
 
 import '../dummy data/whatsapp_data.dart';
 
@@ -10,13 +11,13 @@ Data callList = Data();
 
 class CallScreen extends StatelessWidget {
   const CallScreen({super.key});
-  static const String id = 'call screen';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xff075e54),
+        backgroundColor: ColorConstants.primary,
         title: const Text(
           'WhatsApp',
           style: TextStyle(
@@ -41,7 +42,7 @@ class CallScreen extends StatelessWidget {
         ],
         bottom: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xff075e54),
+          backgroundColor: ColorConstants.primary,
           leading: SizedBox(
             child: Icon(
               Icons.camera_alt_rounded,
@@ -65,7 +66,7 @@ class CallScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, ChatScreen.id);
+                        NavigationUtil.push(context, RouteConstants.chatScreen);
                       },
                       child: Text(
                         'CHATS',
@@ -94,7 +95,8 @@ class CallScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, StatusScreen.id);
+                        Navigator.pushNamed(
+                            context, RouteConstants.statusScreen);
                       },
                       child: Text(
                         'STATUS',
@@ -144,7 +146,7 @@ class CallScreen extends StatelessWidget {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {},
-            backgroundColor: const Color(0xff25d366),
+            backgroundColor: ColorConstants.green,
             child: const Icon(
               Icons.add_call,
               color: Colors.white,

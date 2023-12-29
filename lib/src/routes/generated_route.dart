@@ -5,7 +5,6 @@ import '../constants/route_constants.dart';
 import '../screens/calls_screen.dart';
 import '../screens/status_screen.dart';
 
-
 Route generateRoute(RouteSettings settings) {
   _materialRoute(Widget widget) =>
       MaterialPageRoute(builder: (context) => widget);
@@ -15,11 +14,11 @@ Route generateRoute(RouteSettings settings) {
     //   return _materialRoute(SplashScreen(
     //     skipDelay: skipDelay ?? false,
     //   ));
-    case RouteConstants.chatScreenRoute:
+    case RouteConstants.chatScreen:
       return _materialRoute(const ChatScreen());
-    case RouteConstants.statusScreenRoute:
+    case RouteConstants.statusScreen:
       return _materialRoute(const StatusScreen());
-    case RouteConstants.callScreenRoute:
+    case RouteConstants.callScreen:
       return _materialRoute(const CallScreen());
     default:
       return _materialRoute(const ChatScreen());

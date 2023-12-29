@@ -1,5 +1,4 @@
 // name , profile pic, msg, time
-import 'dart:convert';
 
 class Data {
   var chat = {

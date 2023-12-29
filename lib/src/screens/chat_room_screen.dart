@@ -1,7 +1,7 @@
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app_white_label/src/components/message_bubble_component.dart';
-import 'package:chat_app_white_label/src/screens/chat_screen.dart';
 import '../dummy data/whatsapp_data.dart';
 
 Data data = Data();
@@ -23,7 +23,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xff075e54),
+        backgroundColor: ColorConstants.primary,
         title: Row(
           children: [
             widget.image != null

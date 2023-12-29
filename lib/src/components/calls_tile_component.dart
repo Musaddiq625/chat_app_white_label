@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +45,7 @@ class CallTileComponent extends StatelessWidget {
               inComing
                   ? CupertinoIcons.arrow_down_left
                   : CupertinoIcons.arrow_up_right,
-              color: isMissed ? Colors.red : const Color(0xff25d366),
+              color: isMissed ? Colors.red : ColorConstants.green,
               size: 18,
             ),
           ),
