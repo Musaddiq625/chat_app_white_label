@@ -14,11 +14,12 @@ import '../constants/route_constants.dart';
 import '../utils/navigation_util.dart';
 
 class OTPScreen extends StatefulWidget {
-  final String? verificationId;
-  final String? phoneNumber;
-  final String? phoneCode;
+  final OtpScreenArg otpScreenArg;
 
-  OTPScreen({this.verificationId, this.phoneNumber, this.phoneCode});
+  const OTPScreen({
+    super.key,
+    required this.otpScreenArg,
+  });
 
   @override
   _OTPScreenState createState() => _OTPScreenState();
@@ -33,7 +34,7 @@ class _OTPScreenState extends State<OTPScreen> {
   int _counter = 60;
 
   void startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (_counter > 0) {
         setState(() {
           _counter--;
@@ -61,24 +62,25 @@ class _OTPScreenState extends State<OTPScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Verify ${widget.phoneNumber}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                'Verify ${widget.otpScreenArg.phoneNumber}',
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              // Text('Waiting to automatically detect an SMS sent to \n          ${widget.phoneNumber} WrongNumber ?',style: TextStyle(fontSize: 14)),
+              // Text('Waiting to automatically detect an SMS sent to \n          ${widget.otpScreenArgphoneNumber} WrongNumber ?',style: TextStyle(fontSize: 14)),
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
                   children: [
                     TextSpan(
                       text:
-                          'Waiting to automatically detect an SMS sent to  \n  ${widget.phoneNumber} ',
-                      style: TextStyle(
+                          'Waiting to automatically detect an SMS sent to  \n  ${widget.otpScreenArg.phoneNumber} ',
+                      style: const TextStyle(
                           color: Colors.black), // Change the color here
                     ),
-                    TextSpan(
+                    const TextSpan(
                       text: 'WrongNumber ?',
                       style: TextStyle(
                           color: Colors.blue), // Change the color here
@@ -87,7 +89,7 @@ class _OTPScreenState extends State<OTPScreen> {
                 ),
               ),
               // Text('OTP',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               // OTPTextField(
@@ -105,11 +107,11 @@ class _OTPScreenState extends State<OTPScreen> {
               //     onCompleted: (pin) {
               //       print("Completed: " + pin);
               //     }),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text('Enter 6-digit code', style: TextStyle(fontSize: 14)),
-              Text('You may request a new code in ',
+              const Text('Enter 6-digit code', style: TextStyle(fontSize: 14)),
+              const Text('You may request a new code in ',
                   style: TextStyle(fontSize: 14)),
               Container(
                 width: 150,
@@ -143,12 +145,13 @@ class _OTPScreenState extends State<OTPScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Text('Didnt receive code?  ${_counter > 0 ? _counter : ""}',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-              SizedBox(
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold)),
+              const SizedBox(
                 height: 30,
               ),
               _isOtpValid
@@ -169,16 +172,20 @@ class _OTPScreenState extends State<OTPScreen> {
                         try {
                           auth.signInWithCredential(
                             PhoneAuthProvider.credential(
-                              verificationId: widget.verificationId!,
+                              verificationId:
+                                  widget.otpScreenArg.verificationId,
                               smsCode: otpController.toString(),
                             ),
                           );
-                          final usersCollection = firestore.collection(FirebaseConstants.users);
+                          final usersCollection =
+                              firestore.collection(FirebaseConstants.users);
                           final userDocs = await usersCollection.get();
 
                           bool userExists = false;
                           for (var doc in userDocs.docs) {
-                            if (doc.id == widget.phoneNumber?.replaceAll('+', '')) {
+                            if (doc.id ==
+                                widget.otpScreenArg.phoneNumber
+                                    .replaceAll('+', '')) {
                               userExists = true;
                               break;
                             }
@@ -192,30 +199,37 @@ class _OTPScreenState extends State<OTPScreen> {
                           //     .get();
                           if (userExists) {
                             // User exists, navigate to profile screen
-                            NavigationUtil.push(context, RouteConstants.chatScreen);
+                            NavigationUtil.push(
+                                context, RouteConstants.chatScreen);
                           } else {
                             print("UserIds = ${user?.uid}");
                             // User does not exist, create a new user document in Firestore
-                            await firestore.collection('users').doc(widget.phoneNumber?.replaceAll('+', '')).set({
-                              'id': widget.phoneNumber?.replaceAll('+', ''),
-                              'phoneNumber': widget.phoneNumber,
+                            await firestore
+                                .collection('users')
+                                .doc(widget.otpScreenArg.phoneNumber
+                                    .replaceAll('+', ''))
+                                .set({
+                              'id': widget.otpScreenArg.phoneNumber
+                                  .replaceAll('+', ''),
+                              'phoneNumber': widget.otpScreenArg.phoneNumber,
                               'is_profile_complete': false,
                             });
                             // Navigate to chat screen
-                          //  NavigationUtil.push(context, RouteConstants.profileScreen,args:widget.phoneNumber);
+                            //  NavigationUtil.push(context, RouteConstants.profileScreen,args:widget.otpScreenArgphoneNumber);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ProfileScreen(
-                                        phoneNumber: widget.phoneNumber,
-                                    )));
+                                          phoneNumber:
+                                              widget.otpScreenArg.phoneNumber,
+                                        )));
                           }
                         } catch (e) {
                           // Sign-in failed, handle the exception
                           print(e);
                         }
                       },
-                      child: Text("Verify OTP"),
+                      child: const Text("Verify OTP"),
                     )
                   : Container(),
             ],
@@ -224,4 +238,16 @@ class _OTPScreenState extends State<OTPScreen> {
       ),
     );
   }
+}
+
+class OtpScreenArg {
+  final String verificationId;
+  final String phoneNumber;
+  final String phoneCode;
+
+  OtpScreenArg(
+    this.verificationId,
+    this.phoneNumber,
+    this.phoneCode,
+  );
 }
