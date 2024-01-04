@@ -1,6 +1,7 @@
 import 'package:chat_app_white_label/src/screens/chat_screen.dart';
 import 'package:chat_app_white_label/src/screens/loginScreen.dart';
 import 'package:chat_app_white_label/src/screens/otpScreen.dart';
+import 'package:chat_app_white_label/src/screens/profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,8 @@ Route generateRoute(RouteSettings settings) {
     //   ));
     case RouteConstants.chatScreen:
       return _materialRoute(const ChatScreen());
+    case RouteConstants.profileScreen:
+      return _materialRoute(ProfileScreen());
     case RouteConstants.welcomeScreen:
       return _materialRoute(const WelcomeScreen());
     case RouteConstants.loginScreen:

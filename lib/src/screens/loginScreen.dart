@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/utils/service/firbase_auth_service.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
   String selectedCountryCode = '';
 
   LoginScreen({super.key});
@@ -104,13 +105,13 @@ class LoginScreen extends StatelessWidget {
                     return;
                   }
                   try {
-                    await _auth.verifyPhoneNumber(
+                    await auth.verifyPhoneNumber(
                       phoneNumber:
                           "${_countryCodeController.text}${_controller.text}",
                       verificationCompleted:
                           (PhoneAuthCredential credential) async {
                         // Sign in with the credential
-                        await _auth.signInWithCredential(credential);
+                        await auth.signInWithCredential(credential);
                         // Navigate to the home screen (or desired screen)
                         NavigationUtil.push(context, RouteConstants.chatScreen);
                       },
@@ -132,6 +133,7 @@ class LoginScreen extends StatelessWidget {
                                       verificationId: verificationId,
                                       phoneNumber:
                                           "${_countryCodeController.text}${_controller.text}",
+                                  phoneCode:"${_countryCodeController.text}"
                                     )));
                       },
                       codeAutoRetrievalTimeout: (String verificationId) {

@@ -7,7 +7,7 @@ class CustomTextField extends StatefulWidget {
   final int maxLength;
   final TextInputType keyboardType;
   final List<TextInputFormatter> inputFormatters;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
   final TextAlign textAlign;
   final TextEditingController? controller;
 
@@ -18,7 +18,7 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.textAlign = TextAlign.center,
     this.inputFormatters = const [],
-    required this.onChanged,
+    this.onChanged,
     this.controller,
   }) : super(key: key);
 
@@ -48,7 +48,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(hintText: widget.hintText),
       onChanged: (value) {
-        widget.onChanged(value);
+        widget.onChanged!(value);
       },
       maxLength: widget.maxLength,
       inputFormatters: widget.inputFormatters,
