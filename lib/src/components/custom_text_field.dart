@@ -50,8 +50,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
       onChanged: (value) {
         widget.onChanged!(value);
       },
-      maxLength: widget.maxLength,
-      inputFormatters: widget.inputFormatters,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(widget.maxLength),
+          ...widget.inputFormatters,
+        ]
     );
   }
 }
