@@ -12,6 +12,7 @@ import 'package:otp_text_field/otp_field.dart';
 
 import '../constants/route_constants.dart';
 import '../utils/navigation_util.dart';
+import 'chat_screen.dart';
 
 class OTPScreen extends StatefulWidget {
   final String? verificationId;
@@ -191,8 +192,15 @@ class _OTPScreenState extends State<OTPScreen> {
                           //     .doc(user?.uid)
                           //     .get();
                           if (userExists) {
+
                             // User exists, navigate to profile screen
-                            NavigationUtil.push(context, RouteConstants.chatScreen);
+                            // NavigationUtil.push(context, RouteConstants.chatScreen);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChatScreen(
+                                      phoneNumber: widget.phoneNumber?.replaceAll('+', ''),
+                                    )));
                           } else {
                             print("UserIds = ${user?.uid}");
                             // User does not exist, create a new user document in Firestore

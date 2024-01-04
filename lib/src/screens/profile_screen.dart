@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat_app_white_label/src/components/custom_button.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
+import 'package:chat_app_white_label/src/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,7 +27,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _controller = TextEditingController();
   final _controllerAbout = TextEditingController();
   File? _selectedImage;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,7 +165,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               "Error during file upload or retrieval: $error");
                         }
 
-                        NavigationUtil.push(context, RouteConstants.chatScreen);
+                        // NavigationUtil.push(context, RouteConstants.chatScreen);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatScreen(
+                                  phoneNumber: widget.phoneNumber?.replaceAll('+', ''),
+                                )));
                       }
                     } catch (error) {
                       print(
