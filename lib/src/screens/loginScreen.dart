@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import '../constants/route_constants.dart';
 import '../utils/navigation_util.dart';
 import 'otpScreen.dart';
@@ -13,7 +12,6 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
   String selectedCountryCode = '';
 
   LoginScreen({super.key});
@@ -28,16 +26,16 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Enter Your Phone Number',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text('Whatsapp will need to verify your account',
+              const Text('Whatsapp will need to verify your account',
                   style: TextStyle(fontSize: 14)),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -59,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                     child: TextField(
                       controller: _controller,
                       keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: "Phone Number",
                       ),
@@ -76,10 +74,10 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text('International carrier charges may apply',
+              const Text('International carrier charges may apply',
                   style: TextStyle(fontSize: 14)),
               // SizedBox(height: 50,),
               // TextField(
@@ -87,7 +85,7 @@ class LoginScreen extends StatelessWidget {
               //   keyboardType: TextInputType.phone,
               //   decoration: const InputDecoration(labelText: "Phone Number"),
               // ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               ElevatedButton(
@@ -124,17 +122,20 @@ class LoginScreen extends StatelessWidget {
                           (String verificationId, int? forceResendingToken) {
                         // Store verification ID for later use in OTP screen
                         // (Assuming you'll pass it to the OTP screen)
-                        // NavigationUtil.push(
-                        //     context, RouteConstants.otpScreen,args: verificationId);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OTPScreen(
-                                      verificationId: verificationId,
-                                      phoneNumber:
-                                          "${_countryCodeController.text}${_controller.text}",
-                                  phoneCode:"${_countryCodeController.text}"
-                                    )));
+                        NavigationUtil.push(context, RouteConstants.otpScreen,
+                            args: OtpScreenArg(
+                                verificationId,
+                                "${_countryCodeController.text}${_controller.text}",
+                                _countryCodeController.text));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => OTPScreen(
+                        //             verificationId: verificationId,
+                        //             phoneNumber:
+                        //                 "${_countryCodeController.text}${_controller.text}",
+                        //             phoneCode:
+                        //                 "${_countryCodeController.text}")));
                       },
                       codeAutoRetrievalTimeout: (String verificationId) {
                         // Handle timeout
@@ -146,7 +147,7 @@ class LoginScreen extends StatelessWidget {
                         error); // You might want to display a general error message to the user
                   }
                 },
-                child: Text('Next'),
+                child: const Text('Next'),
               ),
             ],
           ),
