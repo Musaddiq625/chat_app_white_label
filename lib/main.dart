@@ -2,8 +2,12 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_cubit/app_cubit.dart';
-import 'package:chat_app_white_label/src/screens/cubit/app_setting_cubit.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
+import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
+import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
+import 'package:chat_app_white_label/src/utils/service/firbase_auth_service.dart';
 import 'package:chat_app_white_label/src/utils/shared_prefrence_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +18,7 @@ final getIt = GetIt.I;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  print("USER ${FirebaseAuth.instance.currentUser?.uid}");
 
   await _initRepos();
   SystemChrome.setSystemUIOverlayStyle(
@@ -28,6 +33,7 @@ void main() async {
 
 Future<void> _initRepos() async {
   getIt.registerSingleton(SharedPreferencesUtil());
+  getIt.registerSingleton(FirebaseService());
 }
 
 class MyApp extends StatelessWidget {
@@ -41,6 +47,14 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AppSettingCubit(),
+        ),
+        BlocProvider<LoginCubit>(
+          create: (BuildContext context) => LoginCubit(
+          ),
+        ),
+        BlocProvider<OTPCubit>(
+          create: (BuildContext context) => OTPCubit(
+          ),
         ),
       ],
       child: MaterialApp(

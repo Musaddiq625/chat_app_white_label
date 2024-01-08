@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../main.dart';
 import '../models/chat.dart';
 
 Data data = Data();
@@ -22,7 +23,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-
+  FirebaseService firebaseService = getIt<FirebaseService>();
   String formatTimestamp(Timestamp timestamp) {
     DateTime date = timestamp.toDate();
     return DateFormat('jm').format(date); // 'jm' formats it in 'hh:mm AM/PM' format
@@ -39,14 +40,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
     Stream<List<Map<String, dynamic>>> getChatData(String? userId) async* {
-      DocumentReference userRef = firestore.collection('users').doc(userId);
+      DocumentReference userRef = firebaseService.firestore.collection('users').doc(userId);
 
       await for (var snapshot in userRef.snapshots()) {
         if (snapshot.exists) {
           List<String> chatIds = List<String>.from((snapshot.data() as Map<String, dynamic>)['chats_ids']);
           List<Map<String, dynamic>> chatData = [];
           for (var chatId in chatIds) {
-            var chatSnapshot = await firestore.collection('chats').doc(chatId).get();
+            var chatSnapshot = await firebaseService.firestore.collection('chats').doc(chatId).get();
             if (chatSnapshot.exists) {
               chatData.add(chatSnapshot.data() as Map<String, dynamic>);
             } else {

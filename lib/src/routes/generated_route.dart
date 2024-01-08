@@ -1,6 +1,6 @@
 import 'package:chat_app_white_label/src/screens/chat_screen.dart';
-import 'package:chat_app_white_label/src/screens/loginScreen.dart';
-import 'package:chat_app_white_label/src/screens/otpScreen.dart';
+import 'package:chat_app_white_label/src/screens/login/loginScreen.dart';
+import 'package:chat_app_white_label/src/screens/otp/otpScreen.dart';
 import 'package:chat_app_white_label/src/screens/profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/splash/splash_screen.dart';
 import 'package:chat_app_white_label/src/screens/welcome_screen.dart';
@@ -19,6 +19,8 @@ Route generateRoute(RouteSettings settings) {
     //   return _materialRoute(SplashScreen(
     //     skipDelay: skipDelay ?? false,
     //   ));
+    // case RouteConstants.splashScreen:
+    //   return materialRoute(const SplashScreen());
     case RouteConstants.chatScreen:
       return materialRoute(const ChatScreen());
     case RouteConstants.profileScreen:
@@ -33,7 +35,6 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(OTPScreen(
         otpScreenArg: arg,
       ));
-
     case RouteConstants.statusScreen:
       return materialRoute(const StatusScreen());
     case RouteConstants.callScreen:

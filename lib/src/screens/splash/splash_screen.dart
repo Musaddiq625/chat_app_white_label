@@ -1,10 +1,14 @@
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../utils/service/firbase_auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -15,6 +19,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   // late AppCubit appCubit = BlocProvider.of<AppCubit>(context);
+  FirebaseService firebaseService = getIt<FirebaseService>();
   late AppSettingCubit appSettingCubit =
       BlocProvider.of<AppSettingCubit>(context);
 
@@ -61,6 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // final token = await getIt<SharedPreferencesUtil>().getString(
     //   SharedPreferenceConstants.token,
     // );
+
     Future.delayed(const Duration(milliseconds: 1500), () async {
       //   if (token != null) {
       //     appCubit.setToken(token);
@@ -74,13 +80,24 @@ class _SplashScreenState extends State<SplashScreen> {
       //         previousScreen: RouteConstants.splashScreenRoute);
       //   } else {
       //     await _initializedApiClientBloc();
-      NavigationUtil.pushReplace(
-        context,
-        RouteConstants.loginScreen,
-      );
-      // }
+      firebaseService.auth.authStateChanges().listen((User? user) {
+        if (user == null) {
+          NavigationUtil.pushReplace(
+            context,
+            RouteConstants.loginScreen,
+          );
+        }
+        else {
+          NavigationUtil.pushReplace(
+            context,
+            RouteConstants.chatScreen,
+          );
+        }
+        // }
+      });
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

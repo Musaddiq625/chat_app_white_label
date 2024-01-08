@@ -12,12 +12,12 @@ class AppCubit extends Cubit<AppState> {
   String? token;
   String? fcm;
 
-  Future<void> setToken(String userToken) async {
-    token = userToken;
-    emit(SetTokenState());
-    await getIt<SharedPreferencesUtil>()
-        .setString(SharedPreferenceConstants.token, userToken);
-  }
+  // Future<void> setToken(String userToken) async {
+  //   token = userToken;
+  //   emit(SetTokenState());
+  //   await getIt<SharedPreferencesUtil>()
+  //       .setString(SharedPreferenceConstants.token, userToken);
+  // }
 
   Future<void> setFcm(String fcmToken) async {
     fcm = fcmToken;

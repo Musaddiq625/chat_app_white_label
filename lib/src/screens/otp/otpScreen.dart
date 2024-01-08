@@ -2,17 +2,21 @@ import 'dart:async';
 
 import 'package:chat_app_white_label/src/components/custom_text_field.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
+import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/screens/profile_screen.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:otp_text_field/otp_field.dart';
 
-import '../constants/route_constants.dart';
-import '../utils/navigation_util.dart';
-import 'chat_screen.dart';
+import '../../constants/route_constants.dart';
+import '../../utils/loading_dialog.dart';
+import '../../utils/logger_util.dart';
+import '../../utils/navigation_util.dart';
+import '../chat_screen.dart';
 
 class OTPScreen extends StatefulWidget {
   final OtpScreenArg otpScreenArg;
@@ -54,6 +58,50 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   Widget build(BuildContext context) {
+    late OTPCubit otpCubit;
+    return BlocConsumer<OTPCubit, OTPState>(
+      listener: (context, state) async {
+        LoggerUtil.logs('login state: $state');
+        if (state is OTPLoadingState) {
+          LoadingDialog.showLoadingDialog(context);
+        }
+        else if (state is OTPSuccessNewUserState) {
+          LoadingDialog.hideLoadingDialog(context);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfileScreen(
+                    phoneNumber:state.phoneNumber,
+                  )));
+          // log("::::::::::::::::::::::test case ammar");
+        }
+        else if (state is OTPSuccessOldUserState) {
+          LoadingDialog.hideLoadingDialog(context);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChatScreen(
+                    phoneNumber: state.phoneNumber.replaceAll('+', ''),
+                  )));
+          // log("::::::::::::::::::::::test case ammar");
+        }
+        else if (state is OTPFailureState) {
+          LoadingDialog.hideLoadingDialog(context);
+          // if (state.error.contains('AuthorizationErrorCode.canceled')) {
+          //   ToastComponent.showToast(
+          //     context,
+          //     'You have cancelled Apple Login',
+          //   );
+          // } else {
+          //   ToastComponent.showToast(context, state.error);
+          // }
+        }
+        else if (state is OTPCancleState) {
+          LoadingDialog.hideLoadingDialog(context);
+        }
+      },
+      builder: (context, state) {
+        otpCubit = context.read<OTPCubit>();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -170,73 +218,7 @@ class _OTPScreenState extends State<OTPScreen> {
                               fontSize: 16.0);
                           return;
                         }
-                        try {
-                          auth.signInWithCredential(
-                            PhoneAuthProvider.credential(
-                              verificationId:
-                                  widget.otpScreenArg.verificationId,
-                              smsCode: otpController.toString(),
-                            ),
-                          );
-                          final usersCollection =
-                              firestore.collection(FirebaseConstants.users);
-                          final userDocs = await usersCollection.get();
-
-                          bool userExists = false;
-                          for (var doc in userDocs.docs) {
-                            if (doc.id ==
-                                widget.otpScreenArg.phoneNumber
-                                    .replaceAll('+', '')) {
-                              userExists = true;
-                              break;
-                            }
-                          }
-
-                          final user = auth.currentUser;
-                          print("UserId = ${user?.uid}");
-                          // final userDoc = await FirebaseFirestore.instance
-                          //     .collection('users')
-                          //     .doc(user?.uid)
-                          //     .get();
-                          if (userExists) {
-
-                            // User exists, navigate to profile screen
-                            // NavigationUtil.push(
-                            //     context, RouteConstants.chatScreen);
-                            // NavigationUtil.push(context, RouteConstants.chatScreen);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ChatScreen(
-                                      phoneNumber: widget.otpScreenArg.phoneNumber.replaceAll('+', ''),
-                                    )));
-                          } else {
-                            print("UserIds = ${user?.uid}");
-                            // User does not exist, create a new user document in Firestore
-                            await firestore
-                                .collection('users')
-                                .doc(widget.otpScreenArg.phoneNumber
-                                    .replaceAll('+', ''))
-                                .set({
-                              'id': widget.otpScreenArg.phoneNumber
-                                  .replaceAll('+', ''),
-                              'phoneNumber': widget.otpScreenArg.phoneNumber,
-                              'is_profile_complete': false,
-                            });
-                            // Navigate to chat screen
-                            //  NavigationUtil.push(context, RouteConstants.profileScreen,args:widget.otpScreenArgphoneNumber);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProfileScreen(
-                                          phoneNumber:
-                                              widget.otpScreenArg.phoneNumber,
-                                        )));
-                          }
-                        } catch (e) {
-                          // Sign-in failed, handle the exception
-                          print(e);
-                        }
+                        otpCubit.otpUser( widget.otpScreenArg.verificationId, otpController.toString(), widget.otpScreenArg.phoneNumber, false);
                       },
                       child: const Text("Verify OTP"),
                     )
@@ -246,6 +228,9 @@ class _OTPScreenState extends State<OTPScreen> {
         ),
       ),
     );
+
+  },
+  );
   }
 }
 

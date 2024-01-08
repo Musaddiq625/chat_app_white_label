@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../main.dart';
 import '../components/custom_text_field.dart';
 import '../constants/route_constants.dart';
 import '../utils/firebase_utils.dart';
@@ -24,6 +25,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  FirebaseService firebaseService = getIt<FirebaseService>();
   final _controller = TextEditingController();
   final _controllerAbout = TextEditingController();
   File? _selectedImage;
@@ -116,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     }
                     try {
                       final usersCollection =
-                          firestore.collection(FirebaseConstants.users);
+                      firebaseService.firestore.collection(FirebaseConstants.users);
                       final userDocs = await usersCollection.get();
 
                       bool userExists = false;
@@ -151,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                           final imageUrl = await FirebaseUtils.uploadMedia(_selectedImage);
                           print("imageUrl ${imageUrl} ");
-                          await firestore
+                          await firebaseService.firestore
                               .collection(FirebaseConstants.users)
                               .doc(widget.phoneNumber?.replaceAll('+', ''))
                               .update({
