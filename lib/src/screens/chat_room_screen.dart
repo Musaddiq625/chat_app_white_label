@@ -23,7 +23,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: ColorConstants.primary,
+        backgroundColor: ColorConstants.greenMain,
         title: Row(
           children: [
             widget.image != null

@@ -3,7 +3,7 @@ import 'package:chat_app_white_label/src/screens/chat_room_screen.dart';
 
 class ChatTileComponent extends StatelessWidget {
   final String name;
-  final String? image;
+  final String image;
   final String message;
   final String time;
   const ChatTileComponent(
@@ -21,12 +21,12 @@ class ChatTileComponent extends StatelessWidget {
         MaterialPageRoute(
             builder: (context) => ChatRoomScreen(name: name, image: image)),
       ),
-      leading: image != null
+      leading: image != ''
           ? Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: CircleAvatar(
                 radius: 25,
-                backgroundImage: AssetImage(image!),
+                backgroundImage: AssetImage(image),
               ),
             )
           : Padding(

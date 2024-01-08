@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,7 +31,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? TextEditingController(); // Assign if not provided
+    _controller =
+        widget.controller ?? TextEditingController(); // Assign if not provided
   }
 
   @override
@@ -40,20 +40,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
     _controller?.dispose(); // Dispose only if created internally
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return TextField(
-      textAlign: widget.textAlign,
-      controller: _controller,
-      keyboardType: widget.keyboardType,
-      decoration: InputDecoration(hintText: widget.hintText),
-      onChanged: (value) {
-        widget.onChanged!(value);
-      },
+        textAlign: widget.textAlign,
+        controller: _controller,
+        keyboardType: widget.keyboardType,
+        decoration: InputDecoration(hintText: widget.hintText),
+        onChanged: (value) {
+          widget.onChanged!(value);
+        },
         inputFormatters: [
           LengthLimitingTextInputFormatter(widget.maxLength),
           ...widget.inputFormatters,
-        ]
-    );
+        ]);
   }
 }

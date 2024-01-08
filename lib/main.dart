@@ -14,10 +14,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
+
 final getIt = GetIt.I;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseAppCheck.instance.activate(
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    androidProvider: AndroidProvider.debug,
+  );
   print("USER ${FirebaseAuth.instance.currentUser?.uid}");
 
   await _initRepos();
@@ -49,12 +55,10 @@ class MyApp extends StatelessWidget {
           create: (context) => AppSettingCubit(),
         ),
         BlocProvider<LoginCubit>(
-          create: (BuildContext context) => LoginCubit(
-          ),
+          create: (BuildContext context) => LoginCubit(),
         ),
         BlocProvider<OTPCubit>(
-          create: (BuildContext context) => OTPCubit(
-          ),
+          create: (BuildContext context) => OTPCubit(),
         ),
       ],
       child: MaterialApp(

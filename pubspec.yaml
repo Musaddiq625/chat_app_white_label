@@ -49,6 +49,7 @@ dependencies:
   package_info_plus: ^5.0.1
   shared_preferences: ^2.2.2
   get_it: ^7.6.4
+  firebase_app_check: ^0.2.1+8
 
 dev_dependencies:
   flutter_test:

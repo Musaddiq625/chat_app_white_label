@@ -1,5 +1,5 @@
-class User {
-  final String id;
+class UserMoodel {
+  final String? id;
   final String? name;
   final String? image;
   final String? about;
@@ -7,7 +7,7 @@ class User {
   final List<String>? chatsIds;
   final bool? isProfileComplete;
 
-  User({
+  UserMoodel({
     required this.id,
     this.name,
     this.image,
@@ -17,8 +17,8 @@ class User {
     this.isProfileComplete,
   });
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
+  factory UserMoodel.fromMap(Map<String, dynamic> map) {
+    return UserMoodel(
       id: map['id'],
       name: map['name'],
       image: map['image'],
@@ -26,7 +26,6 @@ class User {
       phoneNumber: map['phoneNumber'],
       chatsIds: List<String>.from(map['chats_ids']),
       isProfileComplete: map['is_profile_complete'],
-
     );
   }
 }

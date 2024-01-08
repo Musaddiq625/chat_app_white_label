@@ -5,6 +5,8 @@ abstract class AppState {}
 
 class AppInitial extends AppState {}
 
-class SetTokenState extends AppState {}
+class SetPhoneNumberState extends AppState {}
+
+class SetUserState extends AppState {}
 
 class SetFcmState extends AppState {}

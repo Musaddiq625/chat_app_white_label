@@ -8,16 +8,15 @@ class OTPInitial extends OTPState {}
 class OTPLoadingState extends OTPState {}
 
 class OTPSuccessOldUserState extends OTPState {
-  final String phoneNumber;
+  final UserMoodel user;
 
-  OTPSuccessOldUserState(this.phoneNumber);
+  OTPSuccessOldUserState(this.user);
 }
 
 class OTPSuccessNewUserState extends OTPState {
   final String phoneNumber;
 
   OTPSuccessNewUserState(this.phoneNumber);
-
 }
 
 class OTPCancleState extends OTPState {}

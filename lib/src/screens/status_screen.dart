@@ -12,7 +12,7 @@ class StatusScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: ColorConstants.primary,
+        backgroundColor: ColorConstants.greenMain,
         title: const Text(
           'WhatsApp',
           style: TextStyle(
@@ -37,7 +37,7 @@ class StatusScreen extends StatelessWidget {
         ],
         bottom: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: ColorConstants.primary,
+          backgroundColor: ColorConstants.greenMain,
           leading: Container(
             child: Icon(
               Icons.camera_alt_rounded,
