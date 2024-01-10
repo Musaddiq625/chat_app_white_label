@@ -37,12 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   state.verificationId,
                   "${_countryCodeController.text}${_phoneNumbercontroller.text}",
                   _countryCodeController.text));
-        }
-        //  else if (state is LoginSuccessSignInState) {
-        //   LoadingDialog.hideLoadingDialog(context);
-        //   NavigationUtil.push(context, RouteConstants.chatScreen);
-        // }
-        else if (state is LoginFailureState) {
+        } else if (state is LoginSuccessSignInState) {
+          LoadingDialog.hideLoadingDialog(context);
+          NavigationUtil.push(context, RouteConstants.chatScreen);
+        } else if (state is LoginFailureState) {
           LoadingDialog.hideLoadingDialog(context);
         } else if (state is LoginCancleState) {
           LoadingDialog.hideLoadingDialog(context);

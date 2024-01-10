@@ -3,7 +3,7 @@ import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../main.dart';
-import '../../../utils/service/firbase_auth_service.dart';
+import '../../../utils/service/firbase_service.dart';
 
 part 'login_state.dart';
 
@@ -20,8 +20,8 @@ class LoginCubit extends Cubit<LoginState> {
       await firebaseService.auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          // await firebaseService.auth.signInWithCredential(credential);
-          // emit(LoginSuccessSignInState());
+          await firebaseService.auth.signInWithCredential(credential);
+          emit(LoginSuccessSignInState());
         },
         verificationFailed: (FirebaseAuthException error) {
           print(

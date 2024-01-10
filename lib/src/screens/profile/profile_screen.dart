@@ -3,16 +3,14 @@ import 'package:chat_app_white_label/src/components/custom_button.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/screens/app_cubit/app_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../main.dart';
 import '../../components/custom_text_field.dart';
 import '../../utils/firebase_utils.dart';
-import '../../utils/service/firbase_auth_service.dart';
+import '../../utils/service/firbase_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String phoneNumber;
@@ -24,8 +22,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late AppCubit appCubit = BlocProvider.of<AppCubit>(context);
-
   FirebaseService firebaseService = getIt<FirebaseService>();
   final _controller = TextEditingController();
   final _controllerAbout = TextEditingController();
@@ -83,6 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   keyboardType: TextInputType.name,
                   controller: _controller,
                   textAlign: TextAlign.center,
+                  onChanged: (String value) {},
                 ),
               ),
               const SizedBox(
@@ -96,6 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   keyboardType: TextInputType.name,
                   controller: _controllerAbout,
                   textAlign: TextAlign.center,
+                  onChanged: (String value) {},
                 ),
               ),
               const SizedBox(
@@ -132,9 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       } catch (error) {
                         print("Error during file upload or retrieval: $error");
                       }
-                      final userData =
-                          await FirebaseUtils.getUserData(widget.phoneNumber);
-                      appCubit.setUser(userData!);
+
                       NavigationUtil.push(context, RouteConstants.chatScreen);
                     } catch (error) {
                       print(

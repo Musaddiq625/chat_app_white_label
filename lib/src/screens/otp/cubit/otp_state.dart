@@ -8,7 +8,7 @@ class OTPInitial extends OTPState {}
 class OTPLoadingState extends OTPState {}
 
 class OTPSuccessOldUserState extends OTPState {
-  final UserMoodel user;
+  final UserModel user;
 
   OTPSuccessOldUserState(this.user);
 }

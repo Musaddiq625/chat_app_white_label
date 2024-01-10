@@ -1,3 +1,5 @@
+import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/screens/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
@@ -17,6 +19,12 @@ Route generateRoute(RouteSettings settings) {
     case RouteConstants.chatScreen:
       return materialRoute(const ChatScreen());
 
+    case RouteConstants.chatRoomScreen:
+      final arg = settings.arguments as UserModel;
+      return materialRoute(ChatRoomScreen(
+        chatUser: arg,
+      ));
+
     case RouteConstants.profileScreen:
       final arg = settings.arguments! as String;
       return materialRoute(ProfileScreen(
@@ -30,7 +38,7 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(LoginScreen());
 
     case RouteConstants.otpScreen:
-      final arg = settings.arguments! as OtpScreenArg;
+      final arg = settings.arguments as OtpScreenArg;
       return materialRoute(OTPScreen(
         otpScreenArg: arg,
       ));

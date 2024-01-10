@@ -3,8 +3,6 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_app_white_label/src/components/calls_tile_component.dart';
-import 'package:chat_app_white_label/src/components/divider.dart';
 
 import '../dummy data/whatsapp_data.dart';
 

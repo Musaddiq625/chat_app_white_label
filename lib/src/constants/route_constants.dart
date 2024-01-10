@@ -6,6 +6,7 @@ class RouteConstants {
   static const String otpScreen = 'otpScreen';
   static const String statusScreen = 'statusScreen';
   static const String chatScreen = 'chatScreen';
+  static const String chatRoomScreen = 'chatRoomScreen';
   static const String callScreen = 'callScreen';
   static const String profileScreen = 'profileScreen';
 }
