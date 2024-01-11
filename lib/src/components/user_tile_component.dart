@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:chat_app_white_label/src/screens/chat_room_screen.dart';
 
 class UserTileComponent extends StatelessWidget {
   final String name;
   final String subName;
   final String image;
   final String message;
-  const UserTileComponent(
-      {super.key,
-      required this.name, required this.subName,
-      required this.image,
-      required this.message,});
+  const UserTileComponent({
+    super.key,
+    required this.name,
+    required this.subName,
+    required this.image,
+    required this.message,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ChatRoomScreen(name: name, image: image)),
-      ),
+      onTap: () {},
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => ChatRoomScreen(name: name, image: image)),
+      // ),
       leading: image != ''
           ? Padding(
               padding: const EdgeInsets.only(right: 8.0),

@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_c
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -18,6 +19,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   late AppSettingCubit appSettingCubit =
       BlocProvider.of<AppSettingCubit>(context);
+  FirebaseService firebaseService = getIt<FirebaseService>();
 
   @override
   void initState() {
@@ -25,7 +27,6 @@ class _SplashScreenState extends State<SplashScreen> {
       await getFlavorName();
       await firebaseService.requestPermission();
       _navigateToNext();
-
     });
     super.initState();
   }

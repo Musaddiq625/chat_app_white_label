@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FirebaseService {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -15,8 +16,8 @@ class FirebaseService {
     }
   }
 
-  Future<Iterable<Contact>> getContacts() async {
-    Iterable<Contact> contacts =
+  Future<List<Contact>> getLocalContacts() async {
+    List<Contact> contacts =
         await ContactsService.getContacts(withThumbnails: false);
     return contacts;
   }

@@ -2,22 +2,17 @@ import 'dart:io';
 
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
-import 'package:chat_app_white_label/src/models/chatMessage.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as p;
 
 class FirebaseUtils {
   static FirebaseService firebaseService = getIt<FirebaseService>();
-
-  static User get user => firebaseService.auth.currentUser!;
 
   static String? get phoneNumber =>
       firebaseService.auth.currentUser?.phoneNumber?.replaceAll('+', '');
@@ -32,10 +27,7 @@ class FirebaseUtils {
 
   static Future<void> createUser(String phoneNumber) async {
     final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
-    await firebaseService.firestore
-        .collection(FirebaseConstants.users)
-        .doc(replacedPhoneNumber)
-        .set({
+    await usersCollection.doc(replacedPhoneNumber).set({
       'id': replacedPhoneNumber,
       'phoneNumber': phoneNumber,
       'is_profile_complete': false,
@@ -44,10 +36,7 @@ class FirebaseUtils {
   }
 
   static Future<UserModel?> getCurrentUser() async {
-    final userData = await firebaseService.firestore
-        .collection(FirebaseConstants.users)
-        .doc(phoneNumber)
-        .get();
+    final userData = await usersCollection.doc(phoneNumber).get();
     if (userData.exists) {
       user = UserModel.fromJson(userData.data()!);
     }
@@ -55,20 +44,20 @@ class FirebaseUtils {
     return user;
   }
 
-  static Future<DocumentSnapshot<Map<String, dynamic>>> getChatUser(
-      String chatUserId) {
-    return firebaseService.firestore
-        .collection(FirebaseConstants.users)
-        .doc(chatUserId)
-        .get();
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+    return usersCollection.snapshots();
   }
 
+  // User Data for chat screen ChatTileComponent
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getChatUser(
+      String chatUserId) {
+    return usersCollection.doc(chatUserId).get();
+  }
+
+  // User Data for chat room screen ChatTileComponent
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserInfo(
       String chatUserId) {
-    return firebaseService.firestore
-        .collection(FirebaseConstants.users)
-        .doc(chatUserId)
-        .snapshots();
+    return usersCollection.doc(chatUserId).snapshots();
   }
 
   static String getConversationID(String chatUserPhoneNumber) =>
@@ -77,17 +66,14 @@ class FirebaseUtils {
           : '${chatUserPhoneNumber}_$phoneNumber';
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChats() {
-    return firebaseService.firestore
-        .collection(FirebaseConstants.chats)
-        .where('users', arrayContains: user?.id)
-        .snapshots();
+    return chatsCollection.where('users', arrayContains: user?.id).snapshots();
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
       UserModel user) {
-    return firebaseService.firestore
-        .collection(
-            '${FirebaseConstants.chats}/${getConversationID(user.id ?? '')}/${FirebaseConstants.messages}/')
+    return chatsCollection
+        .doc(getConversationID(user.id ?? ''))
+        .collection(FirebaseConstants.messages)
         .orderBy('sentAt', descending: true)
         .snapshots();
   }
@@ -150,7 +136,7 @@ class FirebaseUtils {
       try {
         final extension = p.extension(selectedImage!.path);
         if (fileName != null && extension != null) {
-          UploadTask task = storage
+          UploadTask task = firebaseService.storage
               .ref("profile_picture/$fileName$extension")
               .putFile(selectedImage!);
           print("Image ${task} + extension ${extension}");
@@ -163,7 +149,7 @@ class FirebaseUtils {
 
           await task.whenComplete(() => print('Upload completed'));
 
-          String downloadURL = await storage
+          String downloadURL = await firebaseService.storage
               .ref("profile_picture/$fileName$extension")
               .getDownloadURL();
           print("downloadURL ${downloadURL}");
@@ -178,39 +164,5 @@ class FirebaseUtils {
     } else {
       print("No Image Selected");
     }
-  }
-
-  static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
-      ? '${user.uid}_$id'
-      : '${id}_${user.uid}';
-
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
-      UserMoodel user) {
-    return firebaseService.firestore
-        .collection('chats/${getConversationID(user.id!)}/messages/')
-        .orderBy('sent', descending: true)
-        .snapshots();
-  }
-
-  // for sending message
-  static Future<void> sendMessage(
-      UserMoodel chatUser, String msg, Type type) async {
-    //message sending time (also used as id)
-    final time = DateTime.now().millisecondsSinceEpoch.toString();
-
-    //message to send
-    final ChatMessage message = ChatMessage(
-        toId: chatUser.id!,
-        msg: msg,
-        read: '',
-        type: type,
-        fromId: user.uid,
-        sent: time);
-
-    final ref = firebaseService.firestore
-        .collection('chats/${getConversationID(chatUser.id!)}/messages/');
-    // await ref.doc(time).set(message.toJson()).then((value) =>
-    //     sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
-    await ref.doc(time).set(message.toJson());
   }
 }

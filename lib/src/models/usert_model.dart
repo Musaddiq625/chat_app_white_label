@@ -1,6 +1,7 @@
 class UserModel {
   String? id;
   String? name;
+  String? subName;
   String? image;
   String? about;
   String? phoneNumber;
@@ -14,6 +15,7 @@ class UserModel {
     this.id,
     this.name,
     this.image,
+    this.subName,
     this.about,
     this.phoneNumber,
     this.chats,
@@ -27,6 +29,7 @@ class UserModel {
     return UserModel(
         id: json['id'],
         name: json['name'],
+        subName: json['sub_name'],
         image: json['image'],
         about: json['about'],
         phoneNumber: json['phoneNumber'],
@@ -40,6 +43,7 @@ class UserModel {
     final data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
+    data['sub_name'] = subName;
     data['image'] = image;
     data['about'] = about;
     data['phoneNumber'] = phoneNumber;

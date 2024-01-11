@@ -168,7 +168,9 @@ class _ChatScreenState extends State<ChatScreen> {
         height: 70,
         child: FittedBox(
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              NavigationUtil.push(context, RouteConstants.allUserScreen);
+            },
             backgroundColor: ColorConstants.green,
             child: const Icon(
               Icons.message,
