@@ -42,13 +42,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     Stream<List<Map<String, dynamic>>> getChatData(String? userId) async* {
+      print("User Id $userId");
       DocumentReference userRef =
           firebaseService.firestore.collection('users').doc(userId);
 
       await for (var snapshot in userRef.snapshots()) {
         if (snapshot.exists) {
           List<String> chatIds = List<String>.from(
-              (snapshot.data() as Map<String, dynamic>)['chats_ids']);
+              (snapshot.data() as Map<String, dynamic>)['chat_ids']);
           List<Map<String, dynamic>> chatData = [];
           for (var chatId in chatIds) {
             var chatSnapshot = await firebaseService.firestore
@@ -71,13 +72,16 @@ class _ChatScreenState extends State<ChatScreen> {
     return StreamBuilder<List<Map<String, dynamic>>>(
         stream: getChatData(appCubit.phoneNumber),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Error fetching chats'));
-          }
+          // if (snapshot.hasError) {
+          //   return const Center(child: Text('Error fetching chats '));
+          // }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          final chats = snapshot.data!.map((doc) => Chat.fromMap(doc)).toList();
+          final chats = snapshot.data?.map((doc) => Chat.fromMap(doc)).toList();
+          // if (chats.isEmpty) {
+          //   return Center(child: Text('No chats available'));
+          // }
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
@@ -208,7 +212,7 @@ class _ChatScreenState extends State<ChatScreen> {
               height: 70,
               child: FittedBox(
                 child: FloatingActionButton(
-                  onPressed: () {},
+                  onPressed: () {NavigationUtil.push(context, RouteConstants.allUserScreen);},
                   backgroundColor: ColorConstants.green,
                   child: const Icon(
                     Icons.message,
@@ -216,7 +220,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
             ),
-            body: chats.isEmpty
+            body: chats == null || chats.isEmpty
                 ? const Center(child: Text('No chat available'))
                 : ListView.builder(
                     padding: const EdgeInsets.only(top: 7),

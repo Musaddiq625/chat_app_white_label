@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 16.0);
                           return;
                         }
-                        loginCubit.loginUser(_countryCodeController.text +
+                        loginCubit.loginUsers(_countryCodeController.text +
                             _phoneNumbercontroller.text);
                       },
                       child: const Text('Next'),

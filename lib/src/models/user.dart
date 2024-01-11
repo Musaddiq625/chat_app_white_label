@@ -1,6 +1,7 @@
 class UserMoodel {
   final String? id;
   final String? name;
+  final String? subName;
   final String? image;
   final String? about;
   final String? phoneNumber;
@@ -8,8 +9,9 @@ class UserMoodel {
   final bool? isProfileComplete;
 
   UserMoodel({
-    required this.id,
+    this.id,
     this.name,
+    this.subName,
     this.image,
     this.about,
     this.phoneNumber,
@@ -21,10 +23,11 @@ class UserMoodel {
     return UserMoodel(
       id: map['id'],
       name: map['name'],
+      subName: map['subName'],
       image: map['image'],
       about: map['about'],
       phoneNumber: map['phoneNumber'],
-      chatsIds: List<String>.from(map['chats_ids']),
+      chatsIds: map['chat_ids'] == null ? [] : List<String>.from(map['chat_ids']),
       isProfileComplete: map['is_profile_complete'],
     );
   }

@@ -10,7 +10,7 @@ part 'app_state.dart';
 class AppCubit extends Cubit<AppState> {
   AppCubit() : super(AppInitial());
 
-  String? phoneNumber;
+  String? phoneNumber = '923323333333' ;
   String? fcm;
   UserMoodel? user;
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
@@ -14,16 +16,24 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+
 import 'package:firebase_app_check/firebase_app_check.dart';
 
 final getIt = GetIt.I;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.debug,
-  );
+  // await FirebaseAppCheck.instance.activate(
+  //   webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+  //   androidProvider: AndroidProvider.debug,
+  // );
+
+  // FirebaseAppCheck.instance.installAppCheckProviderFactory(
+  //   DebugAppCheckProviderFactory.instance,
+  // );
+  // if (Platform.isAndroid) {
+  //   await FirebaseAppCheck.instance.activate();
+  // }
   print("USER ${FirebaseAuth.instance.currentUser?.uid}");
 
   await _initRepos();

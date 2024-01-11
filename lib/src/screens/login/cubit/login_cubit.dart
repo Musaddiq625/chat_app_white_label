@@ -41,4 +41,42 @@ class LoginCubit extends Cubit<LoginState> {
           error); // You might want to display a general error message to the user
     }
   }
+
+  Future<void> loginUsers(String phoneNumber) async {
+    emit(LoginLoadingState());
+
+    try {
+      LoggerUtil.logs(phoneNumber);
+      await firebaseService.auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          try {
+            // Sign in with the credential
+            final UserCredential userCredential = await firebaseService.auth.signInWithCredential(credential);
+            if (userCredential.user != null) {
+              emit(LoginSuccessSignInState());
+            } else {
+              emit(LoginFailureState('Unable to sign in with the provided credential.'));
+            }
+          } catch (e) {
+            emit(LoginFailureState(e.toString()));
+          }
+        },
+        verificationFailed: (FirebaseAuthException error) {
+          emit(LoginFailureState(error.toString()));
+          LoggerUtil.logs("Verification Error: $error");
+        },
+        codeSent: (String verificationId, int? forceResendingToken) {
+          emit(LoginSuccessSignUpState(verificationId));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // emit(LoginCodeAutoRetrievalTimeoutState(verificationId));
+        },
+      );
+    } catch (error) {
+      emit(LoginFailureState(error.toString()));
+      LoggerUtil.logs("General Error: $error");
+    }
+  }
+
 }

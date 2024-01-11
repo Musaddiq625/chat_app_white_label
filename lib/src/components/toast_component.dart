@@ -59,7 +59,7 @@ class ToastComponent {
     fToast.showToast(
       child: toast,
       gravity: makeToastPositionTop ? ToastGravity.TOP : ToastGravity.BOTTOM,
-      toastDuration: Duration(milliseconds: duration ?? 1500),
+      toastDuration: Duration(milliseconds: duration ?? 2000),
     );
   }
 }

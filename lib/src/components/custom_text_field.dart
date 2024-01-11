@@ -49,7 +49,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
         keyboardType: widget.keyboardType,
         decoration: InputDecoration(hintText: widget.hintText),
         onChanged: (value) {
-          widget.onChanged!(value);
+          if (widget.onChanged != null) {
+            widget.onChanged!(value);
+          }
         },
         inputFormatters: [
           LengthLimitingTextInputFormatter(widget.maxLength),

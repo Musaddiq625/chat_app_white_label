@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/screens/all_user_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
@@ -23,8 +24,14 @@ Route generateRoute(RouteSettings settings) {
         phoneNumber: arg,
       ));
 
+    case RouteConstants.splashScreen:
+      return materialRoute(const SplashScreen());
+
     case RouteConstants.welcomeScreen:
       return materialRoute(const WelcomeScreen());
+
+    case RouteConstants.allUserScreen:
+      return materialRoute(const AllUsersScreen());
 
     case RouteConstants.loginScreen:
       return materialRoute(LoginScreen());

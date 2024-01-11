@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:chat_app_white_label/src/components/custom_text_field.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/app_cubit/app_cubit.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
@@ -25,8 +26,8 @@ class OTPScreen extends StatefulWidget {
 
 class _OTPScreenState extends State<OTPScreen> {
   late AppCubit appCubit = BlocProvider.of<AppCubit>(context);
-  final _controller = TextEditingController();
-  OtpFieldController otpController = OtpFieldController();
+  final otpController = TextEditingController();
+  // OtpFieldController otpController = OtpFieldController();
 
   bool _isOtpValid = false;
   Timer? _timer;
@@ -68,6 +69,8 @@ class _OTPScreenState extends State<OTPScreen> {
           NavigationUtil.push(context, RouteConstants.chatScreen);
         } else if (state is OTPFailureState) {
           LoadingDialog.hideLoadingDialog(context);
+          ToastComponent.showToast("Error ${state.error}", context: context);
+          print("Error ${state.error}");
         } else if (state is OTPCancleState) {
           LoadingDialog.hideLoadingDialog(context);
         }
@@ -128,7 +131,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       },
                       maxLength: 6,
                       keyboardType: TextInputType.number,
-                      controller: _controller,
+                      controller: otpController,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -144,8 +147,8 @@ class _OTPScreenState extends State<OTPScreen> {
                   _isOtpValid
                       ? ElevatedButton(
                           onPressed: () async {
-                            if (_controller.text.isEmpty ||
-                                _controller.text.length != 6) {
+                            if (otpController.text.isEmpty ||
+                                otpController.text.length != 6) {
                               Fluttertoast.showToast(
                                   msg: "Please enter a valid 6 digit OTP",
                                   toastLength: Toast.LENGTH_SHORT,
@@ -158,7 +161,7 @@ class _OTPScreenState extends State<OTPScreen> {
                             }
                             otpCubit.otpUser(
                               widget.otpScreenArg.verificationId,
-                              otpController.toString(),
+                              otpController.text,
                               widget.otpScreenArg.phoneNumber,
                             );
                           },

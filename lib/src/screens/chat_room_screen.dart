@@ -1,16 +1,27 @@
+import 'dart:convert';
+
+import 'package:chat_app_white_label/src/components/message_bubble_component.dart';
+import 'package:chat_app_white_label/src/components/message_card.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/models/user.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/utils/service/firbase_auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_app_white_label/src/components/message_bubble_component.dart';
+
 import '../dummy data/whatsapp_data.dart';
+import '../models/chatMessage.dart';
 
 Data data = Data();
 
 class ChatRoomScreen extends StatefulWidget {
   final String name;
+  final String? subName;
   final String? image;
+  final UserMoodel? user;
 
-  const ChatRoomScreen({super.key, required this.name, required this.image});
+  const ChatRoomScreen({super.key, required this.name, required this.image, this.user, this.subName});
 
   @override
   State<ChatRoomScreen> createState() => _ChatRoomScreenState();
@@ -18,6 +29,8 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   TextEditingController textEditingController = TextEditingController();
+  List<ChatMessage> _list = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,24 +39,25 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         backgroundColor: ColorConstants.greenMain,
         title: Row(
           children: [
-            widget.image != null
-                ? CircleAvatar(
-                    radius: 18,
-                    backgroundImage: AssetImage(widget.image!),
-                  )
-                : Container(
-                    width: 36,
-                    height: 36,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Icon(
-                      Icons.account_circle,
-                      size: 36,
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
+            // widget.image != null
+            //     ? CircleAvatar(
+            //         radius: 18,
+            //          backgroundImage: AssetImage(widget.image!),
+            //       )
+            //     :
+            Container(
+              width: 36,
+              height: 36,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Icon(
+                Icons.account_circle,
+                size: 36,
+                color: Colors.grey.shade500,
+              ),
+            ),
             const SizedBox(
               width: 8,
             ),
@@ -109,19 +123,42 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return MessageBubbleComponent(
-                    message: data.chatMessages.values
-                        .elementAt(index)
-                        .elementAt(0) as String,
-                    isMe: data.chatMessages.values.elementAt(index).elementAt(1)
-                        as bool,
-                  );
-                },
-                itemCount: data.chatMessages.length,
-              ),
+                child: StreamBuilder(
+              // stream: FirebaseUtils.getAllMessages(widget.user!),
+                  stream: null,
+              builder: (context, snapshot) {
+                // final datas = snapshot.data?.docs;
+                // LoggerUtil.logs("Message Data ${jsonEncode(datas![0].data())}");
+                // _list= datas.map((e)=>ChatMessage.fromJson(e.data()) ).toList();
+                return ListView.builder(
+                  itemBuilder: (context, index) {
+                   return MessageBubbleComponent(
+                      message: data.chatMessages.values
+                          .elementAt(index)
+                          .elementAt(0) as String,
+                      isMe: data.chatMessages.values
+                          .elementAt(index)
+                          .elementAt(1) as bool,
+                   );
+                   //  return MessageCard(message: _list[index]);
+                  },
+                  itemCount: data.chatMessages.length,
+                );
+              },
             ),
+                // child: ListView.builder(
+                //   itemBuilder: (context, index) {
+                //     return MessageBubbleComponent(
+                //       message: data.chatMessages.values
+                //           .elementAt(index)
+                //           .elementAt(0) as String,
+                //       isMe: data.chatMessages.values.elementAt(index).elementAt(1)
+                //           as bool,
+                //     );
+                //   },
+                //   itemCount: data.chatMessages.length,
+                // ),
+                ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -150,19 +187,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           width: 6,
                         ),
                         Container(
-                          margin: const EdgeInsets.only(top: 3.0),
+                          margin: const EdgeInsets.only(top: 14.0),
                           width: MediaQuery.of(context).size.width * 0.55,
                           height: MediaQuery.of(context).size.width * 0.1,
                           child: TextField(
                             controller: textEditingController,
                             cursorColor: Colors.teal,
-                            style: const TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 18),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Type a Message...',
                               hintStyle: TextStyle(
                                 color: Colors.grey.shade400,
-                                fontSize: 19,
+                                fontSize: 18,
                               ),
                             ),
                           ),
