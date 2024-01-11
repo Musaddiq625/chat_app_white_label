@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -24,6 +26,10 @@ class FirebaseUtils {
       firebaseService.firestore.collection(FirebaseConstants.chats);
 
   static UserModel? user;
+  static Future<void> logOut(context) async {
+    await firebaseService.auth.signOut();
+    NavigationUtil.popAllAndPush(context, RouteConstants.loginScreen);
+  }
 
   static Future<void> createUser(String phoneNumber) async {
     final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
@@ -44,8 +50,8 @@ class FirebaseUtils {
     return user;
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
-    return usersCollection.snapshots();
+  static Future<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+    return usersCollection.get();
   }
 
   // User Data for chat screen ChatTileComponent

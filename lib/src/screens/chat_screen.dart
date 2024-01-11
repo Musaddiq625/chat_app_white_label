@@ -51,7 +51,9 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await FirebaseUtils.logOut(context);
+            },
             icon: const Icon(
               Icons.search,
               size: 28,

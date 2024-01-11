@@ -1,33 +1,31 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 
-class UserTileComponent extends StatelessWidget {
-  final String name;
-  final String subName;
-  final String image;
-  final String message;
-  const UserTileComponent({
+class ContactTileComponent extends StatelessWidget {
+  final String localName;
+  final UserModel chatUser;
+
+  const ContactTileComponent({
     super.key,
-    required this.name,
-    required this.subName,
-    required this.image,
-    required this.message,
+    required this.localName,
+    required this.chatUser,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () {},
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => ChatRoomScreen(name: name, image: image)),
-      // ),
-      leading: image != ''
+      onTap: () => NavigationUtil.push(context, RouteConstants.chatRoomScreen,
+          args: chatUser),
+      leading: (chatUser.image ?? '').isNotEmpty
           ? Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(image),
+                radius: 30,
+                backgroundImage:
+                    CachedNetworkImageProvider(chatUser.image ?? ''),
               ),
             )
           : Padding(
@@ -40,15 +38,8 @@ class UserTileComponent extends StatelessWidget {
             ),
       minVerticalPadding: 0,
       horizontalTitleGap: 5,
-      // trailing: Padding(
-      //   padding: const EdgeInsets.all(8.0),
-      //   child: Text(
-      //     time,
-      //     style: TextStyle(color: Colors.grey.shade500),
-      //   ),
-      // ),
       title: Text(
-        name,
+        localName,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize: 19,
@@ -57,7 +48,7 @@ class UserTileComponent extends StatelessWidget {
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 7),
         child: Text(
-          subName,
+          chatUser.name ?? '',
           overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 15, color: Colors.grey.shade500),
         ),

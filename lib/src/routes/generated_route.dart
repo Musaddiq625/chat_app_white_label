@@ -1,4 +1,4 @@
-import 'package:chat_app_white_label/src/screens/all_user_screen.dart';
+import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_screen.dart';
