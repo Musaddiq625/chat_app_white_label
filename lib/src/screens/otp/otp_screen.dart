@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:chat_app_white_label/src/components/custom_text_field.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -23,7 +24,9 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-  final otpController = TextEditingController();
+  late AppCubit appCubit = BlocProvider.of<AppCubit>(context);
+  final _controller = TextEditingController();
+  OtpFieldController otpController = OtpFieldController();
 
   bool _isOtpValid = false;
   Timer? _timer;
@@ -64,7 +67,6 @@ class _OTPScreenState extends State<OTPScreen> {
           NavigationUtil.push(context, RouteConstants.chatScreen);
         } else if (state is OTPFailureState) {
           LoadingDialog.hideLoadingDialog(context);
-          ToastComponent.showToast(state.error.toString(), context: context);
         } else if (state is OTPCancleState) {
           LoadingDialog.hideLoadingDialog(context);
         }

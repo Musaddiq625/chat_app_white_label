@@ -23,7 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getFlavorName();
+      await firebaseService.requestPermission();
       _navigateToNext();
+
     });
     super.initState();
   }

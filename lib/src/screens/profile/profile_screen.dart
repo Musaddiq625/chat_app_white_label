@@ -26,6 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _controller = TextEditingController();
   final _controllerAbout = TextEditingController();
   File? _selectedImage;
+  String? imageUrl;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,8 +116,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     }
                     try {
                       try {
-                        final imageUrl =
-                            await FirebaseUtils.uploadMedia(_selectedImage);
+                        if (_selectedImage != null) {
+                          imageUrl =
+                              await FirebaseUtils.uploadMedia(_selectedImage);
+                        }
+
                         // print("imageUrl ${imageUrl} ");
                         await firebaseService.firestore
                             .collection(FirebaseConstants.users)
@@ -130,11 +134,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       } catch (error) {
                         print("Error during file upload or retrieval: $error");
                       }
-
                       NavigationUtil.push(context, RouteConstants.chatScreen);
                     } catch (error) {
                       print(
-                          error); // You might want to display a general error message to the user
+                          "Errors $error"); // You might want to display a general error message to the user
                     }
                   }),
             ],

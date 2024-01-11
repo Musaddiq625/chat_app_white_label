@@ -20,9 +20,9 @@ class OTPCubit extends Cubit<OTPState> {
     String phoneNumber,
   ) async {
     emit(OTPLoadingState());
-
-    try {
-      LoggerUtil.logs(verificationId);
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+   // try {
+      LoggerUtil.logs("Verification Id $verificationId");
       // firebaseService.auth.setPersistence(Persistence.LOCAL);
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
