@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 class DateUtil {
   // for getting formatted time from milliSecondsSinceEpochs String
   static String getFormattedTime(BuildContext context, String time) {
+    if (time.isEmpty) {
+      return '';
+    }
     final date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     return TimeOfDay.fromDateTime(date).format(context);
   }

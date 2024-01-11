@@ -17,6 +17,12 @@ class FirebaseUtils {
   static String? get phoneNumber =>
       firebaseService.auth.currentUser?.phoneNumber?.replaceAll('+', '');
 
+  static CollectionReference<Map<String, dynamic>> get usersCollection =>
+      firebaseService.firestore.collection(FirebaseConstants.users);
+
+  static CollectionReference<Map<String, dynamic>> get chatsCollection =>
+      firebaseService.firestore.collection(FirebaseConstants.chats);
+
   static UserModel? user;
 
   static Future<void> createUser(String phoneNumber) async {
@@ -85,23 +91,20 @@ class FirebaseUtils {
       UserModel chatUser, String msg, Type type) async {
     final chatId = getConversationID(chatUser.id ?? '');
 
-    final usersRef =
-        firebaseService.firestore.collection(FirebaseConstants.users);
-
-    await usersRef.doc(chatId).set(ChatModel(
-        id: '${user?.id}_${chatUser.id}',
+    await chatsCollection.doc(chatId).set(ChatModel(
+        id: '${user?.id}_${chatUser.id ?? ''}',
         isGroup: false,
         lastMessage: null,
         unreadCount: 1,
         users: [user?.id ?? '', chatUser.id ?? '']).toJson());
 
-    await usersRef.doc(user?.id ?? '').update({
+    await usersCollection.doc(user?.id ?? '').set({
       'chats': FieldValue.arrayUnion([chatId])
-    });
+    }, SetOptions(merge: true));
 
-    await usersRef.doc(chatUser.id).update({
+    await usersCollection.doc(chatUser.id ?? '').set({
       'chats': FieldValue.arrayUnion([chatId])
-    });
+    }, SetOptions(merge: true));
 
     sendMessage(chatUser, msg, type);
   }
@@ -112,25 +115,23 @@ class FirebaseUtils {
     //message sending time (also used as id)
     final sendingTime = DateTime.now().millisecondsSinceEpoch.toString();
     final chatId = getConversationID(chatUser.id ?? '');
-    final chatRef = firebaseService.firestore
-        .collection(FirebaseConstants.chats)
-        .doc(chatId);
+    final chatDoc = chatsCollection.doc(chatId);
 
     final MessageModel message = MessageModel(
-        toId: chatUser.id,
+        toId: chatUser.id ?? '',
         msg: msg,
         readAt: '',
         type: type,
         fromId: user?.id ?? '',
         sentAt: sendingTime);
 
-    await chatRef
+    await chatDoc
         .collection(FirebaseConstants.messages)
         .doc(sendingTime)
         .set(message.toJson())
         .then((value) =>
                 //adding last message
-                chatRef.set(
+                chatDoc.set(
                     {'last_message': message.toJson()}, SetOptions(merge: true))
             // )
             // .then((value) =>
