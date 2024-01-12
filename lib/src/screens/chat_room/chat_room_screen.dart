@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
-import 'package:chat_app_white_label/src/utils/api_utlils.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 // import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -174,7 +173,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         for (var i in images) {
                           log('Image Path: ${i.path}');
                           setState(() => _isUploading = true);
-                          await APIs.sendChatImage(
+                          await FirebaseUtils.sendChatImage(
                               widget.chatUser, File(i.path));
                           setState(() => _isUploading = false);
                         }
@@ -194,7 +193,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           log('Image Path: ${image.path}');
                           setState(() => _isUploading = true);
 
-                          await APIs.sendChatImage(
+                          await FirebaseUtils.sendChatImage(
                               widget.chatUser, File(image.path));
                           setState(() => _isUploading = false);
                         }

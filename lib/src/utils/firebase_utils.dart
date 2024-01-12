@@ -26,10 +26,16 @@ class FirebaseUtils {
       firebaseService.firestore.collection(FirebaseConstants.chats);
 
   static UserModel? user;
+
   static Future<void> logOut(context) async {
     await firebaseService.auth.signOut();
     NavigationUtil.popAllAndPush(context, RouteConstants.loginScreen);
   }
+
+  static String getConversationID(String chatUserPhoneNumber) =>
+      phoneNumber.hashCode <= chatUserPhoneNumber.hashCode
+          ? '${phoneNumber}_$chatUserPhoneNumber'
+          : '${chatUserPhoneNumber}_$phoneNumber';
 
   static Future<void> createUser(String phoneNumber) async {
     final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
@@ -65,11 +71,6 @@ class FirebaseUtils {
       String chatUserId) {
     return usersCollection.doc(chatUserId).snapshots();
   }
-
-  static String getConversationID(String chatUserPhoneNumber) =>
-      phoneNumber.hashCode <= chatUserPhoneNumber.hashCode
-          ? '${phoneNumber}_$chatUserPhoneNumber'
-          : '${chatUserPhoneNumber}_$phoneNumber';
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChats() {
     return chatsCollection.where('users', arrayContains: user?.id).snapshots();
@@ -117,7 +118,7 @@ class FirebaseUtils {
     final MessageModel message = MessageModel(
         toId: chatUser.id ?? '',
         msg: msg,
-        readAt: '',
+        readAt: null,
         type: type,
         fromId: user?.id ?? '',
         sentAt: sendingTime);
@@ -134,6 +135,34 @@ class FirebaseUtils {
             // .then((value) =>
             // sendPushNotification(chatUser, type == Type.text ? msg : 'image')
             );
+  }
+
+  static Future<void> sendChatImage(UserModel chatUser, File file) async {
+    //getting image file extension
+    final ext = file.path.split('.').last;
+
+    //storage file ref with path
+    final ref = firebaseService.storage.ref().child(
+        'images/${getConversationID(chatUser.id ?? '')}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+
+    //uploading image
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {
+      LoggerUtil.logs('Data Transferred: ${p0.bytesTransferred / 1000} kb');
+    });
+
+    //updating image in firestore database
+    final imageUrl = await ref.getDownloadURL();
+    await sendMessage(chatUser, imageUrl, Type.image);
+  }
+
+  static Future<void> updateMessageReadStatus(MessageModel message) async {
+    await chatsCollection
+        .doc(getConversationID(message.fromId ?? ''))
+        .collection(FirebaseConstants.messages)
+        .doc(message.sentAt)
+        .update({'readAt': DateTime.now().millisecondsSinceEpoch.toString()});
   }
 
   static uploadMedia(File? selectedImage) async {
