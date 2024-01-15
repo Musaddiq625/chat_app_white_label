@@ -11,7 +11,10 @@ import 'package:flutter/services.dart';
 import '../models/message_model.dart';
 
 class MessageCard extends StatefulWidget {
-  const MessageCard({super.key, required this.message});
+  const MessageCard({
+    super.key,
+    required this.message,
+  });
   final MessageModel message;
 
   @override
@@ -34,7 +37,7 @@ class _MessageCardState extends State<MessageCard> {
     //update last read message if sender and receiver are different
     if (widget.message.readAt == null) {
       FirebaseUtils.updateMessageReadStatus(widget.message);
-    }
+    } else {}
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,6 +96,18 @@ class _MessageCardState extends State<MessageCard> {
 
   // our or user message
   Widget _greenMessage() {
+    // if (widget.message.readAt == null) {
+    //   final alreadyinUnreadlist =
+    //       unreadMessagesList.contains(widget.message.sentAt);
+    //   // add those msg ids to unreadMessagesList whose which is currently unread
+    //   if (alreadyinUnreadlist) {
+    //     // unreadMessagesList.add((widget.message.sentAt ?? ''));
+    //   } else {
+    // FirebaseUtils.increaseUnreadCount(widget.message, '0');
+    //     unreadMessagesList.add(widget.message.sentAt ?? '');
+    //   }
+    // }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [

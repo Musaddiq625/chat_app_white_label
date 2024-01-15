@@ -4,10 +4,12 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/dummy%20data/whatsapp_data.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../main.dart';
 import '../models/chat_model.dart';
@@ -35,6 +37,21 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      LoggerUtil.logs('message ${message}');
+      if (FirebaseUtils.user != null) {
+        if (message.toString().contains('resume')) {
+          FirebaseUtils.updateActiveStatus(true);
+        }
+        if (message.toString().contains('pause')) {
+          FirebaseUtils.updateActiveStatus(false);
+        }
+        if (message.toString().contains('detached')) {
+          FirebaseUtils.updateActiveStatus(false);
+        }
+      }
+      return Future.value(message);
+    });
   }
 
   @override
@@ -202,7 +219,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   final chatUserId = snapshot.data!.docs[index]
                       .data()['users']
                       .firstWhere((id) => id != FirebaseUtils.user?.id);
-
+                  chat.unreadCount = snapshot.data!.docs[index]
+                      .data()['${FirebaseUtils.user?.id}_unread_count'];
                   return FutureBuilder(
                     future: FirebaseUtils.getChatUser(chatUserId),
                     builder: (context, asyncSnapshot) {

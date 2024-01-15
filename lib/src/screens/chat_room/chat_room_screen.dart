@@ -13,21 +13,31 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/usert_model.dart';
 import '../../models/message_model.dart';
 
+// List<String> unreadMessagesList = [];
+
 class ChatRoomScreen extends StatefulWidget {
   final UserModel chatUser;
+  String? unreadCount;
 
-  const ChatRoomScreen({super.key, required this.chatUser});
+  ChatRoomScreen(
+      {super.key, required this.chatUser, required this.unreadCount});
 
   @override
   State<ChatRoomScreen> createState() => _ChatRoomScreenState();
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  List<MessageModel> _list = [];
+  int unreadCount = -1;
+  List<MessageModel> messagesList = [];
   final _textController = TextEditingController();
   //showEmoji -- for storing value of showing or hiding emoji
   //isUploading -- for checking if image is uploading or not?
   bool _showEmoji = false, _isUploading = false;
+  @override
+  void initState() {
+    // unreadMessagesList.clear();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,19 +75,38 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         case ConnectionState.active:
                         case ConnectionState.done:
                           final data = snapshot.data?.docs;
-                          _list = data
+                          messagesList = data
                                   ?.map((e) => MessageModel.fromJson(e.data()))
                                   .toList() ??
                               [];
+                          for (var i = 0; i < messagesList.length; i++) {
+                            if (messagesList[i].readAt == null) {
+                              unreadCount = unreadCount + 1;
+                            }
+                          }
+                          if (unreadCount != -1) {
+                            FirebaseUtils.updateUnreadCount(
+                                widget.chatUser.id ?? '',
+                                unreadCount.toString());
+                          }
+                          unreadCount = 0;
 
-                          if (_list.isNotEmpty) {
+                          if (messagesList.isNotEmpty) {
                             return ListView.builder(
                                 reverse: true,
-                                itemCount: _list.length,
+                                itemCount: messagesList.length,
                                 padding: EdgeInsets.only(top: mq.height * .01),
                                 physics: const BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
-                                  return MessageCard(message: _list[index]);
+                                  // if (widget.unreadCount != null) {
+                                  //   unreadMessagesList
+                                  //       .add(messagesList[index].sentAt ?? '');
+                                  //   widget.unreadCount =
+                                  //       (widget.unreadCount! - 1);
+                                  // }
+                                  return MessageCard(
+                                    message: messagesList[index],
+                                  );
                                 });
                           } else {
                             return const Center(
@@ -212,7 +241,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           MaterialButton(
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                if (_list.isEmpty) {
+                if (messagesList.isEmpty) {
                   //on first message (add user to my_user collection of chat user)
                   FirebaseUtils.sendFirstMessage(
                       widget.chatUser, _textController.text, Type.text);

@@ -4,30 +4,38 @@ class ChatModel {
   String? id;
   bool? isGroup;
   MessageModel? lastMessage;
-  int? unreadCount;
+  String? unreadCount;
   List<String>? users;
-  List<UnreadMessages>? unreadMessages;
+  // List<UnreadMessages>? unreadMessages;
+  // List<String>? unreadMessages;
 
-  ChatModel(
-      {this.id,
-      this.isGroup,
-      this.lastMessage,
-      this.unreadCount,
-      this.users,
-      this.unreadMessages});
+  ChatModel({
+    this.id,
+    this.isGroup,
+    this.lastMessage,
+    this.unreadCount,
+    this.users,
+    // this.unreadMessages
+  });
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
-        id: json['id'],
-        isGroup: json['is_group'],
-        lastMessage: json['last_message'] != null
-            ? MessageModel.fromJson(json['last_message'])
-            : null,
-        unreadCount: json['unread_count'],
-        users: json['users'] == null ? [] : json['users'].cast<String>(),
-        unreadMessages: json['unread_messages'] == null
-            ? []
-            : json['unread_messages'].cast<UnreadMessages>());
+      id: json['id'],
+      isGroup: json['is_group'],
+      lastMessage: json['last_message'] != null
+          ? MessageModel.fromJson(json['last_message'])
+          : null,
+      // unreadCount: json['unread_count'],
+      users: json['users'] == null ? [] : json['users'].cast<String>(),
+      // unreadMessages: json['unread_messages'] == null
+      //     ? []
+      //     : json['unread_messages'].cast<String>(),
+      // unreadMessages: json['unread_messages'] != null
+      //     ? (json['unread_messages'] as List)
+      //         .map<UnreadMessages>((item) => UnreadMessages.fromJson(item))
+      //         .toList()
+      //     : []
+    );
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -36,12 +44,12 @@ class ChatModel {
     if (lastMessage != null) {
       data['last_message'] = lastMessage?.toJson();
     }
-    data['unread_count'] = unreadCount;
+    // data['unread_count'] = unreadCount;
     data['users'] = users;
-    if (unreadMessages != null) {
-      data['unread_messages'] = unreadMessages?.map((v) => v.toJson()).toList();
-    }
-
+    // if (unreadMessages != null) {
+    //   data['unread_messages'] = unreadMessages?.map((v) => v.toJson()).toList();
+    // }
+    // data['unread_messages'] = unreadMessages;
     return data;
   }
 }

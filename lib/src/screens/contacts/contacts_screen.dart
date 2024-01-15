@@ -44,12 +44,10 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
       if ((localNumber ?? '').startsWith('0')) {
         localNumber = localNumber?.replaceFirst('0', '92');
       }
-      LoggerUtil.logs(localNumber);
       bool contactExist = (snapshot.data?.docs ?? [])
           .any((firebaseUser) => firebaseUser.id == localNumber);
       // .any for filtering in Firebase users
       if (contactExist) {
-        LoggerUtil.logs('sdasdas');
         contactToDisplay.add(ContactModel(
             localName: localContacts[i].displayName,
             phoneNumber: localNumber ?? ''));

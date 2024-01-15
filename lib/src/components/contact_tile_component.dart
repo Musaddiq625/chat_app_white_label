@@ -18,7 +18,7 @@ class ContactTileComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () => NavigationUtil.push(context, RouteConstants.chatRoomScreen,
-          args: chatUser),
+          args: [chatUser, '0']),
       leading: (chatUser.image ?? '').isNotEmpty
           ? Padding(
               padding: const EdgeInsets.only(right: 8.0),

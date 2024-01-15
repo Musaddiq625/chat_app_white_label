@@ -20,7 +20,7 @@ class ChatTileComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () => NavigationUtil.push(context, RouteConstants.chatRoomScreen,
-          args: chatUser),
+          args: [chatUser, chat.unreadCount]),
       leading: (chatUser.image ?? '').isNotEmpty
           ? Padding(
               padding: const EdgeInsets.only(right: 8.0),
@@ -54,9 +54,19 @@ class ChatTileComponent extends StatelessWidget {
       ),
       trailing: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(
-          DateUtil.getFormattedTime(context, chat.lastMessage?.sentAt ?? ''),
-          style: TextStyle(color: Colors.grey.shade500),
+        child: Column(
+          children: [
+            Text(
+              DateUtil.getFormattedTime(
+                  context, chat.lastMessage?.sentAt ?? ''),
+              style: TextStyle(color: Colors.grey.shade500),
+            ),
+            if (chat.unreadCount != null)
+              Text(
+                chat.unreadCount ?? '',
+                style: TextStyle(color: Colors.grey.shade500),
+              ),
+          ],
         ),
       ),
     );

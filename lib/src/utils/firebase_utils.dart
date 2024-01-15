@@ -53,6 +53,7 @@ class FirebaseUtils {
       user = UserModel.fromJson(userData.data()!);
     }
     LoggerUtil.logs('getUser ${user?.toJson()}');
+    FirebaseUtils.updateActiveStatus(true);
     return user;
   }
 
@@ -93,7 +94,7 @@ class FirebaseUtils {
         id: '${user?.id}_${chatUser.id ?? ''}',
         isGroup: false,
         lastMessage: null,
-        unreadCount: 1,
+        // unreadCount: 1,
         users: [user?.id ?? '', chatUser.id ?? '']).toJson());
 
     await usersCollection.doc(user?.id ?? '').set({
@@ -127,9 +128,9 @@ class FirebaseUtils {
         .collection(FirebaseConstants.messages)
         .doc(sendingTime)
         .set(message.toJson())
-        .then((value) =>
+        .then((value) async =>
                 //adding last message
-                chatDoc.set(
+                await chatDoc.set(
                     {'last_message': message.toJson()}, SetOptions(merge: true))
             // )
             // .then((value) =>
@@ -158,11 +159,29 @@ class FirebaseUtils {
   }
 
   static Future<void> updateMessageReadStatus(MessageModel message) async {
-    await chatsCollection
-        .doc(getConversationID(message.fromId ?? ''))
+    final sendingTime = DateTime.now().millisecondsSinceEpoch.toString();
+    final chatId = getConversationID(message.fromId ?? '');
+    final chatDoc = chatsCollection.doc(chatId);
+
+    await chatDoc
         .collection(FirebaseConstants.messages)
         .doc(message.sentAt)
         .update({'readAt': DateTime.now().millisecondsSinceEpoch.toString()});
+    await chatDoc.update({'last_message.readAt': sendingTime});
+  }
+
+  static Future<void> updateUnreadCount(String chatUserId, String count) async {
+    await chatsCollection
+        .doc(getConversationID(chatUserId))
+        .update({'${chatUserId}_unread_count': count});
+  }
+
+  static Future<void> updateActiveStatus(bool isOnline) async {
+    LoggerUtil.logs('isOnline ${isOnline}');
+    await usersCollection.doc(user?.id ?? '').update({
+      'is_online': isOnline,
+      'last_active': DateTime.now().millisecondsSinceEpoch.toString(),
+    });
   }
 
   static uploadMedia(File? selectedImage) async {
