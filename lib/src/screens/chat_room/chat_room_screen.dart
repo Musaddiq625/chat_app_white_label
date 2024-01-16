@@ -6,7 +6,7 @@ import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
-// import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -124,19 +124,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 //chat input filed
                 _chatInput(),
 
-                //show emojis on keyboard emoji button click & vice versa
-                // if (_showEmoji)
-                //   SizedBox(
-                //     height: mq.height * .35,
-                //     child: EmojiPicker(
-                //       textEditingController: _textController,
-                //       config: Config(
-                //         bgColor: const Color.fromARGB(255, 234, 248, 255),
-                //         columns: 8,
-                //         emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
-                //       ),
-                //     ),
-                //   )
+                // show emojis on keyboard emoji button click & vice versa
+                if (_showEmoji)
+                  SizedBox(
+                    height: mq.height * .35,
+                    child: EmojiPicker(
+                      textEditingController: _textController,
+                      config: Config(
+                        bgColor: const Color.fromARGB(255, 234, 248, 255),
+                        columns: 8,
+                        emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                      ),
+                    ),
+                  )
               ],
             ),
           ),
