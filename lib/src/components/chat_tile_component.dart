@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
+import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 
@@ -46,10 +49,28 @@ class ChatTileComponent extends StatelessWidget {
       ),
       subtitle: Padding(
         padding: const EdgeInsets.only(top: 7),
-        child: Text(
-          chat.lastMessage?.msg ?? '',
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 15, color: Colors.grey.shade500),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (FirebaseUtils.user?.id == chat.lastMessage?.fromId)
+              Icon(Icons.done_all_rounded,
+                  color: chat.lastMessage?.readAt != null
+                      ? Colors.blue
+                      : Colors.grey,
+                  size: 18),
+            const SizedBox(width: 2),
+            chat.lastMessage?.type == Type.image
+                ? Icon(
+                    Icons.photo,
+                    color: Colors.grey.shade500,
+                    size: 20,
+                  )
+                : Text(
+                    chat.lastMessage?.msg ?? '',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                  ),
+          ],
         ),
       ),
       trailing: Padding(
@@ -59,12 +80,19 @@ class ChatTileComponent extends StatelessWidget {
             Text(
               DateUtil.getFormattedTime(
                   context, chat.lastMessage?.sentAt ?? ''),
-              style: TextStyle(color: Colors.grey.shade500),
+              style: TextStyle(
+                  color: (chat.unreadCount != null && chat.unreadCount != '0')
+                      ? ColorConstants.green
+                      : Colors.grey.shade500),
             ),
-            if (chat.unreadCount != null)
-              Text(
-                chat.unreadCount ?? '',
-                style: TextStyle(color: Colors.grey.shade500),
+            if (chat.unreadCount != null && chat.unreadCount != '0')
+              CircleAvatar(
+                radius: 8,
+                backgroundColor: ColorConstants.green,
+                child: Text(
+                  chat.unreadCount ?? '',
+                  style: const TextStyle(fontSize: 10, color: Colors.white),
+                ),
               ),
           ],
         ),

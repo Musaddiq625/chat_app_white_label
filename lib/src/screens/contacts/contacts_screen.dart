@@ -2,7 +2,6 @@ import 'package:chat_app_white_label/src/components/contact_tile_component.dart'
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
-import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,14 +10,14 @@ import 'package:flutter/material.dart';
 import '../../../main.dart';
 import '../../constants/color_constants.dart';
 
-class AllUsersScreen extends StatefulWidget {
-  const AllUsersScreen({super.key});
+class ContactsScreen extends StatefulWidget {
+  const ContactsScreen({super.key});
 
   @override
-  State<AllUsersScreen> createState() => _AllUsersScreenState();
+  State<ContactsScreen> createState() => _ContactsScreenState();
 }
 
-class _AllUsersScreenState extends State<AllUsersScreen> {
+class _ContactsScreenState extends State<ContactsScreen> {
   FirebaseService firebaseService = getIt<FirebaseService>();
   List<Contact> localContacts = [];
   List<ContactModel> contactToDisplay = [];

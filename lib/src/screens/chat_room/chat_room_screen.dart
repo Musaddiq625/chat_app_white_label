@@ -13,8 +13,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/usert_model.dart';
 import '../../models/message_model.dart';
 
-// List<String> unreadMessagesList = [];
-
 class ChatRoomScreen extends StatefulWidget {
   final UserModel chatUser;
   String? unreadCount;
@@ -35,7 +33,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   bool _showEmoji = false, _isUploading = false;
   @override
   void initState() {
-    // unreadMessagesList.clear();
     super.initState();
   }
 
@@ -80,7 +77,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   .toList() ??
                               [];
                           for (var i = 0; i < messagesList.length; i++) {
-                            if (messagesList[i].readAt == null) {
+                            bool isFromMe = FirebaseUtils.user?.id ==
+                                messagesList[i].fromId;
+                            if (isFromMe && messagesList[i].readAt == null) {
                               unreadCount = unreadCount + 1;
                             }
                           }
@@ -98,12 +97,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                 padding: EdgeInsets.only(top: mq.height * .01),
                                 physics: const BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
-                                  // if (widget.unreadCount != null) {
-                                  //   unreadMessagesList
-                                  //       .add(messagesList[index].sentAt ?? '');
-                                  //   widget.unreadCount =
-                                  //       (widget.unreadCount! - 1);
-                                  // }
                                   return MessageCard(
                                     message: messagesList[index],
                                   );

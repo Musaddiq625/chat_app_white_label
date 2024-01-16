@@ -16,7 +16,7 @@ import '../models/chat_model.dart';
 
 Data data = Data();
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatefulWidget with WidgetsBindingObserver {
   const ChatScreen({
     Key? key,
   }) : super(key: key);
@@ -53,6 +53,18 @@ class _ChatScreenState extends State<ChatScreen> {
       return Future.value(message);
     });
   }
+//   final a = AppLifecycleListener()
+
+// @override
+// Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+//   switch (state) {
+//     case AppLifecycleState.inactive:
+//     case AppLifecycleState.paused:
+//     case AppLifecycleState.detached:
+//     case AppLifecycleState.resumed:
+//     case AppLifecycleState.hidden:
+//   }
+// }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +200,7 @@ class _ChatScreenState extends State<ChatScreen> {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {
-              NavigationUtil.push(context, RouteConstants.allUserScreen);
+              NavigationUtil.push(context, RouteConstants.contactsScreen);
             },
             backgroundColor: ColorConstants.green,
             child: const Icon(
