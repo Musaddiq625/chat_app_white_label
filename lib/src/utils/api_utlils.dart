@@ -183,7 +183,7 @@ class APIs {
 
   // for adding an user to my user when first message is send
   static Future<void> sendFirstMessage(
-      UserModel chatUser, String msg, Type type) async {
+      UserModel chatUser, String msg, MessageType type) async {
     await firestore
         .collection('users')
         .doc(chatUser.id)
@@ -262,7 +262,7 @@ class APIs {
 
   // for sending message
   static Future<void> sendMessage(
-      UserModel chatUser, String msg, Type type) async {
+      UserModel chatUser, String msg, MessageType type) async {
     //message sending time (also used as id)
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -321,7 +321,7 @@ class APIs {
 
     //updating image in firestore database
     final imageUrl = await ref.getDownloadURL();
-    await sendMessage(chatUser, imageUrl, Type.image);
+    await sendMessage(chatUser, imageUrl, MessageType.image);
   }
 
   //delete message
@@ -331,7 +331,7 @@ class APIs {
         .doc(message.sentAt)
         .delete();
 
-    if (message.type == Type.image) {
+    if (message.type == MessageType.image) {
       await storage.refFromURL(message.msg ?? '').delete();
     }
   }

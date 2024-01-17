@@ -59,17 +59,38 @@ class ChatTileComponent extends StatelessWidget {
                       : Colors.grey,
                   size: 18),
             const SizedBox(width: 2),
-            chat.lastMessage?.type == Type.image
+            chat.lastMessage?.type == MessageType.image
                 ? Icon(
                     Icons.photo,
                     color: Colors.grey.shade500,
                     size: 20,
                   )
-                : Text(
-                    chat.lastMessage?.msg ?? '',
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-                  ),
+                : chat.lastMessage?.type == MessageType.audio
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.keyboard_voice_sharp,
+                            color: ColorConstants.blueAccent,
+                            size: 20,
+                          ),
+                          Text(
+                            chat.lastMessage?.length != null
+                                ? DateUtil.formatSecondsAsTime(
+                                    chat.lastMessage?.length ?? 0)
+                                : '',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 14, color: Colors.grey.shade500),
+                          )
+                        ],
+                      )
+                    : Text(
+                        chat.lastMessage?.msg ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 14, color: Colors.grey.shade500),
+                      ),
           ],
         ),
       ),

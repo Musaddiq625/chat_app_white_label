@@ -10,6 +10,17 @@ class DateUtil {
     return TimeOfDay.fromDateTime(date).format(context);
   }
 
+  // for getting formatted time from milliSecondsSinceEpochs String
+  static String formatSecondsAsTime(int seconds) {
+    int minutes = seconds ~/ 60;
+    int remainingSeconds = seconds % 60;
+
+    String minutesString = minutes.toString().padLeft(2, '0');
+    String secondsString = remainingSeconds.toString().padLeft(2, '0');
+
+    return '$minutesString:$secondsString';
+  }
+
   // for getting formatted time for sent & read
   static String getMessageTime(
       {required BuildContext context, required String time}) {

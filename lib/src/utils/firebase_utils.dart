@@ -11,7 +11,7 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart' as p;
+// import 'package:path/path.dart' as path;
 
 class FirebaseUtils {
   static FirebaseService firebaseService = getIt<FirebaseService>();
@@ -86,15 +86,13 @@ class FirebaseUtils {
         .snapshots();
   }
 
-  static Future<void> sendFirstMessage(
-      UserModel chatUser, String msg, Type type) async {
+  static Future<void> createChat(UserModel chatUser) async {
     final chatId = getConversationID(chatUser.id ?? '');
 
     await chatsCollection.doc(chatId).set(ChatModel(
         id: '${user?.id}_${chatUser.id ?? ''}',
         isGroup: false,
         lastMessage: null,
-        // unreadCount: 1,
         users: [user?.id ?? '', chatUser.id ?? '']).toJson());
 
     await usersCollection.doc(user?.id ?? '').set({
@@ -104,58 +102,60 @@ class FirebaseUtils {
     await usersCollection.doc(chatUser.id ?? '').set({
       'chats': FieldValue.arrayUnion([chatId])
     }, SetOptions(merge: true));
-
-    sendMessage(chatUser, msg, type);
   }
 
   // for sending message
   static Future<void> sendMessage(
-      UserModel chatUser, String msg, Type type) async {
-    //message sending time (also used as id)
-    final sendingTime = DateTime.now().millisecondsSinceEpoch.toString();
-    final chatId = getConversationID(chatUser.id ?? '');
-    final chatDoc = chatsCollection.doc(chatId);
+      {required UserModel chatUser,
+      required MessageType type,
+      required bool isFirstMessage,
+      String? msg,
+      File? file,
+      int? length}) async {
+    try {
+      // if message type is text
+      String? sendingMessage = msg;
 
-    final MessageModel message = MessageModel(
-        toId: chatUser.id ?? '',
-        msg: msg,
-        readAt: null,
-        type: type,
-        fromId: user?.id ?? '',
-        sentAt: sendingTime);
+      if (isFirstMessage) {
+        await createChat(chatUser);
+      }
+      if (type == MessageType.image) {
+        sendingMessage =
+            await uploadMedia(file!, MediaType.chatImage, chatUser);
+      } else if (type == MessageType.audio) {
+        sendingMessage =
+            await uploadMedia(file!, MediaType.chatVoice, chatUser);
+      }
 
-    await chatDoc
-        .collection(FirebaseConstants.messages)
-        .doc(sendingTime)
-        .set(message.toJson())
-        .then((value) async =>
-                //adding last message
-                await chatDoc.set(
-                    {'last_message': message.toJson()}, SetOptions(merge: true))
-            // )
-            // .then((value) =>
-            // sendPushNotification(chatUser, type == Type.text ? msg : 'image')
-            );
-  }
+      //message sending time (also used as id)
+      final sendingTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final chatId = getConversationID(chatUser.id ?? '');
+      final chatDoc = chatsCollection.doc(chatId);
 
-  static Future<void> sendChatImage(UserModel chatUser, File file) async {
-    //getting image file extension
-    final ext = file.path.split('.').last;
+      final MessageModel message = MessageModel(
+          toId: chatUser.id ?? '',
+          msg: sendingMessage,
+          readAt: null,
+          type: type,
+          fromId: user?.id ?? '',
+          sentAt: sendingTime,
+          length: length);
 
-    //storage file ref with path
-    final ref = firebaseService.storage.ref().child(
-        'images/${getConversationID(chatUser.id ?? '')}/${DateTime.now().millisecondsSinceEpoch}.$ext');
-
-    //uploading image
-    await ref
-        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
-        .then((p0) {
-      LoggerUtil.logs('Data Transferred: ${p0.bytesTransferred / 1000} kb');
-    });
-
-    //updating image in firestore database
-    final imageUrl = await ref.getDownloadURL();
-    await sendMessage(chatUser, imageUrl, Type.image);
+      await chatDoc
+          .collection(FirebaseConstants.messages)
+          .doc(sendingTime)
+          .set(message.toJson())
+          .then((value) async =>
+                  //adding last message
+                  await chatDoc.set({'last_message': message.toJson()},
+                      SetOptions(merge: true))
+              // )
+              // .then((value) =>
+              // sendPushNotification(chatUser, type == Type.text ? msg : 'image')
+              );
+    } catch (e) {
+      LoggerUtil.logs(e.toString());
+    }
   }
 
   static Future<void> updateMessageReadStatus(MessageModel message) async {
@@ -177,46 +177,65 @@ class FirebaseUtils {
   }
 
   static Future<void> updateActiveStatus(bool isOnline) async {
-    LoggerUtil.logs('isOnline ${isOnline}');
+    LoggerUtil.logs('isOnline $isOnline');
     await usersCollection.doc(user?.id ?? '').update({
       'is_online': isOnline,
       'last_active': DateTime.now().millisecondsSinceEpoch.toString(),
     });
   }
 
-  static uploadMedia(File? selectedImage) async {
+  static Future<String?> uploadMedia(File file, MediaType uploadType,
+      [UserModel? chatUser]) async {
+    //getting image file extension and name
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    if (selectedImage != null) {
-      try {
-        final extension = p.extension(selectedImage!.path);
-        if (fileName != null && extension != null) {
-          UploadTask task = firebaseService.storage
-              .ref("profile_picture/$fileName$extension")
-              .putFile(selectedImage!);
-          print("Image ${task} + extension ${extension}");
-          task.snapshotEvents.listen((TaskSnapshot snapshot) {
-            print(
-                'Progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100}%');
-          }, onError: (e) {
-            print(e);
-          });
+    final extension = file.path.split('.').last;
 
-          await task.whenComplete(() => print('Upload completed'));
+    //  getUpload Refrence to its type
+    Reference getUploadRef(uploadType) {
+      switch (uploadType) {
+        case MediaType.profilePicture:
+          return firebaseService.storage
+              .ref()
+              .child('profile_picture/$fileName.$extension');
 
-          String downloadURL = await firebaseService.storage
-              .ref("profile_picture/$fileName$extension")
-              .getDownloadURL();
-          print("downloadURL ${downloadURL}");
+        case MediaType.chatImage:
+          return firebaseService.storage.ref().child(
+              'chats/${getConversationID(chatUser?.id ?? '')}/chat_image/$fileName.$extension');
 
-          return downloadURL;
-        } else {
-          print("FileName or Extension is null");
-        }
-      } catch (error) {
-        print("Error during file upload or retrieval: $error");
+        case MediaType.chatVoice:
+          return firebaseService.storage.ref().child(
+              'chats/${getConversationID(chatUser?.id ?? '')}/chat_voice/$fileName.$extension');
+
+        default:
+          return firebaseService.storage
+              .ref()
+              .child("profile_picture/$fileName.$extension");
       }
-    } else {
-      print("No Image Selected");
+    }
+
+    //  upload and return media path from storage
+    try {
+      final ref = getUploadRef(uploadType);
+      await ref
+          .putFile(
+              file,
+              SettableMetadata(
+                  contentType: uploadType == MediaType.chatImage
+                      ? 'image/$extension'
+                      : 'audio/$extension'))
+          .then((p0) => LoggerUtil.logs(
+              'Data Transferred: ${p0.bytesTransferred / 1000} kb'));
+
+      final mediaUrl = await ref.getDownloadURL();
+
+      LoggerUtil.logs("downloadURL $mediaUrl");
+
+      return mediaUrl;
+    } catch (error) {
+      LoggerUtil.logs("Error during file upload or retrieval: $error");
+      return null;
     }
   }
 }
+
+enum MediaType { profilePicture, chatImage, chatVoice }

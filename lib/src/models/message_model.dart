@@ -1,26 +1,32 @@
 class MessageModel {
-  MessageModel({
-    required this.fromId,
-    required this.toId,
-    required this.msg,
-    required this.readAt,
-    required this.type,
-    required this.sentAt,
-  });
+  MessageModel(
+      {required this.fromId,
+      required this.toId,
+      required this.msg,
+      required this.readAt,
+      required this.type,
+      required this.sentAt,
+      this.length});
   String? fromId;
   String? toId;
   String? msg;
-  Type? type;
+  MessageType? type;
   String? readAt;
   String? sentAt;
+  int? length;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
       fromId: json['fromId'],
       toId: json['toId'],
       msg: json['msg'],
-      type: json['type'] == Type.image.name ? Type.image : Type.text,
+      type: json['type'] == MessageType.image.name
+          ? MessageType.image
+          : json['type'] == MessageType.audio.name
+              ? MessageType.audio
+              : MessageType.text,
       readAt: json['readAt'],
-      sentAt: json['sentAt']);
+      sentAt: json['sentAt'],
+      length: json['length']);
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -30,11 +36,12 @@ class MessageModel {
     data['type'] = type?.name;
     data['readAt'] = readAt;
     data['sentAt'] = sentAt;
+    data['length'] = length;
     return data;
   }
 }
 
-enum Type { text, image }
+enum MessageType { text, image, audio }
 
 
 // import 'package:cloud_firestore/cloud_firestore.dart';

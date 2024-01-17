@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/utils/api_utlils.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/dialogs.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:voice_message_package/voice_message_package.dart';
 // import 'package:gallery_saver/gallery_saver.dart';
 
 import '../models/message_model.dart';
@@ -22,6 +25,8 @@ class MessageCard extends StatefulWidget {
 }
 
 class _MessageCardState extends State<MessageCard> {
+  // late final chatRoomCubit = BlocProvider.of<ChatRoomCubit>(context);
+  // AudioPlayer audioPlayer = AudioPlayer();
   @override
   Widget build(BuildContext context) {
     bool isMe = FirebaseUtils.user?.id == widget.message.fromId;
@@ -37,7 +42,7 @@ class _MessageCardState extends State<MessageCard> {
     //update last read message if sender and receiver are different
     if (widget.message.readAt == null) {
       FirebaseUtils.updateMessageReadStatus(widget.message);
-    } else {}
+    }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,7 +50,7 @@ class _MessageCardState extends State<MessageCard> {
         //message content
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(widget.message.type == Type.image
+            padding: EdgeInsets.all(widget.message.type == MessageType.image
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -58,7 +63,7 @@ class _MessageCardState extends State<MessageCard> {
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                     bottomRight: Radius.circular(30))),
-            child: widget.message.type == Type.text
+            child: widget.message.type == MessageType.text
                 ?
                 //show text
                 Text(
@@ -96,39 +101,29 @@ class _MessageCardState extends State<MessageCard> {
 
   // our or user message
   Widget _greenMessage() {
-    // if (widget.message.readAt == null) {
-    //   final alreadyinUnreadlist =
-    //       unreadMessagesList.contains(widget.message.sentAt);
-    //   // add those msg ids to unreadMessagesList whose which is currently unread
-    //   if (alreadyinUnreadlist) {
-    //     // unreadMessagesList.add((widget.message.sentAt ?? ''));
-    //   } else {
-    // FirebaseUtils.increaseUnreadCount(widget.message, '0');
-    //     unreadMessagesList.add(widget.message.sentAt ?? '');
-    //   }
-    // }
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         //message content
         // Spacer(),
         SizedBox(
-          width: mq.width * 0.8,
+          width: mq.width * 0.95,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Flexible(
                 child: Container(
-                  width:
-                      widget.message.type == Type.image ? mq.width * 0.6 : null,
-                  padding: EdgeInsets.all(widget.message.type == Type.image
-                      ? mq.width * .03
-                      : mq.width * .03),
+                  width: widget.message.type == MessageType.image
+                      ? mq.width * 0.6
+                      : null,
+                  padding: EdgeInsets.symmetric(
+                      horizontal:
+                          widget.message.type == MessageType.audio ? 10 : 10,
+                      vertical: 10),
                   margin: EdgeInsets.symmetric(
                       horizontal: mq.width * .04, vertical: mq.height * .01),
                   decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 218, 255, 176),
+                      color: ColorConstants.greenLight,
                       border: Border.all(color: Colors.lightGreen),
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(15),
@@ -137,7 +132,7 @@ class _MessageCardState extends State<MessageCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      widget.message.type == Type.text
+                      widget.message.type == MessageType.text
                           ?
                           //show text
                           Text(
@@ -147,26 +142,47 @@ class _MessageCardState extends State<MessageCard> {
                               softWrap: true,
                               maxLines: 100,
                             )
-                          :
-                          //show image
-                          SizedBox(
-                              width: mq.width * 0.6,
-                              height: 200,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: CachedNetworkImage(
-                                  imageUrl: widget.message.msg ?? '',
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: CircularProgressIndicator(
-                                        strokeWidth: 2),
+                          : widget.message.type == MessageType.audio
+                              ? VoiceMessageView(
+                                  backgroundColor: ColorConstants.greenLight,
+                                  innerPadding: 0,
+                                  circlesColor: ColorConstants.blackLight,
+                                  counterTextStyle: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      color: ColorConstants.blackLight),
+                                  activeSliderColor: Colors.grey,
+                                  controller: VoiceController(
+                                    audioSrc: widget.message.msg ?? '',
+                                    maxDuration: Duration(
+                                        seconds: widget.message.length ?? 0),
+                                    isFile: false,
+                                    onComplete: () {},
+                                    onPause: () {},
+                                    onPlaying: () {},
+                                    // onError: (err) {},
                                   ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.image, size: 70),
+                                )
+                              : //show image
+                              SizedBox(
+                                  width: mq.width * 0.6,
+                                  height: 200,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.message.msg ?? '',
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.image, size: 70),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,
@@ -196,6 +212,83 @@ class _MessageCardState extends State<MessageCard> {
     );
   }
 
+  // Widget _audio({
+  //   required String message,
+  //   required bool isCurrentUser,
+  //   required int index,
+  //   required String time,
+  //   required String duration,
+  // }) {
+  //   return Container(
+  //     width: MediaQuery.of(context).size.width * 0.5,
+  //     padding: EdgeInsets.all(8),
+  //     decoration: BoxDecoration(
+  //       color: isCurrentUser
+  //           ? ColorConstants.greenMain
+  //           : ColorConstants.greenMain.withOpacity(0.18),
+  //       borderRadius: BorderRadius.circular(10),
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         GestureDetector(
+  //           onTap: () {
+  //             chatRoomCubit.onPressedPlayButton(index, message);
+  //             // changeProg(duration: duration);
+  //           },
+  //           onSecondaryTap: () {
+  //             audioPlayer.stop();
+  //             //    chatRoomCubit.completedPercentage.value = 0.0;
+  //           },
+  //           child: (chatRoomCubit.isRecordPlaying &&
+  //                   chatRoomCubit.currentId == index)
+  //               ? Icon(
+  //                   Icons.cancel,
+  //                   color:
+  //                       isCurrentUser ? Colors.white : ColorConstants.greenMain,
+  //                 )
+  //               : Icon(
+  //                   Icons.play_arrow,
+  //                   color:
+  //                       isCurrentUser ? Colors.white : ColorConstants.greenMain,
+  //                 ),
+  //         ),
+  //         Expanded(
+  //           child: Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 0),
+  //             child: Stack(
+  //               clipBehavior: Clip.none,
+  //               alignment: Alignment.center,
+  //               children: [
+  //                 // Text( chatRoomCubit.completedPercentage.value.toString(),style: TextStyle(color: Colors.white),),
+  //                 LinearProgressIndicator(
+  //                   minHeight: 5,
+  //                   backgroundColor: Colors.grey,
+  //                   valueColor: AlwaysStoppedAnimation<Color>(
+  //                     isCurrentUser ? Colors.white : ColorConstants.greenMain,
+  //                   ),
+  //                   value: (chatRoomCubit.isRecordPlaying &&
+  //                           chatRoomCubit.currentId == index)
+  //                       ? chatRoomCubit.completedPercentage
+  //                       : chatRoomCubit.totalDuration.toDouble(),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         SizedBox(
+  //           width: 10,
+  //         ),
+  //         Text(
+  //           duration,
+  //           style: TextStyle(
+  //               fontSize: 12,
+  //               color: isCurrentUser ? Colors.white : ColorConstants.greenMain),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   // bottom sheet for modifying message details
   void _showBottomSheet(bool isMe) {
     showModalBottomSheet(
@@ -216,7 +309,7 @@ class _MessageCardState extends State<MessageCard> {
                     color: Colors.grey, borderRadius: BorderRadius.circular(8)),
               ),
 
-              widget.message.type == Type.text
+              widget.message.type == MessageType.text
                   ?
                   //copy option
                   _OptionItem(
@@ -266,7 +359,7 @@ class _MessageCardState extends State<MessageCard> {
                 ),
 
               //edit option
-              if (widget.message.type == Type.text && isMe)
+              if (widget.message.type == MessageType.text && isMe)
                 _OptionItem(
                     icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
                     name: 'Edit Message',
@@ -330,8 +423,8 @@ class _MessageCardState extends State<MessageCard> {
                   borderRadius: BorderRadius.circular(20)),
 
               //title
-              title: Row(
-                children: const [
+              title: const Row(
+                children: [
                   Icon(
                     Icons.message,
                     color: Colors.blue,

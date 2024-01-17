@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/screens/chat_room/record_button_component.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
@@ -68,7 +71,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         case ConnectionState.waiting:
                         case ConnectionState.none:
                           return const SizedBox();
-
                         case ConnectionState.active:
                         case ConnectionState.done:
                           final data = snapshot.data?.docs;
@@ -83,7 +85,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               unreadCount = unreadCount + 1;
                             }
                           }
-                          if (unreadCount != -1) {
+                          if (unreadCount != -1 &&
+                              (data ?? []).isNotEmpty &&
+                              data?.last.id == messagesList.last.sentAt) {
                             FirebaseUtils.updateUnreadCount(
                                 widget.chatUser.id ?? '',
                                 unreadCount.toString());
@@ -195,13 +199,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         for (var i in images) {
                           log('Image Path: ${i.path}');
                           setState(() => _isUploading = true);
-                          await FirebaseUtils.sendChatImage(
-                              widget.chatUser, File(i.path));
+
+                          await FirebaseUtils.sendMessage(
+                              chatUser: widget.chatUser,
+                              type: MessageType.image,
+                              isFirstMessage: messagesList.isEmpty,
+                              file: File(i.path));
                           setState(() => _isUploading = false);
                         }
                       },
                       icon: const Icon(Icons.image,
-                          color: Colors.blueAccent, size: 26)),
+                          color: ColorConstants.blueAccent, size: 26)),
 
                   //take image from camera button
                   IconButton(
@@ -212,16 +220,35 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         final XFile? image = await picker.pickImage(
                             source: ImageSource.camera, imageQuality: 70);
                         if (image != null) {
-                          log('Image Path: ${image.path}');
+                          LoggerUtil.logs('Image Path: ${image.path}');
                           setState(() => _isUploading = true);
 
-                          await FirebaseUtils.sendChatImage(
-                              widget.chatUser, File(image.path));
+                          await FirebaseUtils.sendMessage(
+                              chatUser: widget.chatUser,
+                              type: MessageType.image,
+                              isFirstMessage: messagesList.isEmpty,
+                              file: File(image.path));
                           setState(() => _isUploading = false);
                         }
                       },
                       icon: const Icon(Icons.camera_alt_rounded,
-                          color: Colors.blueAccent, size: 26)),
+                          color: ColorConstants.blueAccent, size: 26)),
+
+                  //voice message mutton
+                  RecordButtonComponent(
+                    onRecordingFinished: (path, duration) async {
+                      LoggerUtil.logs('Voice Path: $path');
+                      setState(() => _isUploading = true);
+
+                      await FirebaseUtils.sendMessage(
+                          chatUser: widget.chatUser,
+                          type: MessageType.audio,
+                          isFirstMessage: messagesList.isEmpty,
+                          file: File(path),
+                          length: duration);
+                      setState(() => _isUploading = false);
+                    },
+                  ),
 
                   //adding some space
                   SizedBox(width: mq.width * .02),
@@ -230,20 +257,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           ),
 
-          //send message button
+          //send message
           MaterialButton(
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                if (messagesList.isEmpty) {
-                  //on first message (add user to my_user collection of chat user)
-                  FirebaseUtils.sendFirstMessage(
-                      widget.chatUser, _textController.text, Type.text);
-                } else {
-                  //simply send message
-                  FirebaseUtils.sendMessage(
-                      widget.chatUser, _textController.text, Type.text);
-                }
-                _textController.text = '';
+                FirebaseUtils.sendMessage(
+                  chatUser: widget.chatUser,
+                  msg: _textController.text,
+                  type: MessageType.text,
+                  isFirstMessage: messagesList.isEmpty,
+                );
+                _textController.clear();
               }
             },
             minWidth: 0,
