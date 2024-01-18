@@ -5,7 +5,6 @@ import 'package:chat_app_white_label/src/utils/api_utlils.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/dialogs.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
-import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voice_message_package/voice_message_package.dart';
@@ -45,54 +44,107 @@ class _MessageCardState extends State<MessageCard> {
     }
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         //message content
-        Flexible(
-          child: Container(
-            padding: EdgeInsets.all(widget.message.type == MessageType.image
-                ? mq.width * .03
-                : mq.width * .04),
-            margin: EdgeInsets.symmetric(
-                horizontal: mq.width * .04, vertical: mq.height * .01),
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 221, 245, 255),
-                border: Border.all(color: Colors.lightBlue),
-                //making borders curved
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                    bottomRight: Radius.circular(30))),
-            child: widget.message.type == MessageType.text
-                ?
-                //show text
-                Text(
-                    widget.message.msg ?? '',
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
-                  )
-                :
-                //show image
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.message.msg ?? '',
-                      placeholder: (context, url) => const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.image, size: 70),
-                    ),
+        SizedBox(
+          width: mq.width * 0.95,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Container(
+                  width: widget.message.type == MessageType.image
+                      ? mq.width * 0.6
+                      : null,
+                  padding: EdgeInsets.only(
+                      left: widget.message.type == MessageType.audio ? 0 : 10,
+                      right: widget.message.type == MessageType.audio ? 0 : 10,
+                      top: 10,
+                      bottom: 10),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: mq.width * .04, vertical: mq.height * .01),
+                  decoration: BoxDecoration(
+                      color: ColorConstants.blueLight,
+                      border: Border.all(color: Colors.lightBlue),
+                      //making borders curved
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                          bottomRight: Radius.circular(15))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      widget.message.type == MessageType.text
+                          ?
+                          //show text
+                          Text(
+                              widget.message.msg ?? '',
+                              style: const TextStyle(
+                                  fontSize: 15, color: Colors.black87),
+                            )
+                          : widget.message.type == MessageType.audio
+                              // voice message
+                              ? VoiceMessageView(
+                                  backgroundColor: ColorConstants.blueLight,
+                                  innerPadding: 0,
+                                  circlesColor: ColorConstants.blackLight,
+                                  counterTextStyle: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      color: ColorConstants.blackLight),
+                                  activeSliderColor: Colors.grey,
+                                  controller: VoiceController(
+                                    audioSrc: widget.message.msg ?? '',
+                                    maxDuration: Duration(
+                                        seconds: widget.message.length ?? 0),
+                                    isFile: false,
+                                    onComplete: () {},
+                                    onPause: () {},
+                                    onPlaying: () {},
+                                    // onError: (err) {},
+                                  ),
+                                )
+                              :
+                              //show image
+                              SizedBox(
+                                  width: mq.width * 0.6,
+                                  height: 200,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.message.msg ?? '',
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.image, size: 70),
+                                    ),
+                                  ),
+                                ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (widget.message.type == MessageType.audio)
+                            const SizedBox(width: 10),
+                          Text(
+                            DateUtil.getFormattedTime(
+                                context, widget.message.sentAt ?? ''),
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.black54),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-          ),
-        ),
-
-        //message time
-        Padding(
-          padding: EdgeInsets.only(right: mq.width * .04),
-          child: Text(
-            DateUtil.getFormattedTime(context, widget.message.sentAt ?? ""),
-            style: const TextStyle(fontSize: 13, color: Colors.black54),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -116,10 +168,11 @@ class _MessageCardState extends State<MessageCard> {
                   width: widget.message.type == MessageType.image
                       ? mq.width * 0.6
                       : null,
-                  padding: EdgeInsets.symmetric(
-                      horizontal:
-                          widget.message.type == MessageType.audio ? 10 : 10,
-                      vertical: 10),
+                  padding: EdgeInsets.only(
+                      left: widget.message.type == MessageType.audio ? 0 : 10,
+                      right: widget.message.type == MessageType.audio ? 0 : 10,
+                      top: 10,
+                      bottom: 10),
                   margin: EdgeInsets.symmetric(
                       horizontal: mq.width * .04, vertical: mq.height * .01),
                   decoration: BoxDecoration(
@@ -143,6 +196,7 @@ class _MessageCardState extends State<MessageCard> {
                               maxLines: 100,
                             )
                           : widget.message.type == MessageType.audio
+                              // voice message
                               ? VoiceMessageView(
                                   backgroundColor: ColorConstants.greenLight,
                                   innerPadding: 0,
@@ -199,6 +253,8 @@ class _MessageCardState extends State<MessageCard> {
                             style: const TextStyle(
                                 fontSize: 10, color: Colors.black54),
                           ),
+                          if (widget.message.type == MessageType.audio)
+                            const SizedBox(width: 10),
                         ],
                       ),
                     ],

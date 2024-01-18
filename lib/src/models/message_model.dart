@@ -41,7 +41,7 @@ class MessageModel {
   }
 }
 
-enum MessageType { text, image, audio }
+enum MessageType { text, image, audio, video }
 
 
 // import 'package:cloud_firestore/cloud_firestore.dart';

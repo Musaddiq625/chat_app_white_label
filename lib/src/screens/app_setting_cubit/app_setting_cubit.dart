@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:camera/camera.dart';
 import 'package:meta/meta.dart';
 
 part 'app_setting_state.dart';
@@ -18,5 +19,12 @@ class AppSettingCubit extends Cubit<AppSettingState> {
       appLogo = 'assets/images/whatsapp.png';
     }
     emit(SetFlavorState());
+  }
+
+  List<CameraDescription> cameras = [];
+  CameraDescription? firstCamera;
+  void initCamera() async {
+    cameras = await availableCameras();
+    firstCamera = cameras.first;
   }
 }

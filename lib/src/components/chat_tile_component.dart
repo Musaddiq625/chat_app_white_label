@@ -71,7 +71,7 @@ class ChatTileComponent extends StatelessWidget {
                         children: [
                           const Icon(
                             Icons.keyboard_voice_sharp,
-                            color: ColorConstants.blueAccent,
+                            color: ColorConstants.blue,
                             size: 20,
                           ),
                           Text(

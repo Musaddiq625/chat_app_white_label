@@ -56,6 +56,8 @@ dependencies:
   emoji_picker_flutter: ^1.6.3
   voice_message_package: ^2.1.0
   flutter_sound_lite: ^8.5.0
+  camera: ^0.10.5+9
+  video_player: ^2.8.2
 
 dev_dependencies:
   flutter_test:

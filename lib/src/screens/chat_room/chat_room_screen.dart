@@ -1,8 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/screens/chat_room/record_button_component.dart';
+import 'package:chat_app_white_label/src/components/record_button_component.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
+import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
@@ -12,15 +13,16 @@ import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../models/usert_model.dart';
 import '../../models/message_model.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   final UserModel chatUser;
-  String? unreadCount;
+  final String? unreadCount;
 
-  ChatRoomScreen(
+  const ChatRoomScreen(
       {super.key, required this.chatUser, required this.unreadCount});
 
   @override
@@ -170,7 +172,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         setState(() => _showEmoji = !_showEmoji);
                       },
                       icon: const Icon(Icons.emoji_emotions,
-                          color: Colors.blueAccent, size: 25)),
+                          color: ColorConstants.blue, size: 25)),
 
                   Expanded(
                       child: TextField(
@@ -182,7 +184,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     },
                     decoration: const InputDecoration(
                         hintText: 'Type Something...',
-                        hintStyle: TextStyle(color: Colors.blueAccent),
+                        hintStyle: TextStyle(color: ColorConstants.blue),
                         border: InputBorder.none),
                   )),
 
@@ -193,7 +195,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
                         // Picking multiple images
                         final List<XFile> images =
-                            await picker.pickMultiImage(imageQuality: 70);
+                            await picker.pickMultipleMedia();
 
                         // uploading & sending image one by one
                         for (var i in images) {
@@ -209,30 +211,37 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         }
                       },
                       icon: const Icon(Icons.image,
-                          color: ColorConstants.blueAccent, size: 26)),
+                          color: ColorConstants.blue, size: 26)),
 
                   //take image from camera button
                   IconButton(
                       onPressed: () async {
-                        final ImagePicker picker = ImagePicker();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CameraScreen(
+                                    camera: context
+                                        .read<AppSettingCubit>()
+                                        .firstCamera!)));
+                        // final ImagePicker picker = ImagePicker();
 
-                        // Pick an image
-                        final XFile? image = await picker.pickImage(
-                            source: ImageSource.camera, imageQuality: 70);
-                        if (image != null) {
-                          LoggerUtil.logs('Image Path: ${image.path}');
-                          setState(() => _isUploading = true);
+                        // // Pick an image
+                        // final XFile? image = await picker.pickImage(
+                        //     source: ImageSource.camera, imageQuality: 70);
+                        // if (image != null) {
+                        //   LoggerUtil.logs('Image Path: ${image.path}');
+                        //   setState(() => _isUploading = true);
 
-                          await FirebaseUtils.sendMessage(
-                              chatUser: widget.chatUser,
-                              type: MessageType.image,
-                              isFirstMessage: messagesList.isEmpty,
-                              file: File(image.path));
-                          setState(() => _isUploading = false);
-                        }
+                        //   await FirebaseUtils.sendMessage(
+                        //       chatUser: widget.chatUser,
+                        //       type: MessageType.image,
+                        //       isFirstMessage: messagesList.isEmpty,
+                        //       file: File(image.path));
+                        //   setState(() => _isUploading = false);
+                        // }
                       },
                       icon: const Icon(Icons.camera_alt_rounded,
-                          color: ColorConstants.blueAccent, size: 26)),
+                          color: ColorConstants.blue, size: 26)),
 
                   //voice message mutton
                   RecordButtonComponent(

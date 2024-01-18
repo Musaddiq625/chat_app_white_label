@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSContactsUsageDescription</key>
+    <string>Need access to the contact list</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Need access To send voice message</string>
+	<key>NSCameraUsageDescription</key>
+    <string>Needed access for recording videos</string>
 </dict>
 </plist>

@@ -22,7 +22,7 @@ class CallTileComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: image != null
+      leading: image != ''
           ? CircleAvatar(radius: 25, backgroundImage: AssetImage(image))
           : Icon(
               Icons.account_circle,
