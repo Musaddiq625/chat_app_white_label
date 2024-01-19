@@ -110,21 +110,27 @@ class FirebaseUtils {
       required MessageType type,
       required bool isFirstMessage,
       String? msg,
-      File? file,
-      int? length}) async {
+      String? filePath,
+      int? length,
+      String? thumbnailPath}) async {
     try {
       // if message type is text
       String? sendingMessage = msg;
-
+      String? thumbnail;
       if (isFirstMessage) {
         await createChat(chatUser);
       }
       if (type == MessageType.image) {
         sendingMessage =
-            await uploadMedia(file!, MediaType.chatImage, chatUser);
+            await uploadMedia(filePath!, MediaType.chatImage, chatUser);
+      } else if (type == MessageType.video) {
+        sendingMessage =
+            await uploadMedia(filePath!, MediaType.chatVideo, chatUser);
+        thumbnail =
+            await uploadMedia(thumbnailPath!, MediaType.chatImage, chatUser);
       } else if (type == MessageType.audio) {
         sendingMessage =
-            await uploadMedia(file!, MediaType.chatVoice, chatUser);
+            await uploadMedia(filePath!, MediaType.chatVoice, chatUser);
       }
 
       //message sending time (also used as id)
@@ -139,7 +145,8 @@ class FirebaseUtils {
           type: type,
           fromId: user?.id ?? '',
           sentAt: sendingTime,
-          length: length);
+          length: length,
+          thumbnail: thumbnail);
 
       await chatDoc
           .collection(FirebaseConstants.messages)
@@ -184,11 +191,11 @@ class FirebaseUtils {
     });
   }
 
-  static Future<String?> uploadMedia(File file, MediaType uploadType,
+  static Future<String?> uploadMedia(String filePath, MediaType uploadType,
       [UserModel? chatUser]) async {
     //getting image file extension and name
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    final extension = file.path.split('.').last;
+    final extension = filePath.split('.').last;
 
     //  getUpload Refrence to its type
     Reference getUploadRef(uploadType) {
@@ -201,6 +208,10 @@ class FirebaseUtils {
         case MediaType.chatImage:
           return firebaseService.storage.ref().child(
               'chats/${getConversationID(chatUser?.id ?? '')}/chat_image/$fileName.$extension');
+
+        case MediaType.chatVideo:
+          return firebaseService.storage.ref().child(
+              'chats/${getConversationID(chatUser?.id ?? '')}/chat_video/$fileName.$extension');
 
         case MediaType.chatVoice:
           return firebaseService.storage.ref().child(
@@ -218,11 +229,13 @@ class FirebaseUtils {
       final ref = getUploadRef(uploadType);
       await ref
           .putFile(
-              file,
+              File(filePath),
               SettableMetadata(
                   contentType: uploadType == MediaType.chatImage
                       ? 'image/$extension'
-                      : 'audio/$extension'))
+                      : uploadType == MediaType.chatVideo
+                          ? 'video/$extension'
+                          : 'audio/$extension'))
           .then((p0) => LoggerUtil.logs(
               'Data Transferred: ${p0.bytesTransferred / 1000} kb'));
 
@@ -238,4 +251,4 @@ class FirebaseUtils {
   }
 }
 
-enum MediaType { profilePicture, chatImage, chatVoice }
+enum MediaType { profilePicture, chatImage, chatVideo, chatVoice }

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/screens/chat_room/preview_screen.dart';
 import 'package:chat_app_white_label/src/utils/api_utlils.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/dialogs.dart';
@@ -30,6 +31,17 @@ class _MessageCardState extends State<MessageCard> {
   Widget build(BuildContext context) {
     bool isMe = FirebaseUtils.user?.id == widget.message.fromId;
     return InkWell(
+        onTap: () {
+          if (widget.message.type == MessageType.image ||
+              widget.message.type == MessageType.video) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PreviewScreen(
+                        isVideo: widget.message.type == MessageType.video,
+                        mediaUrl: widget.message.msg ?? '')));
+          }
+        },
         onLongPress: () {
           _showBottomSheet(isMe);
         },
@@ -54,7 +66,8 @@ class _MessageCardState extends State<MessageCard> {
             children: [
               Flexible(
                 child: Container(
-                  width: widget.message.type == MessageType.image
+                  width: widget.message.type == MessageType.image ||
+                          widget.message.type == MessageType.video
                       ? mq.width * 0.6
                       : null,
                   padding: EdgeInsets.only(
@@ -75,57 +88,73 @@ class _MessageCardState extends State<MessageCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      widget.message.type == MessageType.text
-                          ?
-                          //show text
-                          Text(
-                              widget.message.msg ?? '',
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.black87),
-                            )
-                          : widget.message.type == MessageType.audio
-                              // voice message
-                              ? VoiceMessageView(
-                                  backgroundColor: ColorConstants.blueLight,
-                                  innerPadding: 0,
-                                  circlesColor: ColorConstants.blackLight,
-                                  counterTextStyle: const TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500,
-                                      color: ColorConstants.blackLight),
-                                  activeSliderColor: Colors.grey,
-                                  controller: VoiceController(
-                                    audioSrc: widget.message.msg ?? '',
-                                    maxDuration: Duration(
-                                        seconds: widget.message.length ?? 0),
-                                    isFile: false,
-                                    onComplete: () {},
-                                    onPause: () {},
-                                    onPlaying: () {},
-                                    // onError: (err) {},
-                                  ),
-                                )
-                              :
-                              //show image
-                              SizedBox(
-                                  width: mq.width * 0.6,
-                                  height: 200,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: CachedNetworkImage(
-                                      imageUrl: widget.message.msg ?? '',
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: CircularProgressIndicator(
-                                            strokeWidth: 2),
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.image, size: 70),
-                                    ),
-                                  ),
-                                ),
+                      if (widget.message.type == MessageType.audio)
+                        // voice message
+                        VoiceMessageView(
+                          backgroundColor: ColorConstants.blueLight,
+                          innerPadding: 0,
+                          circlesColor: ColorConstants.blackLight,
+                          counterTextStyle: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackLight),
+                          activeSliderColor: Colors.grey,
+                          controller: VoiceController(
+                            audioSrc: widget.message.msg ?? '',
+                            maxDuration:
+                                Duration(seconds: widget.message.length ?? 0),
+                            isFile: false,
+                            onComplete: () {},
+                            onPause: () {},
+                            onPlaying: () {},
+                            // onError: (err) {},
+                          ),
+                        )
+                      else if (widget.message.type == MessageType.image)
+                        //show image
+                        SizedBox(
+                          width: mq.width * 0.6,
+                          height: 200,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.message.msg ?? '',
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: ColorConstants.greenMain,
+                              )),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.image, size: 70),
+                            ),
+                          ),
+                        )
+                      else if (widget.message.type == MessageType.video)
+                        SizedBox(
+                          width: mq.width * 0.6,
+                          height: 200,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.message.thumbnail ?? '',
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: ColorConstants.greenMain,
+                              )),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.image, size: 70),
+                            ),
+                          ),
+                        )
+                      else
+                        Text(
+                          widget.message.msg ?? '',
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.black87),
+                        ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -165,7 +194,8 @@ class _MessageCardState extends State<MessageCard> {
             children: [
               Flexible(
                 child: Container(
-                  width: widget.message.type == MessageType.image
+                  width: widget.message.type == MessageType.image ||
+                          widget.message.type == MessageType.video
                       ? mq.width * 0.6
                       : null,
                   padding: EdgeInsets.only(
@@ -185,58 +215,98 @@ class _MessageCardState extends State<MessageCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      widget.message.type == MessageType.text
-                          ?
-                          //show text
-                          Text(
-                              widget.message.msg ?? '',
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.black87),
-                              softWrap: true,
-                              maxLines: 100,
-                            )
-                          : widget.message.type == MessageType.audio
-                              // voice message
-                              ? VoiceMessageView(
-                                  backgroundColor: ColorConstants.greenLight,
-                                  innerPadding: 0,
-                                  circlesColor: ColorConstants.blackLight,
-                                  counterTextStyle: const TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500,
-                                      color: ColorConstants.blackLight),
-                                  activeSliderColor: Colors.grey,
-                                  controller: VoiceController(
-                                    audioSrc: widget.message.msg ?? '',
-                                    maxDuration: Duration(
-                                        seconds: widget.message.length ?? 0),
-                                    isFile: false,
-                                    onComplete: () {},
-                                    onPause: () {},
-                                    onPlaying: () {},
-                                    // onError: (err) {},
-                                  ),
-                                )
-                              : //show image
+                      if (widget.message.type == MessageType.audio)
+                        // voice message
+                        VoiceMessageView(
+                          backgroundColor: ColorConstants.blueLight,
+                          innerPadding: 0,
+                          circlesColor: ColorConstants.blackLight,
+                          counterTextStyle: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: ColorConstants.blackLight),
+                          activeSliderColor: Colors.grey,
+                          controller: VoiceController(
+                            audioSrc: widget.message.msg ?? '',
+                            maxDuration:
+                                Duration(seconds: widget.message.length ?? 0),
+                            isFile: false,
+                            onComplete: () {},
+                            onPause: () {},
+                            onPlaying: () {},
+                            // onError: (err) {},
+                          ),
+                        )
+                      else if (widget.message.type == MessageType.image)
+                        //show image
+                        SizedBox(
+                          width: mq.width * 0.6,
+                          height: 200,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.message.msg ?? '',
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: ColorConstants.greenMain,
+                              )),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.image, size: 70),
+                            ),
+                          ),
+                        )
+                      else if (widget.message.type == MessageType.video)
+                        SizedBox(
+                          width: mq.width * 0.6,
+                          height: 200,
+                          child: Stack(
+                            children: [
                               SizedBox(
-                                  width: mq.width * 0.6,
-                                  height: 200,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: CachedNetworkImage(
-                                      imageUrl: widget.message.msg ?? '',
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: CircularProgressIndicator(
-                                            strokeWidth: 2),
+                                width: mq.width * 0.6,
+                                height: 200,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: CachedNetworkImage(
+                                    imageUrl: widget.message.thumbnail ?? '',
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: ColorConstants.greenMain,
                                       ),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.image, size: 70),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.image, size: 70),
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.center,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black54,
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.play_arrow,
+                                      color: Colors.white,
+                                      size: 22,
                                     ),
                                   ),
                                 ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        Text(
+                          widget.message.msg ?? '',
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.black87),
+                        ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,

@@ -6,7 +6,8 @@ class MessageModel {
       required this.readAt,
       required this.type,
       required this.sentAt,
-      this.length});
+      this.length,
+      this.thumbnail});
   String? fromId;
   String? toId;
   String? msg;
@@ -14,6 +15,7 @@ class MessageModel {
   String? readAt;
   String? sentAt;
   int? length;
+  String? thumbnail;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
       fromId: json['fromId'],
@@ -23,10 +25,13 @@ class MessageModel {
           ? MessageType.image
           : json['type'] == MessageType.audio.name
               ? MessageType.audio
-              : MessageType.text,
+              : json['type'] == MessageType.video.name
+                  ? MessageType.video
+                  : MessageType.text,
       readAt: json['readAt'],
       sentAt: json['sentAt'],
-      length: json['length']);
+      length: json['length'],
+      thumbnail: json['thumbnail']);
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -37,6 +42,7 @@ class MessageModel {
     data['readAt'] = readAt;
     data['sentAt'] = sentAt;
     data['length'] = length;
+    data['thumbnail'] = thumbnail;
     return data;
   }
 }

@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       try {
                         if (_selectedImage != null) {
                           imageUrl = await FirebaseUtils.uploadMedia(
-                              _selectedImage!, MediaType.profilePicture);
+                              _selectedImage!.path, MediaType.profilePicture);
                         }
 
                         // print("imageUrl ${imageUrl} ");

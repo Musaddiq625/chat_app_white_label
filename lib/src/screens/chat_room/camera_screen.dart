@@ -1,16 +1,24 @@
 import 'dart:io';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
+import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart' as video_thumbnail;
 
 class CameraScreen extends StatefulWidget {
-  final CameraDescription camera;
+  // final CameraDescription camera;
 
-  const CameraScreen({Key? key, required this.camera}) : super(key: key);
+  const CameraScreen({
+    Key? key,
+    //  required this.camera
+  }) : super(key: key);
   @override
   State<CameraScreen> createState() => _CameraScreenState();
 }
@@ -20,7 +28,7 @@ class _CameraScreenState extends State<CameraScreen> {
   bool isCameraInitialized = false;
   bool isVideoEnabled = false;
   bool isRecording = false;
-  bool flashOn = false;
+  FlashMode flashMode = FlashMode.auto;
   // double _currentZoomLevel = 1.0;
 
   @override
@@ -62,18 +70,57 @@ class _CameraScreenState extends State<CameraScreen> {
                   backgroundColor: Colors.black45,
                   radius: 25,
                   child: Icon(
-                    flashOn ? Icons.flash_off : Icons.flash_on,
+                    flashMode == FlashMode.auto
+                        ? Icons.flash_auto
+                        : flashMode == FlashMode.off
+                            ? Icons.flash_off
+                            : Icons.flash_on,
                     color: Colors.white,
                     size: 20,
                   ),
                 ),
               ),
             ),
+            Positioned(
+              top: 25,
+              left: 20,
+              child: InkWell(
+                onTap: () => NavigationUtil.pop(context),
+                child: const CircleAvatar(
+                  backgroundColor: Colors.black45,
+                  radius: 25,
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ),
+            if (!isRecording)
+              Positioned(
+                bottom: 30,
+                right: 20,
+                child: InkWell(
+                  onTap: () => setState(() {
+                    isVideoEnabled = !isVideoEnabled;
+                  }),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black45,
+                    radius: 25,
+                    child: Icon(
+                      isVideoEnabled ? Icons.camera_alt : Icons.videocam,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.all(30.0),
-                child: InkWell(
+                child: GestureDetector(
                   onTap: isVideoEnabled ? recordVideo : takePicture,
                   child: CircleAvatar(
                     backgroundColor: Colors.black45,
@@ -98,11 +145,13 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> initCamera() async {
-    controller = CameraController(widget.camera, ResolutionPreset.high);
+    controller = CameraController(
+        context.read<AppSettingCubit>().firstCamera!, ResolutionPreset.high);
 
     // Initialize controller
     try {
-      await controller!.initialize();
+      await controller?.initialize();
+      await controller?.setFlashMode(FlashMode.auto);
       setState(() {
         isCameraInitialized = controller!.value.isInitialized;
       });
@@ -112,14 +161,21 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> toggleFlash() async {
-    if (flashOn) {
-      await controller!.setFlashMode(FlashMode.off);
+    if (flashMode == FlashMode.auto) {
+      await controller?.setFlashMode(FlashMode.off);
+      setState(() {
+        flashMode = FlashMode.off;
+      });
+    } else if (flashMode == FlashMode.off) {
+      await controller?.setFlashMode(FlashMode.always);
+      setState(() {
+        flashMode = FlashMode.always;
+      });
     } else {
-      await controller!.setFlashMode(FlashMode.torch);
+      setState(() {
+        flashMode = FlashMode.auto;
+      });
     }
-    setState(() {
-      flashOn = !flashOn;
-    });
   }
 
   Future<void> recordVideo() async {
@@ -137,8 +193,8 @@ class _CameraScreenState extends State<CameraScreen> {
                       type: MessageType.video,
                     )));
       } else {
-        await controller!.prepareForVideoRecording();
-        await controller!.startVideoRecording();
+        await controller?.prepareForVideoRecording();
+        await controller?.startVideoRecording();
         setState(() {
           isRecording = true;
         });
@@ -155,7 +211,8 @@ class _CameraScreenState extends State<CameraScreen> {
       final image = await controller?.takePicture();
 
       // If the picture was taken, display it on a new screen.
-      await Navigator.of(context).push(
+      await Navigator.push(
+        context,
         MaterialPageRoute(
           builder: (context) => MediaPreviewScreen(
             file: image!,
@@ -181,37 +238,25 @@ class MediaPreviewScreen extends StatefulWidget {
 }
 
 class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
-  VideoPlayerController? _videoController;
+  late ChatRoomCubit chatRoomCubit = BlocProvider.of<ChatRoomCubit>(context);
+  VideoPlayerController? videoController;
+  String? thumbnailPath;
+  bool thumbnailLoading = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.type == MessageType.video) {
-        _startVideoPlayer(widget.file);
+        startVideoPlayer(widget.file);
       }
     });
   }
 
   @override
   void dispose() {
-    _videoController?.dispose();
+    videoController?.dispose();
     super.dispose();
-  }
-
-  Future<void> _startVideoPlayer(XFile videoFile) async {
-    final Directory extDir = await getApplicationDocumentsDirectory();
-    final String dirPath = '${extDir.path}/videos';
-    await Directory(dirPath).create(recursive: true);
-    final String filePath =
-        '$dirPath/${DateTime.now().millisecondsSinceEpoch}.mp4';
-    final File newVideo = await File(videoFile.path).copy(filePath);
-
-    _videoController = VideoPlayerController.file(newVideo)
-      ..initialize().then((_) {
-        setState(() {});
-        _videoController!.play();
-        _videoController!.setLooping(true);
-      });
   }
 
   @override
@@ -221,12 +266,14 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     EdgeInsets safeArea = MediaQuery.of(context).padding;
     double aspectRatio = screenWidth / (screenHeight - safeArea.top);
-    if (_videoController == null && widget.type == MessageType.video) {
+    if (videoController == null && widget.type == MessageType.video ||
+        thumbnailLoading) {
       return const Center(
           child: CircularProgressIndicator(
         color: ColorConstants.greenMain,
       ));
     }
+
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -234,10 +281,16 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
             AspectRatio(
               aspectRatio: aspectRatio,
               child: widget.type == MessageType.video
-                  ? VideoPlayer(_videoController!)
+                  // video preview in loop
+                  ? VideoPlayer(videoController!)
+                  // image preview
                   : Column(
                       children: [
-                        Expanded(child: Image.file(File(widget.file.path)))
+                        Expanded(
+                            child: Image.file(
+                          File(widget.file.path),
+                          fit: BoxFit.cover,
+                        ))
                       ],
                     ),
             ),
@@ -248,7 +301,7 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    InkWell(
+                    GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: const CircleAvatar(
                         backgroundColor: Colors.black45,
@@ -260,8 +313,26 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
+                    GestureDetector(
+                      onTap: () async {
+                        if (widget.type == MessageType.image) {
+                          chatRoomCubit.onMediaSelected(
+                              widget.file.path, widget.type);
+                          NavigationUtil.pop(context);
+                          NavigationUtil.pop(context);
+                        } else {
+                          thumbnailPath = await createThumbnail(widget.file);
+                          if (thumbnailPath != null) {
+                            chatRoomCubit.onMediaSelected(
+                              widget.file.path,
+                              widget.type,
+                              thumbnailPath,
+                            );
+                            NavigationUtil.pop(context);
+                            NavigationUtil.pop(context);
+                          }
+                        }
+                      },
                       child: const CircleAvatar(
                         backgroundColor: Colors.black45,
                         radius: 40,
@@ -280,5 +351,45 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> startVideoPlayer(XFile videoFile) async {
+    try {
+      final Directory extDir = await getApplicationDocumentsDirectory();
+      final String dirPath = '${extDir.path}/videos';
+      await Directory(dirPath).create(recursive: true);
+      final String filePath =
+          '$dirPath/${DateTime.now().millisecondsSinceEpoch}.mp4';
+      final File newVideo = await File(videoFile.path).copy(filePath);
+
+      videoController = VideoPlayerController.file(newVideo)
+        ..initialize().then((_) {
+          setState(() {});
+          videoController?.play();
+          videoController?.setLooping(true);
+        });
+    } catch (e) {
+      LoggerUtil.logs(e);
+    }
+  }
+
+  Future<String?> createThumbnail(XFile videoFile) async {
+    try {
+      setState(() {
+        thumbnailLoading = true;
+      });
+      final thumbnailPath = await video_thumbnail.VideoThumbnail.thumbnailFile(
+        video: videoFile.path, imageFormat: video_thumbnail.ImageFormat.JPEG,
+        // thumbnailPath: (await getTemporaryDirectory()).path,
+        quality: 25,
+      );
+      setState(() {
+        thumbnailLoading = false;
+      });
+      return thumbnailPath;
+    } catch (e) {
+      LoggerUtil.logs(e);
+      return null;
+    }
   }
 }

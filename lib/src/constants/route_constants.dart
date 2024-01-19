@@ -10,4 +10,5 @@ class RouteConstants {
   static const String chatRoomScreen = 'chatRoomScreen';
   static const String callScreen = 'callScreen';
   static const String profileScreen = 'profileScreen';
+  static const String cameraScreen = 'cameraScreen';
 }

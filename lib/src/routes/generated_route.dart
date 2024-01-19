@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_screen.dart';
@@ -55,6 +56,9 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.callScreen:
       return materialRoute(const CallScreen());
+
+    case RouteConstants.cameraScreen:
+      return materialRoute(const CameraScreen());
 
     default:
       return materialRoute(const SplashScreen());
