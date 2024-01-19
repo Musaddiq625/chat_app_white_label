@@ -59,7 +59,7 @@ dependencies:
   camera: ^0.10.5+9
   video_player: ^2.8.2
   video_thumbnail: ^0.5.3
-  uuid: ^4.3.3
+  uuid: ^3.0.1
   story_view: ^0.16.0
 
 dev_dependencies:
