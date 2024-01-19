@@ -4,17 +4,19 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/dummy%20data/whatsapp_data.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../main.dart';
 import '../models/chat_model.dart';
 
 Data data = Data();
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatefulWidget with WidgetsBindingObserver {
   const ChatScreen({
     Key? key,
   }) : super(key: key);
@@ -35,7 +37,34 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      LoggerUtil.logs('message ${message}');
+      if (FirebaseUtils.user != null) {
+        if (message.toString().contains('resume')) {
+          FirebaseUtils.updateActiveStatus(true);
+        }
+        if (message.toString().contains('pause')) {
+          FirebaseUtils.updateActiveStatus(false);
+        }
+        if (message.toString().contains('detached')) {
+          FirebaseUtils.updateActiveStatus(false);
+        }
+      }
+      return Future.value(message);
+    });
   }
+//   final a = AppLifecycleListener()
+
+// @override
+// Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+//   switch (state) {
+//     case AppLifecycleState.inactive:
+//     case AppLifecycleState.paused:
+//     case AppLifecycleState.detached:
+//     case AppLifecycleState.resumed:
+//     case AppLifecycleState.hidden:
+//   }
+// }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +80,9 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await FirebaseUtils.logOut(context);
+            },
             icon: const Icon(
               Icons.search,
               size: 28,
@@ -171,7 +202,7 @@ class _ChatScreenState extends State<ChatScreen> {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {
-              NavigationUtil.push(context, RouteConstants.allUserScreen);
+              NavigationUtil.push(context, RouteConstants.contactsScreen);
             },
             backgroundColor: ColorConstants.green,
             child: const Icon(
@@ -202,7 +233,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   final chatUserId = snapshot.data!.docs[index]
                       .data()['users']
                       .firstWhere((id) => id != FirebaseUtils.user?.id);
-
+                  chat.unreadCount = snapshot.data!.docs[index]
+                      .data()['${FirebaseUtils.user?.id}_unread_count'];
                   return FutureBuilder(
                     future: FirebaseUtils.getChatUser(chatUserId),
                     builder: (context, asyncSnapshot) {
