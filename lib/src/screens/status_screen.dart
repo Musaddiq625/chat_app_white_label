@@ -1,14 +1,140 @@
+import 'dart:io';
+
+import 'package:chat_app_white_label/src/components/status_tiles_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/screens/status_generate_screen.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_app_white_label/src/components/status_tiles_component.dart';
+import 'package:image_picker/image_picker.dart';
 
-class StatusScreen extends StatelessWidget {
-  const StatusScreen({super.key});
+import '../../main.dart';
+import '../components/StatusCard.dart';
+import '../models/StoryModel.dart';
+import '../models/story_model.dart';
+
+class StatusScreen extends StatefulWidget {
+  const StatusScreen({Key? key}) : super(key: key);
+
+  @override
+  _StatusScreenState createState() => _StatusScreenState();
+}
+
+class _StatusScreenState extends State<StatusScreen> {
+  // Move the methods and variables that need to maintain state here
+
+  List<StoryModel> _list = [];
+  List<StoryModel> stories = [];
+  @override
+  void initState() {
+    super.initState();
+    // fetchStories(FirebaseUtils.user?.id);
+    // fetchAllStories();
+  }
+
+  Future<void> fetchStories(String? userId) async {
+    // Reference to the document
+    DocumentReference docRef =
+        FirebaseFirestore.instance.collection('story').doc(userId);
+
+    // Getting the document snapshot
+    DocumentSnapshot docSnapshot = await docRef.get();
+
+    // Check if the document exists
+    if (docSnapshot.exists) {
+      // Convert the document snapshot to a Map
+      Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>?;
+
+      // Access the 'stories' array from the Map
+      List<dynamic>? stories = data?['stories'];
+
+      // Use the 'stories' array as needed
+      if (stories != null) {
+        for (var story in stories) {
+          print("story $story"); // Do something with each story
+        }
+      }
+    } else {
+      print("Document does not exist.");
+    }
+  }
+
+  Future<List<StoryModel>> fetchAllStories() async {
+    // Reference to the collection
+    CollectionReference storyCollection =
+        FirebaseFirestore.instance.collection('story');
+
+    // Get all documents in the collection
+    QuerySnapshot querySnapshot = await storyCollection.get();
+
+    // Initialize an empty list to store the stories
+
+
+    // Loop through each document in the collection
+    for (var doc in querySnapshot.docs) {
+      // Convert the document snapshot to a StoryModel object
+      StoryModel story = StoryModel.fromJson(doc);
+
+      // Add the story to the list
+      stories.add(story);
+    }
+
+    print("Stories ${stories.toList()}");
+
+    // Return the list of stories
+    return stories;
+  }
 
   @override
   Widget build(BuildContext context) {
+    Future<void> pickImage(ImageSource source) async {
+      final ImagePicker _picker = ImagePicker();
+      final XFile? image = await _picker.pickImage(source: source);
+
+      if (image != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                StatusGenerateScreen(imageFile: File(image.path)),
+          ),
+        );
+        // Use the image file as needed
+      }
+    }
+
+    Future<void> showImageSourceDialog(BuildContext context) async {
+      return showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(Icons.photo_library),
+                  title: Text('Gallery'),
+                  onTap: () {
+                    pickImage(ImageSource.gallery);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.photo_camera),
+                  title: Text('Camera'),
+                  onTap: () {
+                    pickImage(ImageSource.camera);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -26,6 +152,7 @@ class StatusScreen extends StatelessWidget {
               Icons.search,
               size: 28,
             ),
+            color: ColorConstants.white,
           ),
           IconButton(
             onPressed: () {},
@@ -33,6 +160,7 @@ class StatusScreen extends StatelessWidget {
               Icons.more_vert_rounded,
               size: 28,
             ),
+            color: ColorConstants.white,
           ),
         ],
         bottom: AppBar(
@@ -40,7 +168,7 @@ class StatusScreen extends StatelessWidget {
           backgroundColor: ColorConstants.greenMain,
           leading: Container(
             child: Icon(
-              Icons.camera_alt_rounded,
+              Icons.group,
               color: Colors.white.withOpacity(0.5),
               size: 28,
             ),
@@ -64,7 +192,7 @@ class StatusScreen extends StatelessWidget {
                         NavigationUtil.push(context, RouteConstants.chatScreen);
                       },
                       child: Text(
-                        'CHATS',
+                        'Chats',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.5),
                           fontSize: 18,
@@ -91,7 +219,7 @@ class StatusScreen extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {},
                       child: const Text(
-                        'STATUS',
+                        'Status',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -120,7 +248,7 @@ class StatusScreen extends StatelessWidget {
                         NavigationUtil.push(context, RouteConstants.callScreen);
                       },
                       child: Text(
-                        'CALLS',
+                        'Calls',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.5),
                           fontSize: 18,
@@ -138,7 +266,7 @@ class StatusScreen extends StatelessWidget {
         children: [
           Column(
             children: [
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(top: 8.0),
                 child: ListTile(
                   leading: Stack(
@@ -150,31 +278,35 @@ class StatusScreen extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                          left: 30,
-                          top: 30,
-                          child: CircleAvatar(
-                            backgroundColor: ColorConstants.green,
-                            radius: 10,
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ))
+                        left: 30,
+                        top: 30,
+                        child: CircleAvatar(
+                          backgroundColor: ColorConstants.green,
+                          radius: 10,
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   title: Text(
                     'My Status',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   subtitle: Text(
-                    'Tap to add status update',
+                    'tap to add status update',
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
+                  onTap: () {
+                    showImageSourceDialog(context);
+                  },
                 ),
               ),
               Container(
@@ -195,7 +327,52 @@ class StatusScreen extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
+              // Expanded(
+              //     child: StreamBuilder(
+              //   stream: FirebaseUtils.getStoryUser(),
+              //   builder: (context, snapshot) {
+              //     switch (snapshot.connectionState) {
+              //       case ConnectionState.waiting:
+              //       case ConnectionState.none:
+              //         return const SizedBox();
+              //
+              //       case ConnectionState.active:
+              //       case ConnectionState.done:
+              //         final data = snapshot.data?.docs;
+              //         _list = data
+              //                 ?.map((e) => StoryModel.fromJson(e.data()))
+              //                 .toList() ??
+              //             [];
+              //         print("StoryList $_list");
+              //         if (_list.isNotEmpty) {
+              //           return ListView.builder(
+              //               reverse: true,
+              //               itemCount: _list.length,
+              //               padding: EdgeInsets.only(top: mq.height * .01),
+              //               physics: const BouncingScrollPhysics(),
+              //               itemBuilder: (context, index) {
+              //                 // return MessageCard(message: _list[index]);
+              //                 // return MessageCard(message: _list[index]);
+              //                 return  StatusTileComponent();
+              //               });
+              //         }
+              //         else {
+              //           return const Center(
+              //             child: Text('No Story Available !',
+              //                 style: TextStyle(fontSize: 14)),
+              //           );
+              //         }
+              //     }
+              //   },
+              // )),
               const StatusTileComponent(),
+              // OthersStatus(
+              //   name: stories[0].name,
+              //   seenvalue: 0,
+              //   statusNum: 3,
+              //   imageName: stories[0].image,
+              // ),
+
             ],
           ),
           Column(

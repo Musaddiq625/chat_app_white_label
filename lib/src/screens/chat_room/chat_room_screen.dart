@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
@@ -213,15 +212,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           MaterialButton(
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                // if (_list.isEmpty) {
+                if (_list.isEmpty) {
                 //on first message (add user to my_user collection of chat user)
                 FirebaseUtils.sendFirstMessage(
                     widget.chatUser, _textController.text, Type.text);
-                // } else {
-                //   //simply send message
-                //   FirebaseUtils.sendMessage(
-                //       widget.chatUser, _textController.text, Type.text);
-                // }
+                } else {
+                  //simply send message
+                  FirebaseUtils.sendMessage(
+                      widget.chatUser, _textController.text, Type.text);
+                }
                 _textController.text = '';
               }
             },

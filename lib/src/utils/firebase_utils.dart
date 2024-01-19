@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
+import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
 class FirebaseUtils {
@@ -22,6 +24,12 @@ class FirebaseUtils {
 
   static CollectionReference<Map<String, dynamic>> get chatsCollection =>
       firebaseService.firestore.collection(FirebaseConstants.chats);
+
+  static CollectionReference<Map<String, dynamic>> get storyCollection =>
+      firebaseService.firestore.collection(FirebaseConstants.story);
+
+  static CollectionReference<Map<String, dynamic>> get storiesCollection =>
+      firebaseService.firestore.collection(FirebaseConstants.stories);
 
   static UserModel? user;
 
@@ -54,6 +62,14 @@ class FirebaseUtils {
     return usersCollection.doc(chatUserId).get();
   }
 
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getStoryUser() {
+    return storyCollection.snapshots();
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getStories() {
+    return storiesCollection.snapshots();
+  }
+
   // User Data for chat room screen ChatTileComponent
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserInfo(
       String chatUserId) {
@@ -67,6 +83,19 @@ class FirebaseUtils {
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChats() {
     return chatsCollection.where('users', arrayContains: user?.id).snapshots();
+  }
+
+  static Future<void> deleteStory(String id, String storyUserId) async {
+    try {
+      print("id $id  userId $storyUserId ");
+      await storiesCollection.doc(id).delete();
+      await storyCollection.doc(storyUserId).update({
+        'stories': FieldValue.arrayRemove([id])
+      });
+      print('Story deleted');
+    } catch (e) {
+      print('Failed to delete story: $e');
+    }
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
@@ -165,4 +194,139 @@ class FirebaseUtils {
       print("No Image Selected");
     }
   }
+
+  static Stream<List<Map<String, dynamic>>> getUserData() async* {
+    await firebaseService.requestPermission();
+    Iterable<Contact> localContacts = await firebaseService.getLocalContacts();
+    CollectionReference usersRef =
+        firebaseService.firestore.collection('users');
+
+    await for (var snapshot in usersRef.snapshots()) {
+      List<Map<String, dynamic>> userDataList = [];
+      for (var doc in snapshot.docs) {
+        if (doc.exists) {
+          userDataList.add(doc.data() as Map<String, dynamic>);
+        } else {
+          throw Exception('User does not exist in the database');
+        }
+      }
+      yield userDataList;
+    }
+  }
+
+  static Map<String, dynamic> contactToMap(
+      Contact contact, String firebaseUserName) {
+    return {
+      'name': contact.displayName,
+      'phoneNumber': (contact.phones ?? [])
+          .map((item) => item.value)
+          .toList()
+          .first
+          ?.replaceAll(" ", "")
+          .replaceAll("+", ""),
+      'subName': firebaseUserName
+      // Add other contact fields you want to include
+    };
+  }
+
+  static String formatTimestamp(int timestamp) {
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    DateFormat formatter = DateFormat('h:mm a');
+    return formatter.format(date);
+  }
+
+  static Stream<List<Map<String, dynamic>>> getMatchingContacts() async* {
+    try {
+      await firebaseService.requestPermission();
+      Iterable<Contact> localContacts =
+          await firebaseService.getLocalContacts();
+      await for (List<Map<String, dynamic>> firebaseUsers in getUserData()) {
+        List<Map<String, dynamic>> matchedContacts = [];
+        print("firebaseusers $firebaseUsers");
+        // try {
+        for (var user in firebaseUsers) {
+          print("user $user");
+
+          String? firebasePhoneNumber = user['phoneNumber'];
+          String? firbaseUserName = user['name'];
+          print("firebasePhoneNumber $firebasePhoneNumber firbaseUserName $firbaseUserName");
+          for (var contact in localContacts) {
+            // print("contacts ${(contact.phones ?? [])
+            //     .map((item) => item.value)
+            //     .toList()}");
+            print("contact phones ${contact.toMap()}");
+            if(contact.phones != null) {
+              var contactPhones = (contact.phones ?? [])
+                  .map((item) => item.value)
+                  .toList()
+                  .firstWhere((phone) =>
+              phone != null && phone
+                  .trim()
+                  .isNotEmpty,
+                  orElse: () => null)
+                  ?.replaceAll(" ", "");
+
+              print("contactPhones $contactPhones");
+              // try {
+              if (contactPhones != null && firebasePhoneNumber != null &&
+                  contactPhones.contains(firebasePhoneNumber)) {
+                final contactMap = contactToMap(contact, firbaseUserName!);
+                print("Adding contact to matchedContacts: $contactMap");
+                matchedContacts.add(contactMap);
+                // Removed break for demonstration; re-add if needed
+              }
+            }
+
+            // }
+            // catch (e) {
+            //   print("An error occurred addding number : $e");
+            // }
+          }
+        }
+        print("Yielding matchedContacts: $matchedContacts");
+        yield matchedContacts;
+      }
+    } catch (e) {
+      print("Error 01 : $e");
+    }
+  }
+
+
+  static Future<List<Map<String, dynamic>>> getMatchingContactsOnce() async {
+    try {
+      await firebaseService.requestPermission();
+      Iterable<Contact> localContacts = await firebaseService.getLocalContacts();
+      List<Map<String, dynamic>> firebaseUsers = await getUserData().first;
+      List<Map<String, dynamic>> matchedContacts = [];
+
+      for (var user in firebaseUsers) {
+        String? firebasePhoneNumber = user['phoneNumber'];
+        String? firbaseUserName = user['name'];
+
+        for (var contact in localContacts) {
+          var contactPhones = (contact.phones ?? [])
+              .map((item) => item.value)
+              .toList()
+              .firstWhere((phone) => phone != null && phone.trim().isNotEmpty, orElse: () => null)
+              ?.replaceAll(" ", "");
+
+          if (contactPhones != null && firebasePhoneNumber != null && contactPhones.contains(firebasePhoneNumber)) {
+            final contactMap = contactToMap(contact, firbaseUserName!);
+            matchedContacts.add(contactMap);
+          }
+        }
+      }
+
+      return matchedContacts;
+    } catch (e) {
+      print("Error 01 : $e");
+      return [];
+    }
+  }
+
+
+// } catch (e) {
+//   print("An error occurred: $e");
+//   // Handle the error or rethrow
+// }
 }

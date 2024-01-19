@@ -56,6 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
               Icons.search,
               size: 28,
             ),
+            color: ColorConstants.white,
           ),
           IconButton(
             onPressed: () {},
@@ -63,6 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
               Icons.more_vert_rounded,
               size: 28,
             ),
+            color: ColorConstants.white,
           ),
         ],
         bottom: AppBar(
