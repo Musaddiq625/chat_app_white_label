@@ -37,7 +37,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       String? localNumber = (localContacts[i].phones ?? [])
           .map((item) => item.value)
           .toList()
-          .first
+          .firstWhere((phone) => phone != null && phone.trim().isNotEmpty, orElse: () => null)
           ?.replaceAll(' ', '')
           .replaceAll('+', '');
       if ((localNumber ?? '').startsWith('0')) {
