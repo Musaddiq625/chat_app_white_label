@@ -355,7 +355,7 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
 
   Future<void> startVideoPlayer(XFile videoFile) async {
     try {
-      final Directory extDir = await getApplicationDocumentsDirectory();
+      final Directory extDir = await getApplicationCacheDirectory();
       final String dirPath = '${extDir.path}/videos';
       await Directory(dirPath).create(recursive: true);
       final String filePath =

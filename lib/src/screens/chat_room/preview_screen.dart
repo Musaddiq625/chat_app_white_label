@@ -53,8 +53,8 @@ class _PreviewScreenState extends State<PreviewScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     EdgeInsets safeArea = MediaQuery.of(context).padding;
     double aspectRatio = screenWidth / (screenHeight - safeArea.top);
-    if ((!_controller!.value.isInitialized || _controller == null) &&
-        widget.isVideo) {
+    if (widget.isVideo &&
+        (!_controller!.value.isInitialized || _controller == null)) {
       return const Center(
           child: CircularProgressIndicator(
         color: ColorConstants.greenMain,

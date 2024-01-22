@@ -12,9 +12,8 @@ import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:path/path.dart' as path;
 import 'package:intl/intl.dart';
-// import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 class FirebaseUtils {
   static FirebaseService firebaseService = getIt<FirebaseService>();
@@ -46,6 +45,8 @@ class FirebaseUtils {
           ? '${phoneNumber}_$chatUserPhoneNumber'
           : '${chatUserPhoneNumber}_$phoneNumber';
 
+  static String getDateTimeNowId() =>
+      DateTime.now().millisecondsSinceEpoch.toString();
   static Future<void> createUser(String phoneNumber) async {
     final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
@@ -142,7 +143,8 @@ class FirebaseUtils {
       String? msg,
       String? filePath,
       int? length,
-      String? thumbnailPath}) async {
+      String? thumbnailPath,
+      String? fileName}) async {
     try {
       // if message type is text
       String? sendingMessage = msg;
@@ -158,13 +160,16 @@ class FirebaseUtils {
             await uploadMedia(filePath!, MediaType.chatVideo, chatUser);
         thumbnail =
             await uploadMedia(thumbnailPath!, MediaType.chatImage, chatUser);
+      } else if (type == MessageType.document) {
+        sendingMessage = await uploadMedia(filePath!, MediaType.chatDocument,
+            chatUser, fileName?.split('.').first);
       } else if (type == MessageType.audio) {
         sendingMessage =
             await uploadMedia(filePath!, MediaType.chatVoice, chatUser);
       }
 
       //message sending time (also used as id)
-      final sendingTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final sendingTimeAsId = getDateTimeNowId();
       final chatId = getConversationID(chatUser.id ?? '');
       final chatDoc = chatsCollection.doc(chatId);
 
@@ -174,13 +179,14 @@ class FirebaseUtils {
           readAt: null,
           type: type,
           fromId: user?.id ?? '',
-          sentAt: sendingTime,
+          sentAt: sendingTimeAsId,
           length: length,
-          thumbnail: thumbnail);
+          thumbnail: thumbnail,
+          fileName: fileName);
 
       await chatDoc
           .collection(FirebaseConstants.messages)
-          .doc(sendingTime)
+          .doc(sendingTimeAsId)
           .set(message.toJson())
           .then((value) async =>
                   //adding last message
@@ -221,10 +227,26 @@ class FirebaseUtils {
     });
   }
 
+  static Future<void> downloadDocument(
+      String downloadUrl, String filePathToExternalStorage) async {
+    // Download the PDF from Firebase Storage
+    final file = File(filePathToExternalStorage);
+    try {
+      await firebaseService.storage.refFromURL(downloadUrl).writeToFile(file);
+      // Success message
+      print('Downloaded PDF to $filePathToExternalStorage');
+    } on FirebaseException catch (e) {
+      // Handle error
+      print('Error downloading PDF: $e');
+    }
+  }
+
   static Future<String?> uploadMedia(String filePath, MediaType uploadType,
-      [UserModel? chatUser]) async {
+      [UserModel? chatUser, String? filename]) async {
     //getting image file extension and name
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    String fileName = filename != null
+        ? '${filename}_${getDateTimeNowId()}'
+        : getDateTimeNowId();
     final extension = filePath.split('.').last;
 
     //  getUpload Refrence to its type
@@ -247,6 +269,10 @@ class FirebaseUtils {
           return firebaseService.storage.ref().child(
               'chats/${getConversationID(chatUser?.id ?? '')}/chat_voice/$fileName.$extension');
 
+        case MediaType.chatDocument:
+          return firebaseService.storage.ref().child(
+              'chats/${getConversationID(chatUser?.id ?? '')}/chat_document/$fileName.$extension');
+
         default:
           return firebaseService.storage
               .ref()
@@ -265,7 +291,9 @@ class FirebaseUtils {
                       ? 'image/$extension'
                       : uploadType == MediaType.chatVideo
                           ? 'video/$extension'
-                          : 'audio/$extension'))
+                          : uploadType == MediaType.chatDocument
+                              ? 'document/$extension'
+                              : 'audio/$extension'))
           .then((p0) => LoggerUtil.logs(
               'Data Transferred: ${p0.bytesTransferred / 1000} kb'));
 
@@ -334,26 +362,26 @@ class FirebaseUtils {
 
           String? firebasePhoneNumber = user['phoneNumber'];
           String? firbaseUserName = user['name'];
-          print("firebasePhoneNumber $firebasePhoneNumber firbaseUserName $firbaseUserName");
+          print(
+              "firebasePhoneNumber $firebasePhoneNumber firbaseUserName $firbaseUserName");
           for (var contact in localContacts) {
             // print("contacts ${(contact.phones ?? [])
             //     .map((item) => item.value)
             //     .toList()}");
             print("contact phones ${contact.toMap()}");
-            if(contact.phones != null) {
+            if (contact.phones != null) {
               var contactPhones = (contact.phones ?? [])
                   .map((item) => item.value)
                   .toList()
-                  .firstWhere((phone) =>
-              phone != null && phone
-                  .trim()
-                  .isNotEmpty,
-                  orElse: () => null)
+                  .firstWhere(
+                      (phone) => phone != null && phone.trim().isNotEmpty,
+                      orElse: () => null)
                   ?.replaceAll(" ", "");
 
               print("contactPhones $contactPhones");
               // try {
-              if (contactPhones != null && firebasePhoneNumber != null &&
+              if (contactPhones != null &&
+                  firebasePhoneNumber != null &&
                   contactPhones.contains(firebasePhoneNumber)) {
                 final contactMap = contactToMap(contact, firbaseUserName!);
                 print("Adding contact to matchedContacts: $contactMap");
@@ -376,11 +404,11 @@ class FirebaseUtils {
     }
   }
 
-
   static Future<List<Map<String, dynamic>>> getMatchingContactsOnce() async {
     try {
       await firebaseService.requestPermission();
-      Iterable<Contact> localContacts = await firebaseService.getLocalContacts();
+      Iterable<Contact> localContacts =
+          await firebaseService.getLocalContacts();
       List<Map<String, dynamic>> firebaseUsers = await getUserData().first;
       List<Map<String, dynamic>> matchedContacts = [];
 
@@ -392,10 +420,13 @@ class FirebaseUtils {
           var contactPhones = (contact.phones ?? [])
               .map((item) => item.value)
               .toList()
-              .firstWhere((phone) => phone != null && phone.trim().isNotEmpty, orElse: () => null)
+              .firstWhere((phone) => phone != null && phone.trim().isNotEmpty,
+                  orElse: () => null)
               ?.replaceAll(" ", "");
 
-          if (contactPhones != null && firebasePhoneNumber != null && contactPhones.contains(firebasePhoneNumber)) {
+          if (contactPhones != null &&
+              firebasePhoneNumber != null &&
+              contactPhones.contains(firebasePhoneNumber)) {
             final contactMap = contactToMap(contact, firbaseUserName!);
             matchedContacts.add(contactMap);
           }
@@ -408,12 +439,6 @@ class FirebaseUtils {
       return [];
     }
   }
-
-
-// } catch (e) {
-//   print("An error occurred: $e");
-//   // Handle the error or rethrow
-// }
 }
 
-enum MediaType { profilePicture, chatImage, chatVideo, chatVoice }
+enum MediaType { profilePicture, chatImage, chatVideo, chatVoice, chatDocument }

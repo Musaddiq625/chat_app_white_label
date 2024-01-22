@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -6,10 +8,14 @@ import 'package:chat_app_white_label/src/utils/api_utlils.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/dialogs.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:voice_message_package/voice_message_package.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:gallery_saver/gallery_saver.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../models/message_model.dart';
 
@@ -89,66 +95,12 @@ class _MessageCardState extends State<MessageCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (widget.message.type == MessageType.audio)
-                        // voice message
-                        VoiceMessageView(
-                          backgroundColor: ColorConstants.blueLight,
-                          innerPadding: 0,
-                          circlesColor: ColorConstants.blackLight,
-                          counterTextStyle: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: ColorConstants.blackLight),
-                          activeSliderColor: Colors.grey,
-                          controller: VoiceController(
-                            audioSrc: widget.message.msg ?? '',
-                            maxDuration:
-                                Duration(seconds: widget.message.length ?? 0),
-                            isFile: false,
-                            onComplete: () {},
-                            onPause: () {},
-                            onPlaying: () {},
-                            // onError: (err) {},
-                          ),
-                        )
+                        VoiceMessageCompnent(
+                            message: widget.message, isMe: false)
                       else if (widget.message.type == MessageType.image)
-                        //show image
-                        SizedBox(
-                          width: mq.width * 0.6,
-                          height: 200,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.message.msg ?? '',
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              )),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.image, size: 70),
-                            ),
-                          ),
-                        )
+                        ImageMessageComponent(message: widget.message)
                       else if (widget.message.type == MessageType.video)
-                        SizedBox(
-                          width: mq.width * 0.6,
-                          height: 200,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.message.thumbnail ?? '',
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              )),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.image, size: 70),
-                            ),
-                          ),
-                        )
+                        VideoMessageComponent(message: widget.message)
                       else
                         Text(
                           widget.message.msg ?? '',
@@ -216,90 +168,19 @@ class _MessageCardState extends State<MessageCard> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       if (widget.message.type == MessageType.audio)
-                        // voice message
-                        VoiceMessageView(
-                          backgroundColor: ColorConstants.blueLight,
-                          innerPadding: 0,
-                          circlesColor: ColorConstants.blackLight,
-                          counterTextStyle: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: ColorConstants.blackLight),
-                          activeSliderColor: Colors.grey,
-                          controller: VoiceController(
-                            audioSrc: widget.message.msg ?? '',
-                            maxDuration:
-                                Duration(seconds: widget.message.length ?? 0),
-                            isFile: false,
-                            onComplete: () {},
-                            onPause: () {},
-                            onPlaying: () {},
-                            // onError: (err) {},
-                          ),
-                        )
+                        VoiceMessageCompnent(
+                            message: widget.message, isMe: true)
                       else if (widget.message.type == MessageType.image)
-                        //show image
-                        SizedBox(
-                          width: mq.width * 0.6,
-                          height: 200,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.message.msg ?? '',
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              )),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.image, size: 70),
-                            ),
-                          ),
-                        )
+                        ImageMessageComponent(message: widget.message)
                       else if (widget.message.type == MessageType.video)
+                        VideoMessageComponent(message: widget.message)
+                      else if (widget.message.type == MessageType.document)
                         SizedBox(
                           width: mq.width * 0.6,
-                          height: 200,
-                          child: Stack(
-                            children: [
-                              SizedBox(
-                                width: mq.width * 0.6,
-                                height: 200,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: CachedNetworkImage(
-                                    imageUrl: widget.message.thumbnail ?? '',
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) => const Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: ColorConstants.greenMain,
-                                      ),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.image, size: 70),
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black54,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.play_arrow,
-                                      color: Colors.white,
-                                      size: 22,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          height: 50,
+                          child: DocumentMessageComponent(
+                              downloadUrl: widget.message.msg ?? '',
+                              fileName: '${widget.message.fileName}'),
                         )
                       else
                         Text(
@@ -628,4 +509,196 @@ class _OptionItem extends StatelessWidget {
           ]),
         ));
   }
+}
+
+class VoiceMessageCompnent extends StatefulWidget {
+  final MessageModel message;
+  final bool isMe;
+  const VoiceMessageCompnent(
+      {super.key, required this.message, required this.isMe});
+
+  @override
+  State<VoiceMessageCompnent> createState() => _VoiceMessageCompnentState();
+}
+
+class _VoiceMessageCompnentState extends State<VoiceMessageCompnent> {
+  @override
+  Widget build(BuildContext context) {
+    return VoiceMessageView(
+      backgroundColor:
+          widget.isMe ? ColorConstants.greenLight : ColorConstants.blueLight,
+      innerPadding: 0,
+      circlesColor: ColorConstants.blackLight,
+      counterTextStyle: const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          color: ColorConstants.blackLight),
+      activeSliderColor: Colors.grey,
+      controller: VoiceController(
+        audioSrc: widget.message.msg ?? '',
+        maxDuration: Duration(seconds: widget.message.length ?? 0),
+        isFile: false,
+        onComplete: () {},
+        onPause: () {},
+        onPlaying: () {},
+        // onError: (err) {},
+      ),
+    );
+  }
+}
+
+class ImageMessageComponent extends StatelessWidget {
+  final MessageModel message;
+  const ImageMessageComponent({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: mq.width * 0.6,
+      height: 200,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: CachedNetworkImage(
+          imageUrl: message.msg ?? '',
+          fit: BoxFit.cover,
+          placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: ColorConstants.greenMain,
+          )),
+          errorWidget: (context, url, error) =>
+              const Icon(Icons.image, size: 70),
+        ),
+      ),
+    );
+  }
+}
+
+class VideoMessageComponent extends StatelessWidget {
+  final MessageModel message;
+  const VideoMessageComponent({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: mq.width * 0.6,
+      height: 200,
+      child: Stack(
+        children: [
+          SizedBox(
+            width: mq.width * 0.6,
+            height: 200,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: CachedNetworkImage(
+                imageUrl: message.thumbnail ?? '',
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: ColorConstants.greenMain,
+                  ),
+                ),
+                errorWidget: (context, url, error) =>
+                    const Icon(Icons.image, size: 70),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 22,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DocumentMessageComponent extends StatefulWidget {
+  final String downloadUrl;
+  final String fileName;
+
+  const DocumentMessageComponent({
+    super.key,
+    required this.downloadUrl,
+    required this.fileName,
+  });
+
+  @override
+  State<DocumentMessageComponent> createState() =>
+      _DocumentMessageComponentState();
+}
+
+class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
+  String? filePathToExternalStorage;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      LoggerUtil.logs('widget.downloadUrl ${widget.downloadUrl}');
+      final directory = await getExternalStorageDirectory();
+      final String dirPath = '${directory?.path ?? ''}/documents';
+      await Directory(dirPath).create(recursive: true);
+      filePathToExternalStorage = '$dirPath/${widget.fileName}';
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<bool>(
+        future: _isFileDownloaded(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final isDownloaded = snapshot.data!;
+            LoggerUtil.logs('isDownloaded ${widget.fileName} $isDownloaded');
+            return isDownloaded
+                ? _buildOpenButton(context)
+                : _buildDownloadButton(context);
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      );
+
+  Future<bool> _isFileDownloaded() async {
+    LoggerUtil.logs('_isFileDownloaded $filePathToExternalStorage');
+    return File(filePathToExternalStorage ?? '').exists();
+  }
+
+  Widget _buildOpenButton(BuildContext context) => IconButton(
+        icon: const Icon(Icons.open_in_browser),
+        onPressed: () async {
+          await Permission.manageExternalStorage.request();
+          LoggerUtil.logs('Open document $filePathToExternalStorage');
+          try {
+            await OpenFilex.open(
+              filePathToExternalStorage,
+            );
+          } on Exception catch (e) {
+            LoggerUtil.logs(e);
+          }
+        },
+      );
+
+  Widget _buildDownloadButton(BuildContext context) => TextButton(
+        onPressed: () async {
+          await FirebaseUtils.downloadDocument(
+              widget.downloadUrl, filePathToExternalStorage ?? '');
+          setState(() {});
+        },
+        child: Text('Download ${widget.fileName}'),
+      );
 }

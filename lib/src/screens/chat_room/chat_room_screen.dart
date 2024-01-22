@@ -12,6 +12,7 @@ import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -211,6 +212,38 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         border: InputBorder.none),
                   )),
 
+                  //pick doc from storage button
+                  IconButton(
+                      onPressed: () async {
+                        FilePickerResult? result =
+                            await FilePicker.platform.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: [
+                            'doc',
+                            'pdf',
+                          ],
+                        );
+
+                        if (result != null) {
+                          // uploading & sending document one by one
+                          for (var i in result.files) {
+                            log('Document Path: ${i.path}');
+                            setState(() => _isUploading = true);
+
+                            await FirebaseUtils.sendMessage(
+                                chatUser: widget.chatUser,
+                                type: MessageType.document,
+                                isFirstMessage: messagesList.isEmpty,
+                                filePath: i.path,
+                                fileName: i.name);
+                            setState(() => _isUploading = false);
+                          }
+                        }
+                      },
+                      padding: const EdgeInsets.all(0),
+                      icon: const Icon(Icons.description_rounded,
+                          color: ColorConstants.blue, size: 26)),
+
                   //pick image from gallery button
                   IconButton(
                       onPressed: () async {
@@ -241,22 +274,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       onPressed: () async {
                         NavigationUtil.push(
                             context, RouteConstants.cameraScreen);
-                        // final ImagePicker picker = ImagePicker();
-
-                        // // Pick an image
-                        // final XFile? image = await picker.pickImage(
-                        //     source: ImageSource.camera, imageQuality: 70);
-                        // if (image != null) {
-                        //   LoggerUtil.logs('Image Path: ${image.path}');
-                        //   setState(() => _isUploading = true);
-
-                        //   await FirebaseUtils.sendMessage(
-                        //       chatUser: widget.chatUser,
-                        //       type: MessageType.image,
-                        //       isFirstMessage: messagesList.isEmpty,
-                        //       file: File(image.path));
-                        //   setState(() => _isUploading = false);
-                        // }
                       },
                       icon: const Icon(Icons.camera_alt_rounded,
                           color: ColorConstants.blue, size: 26)),
