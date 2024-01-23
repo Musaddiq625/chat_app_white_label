@@ -190,13 +190,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               child: Row(
                 children: [
                   //emoji button
-                  IconButton(
-                      onPressed: () {
+                  _chatTileIcon(
+                      icon: Icons.emoji_emotions,
+                      onTap: () {
                         FocusScope.of(context).unfocus();
                         setState(() => _showEmoji = !_showEmoji);
-                      },
-                      icon: const Icon(Icons.emoji_emotions,
-                          color: Colors.blueAccent, size: 25)),
+                      }),
 
                   Expanded(
                       child: TextField(
@@ -213,8 +212,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   )),
 
                   //pick doc from storage button
-                  IconButton(
-                      onPressed: () async {
+                  _chatTileIcon(
+                      icon: Icons.description_rounded,
+                      onTap: () async {
                         FilePickerResult? result =
                             await FilePicker.platform.pickFiles(
                           type: FileType.custom,
@@ -231,22 +231,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             setState(() => _isUploading = true);
 
                             await FirebaseUtils.sendMessage(
-                                chatUser: widget.chatUser,
-                                type: MessageType.document,
-                                isFirstMessage: messagesList.isEmpty,
-                                filePath: i.path,
-                                fileName: i.name);
+                              chatUser: widget.chatUser,
+                              type: MessageType.document,
+                              isFirstMessage: messagesList.isEmpty,
+                              filePath: i.path,
+                            );
                             setState(() => _isUploading = false);
                           }
                         }
-                      },
-                      padding: const EdgeInsets.all(0),
-                      icon: const Icon(Icons.description_rounded,
-                          color: ColorConstants.blue, size: 26)),
+                      }),
 
                   //pick image from gallery button
-                  IconButton(
-                      onPressed: () async {
+                  _chatTileIcon(
+                      icon: Icons.image,
+                      onTap: () async {
                         final ImagePicker picker = ImagePicker();
 
                         // Picking multiple images
@@ -265,18 +263,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               filePath: i.path);
                           setState(() => _isUploading = false);
                         }
-                      },
-                      icon: const Icon(Icons.image,
-                          color: ColorConstants.blue, size: 26)),
+                      }),
 
                   //take image from camera button
-                  IconButton(
-                      onPressed: () async {
+                  _chatTileIcon(
+                      icon: Icons.camera_alt_rounded,
+                      onTap: () async {
                         NavigationUtil.push(
                             context, RouteConstants.cameraScreen);
-                      },
-                      icon: const Icon(Icons.camera_alt_rounded,
-                          color: ColorConstants.blue, size: 26)),
+                      }),
 
                   //voice message mutton
                   RecordButtonComponent(
@@ -390,5 +385,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               }
               return Container();
             }));
+  }
+
+  Widget _chatTileIcon({
+    required IconData icon,
+    required Function() onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 7),
+        child: Icon(icon, color: Colors.blueAccent, size: 25),
+      ),
+      // padding: EdgeInsets.zero,
+      // constraints: const BoxConstraints(),
+    );
   }
 }

@@ -101,6 +101,10 @@ class _MessageCardState extends State<MessageCard> {
                         ImageMessageComponent(message: widget.message)
                       else if (widget.message.type == MessageType.video)
                         VideoMessageComponent(message: widget.message)
+                      else if (widget.message.type == MessageType.document)
+                        DocumentMessageComponent(
+                          downloadUrl: widget.message.msg ?? '',
+                        )
                       else
                         Text(
                           widget.message.msg ?? '',
@@ -175,12 +179,8 @@ class _MessageCardState extends State<MessageCard> {
                       else if (widget.message.type == MessageType.video)
                         VideoMessageComponent(message: widget.message)
                       else if (widget.message.type == MessageType.document)
-                        SizedBox(
-                          width: mq.width * 0.6,
-                          height: 50,
-                          child: DocumentMessageComponent(
-                              downloadUrl: widget.message.msg ?? '',
-                              fileName: '${widget.message.fileName}'),
+                        DocumentMessageComponent(
+                          downloadUrl: widget.message.msg ?? '',
                         )
                       else
                         Text(
@@ -511,22 +511,17 @@ class _OptionItem extends StatelessWidget {
   }
 }
 
-class VoiceMessageCompnent extends StatefulWidget {
+class VoiceMessageCompnent extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
   const VoiceMessageCompnent(
       {super.key, required this.message, required this.isMe});
 
   @override
-  State<VoiceMessageCompnent> createState() => _VoiceMessageCompnentState();
-}
-
-class _VoiceMessageCompnentState extends State<VoiceMessageCompnent> {
-  @override
   Widget build(BuildContext context) {
     return VoiceMessageView(
       backgroundColor:
-          widget.isMe ? ColorConstants.greenLight : ColorConstants.blueLight,
+          isMe ? ColorConstants.greenLight : ColorConstants.blueLight,
       innerPadding: 0,
       circlesColor: ColorConstants.blackLight,
       counterTextStyle: const TextStyle(
@@ -535,8 +530,8 @@ class _VoiceMessageCompnentState extends State<VoiceMessageCompnent> {
           color: ColorConstants.blackLight),
       activeSliderColor: Colors.grey,
       controller: VoiceController(
-        audioSrc: widget.message.msg ?? '',
-        maxDuration: Duration(seconds: widget.message.length ?? 0),
+        audioSrc: message.msg ?? '',
+        maxDuration: Duration(seconds: message.length ?? 0),
         isFile: false,
         onComplete: () {},
         onPause: () {},
@@ -628,12 +623,10 @@ class VideoMessageComponent extends StatelessWidget {
 
 class DocumentMessageComponent extends StatefulWidget {
   final String downloadUrl;
-  final String fileName;
 
   const DocumentMessageComponent({
     super.key,
     required this.downloadUrl,
-    required this.fileName,
   });
 
   @override
@@ -643,62 +636,93 @@ class DocumentMessageComponent extends StatefulWidget {
 
 class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
   String? filePathToExternalStorage;
+  String? fileNameWithExt;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      LoggerUtil.logs('widget.downloadUrl ${widget.downloadUrl}');
-      final directory = await getExternalStorageDirectory();
-      final String dirPath = '${directory?.path ?? ''}/documents';
-      await Directory(dirPath).create(recursive: true);
-      filePathToExternalStorage = '$dirPath/${widget.fileName}';
-      setState(() {});
+      await getFileNameAndExt(widget.downloadUrl);
+      getFilePathToExternalStorage(widget.downloadUrl);
     });
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<bool>(
-        future: _isFileDownloaded(),
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: mq.width * 0.5,
+      height: 35,
+      child: FutureBuilder<bool>(
+        future: isFileDownloaded(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final isDownloaded = snapshot.data!;
-            LoggerUtil.logs('isDownloaded ${widget.fileName} $isDownloaded');
-            return isDownloaded
-                ? _buildOpenButton(context)
-                : _buildDownloadButton(context);
+            LoggerUtil.logs('isDownloaded $fileNameWithExt $isDownloaded');
+            return GestureDetector(
+              onTap: () async =>
+                  isDownloaded ? openDocument() : downloadAndOpenDocument(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '$fileNameWithExt ',
+                    style: const TextStyle(
+                        color: ColorConstants.blackLight,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Icon(
+                      !isDownloaded
+                          ? Icons.downloading_rounded
+                          : Icons.description_rounded,
+                      size: 20,
+                      color: ColorConstants.blackLight),
+                ],
+              ),
+            );
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: ColorConstants.greenMain,
+            ));
           }
         },
-      );
+      ),
+    );
+  }
 
-  Future<bool> _isFileDownloaded() async {
-    LoggerUtil.logs('_isFileDownloaded $filePathToExternalStorage');
+  Future<bool> isFileDownloaded() async {
     return File(filePathToExternalStorage ?? '').exists();
   }
 
-  Widget _buildOpenButton(BuildContext context) => IconButton(
-        icon: const Icon(Icons.open_in_browser),
-        onPressed: () async {
-          await Permission.manageExternalStorage.request();
-          LoggerUtil.logs('Open document $filePathToExternalStorage');
-          try {
-            await OpenFilex.open(
-              filePathToExternalStorage,
-            );
-          } on Exception catch (e) {
-            LoggerUtil.logs(e);
-          }
-        },
+  openDocument() async {
+    await Permission.manageExternalStorage.request();
+    try {
+      await OpenFilex.open(
+        filePathToExternalStorage,
       );
+    } on Exception catch (e) {
+      LoggerUtil.logs(e);
+    }
+  }
 
-  Widget _buildDownloadButton(BuildContext context) => TextButton(
-        onPressed: () async {
-          await FirebaseUtils.downloadDocument(
-              widget.downloadUrl, filePathToExternalStorage ?? '');
-          setState(() {});
-        },
-        child: Text('Download ${widget.fileName}'),
-      );
+  downloadAndOpenDocument() async {
+    await FirebaseUtils.downloadDocument(
+        widget.downloadUrl, filePathToExternalStorage ?? '');
+    setState(() {});
+    openDocument();
+  }
+
+  getFilePathToExternalStorage(String downloadUrl) async {
+    final directory = await getExternalStorageDirectory();
+    final String dirPath = '${directory?.path ?? ''}/documents';
+    await Directory(dirPath).create(recursive: true);
+    filePathToExternalStorage = '$dirPath/$fileNameWithExt';
+    setState(() {});
+  }
+
+  getFileNameAndExt(String downloadUrl) {
+    final splitted = downloadUrl.split('?');
+    fileNameWithExt = splitted[splitted.length - 2].split('_we_uno_chat_').last;
+  }
 }

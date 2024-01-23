@@ -13,7 +13,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 
 class FirebaseUtils {
   static FirebaseService firebaseService = getIt<FirebaseService>();
@@ -136,15 +135,15 @@ class FirebaseUtils {
   }
 
   // for sending message
-  static Future<void> sendMessage(
-      {required UserModel chatUser,
-      required MessageType type,
-      required bool isFirstMessage,
-      String? msg,
-      String? filePath,
-      int? length,
-      String? thumbnailPath,
-      String? fileName}) async {
+  static Future<void> sendMessage({
+    required UserModel chatUser,
+    required MessageType type,
+    required bool isFirstMessage,
+    String? msg,
+    String? filePath,
+    int? length,
+    String? thumbnailPath,
+  }) async {
     try {
       // if message type is text
       String? sendingMessage = msg;
@@ -161,8 +160,11 @@ class FirebaseUtils {
         thumbnail =
             await uploadMedia(thumbnailPath!, MediaType.chatImage, chatUser);
       } else if (type == MessageType.document) {
-        sendingMessage = await uploadMedia(filePath!, MediaType.chatDocument,
-            chatUser, fileName?.split('.').first);
+        sendingMessage = await uploadMedia(
+          filePath!,
+          MediaType.chatDocument,
+          chatUser,
+        );
       } else if (type == MessageType.audio) {
         sendingMessage =
             await uploadMedia(filePath!, MediaType.chatVoice, chatUser);
@@ -174,15 +176,15 @@ class FirebaseUtils {
       final chatDoc = chatsCollection.doc(chatId);
 
       final MessageModel message = MessageModel(
-          toId: chatUser.id ?? '',
-          msg: sendingMessage,
-          readAt: null,
-          type: type,
-          fromId: user?.id ?? '',
-          sentAt: sendingTimeAsId,
-          length: length,
-          thumbnail: thumbnail,
-          fileName: fileName);
+        toId: chatUser.id ?? '',
+        msg: sendingMessage,
+        readAt: null,
+        type: type,
+        fromId: user?.id ?? '',
+        sentAt: sendingTimeAsId,
+        length: length,
+        thumbnail: thumbnail,
+      );
 
       await chatDoc
           .collection(FirebaseConstants.messages)
@@ -234,20 +236,28 @@ class FirebaseUtils {
     try {
       await firebaseService.storage.refFromURL(downloadUrl).writeToFile(file);
       // Success message
-      print('Downloaded PDF to $filePathToExternalStorage');
+      LoggerUtil.logs('Downloaded PDF to $filePathToExternalStorage');
     } on FirebaseException catch (e) {
       // Handle error
-      print('Error downloading PDF: $e');
+      LoggerUtil.logs('Error downloading PDF: $e');
     }
   }
 
-  static Future<String?> uploadMedia(String filePath, MediaType uploadType,
-      [UserModel? chatUser, String? filename]) async {
+  static Future<String?> uploadMedia(
+    String filePath,
+    MediaType uploadType, [
+    UserModel? chatUser,
+  ]) async {
+    final splittedPath = filePath.split('.');
     //getting image file extension and name
-    String fileName = filename != null
-        ? '${filename}_${getDateTimeNowId()}'
+    // if document so make it unique with #weuno#
+    String fileName = uploadType == MediaType.chatDocument
+        ? '${getDateTimeNowId()}_we_uno_chat_${splittedPath[splittedPath.length - 2].split('/').last}'
         : getDateTimeNowId();
-    final extension = filePath.split('.').last;
+    final extension = splittedPath.last;
+
+    LoggerUtil.logs(extension);
+    LoggerUtil.logs(fileName);
 
     //  getUpload Refrence to its type
     Reference getUploadRef(uploadType) {
