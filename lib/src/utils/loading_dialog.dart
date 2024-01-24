@@ -33,7 +33,7 @@ class LoadingDialog {
                       // Image.asset(AssetConstants.logo)
                       CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
-                              ColorConstants.greenLight))
+                              ColorConstants.greenMain))
                       // Shimmer.fromColors(
                       //   child: Image.asset(AssetConstants.logo),
                       //   baseColor: ColorConstants.niceBlue,

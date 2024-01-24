@@ -3,6 +3,7 @@ import 'message_model.dart';
 class ChatModel {
   String? id;
   bool? isGroup;
+  String? groupImage;
   MessageModel? lastMessage;
   String? unreadCount;
   List<String>? users;
@@ -12,6 +13,7 @@ class ChatModel {
   ChatModel({
     this.id,
     this.isGroup,
+    this.groupImage,
     this.lastMessage,
     this.unreadCount,
     this.users,
@@ -22,6 +24,7 @@ class ChatModel {
     return ChatModel(
       id: json['id'],
       isGroup: json['is_group'],
+      groupImage: json['group_image'],
       lastMessage: json['last_message'] != null
           ? MessageModel.fromJson(json['last_message'])
           : null,
@@ -41,6 +44,7 @@ class ChatModel {
     final data = <String, dynamic>{};
     data['id'] = id;
     data['is_group'] = isGroup;
+    data['group_image'] = groupImage;
     if (lastMessage != null) {
       data['last_message'] = lastMessage?.toJson();
     }

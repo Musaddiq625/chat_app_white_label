@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -47,7 +48,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
         textAlign: widget.textAlign,
         controller: _controller,
         keyboardType: widget.keyboardType,
-        decoration: InputDecoration(hintText: widget.hintText),
+        cursorColor: ColorConstants.greenMain,
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          border: const UnderlineInputBorder(
+            borderSide: BorderSide(color: ColorConstants.greenMain, width: 2),
+          ),
+          focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: ColorConstants.greenMain, width: 2),
+          ),
+          enabledBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: ColorConstants.greenMain, width: 2),
+          ),
+        ),
         onChanged: (value) {
           if (widget.onChanged != null) {
             widget.onChanged!(value);

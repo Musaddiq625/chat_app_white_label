@@ -4,73 +4,52 @@ import 'package:chat_app_white_label/src/components/chat_input_icon_component.da
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/components/record_button_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
+import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
-import 'package:chat_app_white_label/src/utils/date_utils.dart';
-import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../models/usert_model.dart';
 import '../../models/message_model.dart';
 
-class ChatRoomScreen extends StatefulWidget {
-  final UserModel chatUser;
+class GroupChatRoomScreen extends StatefulWidget {
+  final String groupChatId;
   final String? unreadCount;
 
-  const ChatRoomScreen(
-      {super.key, required this.chatUser, required this.unreadCount});
+  const GroupChatRoomScreen(
+      {super.key, required this.groupChatId, required this.unreadCount});
 
   @override
-  State<ChatRoomScreen> createState() => _ChatRoomScreenState();
+  State<GroupChatRoomScreen> createState() => _GroupChatRoomScreenState();
 }
 
-class _ChatRoomScreenState extends State<ChatRoomScreen> {
+class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
+  late GroupChatRoomCubit groupChatRoomCubit =
+      BlocProvider.of<GroupChatRoomCubit>(context);
+
+  final _textController = TextEditingController();
   int unreadCount = -1;
   List<MessageModel> messagesList = [];
-  final _textController = TextEditingController();
-  //showEmoji -- for storing value of showing or hiding emoji
-  //isUploading -- for checking if image is uploading or not?
   bool _showEmoji = false, _isUploading = false;
   @override
   void initState() {
     super.initState();
-    SystemChannels.lifecycle.setMessageHandler((message) {
-      LoggerUtil.logs('message ${message}');
-      if (FirebaseUtils.user != null) {
-        if (message.toString().contains('resume')) {
-          FirebaseUtils.updateActiveStatus(true).then((value) => null);
-        }
-        if (message.toString().contains('pause')) {
-          FirebaseUtils.updateActiveStatus(false);
-        }
-        if (message.toString().contains('detached')) {
-          FirebaseUtils.updateActiveStatus(false);
-        }
-      }
-      return Future.value(message);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ChatRoomCubit, ChatRoomState>(
+    return BlocConsumer<GroupChatRoomCubit, GroupChatRoomState>(
       listener: (context, state) async {
         if (state is MediaSelectedState) {
           setState(() => _isUploading = true);
-          await ChatUtils.sendMessage(
-              chatUser: widget.chatUser,
+          await ChatUtils.sendGropuMessage(
+              groupChatId: widget.groupChatId,
               type: state.type,
-              isFirstMessage: messagesList.isEmpty,
               filePath: state.filePath,
               thumbnailPath: state.thumbnailPath);
           setState(() => _isUploading = false);
@@ -101,11 +80,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   children: [
                     Expanded(
                       child: StreamBuilder(
-                        stream: FirebaseUtils.user?.isOnline == true
-                            ? ChatUtils.getAllMessages(
-                                ChatUtils.getConversationID(
-                                    widget.chatUser.id ?? ''))
-                            : null,
+                        stream: ChatUtils.getAllMessages(widget.groupChatId),
                         builder: (context, snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.waiting:
@@ -119,22 +94,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                           MessageModel.fromJson(e.data()))
                                       .toList() ??
                                   [];
-                              for (var i = 0; i < messagesList.length; i++) {
-                                bool isFromMe = FirebaseUtils.user?.id ==
-                                    messagesList[i].fromId;
-                                if (isFromMe &&
-                                    messagesList[i].readAt == null) {
-                                  unreadCount = unreadCount + 1;
-                                }
-                              }
-                              if (unreadCount != -1 &&
-                                  (data ?? []).isNotEmpty &&
-                                  data?.last.id == messagesList.last.sentAt) {
-                                ChatUtils.updateUnreadCount(
-                                    widget.chatUser.id ?? '',
-                                    unreadCount.toString());
-                              }
-                              unreadCount = 0;
 
                               if (messagesList.isNotEmpty) {
                                 return ListView.builder(
@@ -252,10 +211,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             log('Document Path: ${i.path}');
                             setState(() => _isUploading = true);
 
-                            await ChatUtils.sendMessage(
-                              chatUser: widget.chatUser,
+                            await ChatUtils.sendGropuMessage(
+                              groupChatId: widget.groupChatId,
                               type: MessageType.document,
-                              isFirstMessage: messagesList.isEmpty,
                               filePath: i.path,
                             );
                             setState(() => _isUploading = false);
@@ -278,10 +236,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           log('Image Path: ${i.path}');
                           setState(() => _isUploading = true);
 
-                          await ChatUtils.sendMessage(
-                              chatUser: widget.chatUser,
+                          await ChatUtils.sendGropuMessage(
+                              groupChatId: widget.groupChatId,
                               type: MessageType.image,
-                              isFirstMessage: messagesList.isEmpty,
                               filePath: i.path);
                           setState(() => _isUploading = false);
                         }
@@ -301,10 +258,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       LoggerUtil.logs('Voice Path: $path');
                       setState(() => _isUploading = true);
 
-                      await ChatUtils.sendMessage(
-                          chatUser: widget.chatUser,
+                      await ChatUtils.sendGropuMessage(
+                          groupChatId: widget.groupChatId,
                           type: MessageType.audio,
-                          isFirstMessage: messagesList.isEmpty,
                           filePath: path,
                           length: duration);
                       setState(() => _isUploading = false);
@@ -322,11 +278,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           MaterialButton(
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                ChatUtils.sendMessage(
-                  chatUser: widget.chatUser,
+                ChatUtils.sendGropuMessage(
+                  groupChatId: widget.groupChatId,
                   msg: _textController.text,
                   type: MessageType.text,
-                  isFirstMessage: messagesList.isEmpty,
                 );
                 _textController.clear();
               }
@@ -351,61 +306,50 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           //     MaterialPageRoute(
           //         builder: (_) => ViewProfileScreen(user: widget.user)));
         },
-        child: StreamBuilder(
-            stream: ChatUtils.getUserInfo(widget.chatUser.id ?? ''),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                UserModel chatUserData =
-                    UserModel.fromJson(snapshot.data?.data() ?? {});
-                return Row(
-                  children: [
-                    IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.arrow_back,
-                            color: Colors.black54)),
+        child: const Row(
+          children: [
+            // IconButton(
+            //     onPressed: () => Navigator.pop(context),
+            //     icon: const Icon(Icons.arrow_back, color: Colors.black54)),
 
-                    //user profile picture
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(mq.height * .03),
-                      child: CachedNetworkImage(
-                        width: mq.height * .055,
-                        height: mq.height * .055,
-                        imageUrl: chatUserData.image ?? '',
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) =>
-                            const CircleAvatar(
-                                child: Icon(CupertinoIcons.person)),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    //user name & last seen time
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //user name
-                        Text(chatUserData.name ?? '',
-                            style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w500)),
+            // //user profile picture
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(mq.height * .03),
+            //   child: CachedNetworkImage(
+            //     width: mq.height * .055,
+            //     height: mq.height * .055,
+            //     imageUrl: chatUserData.image ?? '',
+            //     fit: BoxFit.cover,
+            //     errorWidget: (context, url, error) =>
+            //         const CircleAvatar(child: Icon(CupertinoIcons.person)),
+            //   ),
+            // ),
+            // const SizedBox(width: 10),
+            // //user name & last seen time
+            // Column(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     //user name
+            //     Text(chatUserData.name ?? '',
+            //         style: const TextStyle(
+            //             fontSize: 16,
+            //             color: Colors.black87,
+            //             fontWeight: FontWeight.w500)),
 
-                        const SizedBox(height: 2),
-                        // last seen time of user
-                        Text(
-                            chatUserData.isOnline == true
-                                ? 'Online'
-                                : DateUtil.getLastActiveTime(
-                                    context: context,
-                                    lastActive: chatUserData.lastActive ?? ''),
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.black54)),
-                      ],
-                    )
-                  ],
-                );
-              }
-              return Container();
-            }));
+            //     const SizedBox(height: 2),
+            //     // last seen time of user
+            //     Text(
+            //         chatUserData.isOnline == true
+            //             ? 'Online'
+            //             : DateUtil.getLastActiveTime(
+            //                 context: context,
+            //                 lastActive: chatUserData.lastActive ?? ''),
+            //         style:
+            //             const TextStyle(fontSize: 12, color: Colors.black54)),
+            //   ],
+            // )
+          ],
+        ));
   }
 }

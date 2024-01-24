@@ -3,6 +3,7 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/dummy%20data/whatsapp_data.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -212,7 +213,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: FirebaseUtils.getAllChats(),
+          stream: ChatUtils.getAllChats(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const Center(child: Text('Error fetching chats'));
