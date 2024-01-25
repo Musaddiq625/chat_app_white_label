@@ -11,8 +11,8 @@ import '../../main.dart';
 
 
 class AgoraCalling extends StatefulWidget {
-  const AgoraCalling({Key? key}) : super(key: key);
-
+  const AgoraCalling({Key? key, required this.recipientUid}) : super(key: key);
+  final int recipientUid;
   @override
   State<AgoraCalling> createState() => _AgoraCallingState();
 }
@@ -79,7 +79,7 @@ class _AgoraCallingState extends State<AgoraCalling> {
     await _engine.joinChannel(
       token: token,
       channelId: channel,
-      uid: 0,
+      uid: widget.recipientUid,
       options: const ChannelMediaOptions(),
     );
   }

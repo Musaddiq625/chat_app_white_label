@@ -81,13 +81,13 @@ void main() async {
     AndroidNotification? android = message.notification?.android;
 
     if (message.notification != null) {
-
+      //
       // if(message.data["messageType"] == "call"){
-      //   // Navigator.push(
-      //   //   context,
-      //   //   MaterialPageRoute(
-      //   //       builder: (context) => AgoraCalling()),
-      //   // );
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => AgoraCalling(recipientUid: int.parse(FirebaseUtils.user?.phoneNumber ?? "0"),)),
+      //   );
       // }
       print('Message also contained a notification: ${message.notification}');
       // AndroidNotificationDetails androidDetails = AndroidNotificationDetails(

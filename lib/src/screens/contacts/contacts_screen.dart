@@ -195,7 +195,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => AgoraCalling()),
+                                        builder: (context) => AgoraCalling(recipientUid: int.parse(FirebaseUtils.user?.phoneNumber ?? "0"),)),
                                   );
                                 },
                               );
