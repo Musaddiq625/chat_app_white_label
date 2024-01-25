@@ -55,89 +55,89 @@ class _MessageCardState extends State<MessageCard> {
 
   // sender or another user message
   Widget _blueMessage() {
-    if (FirebaseUtils.user?.isOnline == true) {
-      //update last read message if sender and receiver are different
-      if (widget.message.readAt == null) {
-        ChatUtils.updateMessageReadStatus(widget.message);
-      }
+    // if (FirebaseUtils.user?.isOnline == true) {
+    //update last read message if sender and receiver are different
+    if (widget.message.readAt == null) {
+      ChatUtils.updateMessageReadStatus(widget.message);
+    }
 
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          //message content
-          SizedBox(
-            width: mq.width * 0.95,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Flexible(
-                  child: Container(
-                    width: widget.message.type == MessageType.image ||
-                            widget.message.type == MessageType.video
-                        ? mq.width * 0.6
-                        : null,
-                    padding: EdgeInsets.only(
-                        left: widget.message.type == MessageType.audio ? 0 : 10,
-                        right:
-                            widget.message.type == MessageType.audio ? 0 : 10,
-                        top: 10,
-                        bottom: 10),
-                    margin: EdgeInsets.symmetric(
-                        horizontal: mq.width * .04, vertical: mq.height * .01),
-                    decoration: BoxDecoration(
-                        color: ColorConstants.blueLight,
-                        border: Border.all(color: Colors.lightBlue),
-                        //making borders curved
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15),
-                            bottomRight: Radius.circular(15))),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (widget.message.type == MessageType.audio)
-                          VoiceMessageCompnent(
-                              message: widget.message, isMe: false)
-                        else if (widget.message.type == MessageType.image)
-                          ImageMessageComponent(message: widget.message)
-                        else if (widget.message.type == MessageType.video)
-                          VideoMessageComponent(message: widget.message)
-                        else if (widget.message.type == MessageType.document)
-                          DocumentMessageComponent(
-                            downloadUrl: widget.message.msg ?? '',
-                          )
-                        else
-                          Text(
-                            widget.message.msg ?? '',
-                            style: const TextStyle(
-                                fontSize: 15, color: Colors.black87),
-                          ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (widget.message.type == MessageType.audio)
-                              const SizedBox(width: 10),
-                            Text(
-                              DateUtil.getFormattedTime(
-                                  context, widget.message.sentAt ?? ''),
-                              style: const TextStyle(
-                                  fontSize: 10, color: Colors.black54),
-                            ),
-                          ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        //message content
+        SizedBox(
+          width: mq.width * 0.95,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Container(
+                  width: widget.message.type == MessageType.image ||
+                          widget.message.type == MessageType.video
+                      ? mq.width * 0.6
+                      : null,
+                  padding: EdgeInsets.only(
+                      left: widget.message.type == MessageType.audio ? 0 : 10,
+                      right: widget.message.type == MessageType.audio ? 0 : 10,
+                      top: 10,
+                      bottom: 10),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: mq.width * .04, vertical: mq.height * .01),
+                  decoration: BoxDecoration(
+                      color: ColorConstants.blueLight,
+                      border: Border.all(color: Colors.lightBlue),
+                      //making borders curved
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                          bottomRight: Radius.circular(15))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.message.type == MessageType.audio)
+                        VoiceMessageCompnent(
+                            message: widget.message, isMe: false)
+                      else if (widget.message.type == MessageType.image)
+                        ImageMessageComponent(message: widget.message)
+                      else if (widget.message.type == MessageType.video)
+                        VideoMessageComponent(message: widget.message)
+                      else if (widget.message.type == MessageType.document)
+                        DocumentMessageComponent(
+                          downloadUrl: widget.message.msg ?? '',
                         )
-                      ],
-                    ),
+                      else
+                        Text(
+                          widget.message.msg ?? '',
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.black87),
+                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (widget.message.type == MessageType.audio)
+                            const SizedBox(width: 10),
+                          Text(
+                            DateUtil.getFormattedTime(
+                                context, widget.message.sentAt ?? ''),
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.black54),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      );
-    } else {
-      return Container();
-    }
+        ),
+      ],
+    );
+
+    // else {
+    //   return Container();
+    // }
   }
 
   // our or user message
