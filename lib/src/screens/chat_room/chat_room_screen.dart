@@ -124,8 +124,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                       .toList() ??
                                   [];
                               for (var i = 0; i < messagesList.length; i++) {
-                                chatUserUnreadCount = 0;
-                                myUnreadCount = 0;
                                 bool isFromMe = FirebaseUtils.user?.id ==
                                     messagesList[i].fromId;
                                 if (isFromMe &&

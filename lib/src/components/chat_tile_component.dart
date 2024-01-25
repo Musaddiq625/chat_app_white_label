@@ -115,10 +115,14 @@ class ChatTileComponent extends StatelessWidget {
                 size: 22,
               )
             else
-              Text(
-                chat.lastMessage?.msg ?? '',
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+              Expanded(
+                child: Text(
+                  chat.lastMessage?.msg ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                ),
               ),
           ],
         ),
