@@ -50,7 +50,6 @@ class ChatUtils {
     await chatsCollection.doc(chatId).set(ChatModel(
         id: '${FirebaseUtils.user?.id}_${chatUser.id ?? ''}',
         isGroup: false,
-        lastMessage: null,
         users: [FirebaseUtils.user?.id ?? '', chatUser.id ?? '']).toJson());
 
     await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
@@ -156,12 +155,15 @@ class ChatUtils {
     List contacts,
   ) async {
     final groupChatId =
-        createGroupChatId(groupName.trim().replaceAll(' ', '_'));
+        createGroupChatId(groupName.toLowerCase().trim().replaceAll(' ', '_'));
 
     await chatsCollection.doc(groupChatId).set(ChatModel(
         id: groupChatId,
         isGroup: true,
-        groupImage: groupImage,
+        groupData: GroupData(
+            adminId: FirebaseUtils.user?.id,
+            grougName: groupName,
+            groupImage: groupImage),
         lastMessage: null,
         users: [FirebaseUtils.user?.id ?? '', ...contacts]).toJson());
 
@@ -239,5 +241,20 @@ class ChatUtils {
     } catch (e) {
       LoggerUtil.logs(e.toString());
     }
+  }
+
+  static Future<void> updateGroupMessageReadStatus(
+      String groupChatId, MessageModel message, UserModel chatuser) async {
+    final chatDoc = chatsCollection.doc(groupChatId);
+
+    await chatDoc
+        .collection(FirebaseConstants.messages)
+        .doc(message.sentAt)
+        .set({
+      'readBy': FieldValue.arrayUnion([chatuser.id])
+    });
+    await chatDoc.set({
+      'last_message.readBy': FieldValue.arrayUnion([chatuser.id])
+    });
   }
 }

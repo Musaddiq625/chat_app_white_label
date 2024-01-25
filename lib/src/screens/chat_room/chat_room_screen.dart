@@ -146,6 +146,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     itemBuilder: (context, index) {
                                       return MessageCard(
                                         message: messagesList[index],
+                                        isRead:
+                                            messagesList[index].readAt != null,
                                       );
                                     });
                               } else {
@@ -365,18 +367,25 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             color: Colors.black54)),
 
                     //user profile picture
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(mq.height * .03),
-                      child: CachedNetworkImage(
-                        width: mq.height * .055,
-                        height: mq.height * .055,
-                        imageUrl: chatUserData.image ?? '',
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) =>
-                            const CircleAvatar(
-                                child: Icon(CupertinoIcons.person)),
-                      ),
-                    ),
+                    (chatUserData.image ?? '').isNotEmpty
+                        ? ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(mq.height * .03),
+                            child: CachedNetworkImage(
+                              width: mq.height * .055,
+                              height: mq.height * .055,
+                              imageUrl: chatUserData.image ?? '',
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) =>
+                                  const CircleAvatar(
+                                      child: Icon(CupertinoIcons.person)),
+                            ),
+                          )
+                        : Icon(
+                            Icons.account_circle,
+                            size: 50,
+                            color: Colors.grey.shade500,
+                          ),
                     const SizedBox(width: 10),
                     //user name & last seen time
                     Column(

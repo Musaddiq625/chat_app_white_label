@@ -3,36 +3,37 @@ import 'message_model.dart';
 class ChatModel {
   String? id;
   bool? isGroup;
-  String? groupImage;
+  List<String>? users;
+  GroupData? groupData;
   MessageModel? lastMessage;
   String? unreadCount;
-  List<String>? users;
+  List<String>? unreadMessages;
   // List<UnreadMessages>? unreadMessages;
-  // List<String>? unreadMessages;
 
-  ChatModel({
-    this.id,
-    this.isGroup,
-    this.groupImage,
-    this.lastMessage,
-    this.unreadCount,
-    this.users,
-    // this.unreadMessages
-  });
+  ChatModel(
+      {required this.id,
+      required this.isGroup,
+      required this.users,
+      this.groupData,
+      this.lastMessage,
+      this.unreadCount,
+      this.unreadMessages});
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
       id: json['id'],
       isGroup: json['is_group'],
-      groupImage: json['group_image'],
+      groupData: json['group_data'] != null
+          ? GroupData.fromJson(json['group_data'])
+          : null,
       lastMessage: json['last_message'] != null
           ? MessageModel.fromJson(json['last_message'])
           : null,
       // unreadCount: json['unread_count'],
       users: json['users'] == null ? [] : json['users'].cast<String>(),
-      // unreadMessages: json['unread_messages'] == null
-      //     ? []
-      //     : json['unread_messages'].cast<String>(),
+      unreadMessages: json['unread_messages'] == null
+          ? []
+          : json['unread_messages'].cast<String>(),
       // unreadMessages: json['unread_messages'] != null
       //     ? (json['unread_messages'] as List)
       //         .map<UnreadMessages>((item) => UnreadMessages.fromJson(item))
@@ -44,37 +45,44 @@ class ChatModel {
     final data = <String, dynamic>{};
     data['id'] = id;
     data['is_group'] = isGroup;
-    data['group_image'] = groupImage;
+    if (groupData != null) {
+      data['group_data'] = groupData?.toJson();
+    }
     if (lastMessage != null) {
       data['last_message'] = lastMessage?.toJson();
     }
     // data['unread_count'] = unreadCount;
     data['users'] = users;
-    // if (unreadMessages != null) {
-    //   data['unread_messages'] = unreadMessages?.map((v) => v.toJson()).toList();
-    // }
+    if (unreadMessages != null) {
+      data['unread_messages'] = unreadMessages;
+    }
     // data['unread_messages'] = unreadMessages;
     return data;
   }
 }
 
-class UnreadMessages {
-  UnreadMessages({
-    this.userId,
-    this.count,
+class GroupData {
+  GroupData({
+    required this.adminId,
+    required this.grougName,
+    required this.groupImage,
   });
-  String? userId;
-  int? count;
+  String? adminId;
+  String? grougName;
+  String? groupImage;
 
-  factory UnreadMessages.fromJson(Map<String, dynamic> json) => UnreadMessages(
-        userId: json['user_id'],
-        count: json['count'],
+  factory GroupData.fromJson(Map<String, dynamic> json) => GroupData(
+        adminId: json['admin_id'],
+        grougName: json['groug_name'],
+        groupImage: json['group_image'],
       );
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['user_id'] = userId;
-    data['count'] = count;
+    data['admin_id'] = adminId;
+    data['groug_name'] = grougName;
+    data['group_image'] = groupImage;
+
     return data;
   }
 }

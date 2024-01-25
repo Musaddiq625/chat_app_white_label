@@ -24,16 +24,20 @@ class MessageCard extends StatefulWidget {
   const MessageCard({
     super.key,
     required this.message,
+    required this.isRead,
+    this.isGroupMessage = false,
+    this.updateGroupChatReadStatus,
   });
   final MessageModel message;
+  final bool? isRead;
+  final bool isGroupMessage;
+  final Function()? updateGroupChatReadStatus;
 
   @override
   State<MessageCard> createState() => _MessageCardState();
 }
 
 class _MessageCardState extends State<MessageCard> {
-  // late final chatRoomCubit = BlocProvider.of<ChatRoomCubit>(context);
-  // AudioPlayer audioPlayer = AudioPlayer();
   @override
   Widget build(BuildContext context) {
     bool isMe = FirebaseUtils.user?.id == widget.message.fromId;
@@ -59,8 +63,12 @@ class _MessageCardState extends State<MessageCard> {
   Widget _blueMessage() {
     if (FirebaseUtils.user?.isOnline == true) {
       //update last read message if sender and receiver are different
-      if (widget.message.readAt == null) {
-        ChatUtils.updateMessageReadStatus(widget.message);
+      if (widget.isGroupMessage == false) {
+        if (widget.message.readAt == null) {
+          ChatUtils.updateMessageReadStatus(widget.message);
+        }
+      } else {
+        widget.updateGroupChatReadStatus;
       }
 
       return Row(
@@ -199,7 +207,7 @@ class _MessageCardState extends State<MessageCard> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.done_all_rounded,
-                              color: widget.message.readAt != null
+                              color: widget.isRead == true
                                   ? Colors.blue
                                   : Colors.grey,
                               size: 15),

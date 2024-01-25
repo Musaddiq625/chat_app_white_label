@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/custom_button.dart';
 import 'package:chat_app_white_label/src/components/custom_text_field.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
@@ -10,7 +9,6 @@ import 'package:chat_app_white_label/src/screens/create_group_chat/cubit/create_
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
-import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +23,6 @@ class CreateGroupScreen extends StatefulWidget {
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
   late CreateGroupChatCubit createGroupChatCubit;
-  FirebaseService firebaseService = getIt<FirebaseService>();
   final groupNameController = TextEditingController();
   XFile? selectedImage;
 

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
@@ -22,28 +23,45 @@ class ChatTileComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => NavigationUtil.push(context, RouteConstants.chatRoomScreen,
-          args: [chatUser, chat.unreadCount]),
-      leading: (chatUser.image ?? '').isNotEmpty
-          ? Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: CircleAvatar(
-                  radius: 30,
-                  backgroundImage:
-                      CachedNetworkImageProvider(chatUser.image ?? '')),
-            )
+      onTap: () {
+        chat.isGroup == false
+            ? NavigationUtil.push(context, RouteConstants.chatRoomScreen,
+                args: [chatUser, chat.unreadCount])
+            : NavigationUtil.push(context, RouteConstants.groupChatRoomScreen,
+                args: chat);
+      },
+      leading: chat.isGroup == false
+          ? (chatUser.image ?? '').isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                          CachedNetworkImageProvider(chatUser.image ?? '')),
+                )
+              : Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Icon(
+                    Icons.account_circle,
+                    size: 55,
+                    color: Colors.grey.shade500,
+                  ),
+                )
           : Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(
-                Icons.account_circle,
-                size: 55,
-                color: Colors.grey.shade500,
-              ),
-            ),
+              child: CircleAvatar(
+                radius: 30,
+                backgroundImage: (chat.groupData?.groupImage ?? '').isNotEmpty
+                    ? CachedNetworkImageProvider(
+                        chat.groupData?.groupImage ?? '')
+                    : const AssetImage(AssetConstants.group) as ImageProvider,
+              )),
       minVerticalPadding: 0,
       horizontalTitleGap: 5,
       title: Text(
-        chatUser.name ?? '',
+        chat.isGroup == false
+            ? chatUser.name ?? ''
+            : chat.groupData?.grougName ?? '',
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),

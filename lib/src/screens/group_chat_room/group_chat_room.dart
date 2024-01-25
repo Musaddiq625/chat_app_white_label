@@ -1,9 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/chat_input_icon_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/components/record_button_component.dart';
+import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -18,11 +21,9 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/message_model.dart';
 
 class GroupChatRoomScreen extends StatefulWidget {
-  final String groupChatId;
-  final String? unreadCount;
+  final ChatModel gruopChat;
 
-  const GroupChatRoomScreen(
-      {super.key, required this.groupChatId, required this.unreadCount});
+  const GroupChatRoomScreen({super.key, required this.gruopChat});
 
   @override
   State<GroupChatRoomScreen> createState() => _GroupChatRoomScreenState();
@@ -48,7 +49,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
         if (state is MediaSelectedState) {
           setState(() => _isUploading = true);
           await ChatUtils.sendGropuMessage(
-              groupChatId: widget.groupChatId,
+              groupChatId: widget.gruopChat.id ?? '',
               type: state.type,
               filePath: state.filePath,
               thumbnailPath: state.thumbnailPath);
@@ -80,7 +81,8 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                   children: [
                     Expanded(
                       child: StreamBuilder(
-                        stream: ChatUtils.getAllMessages(widget.groupChatId),
+                        stream:
+                            ChatUtils.getAllMessages(widget.gruopChat.id ?? ''),
                         builder: (context, snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.waiting:
@@ -104,8 +106,9 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                     physics: const BouncingScrollPhysics(),
                                     itemBuilder: (context, index) {
                                       return MessageCard(
-                                        message: messagesList[index],
-                                      );
+                                          message: messagesList[index],
+                                          isRead: messagesList[index].readAt !=
+                                              null);
                                     });
                               } else {
                                 return const Center(
@@ -131,7 +134,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                               ))),
 
                     //chat input filed
-                    _chatInput(),
+                    // _chatInput(),
 
                     // show emojis on keyboard emoji button click & vice versa
                     if (_showEmoji)
@@ -212,7 +215,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                             setState(() => _isUploading = true);
 
                             await ChatUtils.sendGropuMessage(
-                              groupChatId: widget.groupChatId,
+                              groupChatId: widget.gruopChat.id ?? '',
                               type: MessageType.document,
                               filePath: i.path,
                             );
@@ -237,7 +240,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                           setState(() => _isUploading = true);
 
                           await ChatUtils.sendGropuMessage(
-                              groupChatId: widget.groupChatId,
+                              groupChatId: widget.gruopChat.id ?? '',
                               type: MessageType.image,
                               filePath: i.path);
                           setState(() => _isUploading = false);
@@ -259,7 +262,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                       setState(() => _isUploading = true);
 
                       await ChatUtils.sendGropuMessage(
-                          groupChatId: widget.groupChatId,
+                          groupChatId: widget.gruopChat.id ?? '',
                           type: MessageType.audio,
                           filePath: path,
                           length: duration);
@@ -279,7 +282,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
             onPressed: () {
               if (_textController.text.isNotEmpty) {
                 ChatUtils.sendGropuMessage(
-                  groupChatId: widget.groupChatId,
+                  groupChatId: widget.gruopChat.id ?? '',
                   msg: _textController.text,
                   type: MessageType.text,
                 );
@@ -306,49 +309,61 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           //     MaterialPageRoute(
           //         builder: (_) => ViewProfileScreen(user: widget.user)));
         },
-        child: const Row(
+        child: Row(
           children: [
-            // IconButton(
-            //     onPressed: () => Navigator.pop(context),
-            //     icon: const Icon(Icons.arrow_back, color: Colors.black54)),
+            IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back, color: Colors.black54)),
 
-            // //user profile picture
-            // ClipRRect(
-            //   borderRadius: BorderRadius.circular(mq.height * .03),
-            //   child: CachedNetworkImage(
-            //     width: mq.height * .055,
-            //     height: mq.height * .055,
-            //     imageUrl: chatUserData.image ?? '',
-            //     fit: BoxFit.cover,
-            //     errorWidget: (context, url, error) =>
-            //         const CircleAvatar(child: Icon(CupertinoIcons.person)),
-            //   ),
-            // ),
-            // const SizedBox(width: 10),
-            // //user name & last seen time
-            // Column(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     //user name
-            //     Text(chatUserData.name ?? '',
-            //         style: const TextStyle(
-            //             fontSize: 16,
-            //             color: Colors.black87,
-            //             fontWeight: FontWeight.w500)),
+            //user profile picture
+            (widget.gruopChat.groupData?.groupImage ?? '').isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .03),
+                    child: CachedNetworkImage(
+                      width: mq.height * .055,
+                      height: mq.height * .055,
+                      imageUrl: widget.gruopChat.groupData?.groupImage ?? '',
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => CircleAvatar(
+                          child: Image.asset(AssetConstants.group)),
+                    ),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .03),
+                    child: Image.asset(
+                      AssetConstants.group,
+                      width: mq.height * .055,
+                      height: mq.height * .055,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
 
-            //     const SizedBox(height: 2),
-            //     // last seen time of user
-            //     Text(
-            //         chatUserData.isOnline == true
-            //             ? 'Online'
-            //             : DateUtil.getLastActiveTime(
-            //                 context: context,
-            //                 lastActive: chatUserData.lastActive ?? ''),
-            //         style:
-            //             const TextStyle(fontSize: 12, color: Colors.black54)),
-            //   ],
-            // )
+            const SizedBox(width: 10),
+            //user name & last seen time
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //user name
+                Text(widget.gruopChat.groupData?.grougName ?? '',
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500)),
+
+                const SizedBox(height: 2),
+                // last seen time of user
+
+                // Text(
+                //     chatUserData.isOnline == true
+                //         ? 'Online'
+                //         : DateUtil.getLastActiveTime(
+                //             context: context,
+                //             lastActive: chatUserData.lastActive ?? ''),
+                //     style:
+                //         TextStyle(fontSize: 12, color: Colors.black54)),
+              ],
+            )
           ],
         ));
   }
