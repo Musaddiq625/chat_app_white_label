@@ -44,21 +44,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChannels.lifecycle.setMessageHandler((message) {
-      LoggerUtil.logs('message ${message}');
-      if (FirebaseUtils.user != null) {
-        if (message.toString().contains('resume')) {
-          FirebaseUtils.updateActiveStatus(true).then((value) => null);
-        }
-        if (message.toString().contains('pause')) {
-          FirebaseUtils.updateActiveStatus(false);
-        }
-        if (message.toString().contains('detached')) {
-          FirebaseUtils.updateActiveStatus(false);
-        }
-      }
-      return Future.value(message);
-    });
+    // SystemChannels.lifecycle.setMessageHandler((message) {
+    //   LoggerUtil.logs('message ${message}');
+    //   if (FirebaseUtils.user != null) {
+    //     if (message.toString().contains('resume')) {
+    //       FirebaseUtils.updateActiveStatus(true).then((value) => null);
+    //     }
+    //     if (message.toString().contains('pause')) {
+    //       FirebaseUtils.updateActiveStatus(false);
+    //     }
+    //     if (message.toString().contains('detached')) {
+    //       FirebaseUtils.updateActiveStatus(false);
+    //     }
+    //   }
+    //   return Future.value(message);
+    // });
   }
 
   @override
@@ -101,11 +101,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   children: [
                     Expanded(
                       child: StreamBuilder(
-                        stream: FirebaseUtils.user?.isOnline == true
-                            ? ChatUtils.getAllMessages(
+                        stream:
+                            // FirebaseUtils.user?.isOnline == true
+                            // ?
+                            ChatUtils.getAllMessages(
                                 ChatUtils.getConversationID(
                                     widget.chatUser.id ?? ''))
-                            : null,
+                        // : null
+                        ,
                         builder: (context, snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.waiting:
