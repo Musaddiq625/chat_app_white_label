@@ -106,9 +106,10 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                     physics: const BouncingScrollPhysics(),
                                     itemBuilder: (context, index) {
                                       return MessageCard(
-                                          message: messagesList[index],
-                                          isRead: messagesList[index].readAt !=
-                                              null);
+                                        message: messagesList[index],
+                                        // isRead: messagesList[index].readAt !=
+                                        //     null
+                                      );
                                     });
                               } else {
                                 return const Center(

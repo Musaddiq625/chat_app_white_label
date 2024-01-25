@@ -58,8 +58,8 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: ColorConstants.greenMain,
-        title: const Text(
-          'WhatsApp',
+        title: Text(
+          FirebaseUtils.user?.name ?? '',
           style: TextStyle(
             color: Colors.white,
           ),
