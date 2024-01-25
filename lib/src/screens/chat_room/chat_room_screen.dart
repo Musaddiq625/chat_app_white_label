@@ -35,7 +35,8 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  int unreadCount = -1;
+  int myUnreadCount = -1;
+  int chatUserUnreadCount = -1;
   List<MessageModel> messagesList = [];
   final _textController = TextEditingController();
   //showEmoji -- for storing value of showing or hiding emoji
@@ -123,21 +124,39 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                       .toList() ??
                                   [];
                               for (var i = 0; i < messagesList.length; i++) {
+                                chatUserUnreadCount = 0;
+                                myUnreadCount = 0;
                                 bool isFromMe = FirebaseUtils.user?.id ==
                                     messagesList[i].fromId;
                                 if (isFromMe &&
                                     messagesList[i].readAt == null) {
-                                  unreadCount = unreadCount + 1;
+                                  chatUserUnreadCount = chatUserUnreadCount + 1;
+                                } else if (messagesList[i].readAt == null) {
+                                  myUnreadCount = myUnreadCount + 1;
                                 }
                               }
-                              if (unreadCount != -1 &&
+
+                              if (chatUserUnreadCount != -1 &&
                                   (data ?? []).isNotEmpty &&
                                   data?.last.id == messagesList.last.sentAt) {
+                                LoggerUtil.logs(
+                                    'chatUserUnreadCount $chatUserUnreadCount');
                                 ChatUtils.updateUnreadCount(
                                     widget.chatUser.id ?? '',
-                                    unreadCount.toString());
+                                    chatUserUnreadCount.toString(),
+                                    false);
                               }
-                              unreadCount = 0;
+                              if (myUnreadCount != -1 &&
+                                  (data ?? []).isNotEmpty &&
+                                  data?.last.id == messagesList.last.sentAt) {
+                                LoggerUtil.logs('myUnreadCount $myUnreadCount');
+                                ChatUtils.updateUnreadCount(
+                                    widget.chatUser.id ?? '',
+                                    myUnreadCount.toString(),
+                                    true);
+                              }
+                              chatUserUnreadCount = 0;
+                              myUnreadCount = 0;
 
                               if (messagesList.isNotEmpty) {
                                 return ListView.builder(

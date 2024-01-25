@@ -142,10 +142,12 @@ class ChatUtils {
     await chatDoc.update({'last_message.readAt': sendingTime});
   }
 
-  static Future<void> updateUnreadCount(String chatUserId, String count) async {
-    await chatsCollection
-        .doc(getConversationID(chatUserId))
-        .update({'${chatUserId}_unread_count': count});
+  static Future<void> updateUnreadCount(
+      String chatUserId, String count, bool isUpdatingMe) async {
+    await chatsCollection.doc(getConversationID(chatUserId)).update({
+      '${isUpdatingMe ? FirebaseUtils.user?.id : chatUserId}_unread_count':
+          count
+    });
   }
 
   // for creating group chat
