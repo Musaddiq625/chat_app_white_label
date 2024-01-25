@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -11,10 +11,16 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () async {
-        await onPressedFunction();
-      },
-      child: Text(buttonText),
-    );
+        onPressed: () async {
+          await onPressedFunction();
+        },
+        style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: ColorConstants.greenMain,
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+            textStyle: const TextStyle(
+              fontSize: 16,
+            )),
+        child: Text(buttonText));
   }
 }

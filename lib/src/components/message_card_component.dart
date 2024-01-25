@@ -1,15 +1,22 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/preview_screen.dart';
 import 'package:chat_app_white_label/src/utils/api_utlils.dart';
+import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/dialogs.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:voice_message_package/voice_message_package.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:gallery_saver/gallery_saver.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../models/message_model.dart';
 
@@ -50,134 +57,89 @@ class _MessageCardState extends State<MessageCard> {
 
   // sender or another user message
   Widget _blueMessage() {
-    //update last read message if sender and receiver are different
-    if (widget.message.readAt == null) {
-      FirebaseUtils.updateMessageReadStatus(widget.message);
-    }
+    if (FirebaseUtils.user?.isOnline == true) {
+      //update last read message if sender and receiver are different
+      if (widget.message.readAt == null) {
+        ChatUtils.updateMessageReadStatus(widget.message);
+      }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        //message content
-        SizedBox(
-          width: mq.width * 0.95,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Flexible(
-                child: Container(
-                  width: widget.message.type == MessageType.image ||
-                          widget.message.type == MessageType.video
-                      ? mq.width * 0.6
-                      : null,
-                  padding: EdgeInsets.only(
-                      left: widget.message.type == MessageType.audio ? 0 : 10,
-                      right: widget.message.type == MessageType.audio ? 0 : 10,
-                      top: 10,
-                      bottom: 10),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: mq.width * .04, vertical: mq.height * .01),
-                  decoration: BoxDecoration(
-                      color: ColorConstants.blueLight,
-                      border: Border.all(color: Colors.lightBlue),
-                      //making borders curved
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                          bottomRight: Radius.circular(15))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (widget.message.type == MessageType.audio)
-                        // voice message
-                        VoiceMessageView(
-                          backgroundColor: ColorConstants.blueLight,
-                          innerPadding: 0,
-                          circlesColor: ColorConstants.blackLight,
-                          counterTextStyle: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: ColorConstants.blackLight),
-                          activeSliderColor: Colors.grey,
-                          controller: VoiceController(
-                            audioSrc: widget.message.msg ?? '',
-                            maxDuration:
-                                Duration(seconds: widget.message.length ?? 0),
-                            isFile: false,
-                            onComplete: () {},
-                            onPause: () {},
-                            onPlaying: () {},
-                            // onError: (err) {},
-                          ),
-                        )
-                      else if (widget.message.type == MessageType.image)
-                        //show image
-                        SizedBox(
-                          width: mq.width * 0.6,
-                          height: 200,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.message.msg ?? '',
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              )),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.image, size: 70),
-                            ),
-                          ),
-                        )
-                      else if (widget.message.type == MessageType.video)
-                        SizedBox(
-                          width: mq.width * 0.6,
-                          height: 200,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.message.thumbnail ?? '',
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              )),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.image, size: 70),
-                            ),
-                          ),
-                        )
-                      else
-                        Text(
-                          widget.message.msg ?? '',
-                          style: const TextStyle(
-                              fontSize: 15, color: Colors.black87),
-                        ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (widget.message.type == MessageType.audio)
-                            const SizedBox(width: 10),
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          //message content
+          SizedBox(
+            width: mq.width * 0.95,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Flexible(
+                  child: Container(
+                    width: widget.message.type == MessageType.image ||
+                            widget.message.type == MessageType.video
+                        ? mq.width * 0.6
+                        : null,
+                    padding: EdgeInsets.only(
+                        left: widget.message.type == MessageType.audio ? 0 : 10,
+                        right:
+                            widget.message.type == MessageType.audio ? 0 : 10,
+                        top: 10,
+                        bottom: 10),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: mq.width * .04, vertical: mq.height * .01),
+                    decoration: BoxDecoration(
+                        color: ColorConstants.blueLight,
+                        border: Border.all(color: Colors.lightBlue),
+                        //making borders curved
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                            bottomRight: Radius.circular(15))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.message.type == MessageType.audio)
+                          VoiceMessageCompnent(
+                              message: widget.message, isMe: false)
+                        else if (widget.message.type == MessageType.image)
+                          ImageMessageComponent(message: widget.message)
+                        else if (widget.message.type == MessageType.video)
+                          VideoMessageComponent(message: widget.message)
+                        else if (widget.message.type == MessageType.document)
+                          DocumentMessageComponent(
+                            downloadUrl: widget.message.msg ?? '',
+                          )
+                        else
                           Text(
-                            DateUtil.getFormattedTime(
-                                context, widget.message.sentAt ?? ''),
+                            widget.message.msg ?? '',
                             style: const TextStyle(
-                                fontSize: 10, color: Colors.black54),
+                                fontSize: 15, color: Colors.black87),
                           ),
-                        ],
-                      )
-                    ],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (widget.message.type == MessageType.audio)
+                              const SizedBox(width: 10),
+                            Text(
+                              DateUtil.getFormattedTime(
+                                  context, widget.message.sentAt ?? ''),
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.black54),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    } else {
+      return Container();
+    }
   }
 
   // our or user message
@@ -216,90 +178,15 @@ class _MessageCardState extends State<MessageCard> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       if (widget.message.type == MessageType.audio)
-                        // voice message
-                        VoiceMessageView(
-                          backgroundColor: ColorConstants.blueLight,
-                          innerPadding: 0,
-                          circlesColor: ColorConstants.blackLight,
-                          counterTextStyle: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: ColorConstants.blackLight),
-                          activeSliderColor: Colors.grey,
-                          controller: VoiceController(
-                            audioSrc: widget.message.msg ?? '',
-                            maxDuration:
-                                Duration(seconds: widget.message.length ?? 0),
-                            isFile: false,
-                            onComplete: () {},
-                            onPause: () {},
-                            onPlaying: () {},
-                            // onError: (err) {},
-                          ),
-                        )
+                        VoiceMessageCompnent(
+                            message: widget.message, isMe: true)
                       else if (widget.message.type == MessageType.image)
-                        //show image
-                        SizedBox(
-                          width: mq.width * 0.6,
-                          height: 200,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.message.msg ?? '',
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              )),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.image, size: 70),
-                            ),
-                          ),
-                        )
+                        ImageMessageComponent(message: widget.message)
                       else if (widget.message.type == MessageType.video)
-                        SizedBox(
-                          width: mq.width * 0.6,
-                          height: 200,
-                          child: Stack(
-                            children: [
-                              SizedBox(
-                                width: mq.width * 0.6,
-                                height: 200,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: CachedNetworkImage(
-                                    imageUrl: widget.message.thumbnail ?? '',
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) => const Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: ColorConstants.greenMain,
-                                      ),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.image, size: 70),
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black54,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.play_arrow,
-                                      color: Colors.white,
-                                      size: 22,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        VideoMessageComponent(message: widget.message)
+                      else if (widget.message.type == MessageType.document)
+                        DocumentMessageComponent(
+                          downloadUrl: widget.message.msg ?? '',
                         )
                       else
                         Text(
@@ -627,5 +514,221 @@ class _OptionItem extends StatelessWidget {
                         letterSpacing: 0.5)))
           ]),
         ));
+  }
+}
+
+class VoiceMessageCompnent extends StatelessWidget {
+  final MessageModel message;
+  final bool isMe;
+  const VoiceMessageCompnent(
+      {super.key, required this.message, required this.isMe});
+
+  @override
+  Widget build(BuildContext context) {
+    return VoiceMessageView(
+      backgroundColor:
+          isMe ? ColorConstants.greenLight : ColorConstants.blueLight,
+      innerPadding: 0,
+      circlesColor: ColorConstants.blackLight,
+      counterTextStyle: const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          color: ColorConstants.blackLight),
+      activeSliderColor: Colors.grey,
+      controller: VoiceController(
+        audioSrc: message.msg ?? '',
+        maxDuration: Duration(seconds: message.length ?? 0),
+        isFile: false,
+        onComplete: () {},
+        onPause: () {},
+        onPlaying: () {},
+        // onError: (err) {},
+      ),
+    );
+  }
+}
+
+class ImageMessageComponent extends StatelessWidget {
+  final MessageModel message;
+  const ImageMessageComponent({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: mq.width * 0.6,
+      height: 200,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: CachedNetworkImage(
+          imageUrl: message.msg ?? '',
+          fit: BoxFit.cover,
+          placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: ColorConstants.greenMain,
+          )),
+          errorWidget: (context, url, error) =>
+              const Icon(Icons.image, size: 70),
+        ),
+      ),
+    );
+  }
+}
+
+class VideoMessageComponent extends StatelessWidget {
+  final MessageModel message;
+  const VideoMessageComponent({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: mq.width * 0.6,
+      height: 200,
+      child: Stack(
+        children: [
+          SizedBox(
+            width: mq.width * 0.6,
+            height: 200,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: CachedNetworkImage(
+                imageUrl: message.thumbnail ?? '',
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: ColorConstants.greenMain,
+                  ),
+                ),
+                errorWidget: (context, url, error) =>
+                    const Icon(Icons.image, size: 70),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 22,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DocumentMessageComponent extends StatefulWidget {
+  final String downloadUrl;
+
+  const DocumentMessageComponent({
+    super.key,
+    required this.downloadUrl,
+  });
+
+  @override
+  State<DocumentMessageComponent> createState() =>
+      _DocumentMessageComponentState();
+}
+
+class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
+  String? filePathToExternalStorage;
+  String? fileNameWithExt;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await getFileNameAndExt(widget.downloadUrl);
+      getFilePathToExternalStorage(widget.downloadUrl);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: mq.width * 0.5,
+      height: 35,
+      child: FutureBuilder<bool>(
+        future: isFileDownloaded(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final isDownloaded = snapshot.data!;
+            LoggerUtil.logs('isDownloaded $fileNameWithExt $isDownloaded');
+            return GestureDetector(
+              onTap: () async =>
+                  isDownloaded ? openDocument() : downloadAndOpenDocument(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '$fileNameWithExt ',
+                    style: const TextStyle(
+                        color: ColorConstants.blackLight,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Icon(
+                      !isDownloaded
+                          ? Icons.downloading_rounded
+                          : Icons.description_rounded,
+                      size: 20,
+                      color: ColorConstants.blackLight),
+                ],
+              ),
+            );
+          } else {
+            return const Center(
+                child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: ColorConstants.greenMain,
+            ));
+          }
+        },
+      ),
+    );
+  }
+
+  Future<bool> isFileDownloaded() async {
+    return File(filePathToExternalStorage ?? '').exists();
+  }
+
+  openDocument() async {
+    await Permission.manageExternalStorage.request();
+    try {
+      await OpenFilex.open(
+        filePathToExternalStorage,
+      );
+    } on Exception catch (e) {
+      LoggerUtil.logs(e);
+    }
+  }
+
+  downloadAndOpenDocument() async {
+    await FirebaseUtils.downloadDocument(
+        widget.downloadUrl, filePathToExternalStorage ?? '');
+    setState(() {});
+    openDocument();
+  }
+
+  getFilePathToExternalStorage(String downloadUrl) async {
+    final directory = await getExternalStorageDirectory();
+    final String dirPath = '${directory?.path ?? ''}/documents';
+    await Directory(dirPath).create(recursive: true);
+    filePathToExternalStorage = '$dirPath/$fileNameWithExt';
+    setState(() {});
+  }
+
+  getFileNameAndExt(String downloadUrl) {
+    final splitted = downloadUrl.split('?');
+    fileNameWithExt = splitted[splitted.length - 2].split('_we_uno_chat_').last;
   }
 }

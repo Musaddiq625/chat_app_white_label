@@ -1,7 +1,11 @@
+import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_screen.dart';
+import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_screen.dart';
+import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
+import 'package:chat_app_white_label/src/screens/group_chat_room/group_chat_room.dart';
 import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
 import 'package:chat_app_white_label/src/screens/profile/profile_screen.dart';
@@ -60,6 +64,22 @@ Route generateRoute(RouteSettings settings) {
     case RouteConstants.cameraScreen:
       return materialRoute(const CameraScreen());
 
+    case RouteConstants.selectContactsScreen:
+      final arg = settings.arguments! as List<ContactModel>;
+      return materialRoute(SelectContactsScreen(
+        contactsList: arg,
+      ));
+    case RouteConstants.createGroupScreen:
+      final arg = settings.arguments! as List;
+      return materialRoute(CreateGroupScreen(
+        contactsList: arg,
+      ));
+    case RouteConstants.groupChatRoomScreen:
+      final arg = settings.arguments as List;
+      return materialRoute(GroupChatRoomScreen(
+        groupChatId: arg[0],
+        unreadCount: arg[1],
+      ));
     default:
       return materialRoute(const SplashScreen());
   }

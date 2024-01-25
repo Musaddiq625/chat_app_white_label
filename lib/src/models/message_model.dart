@@ -1,13 +1,15 @@
 class MessageModel {
-  MessageModel(
-      {required this.fromId,
-      required this.toId,
-      required this.msg,
-      required this.readAt,
-      required this.type,
-      required this.sentAt,
-      this.length,
-      this.thumbnail});
+  MessageModel({
+    required this.fromId,
+    required this.toId,
+    required this.msg,
+    required this.readAt,
+    required this.type,
+    required this.sentAt,
+    this.length,
+    this.thumbnail,
+    // this.fileName
+  });
   String? fromId;
   String? toId;
   String? msg;
@@ -16,22 +18,27 @@ class MessageModel {
   String? sentAt;
   int? length;
   String? thumbnail;
+  // String? fileName;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
-      fromId: json['fromId'],
-      toId: json['toId'],
-      msg: json['msg'],
-      type: json['type'] == MessageType.image.name
-          ? MessageType.image
-          : json['type'] == MessageType.audio.name
-              ? MessageType.audio
-              : json['type'] == MessageType.video.name
-                  ? MessageType.video
-                  : MessageType.text,
-      readAt: json['readAt'],
-      sentAt: json['sentAt'],
-      length: json['length'],
-      thumbnail: json['thumbnail']);
+        fromId: json['fromId'],
+        toId: json['toId'],
+        msg: json['msg'],
+        type: json['type'] == MessageType.image.name
+            ? MessageType.image
+            : json['type'] == MessageType.audio.name
+                ? MessageType.audio
+                : json['type'] == MessageType.video.name
+                    ? MessageType.video
+                    : json['type'] == MessageType.document.name
+                        ? MessageType.document
+                        : MessageType.text,
+        readAt: json['readAt'],
+        sentAt: json['sentAt'],
+        length: json['length'],
+        thumbnail: json['thumbnail'],
+        // fileName: json['fileName']
+      );
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -43,11 +50,12 @@ class MessageModel {
     data['sentAt'] = sentAt;
     data['length'] = length;
     data['thumbnail'] = thumbnail;
+    // data['fileName'] = fileName;
     return data;
   }
 }
 
-enum MessageType { text, image, audio, video }
+enum MessageType { text, image, audio, video, document }
 
 
 // import 'package:cloud_firestore/cloud_firestore.dart';

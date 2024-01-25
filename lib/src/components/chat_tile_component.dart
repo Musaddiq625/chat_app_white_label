@@ -61,7 +61,7 @@ class ChatTileComponent extends StatelessWidget {
             const SizedBox(width: 2),
             if (chat.lastMessage?.type == MessageType.image)
               Icon(
-                Icons.photo,
+                Icons.image,
                 color: Colors.grey.shade500,
                 size: 22,
               )
@@ -87,6 +87,12 @@ class ChatTileComponent extends StatelessWidget {
             else if (chat.lastMessage?.type == MessageType.video)
               Icon(
                 Icons.videocam_rounded,
+                color: Colors.grey.shade500,
+                size: 22,
+              )
+            else if (chat.lastMessage?.type == MessageType.document)
+              Icon(
+                Icons.description_rounded,
                 color: Colors.grey.shade500,
                 size: 22,
               )
