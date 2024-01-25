@@ -30,6 +30,10 @@ class FirebaseUtils {
   static CollectionReference<Map<String, dynamic>> get storiesCollection =>
       firebaseService.firestore.collection(FirebaseConstants.stories);
 
+  // for getting milliSecondsSinceEpoch as Id
+  static String getDateTimeNowAsId() =>
+      DateTime.now().millisecondsSinceEpoch.toString();
+
   static Future<void> logOut(context) async {
     await firebaseService.auth.signOut();
     NavigationUtil.popAllAndPush(context, RouteConstants.loginScreen);

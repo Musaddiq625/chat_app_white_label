@@ -3,7 +3,6 @@ import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
-import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -21,7 +20,7 @@ class ChatUtils {
           : '${chatUserPhoneNumber}_${FirebaseUtils.phoneNumber}';
 
   static String createGroupChatId(String chatName) =>
-      '${chatName}_${DateUtil.getDateTimeNowAsId()}';
+      '${chatName}_${FirebaseUtils.getDateTimeNowAsId()}';
 
   // User Data for chat room screen ChatTileComponent
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserInfo(
@@ -100,7 +99,7 @@ class ChatUtils {
       }
 
       //message sending time (also used as id)
-      final sendingTimeAsId = DateUtil.getDateTimeNowAsId();
+      final sendingTimeAsId = FirebaseUtils.getDateTimeNowAsId();
       final chatId = getConversationID(chatUser.id ?? '');
       final chatDoc = chatsCollection.doc(chatId);
 
@@ -210,7 +209,7 @@ class ChatUtils {
       }
 
       //message sending time (also used as id)
-      final sendingTimeAsId = DateUtil.getDateTimeNowAsId();
+      final sendingTimeAsId = FirebaseUtils.getDateTimeNowAsId();
       final chatId = groupChatId;
       final chatDoc = chatsCollection.doc(chatId);
 
