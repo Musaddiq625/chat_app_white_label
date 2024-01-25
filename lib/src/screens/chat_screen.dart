@@ -40,6 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
     SystemChannels.lifecycle.setMessageHandler((message) {
       LoggerUtil.logs('message ${message}');
       if (FirebaseUtils.user != null) {
+
         if (message.toString().contains('resume')) {
           FirebaseUtils.updateActiveStatus(true);
         }

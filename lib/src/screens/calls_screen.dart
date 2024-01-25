@@ -169,11 +169,12 @@ class CallScreen extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     var chat = snapshot.data!.docs[index];
                     return ListTile(
-                      title: Text(chat['chatName']),
-                      subtitle: Text(chat['lastMessage']),
+                      title: Text("xyx"),
+                      subtitle: Text("Hello"),
+                      // title: Text(chat['chatName']),
+                      // subtitle: Text(chat['lastMessage']),
                       onTap: () {
-                        // Navigate to the chat room using chat['chatId'] or any identifier
-                        // For example: Navigator.pushNamed(context, '/chatRoom', arguments: chat['chatId']);
+
                       },
                     );
                   },

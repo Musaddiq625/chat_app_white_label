@@ -5,6 +5,7 @@ class UserModel {
   String? image;
   String? about;
   String? phoneNumber;
+  String? fcmToken;
   List<String>? chats;
   bool? isProfileComplete;
   bool? isOnline;
@@ -17,6 +18,7 @@ class UserModel {
     this.image,
     this.subName,
     this.about,
+    this.fcmToken,
     this.phoneNumber,
     this.chats,
     this.isProfileComplete,
@@ -32,6 +34,7 @@ class UserModel {
         subName: json['sub_name'],
         image: json['image'],
         about: json['about'],
+        fcmToken: json['fcm_token'],
         phoneNumber: json['phoneNumber'],
         chats: json['chats'] == null ? [] : json['chats'].cast<String>(),
         isProfileComplete: json['is_profile_complete'],
@@ -46,6 +49,7 @@ class UserModel {
     data['sub_name'] = subName;
     data['image'] = image;
     data['about'] = about;
+    data['fcm_token'] = fcmToken;
     data['phoneNumber'] = phoneNumber;
     data['chats'] = chats;
     data['is_profile_complete'] = isProfileComplete;

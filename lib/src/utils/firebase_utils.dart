@@ -11,6 +11,7 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 // import 'package:path/path.dart' as path;
 import 'package:intl/intl.dart';
@@ -55,6 +56,13 @@ class FirebaseUtils {
     });
     LoggerUtil.logs('Created User');
   }
+  static Future<void> addFcmToken(String phoneNumber,String fcmToken) async {
+    final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
+    await usersCollection.doc(replacedPhoneNumber).set({
+      'fcm_token': fcmToken,
+    },SetOptions(merge: true));
+    LoggerUtil.logs('FCM Token $fcmToken');
+  }
 
   static Future<UserModel?> getCurrentUser() async {
     final userData = await usersCollection.doc(phoneNumber).get();
@@ -93,6 +101,8 @@ class FirebaseUtils {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChats() {
     return chatsCollection.where('users', arrayContains: user?.id).snapshots();
   }
+
+  static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
 
   static Future<void> deleteStory(String id, String storyUserId) async {
     try {

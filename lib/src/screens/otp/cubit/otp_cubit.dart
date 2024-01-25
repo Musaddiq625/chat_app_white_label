@@ -3,6 +3,7 @@ import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../main.dart';
 import '../../../utils/service/firbase_service.dart';
@@ -22,6 +23,8 @@ class OTPCubit extends Cubit<OTPState> {
     emit(OTPLoadingState());
 
     try {
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+
       LoggerUtil.logs("Verification Id $verificationId");
       // firebaseService.auth.setPersistence(Persistence.LOCAL);
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -33,6 +36,11 @@ class OTPCubit extends Cubit<OTPState> {
 
       if (userData != null) {
         if (userData.isProfileComplete == true) {
+          // await FirebaseUtils.addFcmToken(phoneNumber,fcmtoken);
+          if (fcmToken != null) {
+            // Assuming `phoneNumber` is the UID or some unique identifier for the user
+            await FirebaseUtils.addFcmToken(phoneNumber, fcmToken);
+          }
           emit(OTPSuccessOldUserState(userData));
         } else {
           emit(OTPSuccessNewUserState(phoneNumber));

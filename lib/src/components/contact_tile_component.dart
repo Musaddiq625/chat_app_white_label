@@ -7,15 +7,18 @@ import 'package:flutter/material.dart';
 class ContactTileComponent extends StatelessWidget {
   final String localName;
   final UserModel chatUser;
+  final VoidCallback onCallTapped;
 
   const ContactTileComponent({
     super.key,
     required this.localName,
     required this.chatUser,
+    required this.onCallTapped,
   });
 
   @override
   Widget build(BuildContext context) {
+
     return ListTile(
       onTap: () => NavigationUtil.push(context, RouteConstants.chatRoomScreen,
           args: [chatUser, '0']),
@@ -51,6 +54,17 @@ class ContactTileComponent extends StatelessWidget {
           chatUser.name ?? '',
           overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 15, color: Colors.grey.shade500),
+        ),
+      ),
+      trailing: CircleAvatar(
+        backgroundColor: Colors.lightGreenAccent,
+        child: IconButton(
+          onPressed: () => onCallTapped(),
+         icon: const Icon(
+            Icons.call,
+            size: 25,
+            color: Colors.green,
+          ),
         ),
       ),
     );
