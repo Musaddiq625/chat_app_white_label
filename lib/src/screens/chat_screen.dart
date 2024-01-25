@@ -1,7 +1,6 @@
 import 'package:chat_app_white_label/src/components/chat_tile_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/dummy%20data/whatsapp_data.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
@@ -14,8 +13,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../main.dart';
 import '../models/chat_model.dart';
-
-Data data = Data();
 
 class ChatScreen extends StatefulWidget with WidgetsBindingObserver {
   const ChatScreen({
@@ -55,18 +52,6 @@ class _ChatScreenState extends State<ChatScreen> {
       return Future.value(message);
     });
   }
-//   final a = AppLifecycleListener()
-
-// @override
-// Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-//   switch (state) {
-//     case AppLifecycleState.inactive:
-//     case AppLifecycleState.paused:
-//     case AppLifecycleState.detached:
-//     case AppLifecycleState.resumed:
-//     case AppLifecycleState.hidden:
-//   }
-// }
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +233,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           chatUser: chatUser,
                         );
                       }
-                      return const LinearProgressIndicator();
+                      return Container();
                     },
                   );
                 });

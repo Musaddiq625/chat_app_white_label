@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
 class DateUtil {
-  // for getting milliSecondsSinceEpoch as Id
-  static String getDateTimeNowAsId() =>
-      DateTime.now().millisecondsSinceEpoch.toString();
-
   // for getting formatted time from milliSecondsSinceEpochs String
   static String getFormattedTime(BuildContext context, String time) {
     if (time.isEmpty) {

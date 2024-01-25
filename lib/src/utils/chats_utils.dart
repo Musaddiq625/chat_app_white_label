@@ -3,7 +3,6 @@ import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
-import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -21,7 +20,7 @@ class ChatUtils {
           : '${chatUserPhoneNumber}_${FirebaseUtils.phoneNumber}';
 
   static String createGroupChatId(String chatName) =>
-      '${chatName}_${DateUtil.getDateTimeNowAsId()}';
+      '${chatName}_${FirebaseUtils.getDateTimeNowAsId()}';
 
   // User Data for chat room screen ChatTileComponent
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserInfo(
@@ -51,7 +50,6 @@ class ChatUtils {
     await chatsCollection.doc(chatId).set(ChatModel(
         id: '${FirebaseUtils.user?.id}_${chatUser.id ?? ''}',
         isGroup: false,
-        lastMessage: null,
         users: [FirebaseUtils.user?.id ?? '', chatUser.id ?? '']).toJson());
 
     await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
@@ -100,7 +98,7 @@ class ChatUtils {
       }
 
       //message sending time (also used as id)
-      final sendingTimeAsId = DateUtil.getDateTimeNowAsId();
+      final sendingTimeAsId = FirebaseUtils.getDateTimeNowAsId();
       final chatId = getConversationID(chatUser.id ?? '');
       final chatDoc = chatsCollection.doc(chatId);
 
@@ -157,12 +155,15 @@ class ChatUtils {
     List contacts,
   ) async {
     final groupChatId =
-        createGroupChatId(groupName.trim().replaceAll(' ', '_'));
+        createGroupChatId(groupName.toLowerCase().trim().replaceAll(' ', '_'));
 
     await chatsCollection.doc(groupChatId).set(ChatModel(
         id: groupChatId,
         isGroup: true,
-        groupImage: groupImage,
+        groupData: GroupData(
+            adminId: FirebaseUtils.user?.id,
+            grougName: groupName,
+            groupImage: groupImage),
         lastMessage: null,
         users: [FirebaseUtils.user?.id ?? '', ...contacts]).toJson());
 
@@ -210,7 +211,7 @@ class ChatUtils {
       }
 
       //message sending time (also used as id)
-      final sendingTimeAsId = DateUtil.getDateTimeNowAsId();
+      final sendingTimeAsId = FirebaseUtils.getDateTimeNowAsId();
       final chatId = groupChatId;
       final chatDoc = chatsCollection.doc(chatId);
 
@@ -240,5 +241,20 @@ class ChatUtils {
     } catch (e) {
       LoggerUtil.logs(e.toString());
     }
+  }
+
+  static Future<void> updateGroupMessageReadStatus(
+      String groupChatId, MessageModel message, UserModel chatuser) async {
+    final chatDoc = chatsCollection.doc(groupChatId);
+
+    await chatDoc
+        .collection(FirebaseConstants.messages)
+        .doc(message.sentAt)
+        .set({
+      'readBy': FieldValue.arrayUnion([chatuser.id])
+    });
+    await chatDoc.set({
+      'last_message.readBy': FieldValue.arrayUnion([chatuser.id])
+    });
   }
 }

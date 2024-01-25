@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
@@ -75,10 +76,9 @@ Route generateRoute(RouteSettings settings) {
         contactsList: arg,
       ));
     case RouteConstants.groupChatRoomScreen:
-      final arg = settings.arguments as List;
+      final arg = settings.arguments as ChatModel;
       return materialRoute(GroupChatRoomScreen(
-        groupChatId: arg[0],
-        unreadCount: arg[1],
+        gruopChat: arg,
       ));
     default:
       return materialRoute(const SplashScreen());

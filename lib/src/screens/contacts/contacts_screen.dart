@@ -29,49 +29,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
   FirebaseService firebaseService = getIt<FirebaseService>();
   List<Contact> localContacts = [];
   List<ContactModel> contactToDisplay = [];
-  // late RtcEngine _engine;
-  // final _eventHandler = const RtcEngineEventHandler();
-  //
-  // final String agoraAppId = '62b3eb641dbd4ca7a203c41ce90dbca2';
 
   @override
   void initState() {
     super.initState();
-    // _initAgora();
-    // initAgora();
-    // _fetchLocalContacts();
-    // _initFirebaseMessaging();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       localContacts = await ContactsService.getContacts(withThumbnails: false);
     });
   }
-
-  // @override
-  // void didJoinedOfUid(int uid, int elapsed) {
-  //   print('User joined: $uid');
-  //   // Show a notification or dialog to inform the user about the incoming call
-  // }
-  //
-  // Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  //   // Handle incoming call notification here
-  //   print("Received background message: ${message.data}");
-  // }
-
-
-//
-//   Future<void> initAgora() async{
-//   await [Permission.microphone, Permission.camera].request();
-//
-//   //create the engine
-//
-//   _engine = createAgoraRtcEngine();
-//   await _engine.initialize(const RtcEngineContext(
-//   appId: appId,
-//   channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
-//   ));
-//   _engine.registerEventHandler(_eventHandler);
-//   // await _engine.setEventHandler(this);
-// }
 
   getContactsToDisplay(
       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -97,35 +62,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
       }
     }
   }
-
-  // Future<void> setupInteractedMessage() async {
-  //   // Get any messages which caused the application to open from
-  //   // a terminated state.
-  //   RemoteMessage? initialMessage =
-  //   await FirebaseMessaging.instance.getInitialMessage();
-  //
-  //   // If the message also contains a data property with a "type" of "chat",
-  //   // navigate to a chat screen
-  //   if (initialMessage != null) {
-  //     _handleMessage(initialMessage);
-  //   }
-  //
-  //   // Also handle any interaction when the app is in the background via a
-  //   // Stream listener
-  //   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-  // }
-  //
-  // void _handleMessage(RemoteMessage message) {
-  //   if (message.data['type'] == 'call_notification') {
-  //     print("FCM Message succsess ${(message.data['type'])}");
-  //     // Navigator.pushNamed(context, '/chat',
-  //     //   arguments: ChatArguments(message),
-  //     // );
-  //   }
-  //   else{
-  //     print("FCM Message fail ${(message.data['type'])}");
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

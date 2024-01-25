@@ -18,7 +18,7 @@ class CreateGroupChatCubit extends Cubit<CreateGroupChatState> {
         groupImage =
             await FirebaseUtils.uploadMedia(filePath, MediaType.profilePicture);
       }
-      ChatUtils.createGroupChat(gropuName, groupImage, contacts);
+      await ChatUtils.createGroupChat(gropuName, groupImage, contacts);
       emit(CreateGroupChatSuccessState());
     } catch (e) {
       emit(CreateGroupChatFailureState(e.toString()));
