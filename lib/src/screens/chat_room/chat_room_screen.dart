@@ -146,8 +146,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     itemBuilder: (context, index) {
                                       return MessageCard(
                                         message: messagesList[index],
-                                        isRead:
-                                            messagesList[index].readAt != null,
+                                        // isRead:
+                                        //     messagesList[index].readAt != null,
                                       );
                                     });
                               } else {
