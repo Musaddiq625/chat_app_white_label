@@ -19,7 +19,7 @@ class AgoraCalling extends StatefulWidget {
 
 class _AgoraCallingState extends State<AgoraCalling> {
 
-
+  // final int recipientUid;
   int? _remoteUid;
   bool _localUserJoined = false;
   late RtcEngine _engine;
@@ -79,7 +79,7 @@ class _AgoraCallingState extends State<AgoraCalling> {
     await _engine.joinChannel(
       token: token,
       channelId: channel,
-      uid: 222,
+      uid: 0,
       options: const ChannelMediaOptions(),
     );
   }

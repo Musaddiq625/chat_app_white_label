@@ -1,7 +1,9 @@
+
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
+import 'package:chat_app_white_label/src/screens/agora_calling.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
@@ -72,12 +74,21 @@ void main() async {
     print('Message from: ${message.from}');
     print('Message senderId: ${message.senderId}');
     print('Message category: ${message.category}');
-    print('Received notification: ${message.notification?.body}');
+    print('Received notification title : ${message.notification?.title}');
+    print('Received notification body : ${message.notification?.body}');
+    print('Received notification type : ${message.data["messageType"]}');
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
 
     if (message.notification != null) {
 
+      // if(message.data["messageType"] == "call"){
+      //   // Navigator.push(
+      //   //   context,
+      //   //   MaterialPageRoute(
+      //   //       builder: (context) => AgoraCalling()),
+      //   // );
+      // }
       print('Message also contained a notification: ${message.notification}');
       // AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       //     "channelId", "Channel Name",
@@ -93,11 +104,8 @@ void main() async {
     }
   });
 
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-
-
-
   runApp(const MyApp());
 }
 

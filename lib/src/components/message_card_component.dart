@@ -49,9 +49,9 @@ class _MessageCardState extends State<MessageCard> {
                         mediaUrl: widget.message.msg ?? '')));
           }
         },
-        onLongPress: () {
-          _showBottomSheet(isMe);
-        },
+        // onLongPress: () {
+        //   _showBottomSheet(isMe);
+        // },
         child: isMe ? _greenMessage() : _blueMessage());
   }
 

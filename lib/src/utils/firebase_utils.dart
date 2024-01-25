@@ -90,10 +90,6 @@ class FirebaseUtils {
     return usersCollection.doc(chatUserId).snapshots();
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChats() {
-    return chatsCollection.where('users', arrayContains: user?.id).snapshots();
-  }
-
   static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
 
   static Future<void> deleteStory(String id, String storyUserId) async {
