@@ -9,12 +9,14 @@ class ContactTileComponent extends StatelessWidget {
   final String localName;
   final UserModel? chatUser;
   final bool? isSelected;
+  final VoidCallback? onCallTapped;
   final Function()? onContactTap;
 
   const ContactTileComponent(
       {super.key,
       required this.localName,
       required this.chatUser,
+      this.onCallTapped,
       this.isSelected,
       this.onContactTap});
 
@@ -59,15 +61,29 @@ class ContactTileComponent extends StatelessWidget {
             style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
           ),
         ),
-        trailing: isSelected != null
+        trailing: onContactTap != null
             ? Checkbox(
                 checkColor: Colors.white,
                 activeColor: ColorConstants.greenMain,
                 focusColor: ColorConstants.greenMain,
                 hoverColor: ColorConstants.greenMain,
                 value: isSelected,
-                onChanged: (bool? value) {},
+                onChanged: (bool? value) {
+                  onContactTap!();
+                },
               )
-            : null);
+            : onCallTapped != null
+                ? CircleAvatar(
+                    backgroundColor: Colors.lightGreenAccent,
+                    child: IconButton(
+                      onPressed: () => onCallTapped!(),
+                      icon: const Icon(
+                        Icons.call,
+                        size: 25,
+                        color: Colors.green,
+                      ),
+                    ),
+                  )
+                : null);
   }
 }

@@ -10,12 +10,15 @@ class CreateGroupChatCubit extends Cubit<CreateGroupChatState> {
   CreateGroupChatCubit() : super(CreateGroupChatInitial());
 
   Future<void> createGroupChat(
-      String gropuName, List<String> contacts, String filePath) async {
+      String gropuName, List contacts, String? filePath) async {
     emit(CreateGroupChatLoadingState());
     try {
-      final gropuImage =
-          await FirebaseUtils.uploadMedia(filePath, MediaType.profilePicture);
-      ChatUtils.createGroupChat(gropuName, gropuImage, contacts);
+      String? groupImage;
+      if (filePath != null) {
+        groupImage =
+            await FirebaseUtils.uploadMedia(filePath, MediaType.profilePicture);
+      }
+      ChatUtils.createGroupChat(gropuName, groupImage, contacts);
       emit(CreateGroupChatSuccessState());
     } catch (e) {
       emit(CreateGroupChatFailureState(e.toString()));

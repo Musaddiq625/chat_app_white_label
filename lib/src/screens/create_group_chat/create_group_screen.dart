@@ -6,7 +6,6 @@ import 'package:chat_app_white_label/src/components/custom_text_field.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
-import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/cubit/create_group_chat_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -25,6 +24,7 @@ class CreateGroupScreen extends StatefulWidget {
 }
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
+  late CreateGroupChatCubit createGroupChatCubit;
   FirebaseService firebaseService = getIt<FirebaseService>();
   final groupNameController = TextEditingController();
   XFile? selectedImage;
@@ -32,7 +32,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CreateGroupChatCubit(),
+      create: (context) => createGroupChatCubit = CreateGroupChatCubit(),
       child: BlocListener<CreateGroupChatCubit, CreateGroupChatState>(
         listener: (context, state) async {
           LoggerUtil.logs('login state: $state');
@@ -40,7 +40,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
             LoadingDialog.showLoadingDialog(context);
           } else if (state is CreateGroupChatSuccessState) {
             LoadingDialog.hideLoadingDialog(context);
-            NavigationUtil.push(context, RouteConstants.chatRoomScreen);
+            LoggerUtil.logs("Group Created");
+            // NavigationUtil.push(context, RouteConstants.chatRoomScreen);
           } else if (state is CreateGroupChatFailureState) {
             LoadingDialog.hideLoadingDialog(context);
             ToastComponent.showToast(state.error.toString(), context: context);
@@ -133,8 +134,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                             'Name cannot be empty',
                             context: context,
                           );
-                          return;
-                        } else {}
+                        } else {
+                          createGroupChatCubit.createGroupChat(
+                              groupNameController.text,
+                              widget.contactsList,
+                              selectedImage?.path);
+                        }
                       }),
                 ],
               ),

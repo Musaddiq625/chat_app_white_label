@@ -21,7 +21,7 @@ class ChatUtils {
           : '${chatUserPhoneNumber}_${FirebaseUtils.phoneNumber}';
 
   static String createGroupChatId(String chatName) =>
-      '${chatName}_${DateUtil.getDateTimeNowId()}';
+      '${chatName}_${DateUtil.getDateTimeNowAsId()}';
 
   // User Data for chat room screen ChatTileComponent
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserInfo(
@@ -100,7 +100,7 @@ class ChatUtils {
       }
 
       //message sending time (also used as id)
-      final sendingTimeAsId = DateUtil.getDateTimeNowId();
+      final sendingTimeAsId = DateUtil.getDateTimeNowAsId();
       final chatId = getConversationID(chatUser.id ?? '');
       final chatDoc = chatsCollection.doc(chatId);
 
@@ -210,7 +210,7 @@ class ChatUtils {
       }
 
       //message sending time (also used as id)
-      final sendingTimeAsId = DateUtil.getDateTimeNowId();
+      final sendingTimeAsId = DateUtil.getDateTimeNowAsId();
       final chatId = groupChatId;
       final chatDoc = chatsCollection.doc(chatId);
 
