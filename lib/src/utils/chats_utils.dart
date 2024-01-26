@@ -246,17 +246,22 @@ class ChatUtils {
   }
 
   static Future<void> updateGroupMessageReadStatus(
-      String groupChatId, MessageModel message, UserModel chatuser) async {
+      String groupChatId, MessageModel message, bool isLast) async {
     final chatDoc = chatsCollection.doc(groupChatId);
-
+    LoggerUtil.logs('updateGroupChatReadStatus ${message.toJson()}');
     await chatDoc
         .collection(FirebaseConstants.messages)
         .doc(message.sentAt)
         .set({
-      'readBy': FieldValue.arrayUnion([chatuser.id])
-    });
-    await chatDoc.set({
-      'last_message.readBy': FieldValue.arrayUnion([chatuser.id])
-    });
+      'readBy': FieldValue.arrayUnion([FirebaseUtils.user?.id ?? ''])
+    }, SetOptions(merge: true));
+    message.readBy?.add(FirebaseUtils.user?.id ?? '');
+    LoggerUtil.logs('updateGroupChatReadStatusUpdated ${message.toJson()}');
+    if (isLast) {
+      await chatDoc.set({
+        'last_message_readBy':
+            FieldValue.arrayUnion([FirebaseUtils.user?.id ?? ''])
+      }, SetOptions(merge: true));
+    }
   }
 }

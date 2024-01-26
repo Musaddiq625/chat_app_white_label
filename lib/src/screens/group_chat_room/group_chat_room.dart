@@ -1,12 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/components/chat_input_component.dart';
 import 'package:chat_app_white_label/src/components/chat_input_icon_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/components/record_button_component.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
+import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -22,7 +24,6 @@ import '../../models/message_model.dart';
 
 class GroupChatRoomScreen extends StatefulWidget {
   final ChatModel gruopChat;
-
   const GroupChatRoomScreen({super.key, required this.gruopChat});
 
   @override
@@ -107,8 +108,21 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                                     itemBuilder: (context, index) {
                                       return MessageCard(
                                         message: messagesList[index],
-                                        // isRead: messagesList[index].readAt !=
-                                        //     null
+                                        isRead: messagesList[index]
+                                                .readBy
+                                                ?.length ==
+                                            ((widget.gruopChat.users ?? [])
+                                                    .length -
+                                                1),
+                                        isGroupMessage: true,
+                                        updateGroupChatReadStatus: () =>
+                                            ChatUtils
+                                                .updateGroupMessageReadStatus(
+                                                    widget.gruopChat.id ?? '',
+                                                    messagesList[index],
+                                                    data?.last.id ==
+                                                        messagesList
+                                                            .last.sentAt),
                                       );
                                     });
                               } else {
@@ -135,7 +149,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                               ))),
 
                     //chat input filed
-                    // _chatInput(),
+                    _chatInput(),
 
                     // show emojis on keyboard emoji button click & vice versa
                     if (_showEmoji)
@@ -162,144 +176,219 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   // bottom chat input field
   Widget _chatInput() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: mq.height * .01, horizontal: mq.width * .025),
-      child: Row(
-        children: [
-          //input field & buttons
-          Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: Row(
-                children: [
-                  //emoji button
-                  ChatInputIconComponent(
-                      icon: Icons.emoji_emotions,
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        setState(() => _showEmoji = !_showEmoji);
-                      }),
+    return ChatInputComponent(
+        controller: _textController,
+        onTextInputTap: () {
+          if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
+        },
+        onEmojiTap: () {
+          FocusScope.of(context).unfocus();
+          setState(() => _showEmoji = !_showEmoji);
+        },
+        onDocumentSelection: () async {
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+            type: FileType.custom,
+            allowedExtensions: [
+              'doc',
+              'pdf',
+            ],
+          );
 
-                  Expanded(
-                      child: TextField(
-                    controller: _textController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    onTap: () {
-                      if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
-                    },
-                    decoration: const InputDecoration(
-                        hintText: 'Type Something...',
-                        hintStyle: TextStyle(color: Colors.blueAccent),
-                        border: InputBorder.none),
-                  )),
+          if (result != null) {
+            // uploading & sending document one by one
+            for (var i in result.files) {
+              log('Document Path: ${i.path}');
+              setState(() => _isUploading = true);
 
-                  //pick doc from storage button
-                  ChatInputIconComponent(
-                      icon: Icons.description_rounded,
-                      onTap: () async {
-                        FilePickerResult? result =
-                            await FilePicker.platform.pickFiles(
-                          type: FileType.custom,
-                          allowedExtensions: [
-                            'doc',
-                            'pdf',
-                          ],
-                        );
+              await ChatUtils.sendGropuMessage(
+                groupChatId: widget.gruopChat.id ?? '',
+                type: MessageType.document,
+                filePath: i.path,
+              );
+              setState(() => _isUploading = false);
+            }
+          }
+        },
+        onImageSelection: () async {
+          final ImagePicker picker = ImagePicker();
 
-                        if (result != null) {
-                          // uploading & sending document one by one
-                          for (var i in result.files) {
-                            log('Document Path: ${i.path}');
-                            setState(() => _isUploading = true);
+          // Picking multiple images
+          final List<XFile> images = await picker.pickMultiImage();
 
-                            await ChatUtils.sendGropuMessage(
-                              groupChatId: widget.gruopChat.id ?? '',
-                              type: MessageType.document,
-                              filePath: i.path,
-                            );
-                            setState(() => _isUploading = false);
-                          }
-                        }
-                      }),
+          // uploading & sending image one by one
+          for (var i in images) {
+            log('Image Path: ${i.path}');
+            setState(() => _isUploading = true);
 
-                  //pick image from gallery button
-                  ChatInputIconComponent(
-                      icon: Icons.image,
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
+            await ChatUtils.sendGropuMessage(
+                groupChatId: widget.gruopChat.id ?? '',
+                type: MessageType.image,
+                filePath: i.path);
+            setState(() => _isUploading = false);
+          }
+        },
+        onCameraSelection: () async {
+          NavigationUtil.push(context, RouteConstants.cameraScreen);
+        },
+        onRecordingFinished: (path, duration) async {
+          LoggerUtil.logs('Voice Path: $path');
+          setState(() => _isUploading = true);
 
-                        // Picking multiple images
-                        final List<XFile> images =
-                            await picker.pickMultiImage();
+          await ChatUtils.sendGropuMessage(
+              groupChatId: widget.gruopChat.id ?? '',
+              type: MessageType.audio,
+              filePath: path,
+              length: duration);
+          setState(() => _isUploading = false);
+        },
+        onSendButtonTap: () {
+          if (_textController.text.isNotEmpty) {
+            ChatUtils.sendGropuMessage(
+              groupChatId: widget.gruopChat.id ?? '',
+              msg: _textController.text,
+              type: MessageType.text,
+            );
+            _textController.clear();
+          }
+        });
+    // return Padding(
+    //   padding: EdgeInsets.symmetric(
+    //       vertical: mq.height * .01, horizontal: mq.width * .025),
+    //   child: Row(
+    //     children: [
+    //       //input field & buttons
+    //       Expanded(
+    //         child: Card(
+    //           shape: RoundedRectangleBorder(
+    //               borderRadius: BorderRadius.circular(15)),
+    //           child: Row(
+    //             children: [
+    //               //emoji button
+    //               ChatInputIconComponent(
+    //                   icon: Icons.emoji_emotions,
+    //                   onTap: () {
+    //                     FocusScope.of(context).unfocus();
+    //                     setState(() => _showEmoji = !_showEmoji);
+    //                   }),
 
-                        // uploading & sending image one by one
-                        for (var i in images) {
-                          log('Image Path: ${i.path}');
-                          setState(() => _isUploading = true);
+    //               Expanded(
+    //                   child: TextField(
+    //                 controller: _textController,
+    //                 keyboardType: TextInputType.multiline,
+    //                 maxLines: null,
+    //                 onTap: () {
+    //                   if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
+    //                 },
+    //                 decoration: const InputDecoration(
+    //                     hintText: 'Type Something...',
+    //                     hintStyle: TextStyle(color: Colors.blueAccent),
+    //                     border: InputBorder.none),
+    //               )),
 
-                          await ChatUtils.sendGropuMessage(
-                              groupChatId: widget.gruopChat.id ?? '',
-                              type: MessageType.image,
-                              filePath: i.path);
-                          setState(() => _isUploading = false);
-                        }
-                      }),
+    //               //pick doc from storage button
+    //               ChatInputIconComponent(
+    //                   icon: Icons.description_rounded,
+    //                   onTap: () async {
+    //                     FilePickerResult? result =
+    //                         await FilePicker.platform.pickFiles(
+    //                       type: FileType.custom,
+    //                       allowedExtensions: [
+    //                         'doc',
+    //                         'pdf',
+    //                       ],
+    //                     );
 
-                  //take image from camera button
-                  ChatInputIconComponent(
-                      icon: Icons.camera_alt_rounded,
-                      onTap: () async {
-                        NavigationUtil.push(
-                            context, RouteConstants.cameraScreen);
-                      }),
+    //                     if (result != null) {
+    //                       // uploading & sending document one by one
+    //                       for (var i in result.files) {
+    //                         log('Document Path: ${i.path}');
+    //                         setState(() => _isUploading = true);
 
-                  //voice message mutton
-                  RecordButtonComponent(
-                    onRecordingFinished: (path, duration) async {
-                      LoggerUtil.logs('Voice Path: $path');
-                      setState(() => _isUploading = true);
+    //                         await ChatUtils.sendGropuMessage(
+    //                           groupChatId: widget.gruopChat.id ?? '',
+    //                           type: MessageType.document,
+    //                           filePath: i.path,
+    //                         );
+    //                         setState(() => _isUploading = false);
+    //                       }
+    //                     }
+    //                   }),
 
-                      await ChatUtils.sendGropuMessage(
-                          groupChatId: widget.gruopChat.id ?? '',
-                          type: MessageType.audio,
-                          filePath: path,
-                          length: duration);
-                      setState(() => _isUploading = false);
-                    },
-                  ),
+    //               //pick image from gallery button
+    //               ChatInputIconComponent(
+    //                   icon: Icons.image,
+    //                   onTap: () async {
+    //                     final ImagePicker picker = ImagePicker();
 
-                  //adding some space
-                  SizedBox(width: mq.width * .02),
-                ],
-              ),
-            ),
-          ),
+    //                     // Picking multiple images
+    //                     final List<XFile> images =
+    //                         await picker.pickMultiImage();
 
-          //send message
-          MaterialButton(
-            onPressed: () {
-              if (_textController.text.isNotEmpty) {
-                ChatUtils.sendGropuMessage(
-                  groupChatId: widget.gruopChat.id ?? '',
-                  msg: _textController.text,
-                  type: MessageType.text,
-                );
-                _textController.clear();
-              }
-            },
-            minWidth: 0,
-            padding:
-                const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
-            shape: const CircleBorder(),
-            color: Colors.green,
-            child: const Icon(Icons.send, color: Colors.white, size: 28),
-          )
-        ],
-      ),
-    );
+    //                     // uploading & sending image one by one
+    //                     for (var i in images) {
+    //                       log('Image Path: ${i.path}');
+    //                       setState(() => _isUploading = true);
+
+    //                       await ChatUtils.sendGropuMessage(
+    //                           groupChatId: widget.gruopChat.id ?? '',
+    //                           type: MessageType.image,
+    //                           filePath: i.path);
+    //                       setState(() => _isUploading = false);
+    //                     }
+    //                   }),
+
+    //               //take image from camera button
+    //               ChatInputIconComponent(
+    //                   icon: Icons.camera_alt_rounded,
+    //                   onTap: () async {
+    //                     NavigationUtil.push(
+    //                         context, RouteConstants.cameraScreen);
+    //                   }),
+
+    //               //voice message mutton
+    //               RecordButtonComponent(
+    //                 onRecordingFinished: (path, duration) async {
+    //                   LoggerUtil.logs('Voice Path: $path');
+    //                   setState(() => _isUploading = true);
+
+    //                   await ChatUtils.sendGropuMessage(
+    //                       groupChatId: widget.gruopChat.id ?? '',
+    //                       type: MessageType.audio,
+    //                       filePath: path,
+    //                       length: duration);
+    //                   setState(() => _isUploading = false);
+    //                 },
+    //               ),
+
+    //               //adding some space
+    //               SizedBox(width: mq.width * .02),
+    //             ],
+    //           ),
+    //         ),
+    //       ),
+
+    //       //send message
+    //       MaterialButton(
+    //         onPressed: () {
+    //           if (_textController.text.isNotEmpty) {
+    //             ChatUtils.sendGropuMessage(
+    //               groupChatId: widget.gruopChat.id ?? '',
+    //               msg: _textController.text,
+    //               type: MessageType.text,
+    //             );
+    //             _textController.clear();
+    //           }
+    //         },
+    //         minWidth: 0,
+    //         padding:
+    //             const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
+    //         shape: const CircleBorder(),
+    //         color: Colors.green,
+    //         child: const Icon(Icons.send, color: Colors.white, size: 28),
+    //       )
+    //     ],
+    //   ),
+    // );
   }
 
   Widget _appBar() {

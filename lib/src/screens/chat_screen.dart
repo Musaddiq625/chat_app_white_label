@@ -221,6 +221,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       .firstWhere((id) => id != FirebaseUtils.user?.id);
                   chat.unreadCount = snapshot.data!.docs[index]
                       .data()['${FirebaseUtils.user?.id}_unread_count'];
+                  final List? readBy =
+                      snapshot.data!.docs[index].data()['last_message_readBy'];
                   return FutureBuilder(
                     future: FirebaseUtils.getChatUser(chatUserId),
                     builder: (context, asyncSnapshot) {
@@ -230,6 +232,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         return ChatTileComponent(
                           chat: chat,
                           chatUser: chatUser,
+                          readByLength: (readBy ?? []).length,
                         );
                       }
                       return Container();
