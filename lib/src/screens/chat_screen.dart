@@ -219,10 +219,30 @@ class _ChatScreenState extends State<ChatScreen> {
                   final chatUserId = snapshot.data!.docs[index]
                       .data()['users']
                       .firstWhere((id) => id != FirebaseUtils.user?.id);
-                  chat.unreadCount = snapshot.data!.docs[index]
-                      .data()['${FirebaseUtils.user?.id}_unread_count'];
+
                   final List? readBy =
                       snapshot.data!.docs[index].data()['last_message_readBy'];
+                  if (chat.isGroup == false) {
+                    chat.unreadCount = snapshot.data!.docs[index]
+                        .data()['${FirebaseUtils.user?.id}_unread_count'];
+                  } else {
+                    if (snapshot.data!.docs[index]
+                            .data()
+                            .containsKey('read_count_group') &&
+                        snapshot.data!.docs[index]
+                            .data()['read_count_group']
+                            .containsKey('${FirebaseUtils.user?.id}')) {
+                      chat.readCountGroup =
+                          snapshot.data!.docs[index].data()['read_count_group']
+                              ['${FirebaseUtils.user?.id}'];
+                      chat.unreadCount = ((chat.messageCount ?? 0) -
+                              (chat.readCountGroup ?? 0))
+                          .toString();
+                    } else {
+                      chat.unreadCount = chat.messageCount.toString();
+                    }
+                  }
+
                   return FutureBuilder(
                     future: FirebaseUtils.getChatUser(chatUserId),
                     builder: (context, asyncSnapshot) {

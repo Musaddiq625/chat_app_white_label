@@ -42,11 +42,15 @@ class MessageModel {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['fromId'] = fromId;
-    data['toId'] = toId;
+    data['sentAt'] = sentAt;
     data['msg'] = msg;
     data['type'] = type?.name;
-    data['readAt'] = readAt;
-    data['sentAt'] = sentAt;
+    if (readAt != null) {
+      data['readAt'] = readAt;
+    }
+    if (toId != null) {
+      data['toId'] = toId;
+    }
     if (length != null) {
       data['length'] = length;
     }
@@ -56,7 +60,6 @@ class MessageModel {
     if (readBy != null) {
       data['readBy'] = readBy;
     }
-    // data['fileName'] = fileName;
     return data;
   }
 }
