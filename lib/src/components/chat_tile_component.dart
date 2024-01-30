@@ -13,12 +13,13 @@ import 'package:flutter/material.dart';
 class ChatTileComponent extends StatelessWidget {
   final ChatModel chat;
   final UserModel chatUser;
+  final int? readByLength;
 
-  const ChatTileComponent({
-    super.key,
-    required this.chat,
-    required this.chatUser,
-  });
+  const ChatTileComponent(
+      {super.key,
+      required this.chat,
+      required this.chatUser,
+      this.readByLength});
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +73,13 @@ class ChatTileComponent extends StatelessWidget {
           children: [
             if (FirebaseUtils.user?.id == chat.lastMessage?.fromId)
               Icon(Icons.done_all_rounded,
-                  color: chat.lastMessage?.readAt != null
-                      ? Colors.blue
-                      : Colors.grey,
+                  color: chat.isGroup == false
+                      ? chat.lastMessage?.readAt != null
+                          ? Colors.blue
+                          : Colors.grey
+                      : readByLength == ((chat.users ?? []).length - 1)
+                          ? Colors.blue
+                          : Colors.grey,
                   size: 18),
             const SizedBox(width: 2),
             if (chat.lastMessage?.type == MessageType.image)

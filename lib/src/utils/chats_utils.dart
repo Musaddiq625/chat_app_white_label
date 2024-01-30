@@ -34,6 +34,11 @@ class ChatUtils {
         .snapshots();
   }
 
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getGroupChat(
+      String groupChatId) {
+    return chatsCollection.doc(groupChatId).snapshots();
+  }
+
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
       String chatId) {
     return chatsCollection
@@ -119,8 +124,10 @@ class ChatUtils {
           .set(message.toJson())
           .then((value) async =>
                   //adding last message
-                  await chatDoc.set({'last_message': message.toJson()},
-                      SetOptions(merge: true))
+                  await chatDoc.set({
+                    'last_message': message.toJson(),
+                  }, SetOptions(merge: true))
+
               // )
               // .then((value) =>
               // sendPushNotification(chatUser, type == Type.text ? msg : 'image')
@@ -233,9 +240,11 @@ class ChatUtils {
           .doc(sendingTimeAsId)
           .set(message.toJson())
           .then((value) async =>
-                  //adding last message
-                  await chatDoc.set({'last_message': message.toJson()},
-                      SetOptions(merge: true))
+                  //adding last message and adding mesage count
+                  await chatDoc.set({
+                    'message_count': FieldValue.increment(1),
+                    'last_message': message.toJson()
+                  }, SetOptions(merge: true))
               // )
               // .then((value) =>
               // sendPushNotification(chatUser, type == Type.text ? msg : 'image')
@@ -246,17 +255,32 @@ class ChatUtils {
   }
 
   static Future<void> updateGroupMessageReadStatus(
-      String groupChatId, MessageModel message, UserModel chatuser) async {
+      String groupChatId, MessageModel message, bool isLast) async {
     final chatDoc = chatsCollection.doc(groupChatId);
-
+    LoggerUtil.logs('updateGroupChatReadStatus ${message.toJson()}');
     await chatDoc
         .collection(FirebaseConstants.messages)
         .doc(message.sentAt)
         .set({
-      'readBy': FieldValue.arrayUnion([chatuser.id])
-    });
-    await chatDoc.set({
-      'last_message.readBy': FieldValue.arrayUnion([chatuser.id])
+      'readBy': FieldValue.arrayUnion([FirebaseUtils.user?.id ?? ''])
+    }, SetOptions(merge: true));
+
+    message.readBy?.add(FirebaseUtils.user?.id ?? '');
+    LoggerUtil.logs('updateGroupChatReadStatusUpdated ${message.toJson()}');
+    if (isLast) {
+      await chatDoc.set({
+        'last_message_readBy':
+            FieldValue.arrayUnion([FirebaseUtils.user?.id ?? ''])
+      }, SetOptions(merge: true));
+    }
+  }
+
+  static Future<void> updateGroupReadCount(
+    String groupChatId,
+  ) async {
+    await chatsCollection.doc(groupChatId).update({
+      'read_count_group.${FirebaseUtils.user?.id ?? ''}':
+          FieldValue.increment(1)
     });
   }
 }

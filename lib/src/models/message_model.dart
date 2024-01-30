@@ -17,7 +17,7 @@ class MessageModel {
   String? sentAt;
   int? length;
   String? thumbnail;
-  List? readBy;
+  List<String>? readBy;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
         fromId: json['fromId'],
@@ -36,17 +36,21 @@ class MessageModel {
         sentAt: json['sentAt'],
         length: json['length'],
         thumbnail: json['thumbnail'],
-        readBy: json['readBy'] != null ? json['readBy'].cast<String>() : [],
+        readBy: json['readBy'] == null ? [] : json['readBy'].cast<String>(),
       );
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['fromId'] = fromId;
-    data['toId'] = toId;
+    data['sentAt'] = sentAt;
     data['msg'] = msg;
     data['type'] = type?.name;
-    data['readAt'] = readAt;
-    data['sentAt'] = sentAt;
+    if (readAt != null) {
+      data['readAt'] = readAt;
+    }
+    if (toId != null) {
+      data['toId'] = toId;
+    }
     if (length != null) {
       data['length'] = length;
     }
@@ -56,7 +60,6 @@ class MessageModel {
     if (readBy != null) {
       data['readBy'] = readBy;
     }
-    // data['fileName'] = fileName;
     return data;
   }
 }

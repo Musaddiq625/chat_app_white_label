@@ -102,14 +102,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   children: [
                     Expanded(
                       child: StreamBuilder(
-                        stream:
-                            // FirebaseUtils.user?.isOnline == true
-                            // ?
-                            ChatUtils.getAllMessages(
+                        stream: FirebaseUtils.user?.isOnline == true
+                            ? ChatUtils.getAllMessages(
                                 ChatUtils.getConversationID(
                                     widget.chatUser.id ?? ''))
-                        // : null
-                        ,
+                            : null,
                         builder: (context, snapshot) {
                           switch (snapshot.connectionState) {
                             case ConnectionState.waiting:
@@ -166,8 +163,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     itemBuilder: (context, index) {
                                       return MessageCard(
                                         message: messagesList[index],
-                                        // isRead:
-                                        //     messagesList[index].readAt != null,
+                                        isRead:
+                                            messagesList[index].readAt != null,
                                       );
                                     });
                               } else {
