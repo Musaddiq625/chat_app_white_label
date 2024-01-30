@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/components/record_button_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
+import 'package:chat_app_white_label/src/screens/view_profile_screen/view_profile_screen.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -35,7 +36,7 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  int myUnreadCount = -1;
+  int myUnreadCount = 0;
   int chatUserUnreadCount = -1;
   List<MessageModel> messagesList = [];
   final _textController = TextEditingController();
@@ -127,7 +128,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     messagesList[i].readAt == null) {
                                   chatUserUnreadCount = chatUserUnreadCount + 1;
                                 } else if (messagesList[i].readAt == null) {
-                                  myUnreadCount = myUnreadCount + 1;
+                                  // myUnreadCount = myUnreadCount + 1;
                                 }
                               }
 
@@ -146,12 +147,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   data?.last.id == messagesList.last.sentAt) {
                                 LoggerUtil.logs('myUnreadCount $myUnreadCount');
                                 ChatUtils.updateUnreadCount(
-                                    widget.chatUser.id ?? '',
-                                    myUnreadCount.toString(),
-                                    true);
+                                    widget.chatUser.id ?? '', '0', true);
                               }
                               chatUserUnreadCount = 0;
-                              myUnreadCount = 0;
+                              myUnreadCount = -1;
 
                               if (messagesList.isNotEmpty) {
                                 return ListView.builder(
@@ -365,10 +364,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget _appBar() {
     return InkWell(
         onTap: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (_) => ViewProfileScreen(user: widget.user)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => ViewProfileScreen(user: widget.chatUser)));
         },
         child: StreamBuilder(
             stream: ChatUtils.getUserInfo(widget.chatUser.id ?? ''),

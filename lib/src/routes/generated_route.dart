@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
+import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/chat_room_screen.dart';
@@ -11,6 +12,7 @@ import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
 import 'package:chat_app_white_label/src/screens/profile/profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/splash/splash_screen.dart';
+import 'package:chat_app_white_label/src/screens/view_profile_screen/view_profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -80,6 +82,12 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(GroupChatRoomScreen(
         gruopChat: arg,
       ));
+    case RouteConstants.viewUserProfile:
+      final arg = settings.arguments as UserModel;
+      return materialRoute(ViewProfileScreen(user: arg));
+    case RouteConstants.viewGroupProfile:
+      final arg = settings.arguments as GroupData;
+      return materialRoute(ViewProfileScreen(group: arg));
     default:
       return materialRoute(const SplashScreen());
   }

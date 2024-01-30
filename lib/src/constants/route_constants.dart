@@ -14,4 +14,6 @@ class RouteConstants {
   static const String selectContactsScreen = 'selectContactsScreen';
   static const String createGroupScreen = 'createGroupScreen';
   static const String groupChatRoomScreen = 'groupChatRoomScreen';
+  static const String viewUserProfile = 'viewUserProfile';
+  static const String viewGroupProfile = 'viewGroupProfile';
 }
