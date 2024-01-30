@@ -38,6 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
     SystemChannels.lifecycle.setMessageHandler((message) {
       LoggerUtil.logs('message ${message}');
       if (FirebaseUtils.user != null) {
+
         if (message.toString().contains('resume')) {
           FirebaseUtils.updateActiveStatus(true);
         }
@@ -58,8 +59,8 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: ColorConstants.greenMain,
-        title: Text(
-          FirebaseUtils.user?.name ?? '',
+        title:  Text(
+          FirebaseUtils.user?.name ?? "",
           style: TextStyle(
             color: Colors.white,
           ),
@@ -70,7 +71,7 @@ class _ChatScreenState extends State<ChatScreen> {
               await FirebaseUtils.logOut(context);
             },
             icon: const Icon(
-              Icons.search,
+              Icons.logout,
               size: 28,
             ),
             color: ColorConstants.white,
@@ -216,6 +217,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemBuilder: (context, index) {
                   final ChatModel chat =
                       ChatModel.fromJson(snapshot.data!.docs[index].data());
+
                   final chatUserId = snapshot.data!.docs[index]
                       .data()['users']
                       .firstWhere((id) => id != FirebaseUtils.user?.id);

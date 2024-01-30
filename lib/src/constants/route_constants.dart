@@ -1,5 +1,6 @@
 class RouteConstants {
   static const String splashRoute = '/';
+  static const String agoraCalling = 'agoraCalling';
   static const String splashScreen = 'splashScreen';
   static const String welcomeScreen = 'welcomeScreen';
   static const String contactsScreen = 'allUserScreen';

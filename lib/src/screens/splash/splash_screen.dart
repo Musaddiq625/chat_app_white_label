@@ -8,6 +8,7 @@ import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -41,6 +42,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _navigateToNext() async {
     final userData = await FirebaseUtils.getCurrentUser();
+
+    final messegingService = getIt<FirebaseService>();
+
+    await messegingService.getmessagingPermission();
+    await messegingService.getNotificationSettings();
+    await messegingService.getNotificationsForground();
+    // await messegingService.getNotificationsBackground();
+    await messegingService.getflutterCallKitIncoming();
+    await messegingService.handleCameraAndMic(Permission.camera);
+    await messegingService.handleCameraAndMic(Permission.microphone);
 
     Future.delayed(const Duration(milliseconds: 1500), () async {
       if (userData != null) {

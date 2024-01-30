@@ -91,8 +91,11 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
                     return StoriesNewModel.fromJson(storyData);
                   } else {
                     print("Story is older then 24 hour ${e.id}");
+                    if(e.id.isNotEmpty){
+                      FirebaseUtils.deleteStory(storyData['story_id'],storyData['user_id']);
+                    }
                     // return StoriesNewModel.fromJson(storyData);
-                    FirebaseUtils.deleteStory(storyData['story_id'],storyData['user_id']);
+
                     // If the story is older than 24 hours, don't return anything
                     return null;
                   }

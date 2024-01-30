@@ -30,8 +30,6 @@ class _StatusScreenState extends State<StatusScreen> {
   @override
   void initState() {
     super.initState();
-    // fetchStories(FirebaseUtils.user?.id);
-    // fetchAllStories();
   }
 
   Future<void> fetchStories(String? userId) async {
@@ -373,69 +371,6 @@ class _StatusScreenState extends State<StatusScreen> {
               //   imageName: stories[0].image,
               // ),
 
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 20, bottom: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.blueGrey.shade50,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0, 3),
-                              blurRadius: 3,
-                            ),
-                          ]),
-                      child: const ImageIcon(
-                        AssetImage(
-                          'assets/images/pencil.png',
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 20, bottom: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                        padding: const EdgeInsets.all(8.0),
-                        height: 58,
-                        width: 58,
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: ColorConstants.green,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey,
-                                offset: Offset(0, 3),
-                                blurRadius: 3,
-                              ),
-                            ]),
-                        child: const Icon(
-                          Icons.camera_alt_rounded,
-                          color: Colors.white,
-                          size: 26,
-                        ))
-                  ],
-                ),
-              ),
             ],
           ),
         ],

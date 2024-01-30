@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
@@ -9,12 +10,18 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
+import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:permission_handler/permission_handler.dart';
+import '../../../agora_video_calling.dart';
 import '../../../main.dart';
 import '../../constants/color_constants.dart';
 import 'package:http/http.dart' as http;
+import '../agora_calling.dart';
 
-class ContactsScreen extends StatefulWidget {
+class ContactsScreen extends StatefulWidget  {
   const ContactsScreen({super.key});
 
   @override
@@ -56,6 +63,36 @@ class _ContactsScreenState extends State<ContactsScreen> {
             localName: localContacts[i].displayName,
             phoneNumber: localNumber ?? ''));
       }
+    }
+  }
+
+
+  Future<void> sendFCM(String fcmToken, String title, String body, Map<String, dynamic> data) async {
+    Uri postUrl = Uri.parse('https://fcm.googleapis.com/fcm/send');
+    final headers = {
+      'content-type': 'application/json',
+      'Authorization':'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
+
+    };
+
+    final payload = {
+      "to": fcmToken,
+      "notification": {
+        "title": title,
+        "body": body,
+      },
+      "data": data
+    };
+
+    final response = await http.post(postUrl,
+        body: json.encode(payload),
+        encoding: Encoding.getByName('utf-8'),
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification ${response.statusCode}');
     }
   }
 
@@ -141,84 +178,87 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             future: FirebaseUtils.getChatUser(
                                 contactToDisplay[index].phoneNumber ?? ''),
                             builder: (context, asyncSnapshot) {
-                              UserModel firebaseUser = UserModel.fromJson(
+                              UserModel firebaseContactUser = UserModel.fromJson(
                                   asyncSnapshot.data?.data() ?? {});
                               contactToDisplay[index].firebaseData =
-                                  firebaseUser;
+                                  firebaseContactUser;
                               return ContactTileComponent(
-                                localName:
-                                    contactToDisplay[index].localName ?? '',
-                                chatUser: firebaseUser,
+                                localName: contactToDisplay[index].localName ?? '',
+                                chatUser: firebaseContactUser,
                                 onCallTapped: () async {
-                                  // DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').where('phoneNumber', isEqualTo: phoneNumber).get();
-                                  int recipientUid =
-                                      int.parse(firebaseUser.phoneNumber ?? "");
+                                  int recipientUid = int.parse(firebaseContactUser.phoneNumber ?? "");
+                                  String? senderName = FirebaseUtils.user?.name;
+                                  String? senderContactNumber = FirebaseUtils.user?.phoneNumber;
+
+                                  print("firebaseContactUser.fcmToken ${firebaseContactUser.fcmToken}");
                                   print("recipientUid $recipientUid");
-                                  print(
-                                      "contactToDisplay[index].phoneNumber ${contactToDisplay[index].phoneNumber}");
-                                  // await _engine.joinChannel(
-                                  // token: token,
-                                  // channelId: channel,
-                                  // uid: recipientUid,
-                                  // options: const ChannelMediaOptions(),
-                                  // );
-
-                                  Uri postUrl = Uri.parse(
-                                      'https://fcm.googleapis.com/fcm/send');
-                                  final data = {
-                                    "to": firebaseUser.fcmToken,
-                                    "notification": {
-                                      "title": 'New Call Request',
-                                      "body": 'You have a new call request',
-                                    }
-                                  };
-
-                                  final headers = {
-                                    'content-type': 'application/json',
-                                    'Authorization':
-                                        'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
-                                  };
-
-                                  final response = await http.post(postUrl,
-                                      body: json.encode(data),
-                                      encoding: Encoding.getByName('utf-8'),
-                                      headers: headers);
-
-                                  if (response.statusCode == 200) {
-                                    print('Notification sent successfully');
-                                  } else {
-                                    print(
-                                        'Failed to send notification ${response.statusCode}');
-                                  }
-                                  // await FirebaseMessaging.instance.sendMessage(
-                                  //   to: firebaseUser.fcmToken!,
-                                  //   data: {
-                                  //     "type": "call_notification",
-                                  //     "caller_uid": firebaseUser.phoneNumber ?? "",
-                                  //   }..removeWhere((key, value) => value == null),
-                                  // );
-
-                                  // try {
-                                  //   if (firebaseUser.fcmToken != null) {
-                                  //     await FirebaseMessaging.instance.sendMessage(
-                                  //       to: firebaseUser.fcmToken!,
-                                  //       data: {
-                                  //         "type": "call_notification",
-                                  //         "caller_uid": recipientUid.toString() , // Include relevant call details
-                                  //       },
-                                  //     );
-                                  //   } else {
-                                  //     print("Firebase token is null.");
+                                  print("contactToDisplay[index].phoneNumber ${contactToDisplay[index].phoneNumber}");
+                                  //
+                                  //
+                                  // Uri postUrl = Uri.parse(
+                                  //     'https://fcm.googleapis.com/fcm/send');
+                                  // final data = {
+                                  //   "to": firebaseContactUser.fcmToken,
+                                  //   "notification": {
+                                  //     "title": 'New Call Request',
+                                  //     "body": 'You have a new call request',
+                                  //   },
+                                  //   "data": {
+                                  //     "messageType" : "call",
+                                  //     "callerName": senderName,
+                                  //     "callerNumber": senderContactNumber,
                                   //   }
-                                  // } catch (e) {
-                                  //   print("Failed to send message: $e");
+                                  // };
+                                  //
+                                  // final headers = {
+                                  //   'content-type': 'application/json',
+                                  //   'Authorization':
+                                  //       'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
+                                  // };
+                                  //
+                                  // final response = await http.post(postUrl,
+                                  //     body: json.encode(data),
+                                  //     encoding: Encoding.getByName('utf-8'),
+                                  //     headers: headers);
+                                  //
+                                  // if (response.statusCode == 200) {
+                                  //   print("response ${response.body}");
+                                  //   print('Notification sent successfully');
+                                  // } else {
+                                  //   print(
+                                  //       'Failed to send notification ${response.statusCode}');
                                   // }
 
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) => AgoraCalling()),
-                                  // );
+                                  Map<String, dynamic> data = {
+                                    "messageType" : "call",
+                                    "callerName": senderName,
+                                    "callerNumber": senderContactNumber,
+                                  };
+
+                                  await sendFCM(firebaseContactUser.fcmToken!, 'New Call Request', 'You have a new call request', data);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AgoraCalling(recipientUid: int.parse(FirebaseUtils.user!.phoneNumber!),)),
+                                  );
+                                },
+                                onVideoCallTapped: () async{
+                                  int recipientUid = int.parse(firebaseContactUser.phoneNumber ?? "");
+                                  String? senderName = FirebaseUtils.user?.name;
+                                  String? senderContactNumber = FirebaseUtils.user?.phoneNumber;
+
+                                  Map<String, dynamic> data = {
+                                    "messageType" : "video_call",
+                                    "callerName": senderName,
+                                    "callerNumber": senderContactNumber,
+                                  };
+
+                                  await sendFCM(firebaseContactUser.fcmToken!, 'Video Call Request', 'You have a new Video call request', data);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AgoraVideoCalling(recipientUid: int.parse(FirebaseUtils.user!.phoneNumber!),)),
+                                  );
                                 },
                               );
                             });

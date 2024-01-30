@@ -10,6 +10,7 @@ class ContactTileComponent extends StatelessWidget {
   final UserModel? chatUser;
   final bool? isSelected;
   final VoidCallback? onCallTapped;
+  final VoidCallback? onVideoCallTapped;
   final Function()? onContactTap;
 
   const ContactTileComponent(
@@ -17,6 +18,7 @@ class ContactTileComponent extends StatelessWidget {
       required this.localName,
       required this.chatUser,
       this.onCallTapped,
+      this.onVideoCallTapped,
       this.isSelected,
       this.onContactTap});
 
@@ -72,17 +74,33 @@ class ContactTileComponent extends StatelessWidget {
                   onContactTap!();
                 },
               )
-            : onCallTapped != null
-                ? CircleAvatar(
-                    backgroundColor: Colors.lightGreenAccent,
-                    child: IconButton(
-                      onPressed: () => onCallTapped!(),
-                      icon: const Icon(
-                        Icons.call,
-                        size: 25,
-                        color: Colors.green,
+            : onCallTapped != null || onVideoCallTapped != null
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.lightGreenAccent,
+                        child: IconButton(
+                          onPressed: () => onCallTapped!(),
+                          icon: const Icon(
+                            Icons.call,
+                            size: 20,
+                            color: Colors.green,
+                          ),
+                        ),
                       ),
-                    ),
+                      CircleAvatar(
+                        backgroundColor: Colors.lightGreenAccent,
+                        child: IconButton(
+                          onPressed: () => onVideoCallTapped!(),
+                          icon: const Icon(
+                            Icons.video_call,
+                            size: 20,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                    ],
                   )
                 : null);
   }
