@@ -17,16 +17,23 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_callkit_incoming/entities/android_params.dart';
+import 'package:flutter_callkit_incoming/entities/call_kit_params.dart';
+import 'package:flutter_callkit_incoming/entities/ios_params.dart';
+import 'package:flutter_callkit_incoming/entities/notification_params.dart';
+import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
 import 'package:get_it/get_it.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 final getIt = GetIt.I;
 
 late Size mq;
 
 const appId = "62b3eb641dbd4ca7a203c41ce90dbca2";
-const token = "007eJxTYGDl0Sp3jbE33hR+YO2ElWvTrd9fq/YsaPX0m7zTKf3RO24FBjOjJOPUJDMTw5SkFJPkRPNEIwPjZBPD5FRLg5Sk5EQj4TUbUhsCGRlOXUxiYIRCEJ+FoSS1uISBAQAICh+J";
+const token = "007eJxTYJAJKA4quX3ITklU/BlTbnKRcNkeLb1V19Jqvsx4kmUVP1WBwcwoyTg1yczEMCUpxSQ50TzRyMA42cQwOdXSICUpOdFIY+L21IZARoZlqXUsjAwQCOKzMJSkFpcwMAAAy5kecQ==";
 const channel = "test";
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,112 +50,11 @@ void main() async {
     ),
   );
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  try {
-    await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-  } on PlatformException catch (e) {
-    print("Error requesting FCM permissions: $e");
-  }
-
-  // FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-
-  print('User granted permission: ${settings.authorizationStatus}');
-
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Got a message whilst in the foreground!');
-    print('Message data: ${message.data}');
-    print('Message from: ${message.from}');
-    print('Message senderId: ${message.senderId}');
-    print('Message category: ${message.category}');
-    print('Received notification title : ${message.notification?.title}');
-    print('Received notification body : ${message.notification?.body}');
-    print('Received notification type : ${message.data["messageType"]}');
-    RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
-
-    if (message.notification != null) {
-      //
-      // if(message.data["messageType"] == "call"){
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => AgoraCalling(recipientUid: int.parse(FirebaseUtils.user?.phoneNumber ?? "0"),)),
-      //   );
-      // }
-      print('Message also contained a notification: ${message.notification}');
-      // AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      //     "channelId", "Channel Name",
-      //     importance: Importance.max);
-      // FlutterLocalNotificationsPlugin().show(
-      //   notification.hashCode,
-      //   notification?.title,
-      //   notification?.body,
-      //   NotificationDetails(
-      //     android: androidDetails
-      //   ),
-      // );
-    }
-  });
 
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
-}
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Extract call details from message data
-  String? type = message.data["type"];
-  String? callerUid = message.data["caller_uid"];
-  if (type == "call_notification") {
-    print("Type-- $type");
-    try {
-      await showIncomingCallNotification(callerUid!);
-    } on Exception catch (e) {
-      print("Error handling incoming call notification: $e");
-    }
-  }
-  else{
-    print("Type-- else $type");
-  }
-}
 
 
-Future<void> showIncomingCallNotification(String callerUid) async {
-  // Get caller information using callerUid
-  try {
-    FirebaseUtils.getUserInfo(callerUid).listen((snapshot) {
-      UserModel caller = UserModel.fromJson(snapshot.data() ?? {});
-      // Build notification content
-      String notificationTitle = "${caller.name} is calling";
-      String notificationBody = "Tap to answer the call";
-      // Set notification payload
-      AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-          "channelId", "Channel Name",
-          importance: Importance.max);
-      NotificationDetails platformDetails =
-          NotificationDetails(android: androidDetails);
-      // Show notification
-      FlutterLocalNotificationsPlugin().show(
-          0, notificationTitle, notificationBody, platformDetails,
-          payload: callerUid); // payload: {'callerUid': callerUid}
-    });
-  } catch (e) {
-    print("showIncomingCallNotification $e");
-  }
 }
 
 Future<void> _initRepos() async {
@@ -179,6 +85,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'WeUno Chat',
         theme: ThemeData(
           fontFamily: 'Helvetica',

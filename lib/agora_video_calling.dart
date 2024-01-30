@@ -8,12 +8,12 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../main.dart';
 
 // class AgoraCalling extends StatefulWidget with WidgetsBindingObserver {
-  class AgoraCalling extends StatefulWidget {
-  const AgoraCalling({Key? key, required this.recipientUid}) : super(key: key);
+  class AgoraVideoCalling extends StatefulWidget {
+  const AgoraVideoCalling({Key? key, required this.recipientUid}) : super(key: key);
   final int recipientUid;
 
   @override
-  State<AgoraCalling> createState() => _AgoraCallingState();
+  State<AgoraVideoCalling> createState() => _AgoraVideoCallingState();
 }
 
 // class _AgoraCallingState extends State<AgoraCalling>  with WidgetsBindingObserver {
@@ -236,7 +236,7 @@ import '../../main.dart';
 //   }
 // }
 
-class _AgoraCallingState extends State<AgoraCalling> {
+class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
   int? _remoteUid;
   bool _localUserJoined = false;
   late RtcEngine _engine;
@@ -287,8 +287,7 @@ class _AgoraCallingState extends State<AgoraCalling> {
     );
 
     await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
-    await _engine.disableVideo();
-    await _engine.enableAudio();
+    await _engine.enableVideo();
     await _engine.startPreview();
 
     await _engine.joinChannel(

@@ -71,7 +71,7 @@ class _ChatScreenState extends State<ChatScreen> {
               await FirebaseUtils.logOut(context);
             },
             icon: const Icon(
-              Icons.search,
+              Icons.logout,
               size: 28,
             ),
             color: ColorConstants.white,
@@ -217,11 +217,16 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemBuilder: (context, index) {
                   final ChatModel chat =
                       ChatModel.fromJson(snapshot.data!.docs[index].data());
+
                   final chatUserId = snapshot.data!.docs[index]
                       .data()['users']
                       .firstWhere((id) => id != FirebaseUtils.user?.id);
                   chat.unreadCount = snapshot.data!.docs[index]
                       .data()['${FirebaseUtils.user?.id}_unread_count'];
+
+                  print("chatuserId ${chatUserId}");
+                  print("FirebaseUtils.user?.id ${FirebaseUtils.user?.id}");
+
                   return FutureBuilder(
                     future: FirebaseUtils.getChatUser(chatUserId),
                     builder: (context, asyncSnapshot) {
