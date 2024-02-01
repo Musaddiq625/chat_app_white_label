@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
+import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/chat_room_screen.dart';
@@ -11,6 +12,8 @@ import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
 import 'package:chat_app_white_label/src/screens/profile/profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/splash/splash_screen.dart';
+import 'package:chat_app_white_label/src/screens/view_profile_screen/view_group_profile_screen.dart';
+import 'package:chat_app_white_label/src/screens/view_profile_screen/view_user_profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -36,6 +39,11 @@ Route generateRoute(RouteSettings settings) {
       final arg = settings.arguments! as String;
       return materialRoute(ProfileScreen(
         phoneNumber: arg,
+      ));
+    case RouteConstants.editProfileScreen:
+      final arg = settings.arguments! as bool;
+      return materialRoute(ProfileScreen(
+        isEdit: arg,
       ));
 
     case RouteConstants.splashScreen:
@@ -66,9 +74,9 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const CameraScreen());
 
     case RouteConstants.selectContactsScreen:
-      final arg = settings.arguments! as List<ContactModel>;
+      final arg = settings.arguments! as SelectContactsScreenArg;
       return materialRoute(SelectContactsScreen(
-        contactsList: arg,
+        selectContactsScreenArg: arg,
       ));
     case RouteConstants.createGroupScreen:
       final arg = settings.arguments! as List;
@@ -78,8 +86,16 @@ Route generateRoute(RouteSettings settings) {
     case RouteConstants.groupChatRoomScreen:
       final arg = settings.arguments as ChatModel;
       return materialRoute(GroupChatRoomScreen(
-        gruopChat: arg,
+        groupChat: arg,
       ));
+    case RouteConstants.viewUserProfile:
+      final arg = settings.arguments as UserModel;
+      return materialRoute(ViewUserProfileScreen(user: arg));
+
+    case RouteConstants.viewGroupProfile:
+      final arg = settings.arguments as ChatModel;
+      return materialRoute(ViewGroupProfileScreen(group: arg));
+
     default:
       return materialRoute(const SplashScreen());
   }

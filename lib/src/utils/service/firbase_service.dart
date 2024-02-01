@@ -1,5 +1,5 @@
 import 'package:chat_app_white_label/agora_video_calling.dart';
-import 'package:chat_app_white_label/src/screens/agora_calling.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +22,7 @@ class FirebaseService {
   final FirebaseMessaging messaging = FirebaseMessaging.instance;
   String _currentUuid = '';
   String _callType = '';
-  var uuid = Uuid();
+  var uuid = const Uuid();
 
   String? callerName;
   String? callerPhoneNumber;
@@ -35,7 +35,7 @@ class FirebaseService {
 
   void initializeNotification() {}
 
-  Future<void> requestPermission() async {
+  Future<void> requestContactsPermission() async {
     var status = await Permission.contacts.status;
     if (!status.isGranted) {
       await Permission.contacts.request();
@@ -48,23 +48,26 @@ class FirebaseService {
     return contacts;
   }
 
-  Future<void> getNotificationSettings() async {
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-    print('User granted permission: ${settings.authorizationStatus}');
+  Future<void> requestCameraAndMicPermission() async {
+    await [Permission.camera, Permission.microphone].request();
   }
 
-  Future<void> handleCameraAndMic(Permission permission) async {
-    final status = await permission.request();
-    print(status);
+  Future<void> getNotificationSettings() async {
+    try {
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+        announcement: false,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+      );
+      LoggerUtil.logs(
+          'User granted permission: ${settings.authorizationStatus}');
+    } catch (e) {
+      LoggerUtil.logs(e.toString());
+    }
   }
 
   Future<void> getNotificationsBackground() async {
@@ -212,8 +215,11 @@ class FirebaseService {
             );
           }
         }
+        print('Message also contained a notification: ${message.notification}');
       }
     });
+
+    // });
   }
 
   Future<void> _firebaseMessagingBackgroundHandler(
@@ -323,9 +329,9 @@ class FirebaseService {
         String notificationTitle = "${caller.name} is calling";
         String notificationBody = "Tap to answer the call";
         // Set notification payload
-        AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-            "channelId", "Channel Name",
-            importance: Importance.max);
+        AndroidNotificationDetails androidDetails =
+            const AndroidNotificationDetails("channelId", "Channel Name",
+                importance: Importance.max);
         NotificationDetails platformDetails =
             NotificationDetails(android: androidDetails);
         // Show notification

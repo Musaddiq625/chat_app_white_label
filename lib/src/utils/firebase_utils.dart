@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -12,6 +12,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class FirebaseUtils {
@@ -35,13 +37,50 @@ class FirebaseUtils {
   static String getDateTimeNowAsId() =>
       DateTime.now().millisecondsSinceEpoch.toString();
 
-  static Future<void> logOut(context) async {
-    await firebaseService.auth.signOut();
-    NavigationUtil.popAllAndPush(context, RouteConstants.loginScreen);
+  static String getNameFromLocalContact(
+      String phoneNumber, BuildContext context) {
+    String formatPhoneNumber(String phoneNumber) {
+      if (phoneNumber.startsWith('0')) {
+        phoneNumber = phoneNumber.replaceFirst('0', '');
+      }
+      return phoneNumber.replaceAll(' ', '').replaceAll('+', '');
+    }
+
+    Contact matchedContact;
+
+    matchedContact = context.read<AppSettingCubit>().localContacts.firstWhere(
+          (contact) =>
+              contact.phones?.any((phone) =>
+                  formatPhoneNumber(phone.value ?? '') == phoneNumber) ??
+              false,
+          orElse: () => Contact(),
+        );
+
+    // for (var contact in context.read<AppSettingCubit>().localContacts) {
+    //   if (contact.phones != null) {
+    //     for (Item phone in contact.phones ?? []) {
+    //       if (formatPhoneNumber(phone.value ?? '') == phoneNumber) {
+    //         LoggerUtil.logs('phone ${formatPhoneNumber(phone.value ?? '')}');
+    //         matchedContact = contact;
+    //         break;
+    //       }
+    //     }
+    //   }
+    //   if (matchedContact != null) {
+    //     break;
+    //   }
+    // }
+
+    return matchedContact.displayName ?? '+$phoneNumber';
   }
 
-  static String getDateTimeNowId() =>
-      DateTime.now().millisecondsSinceEpoch.toString();
+  static Future<void> logOut(context) async {
+    await firebaseService.auth.signOut();
+    FirebaseUtils.updateActiveStatus(false);
+    user = null;
+
+    NavigationUtil.popAllAndPush(context, RouteConstants.loginScreen);
+  }
 
   static Future<void> createUser(String phoneNumber) async {
     final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
@@ -52,11 +91,30 @@ class FirebaseUtils {
     });
     LoggerUtil.logs('Created User');
   }
-  static Future<void> addFcmToken(String phoneNumber,String fcmToken) async {
+
+  static Future<void> updateUser(
+      String name, String about, String? imageUrl, String phoneNumber) async {
+    await firebaseService.firestore
+        .collection(FirebaseConstants.users)
+        .doc(phoneNumber.replaceAll('+', ''))
+        .update({
+      'name': name,
+      'image': imageUrl,
+      'about': about,
+      'is_profile_complete': true,
+    });
+    user?.name = name;
+    user?.image = imageUrl;
+    user?.about = about;
+    user?.isProfileComplete = true;
+    LoggerUtil.logs('Update User');
+  }
+
+  static Future<void> addFcmToken(String phoneNumber, String fcmToken) async {
     final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
       'fcm_token': fcmToken,
-    },SetOptions(merge: true));
+    }, SetOptions(merge: true));
     LoggerUtil.logs('FCM Token $fcmToken');
   }
 
@@ -64,9 +122,10 @@ class FirebaseUtils {
     final userData = await usersCollection.doc(phoneNumber).get();
     if (userData.exists) {
       user = UserModel.fromJson(userData.data()!);
+      FirebaseUtils.updateActiveStatus(true);
     }
     LoggerUtil.logs('getUser ${user?.toJson()}');
-    FirebaseUtils.updateActiveStatus(true);
+
     return user;
   }
 
@@ -114,7 +173,7 @@ class FirebaseUtils {
     user?.isOnline = isOnline;
     await usersCollection.doc(user?.id ?? '').update({
       'is_online': isOnline,
-      'last_active': getDateTimeNowId(),
+      'last_active': getDateTimeNowAsId(),
     });
   }
 
@@ -141,8 +200,8 @@ class FirebaseUtils {
     //getting image file extension and name
     // if document so make it unique with #weuno#
     String fileName = uploadType == MediaType.chatDocument
-        ? '${getDateTimeNowId()}_we_uno_chat_${splittedPath[splittedPath.length - 2].split('/').last}'
-        : getDateTimeNowId();
+        ? '${getDateTimeNowAsId()}_we_uno_chat_${splittedPath[splittedPath.length - 2].split('/').last}'
+        : getDateTimeNowAsId();
     final extension = splittedPath.last;
 
     LoggerUtil.logs(extension);
@@ -212,8 +271,7 @@ class FirebaseUtils {
   }
 
   static Stream<List<Map<String, dynamic>>> getUserData() async* {
-    await firebaseService.requestPermission();
-    Iterable<Contact> localContacts = await firebaseService.getLocalContacts();
+    await firebaseService.requestContactsPermission();
     CollectionReference usersRef =
         firebaseService.firestore.collection('users');
 
@@ -253,7 +311,7 @@ class FirebaseUtils {
 
   static Stream<List<Map<String, dynamic>>> getMatchingContacts() async* {
     try {
-      await firebaseService.requestPermission();
+      await firebaseService.requestContactsPermission();
       Iterable<Contact> localContacts =
           await firebaseService.getLocalContacts();
       await for (List<Map<String, dynamic>> firebaseUsers in getUserData()) {
@@ -309,7 +367,7 @@ class FirebaseUtils {
 
   static Future<List<Map<String, dynamic>>> getMatchingContactsOnce() async {
     try {
-      await firebaseService.requestPermission();
+      await firebaseService.requestContactsPermission();
       Iterable<Contact> localContacts =
           await firebaseService.getLocalContacts();
       List<Map<String, dynamic>> firebaseUsers = await getUserData().first;

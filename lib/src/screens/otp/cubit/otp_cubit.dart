@@ -13,7 +13,7 @@ part 'otp_state.dart';
 class OTPCubit extends Cubit<OTPState> {
   FirebaseService firebaseService = getIt<FirebaseService>();
 
-  OTPCubit() : super(OTPInitial()) {}
+  OTPCubit() : super(OTPInitial());
 
   otpUser(
     String verificationId,
@@ -23,8 +23,6 @@ class OTPCubit extends Cubit<OTPState> {
     emit(OTPLoadingState());
 
     try {
-      String? fcmToken = await FirebaseMessaging.instance.getToken();
-
       LoggerUtil.logs("Verification Id $verificationId");
       // firebaseService.auth.setPersistence(Persistence.LOCAL);
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -34,20 +32,21 @@ class OTPCubit extends Cubit<OTPState> {
       await firebaseService.auth.signInWithCredential(credential);
       final userData = await FirebaseUtils.getCurrentUser();
 
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+
       if (userData != null) {
         if (userData.isProfileComplete == true) {
-          // await FirebaseUtils.addFcmToken(phoneNumber,fcmtoken);
           if (fcmToken != null) {
             // Assuming `phoneNumber` is the UID or some unique identifier for the user
             await FirebaseUtils.addFcmToken(phoneNumber, fcmToken);
           }
           emit(OTPSuccessOldUserState(userData));
         } else {
-          emit(OTPSuccessNewUserState(phoneNumber));
+          emit(OTPSuccessNewUserState(phoneNumber, fcmToken));
         }
       } else {
         await FirebaseUtils.createUser(phoneNumber);
-        emit(OTPSuccessNewUserState(phoneNumber));
+        emit(OTPSuccessNewUserState(phoneNumber, fcmToken));
       }
     } catch (e) {
       emit(OTPFailureState(e.toString()));

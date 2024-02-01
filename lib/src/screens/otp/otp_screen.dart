@@ -3,6 +3,7 @@ import 'package:chat_app_white_label/src/components/custom_text_field.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,6 +49,12 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     late OTPCubit otpCubit;
     return BlocConsumer<OTPCubit, OTPState>(
@@ -56,6 +63,9 @@ class _OTPScreenState extends State<OTPScreen> {
         if (state is OTPLoadingState) {
           LoadingDialog.showLoadingDialog(context);
         } else if (state is OTPSuccessNewUserState) {
+          if (state.fcmToken != null) {
+            await FirebaseUtils.addFcmToken(state.phoneNumber, state.fcmToken!);
+          }
           LoadingDialog.hideLoadingDialog(context);
           NavigationUtil.push(context, RouteConstants.profileScreen,
               args: state.phoneNumber);

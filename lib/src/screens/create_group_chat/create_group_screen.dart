@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/components/custom_text_field.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/cubit/create_group_chat_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -23,7 +24,8 @@ class CreateGroupScreen extends StatefulWidget {
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
   late CreateGroupChatCubit createGroupChatCubit;
-  final groupNameController = TextEditingController();
+  final nameController = TextEditingController();
+  final aboutController = TextEditingController();
   XFile? selectedImage;
 
   @override
@@ -38,7 +40,11 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
           } else if (state is CreateGroupChatSuccessState) {
             LoadingDialog.hideLoadingDialog(context);
             LoggerUtil.logs("Group Created");
-            // NavigationUtil.push(context, RouteConstants.chatRoomScreen);
+            NavigationUtil.pop(context);
+            NavigationUtil.pop(context);
+            NavigationUtil.pop(context);
+            NavigationUtil.push(context, RouteConstants.groupChatRoomScreen,
+                args: state.groupData);
           } else if (state is CreateGroupChatFailureState) {
             LoadingDialog.hideLoadingDialog(context);
             ToastComponent.showToast(state.error.toString(), context: context);
@@ -63,82 +69,99 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               ),
             ),
           ),
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 10, right: 10, top: 50, bottom: 10),
-              child: Column(
-                children: [
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 65,
-                        backgroundImage: (selectedImage != null
-                                ? FileImage(File(selectedImage!.path))
-                                : const AssetImage(AssetConstants.group))
-                            as ImageProvider,
-                      ),
-                      Positioned(
-                          right: 5,
-                          bottom: 5,
-                          child: GestureDetector(
-                            onTap: () {
-                              if (selectedImage == null) {
-                                imageSelectionOption(context);
-                              } else {
-                                setState(() {
-                                  selectedImage = null;
-                                });
-                              }
-                            },
-                            child: CircleAvatar(
-                                radius: 15,
-                                backgroundColor:
-                                    const Color.fromARGB(255, 238, 238, 238),
-                                child: Icon(
-                                  selectedImage == null
-                                      ? Icons.edit
-                                      : Icons.cancel_outlined,
-                                  color:
-                                      const Color.fromARGB(255, 139, 139, 139),
-                                  size: 16,
-                                )),
-                          ))
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: CustomTextField(
-                      hintText: 'Group Name',
-                      maxLength: 30,
-                      keyboardType: TextInputType.name,
-                      controller: groupNameController,
-                      textAlign: TextAlign.center,
-                      onChanged: (String value) {},
+          body: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, top: 50, bottom: 10),
+                child: Column(
+                  children: [
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 65,
+                          backgroundImage: (selectedImage != null
+                                  ? FileImage(File(selectedImage!.path))
+                                  : const AssetImage(AssetConstants.group))
+                              as ImageProvider,
+                        ),
+                        Positioned(
+                            right: 5,
+                            bottom: 5,
+                            child: GestureDetector(
+                              onTap: () {
+                                if (selectedImage == null) {
+                                  imageSelectionOption(context);
+                                } else {
+                                  setState(() {
+                                    selectedImage = null;
+                                  });
+                                }
+                              },
+                              child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 238, 238, 238),
+                                  child: Icon(
+                                    selectedImage == null
+                                        ? Icons.edit
+                                        : Icons.cancel_outlined,
+                                    color: const Color.fromARGB(
+                                        255, 139, 139, 139),
+                                    size: 16,
+                                  )),
+                            ))
+                      ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  CustomButton(
-                      buttonText: "Create Group",
-                      onPressedFunction: () async {
-                        if (groupNameController.text.isEmpty) {
-                          ToastComponent.showToast(
-                            'Name cannot be empty',
-                            context: context,
-                          );
-                        } else {
-                          createGroupChatCubit.createGroupChat(
-                              groupNameController.text,
-                              widget.contactsList,
-                              selectedImage?.path);
-                        }
-                      }),
-                ],
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: CustomTextField(
+                        hintText: 'Group Name',
+                        maxLength: 30,
+                        keyboardType: TextInputType.name,
+                        controller: nameController,
+                        textAlign: TextAlign.center,
+                        onChanged: (String value) {},
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    SizedBox(
+                      width: 300,
+                      child: CustomTextField(
+                        hintText: 'About',
+                        maxLength: 50,
+                        keyboardType: TextInputType.name,
+                        controller: aboutController,
+                        textAlign: TextAlign.center,
+                        onChanged: (String value) {},
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    CustomButton(
+                        buttonText: "Create Group",
+                        onPressedFunction: () async {
+                          if (nameController.text.isEmpty) {
+                            ToastComponent.showToast(
+                              'Name cannot be empty',
+                              context: context,
+                            );
+                          } else {
+                            createGroupChatCubit.createGroupChat(
+                                nameController.text,
+                                aboutController.text,
+                                widget.contactsList,
+                                selectedImage?.path);
+                          }
+                        }),
+                  ],
+                ),
               ),
             ),
           ),

@@ -15,8 +15,9 @@ class OTPSuccessOldUserState extends OTPState {
 
 class OTPSuccessNewUserState extends OTPState {
   final String phoneNumber;
+  final String? fcmToken;
 
-  OTPSuccessNewUserState(this.phoneNumber);
+  OTPSuccessNewUserState(this.phoneNumber, this.fcmToken);
 }
 
 class OTPCancleState extends OTPState {}

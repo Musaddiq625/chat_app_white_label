@@ -56,8 +56,6 @@ void main() async {
   await messegingService.initializeLocalNotifications();
 
   runApp(const MyApp());
-
-
 }
 
 Future<void> _initRepos() async {

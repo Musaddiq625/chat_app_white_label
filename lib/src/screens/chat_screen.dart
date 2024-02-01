@@ -10,7 +10,6 @@ import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import '../../main.dart';
 import '../models/chat_model.dart';
 
@@ -26,19 +25,12 @@ class ChatScreen extends StatefulWidget with WidgetsBindingObserver {
 class _ChatScreenState extends State<ChatScreen> {
   FirebaseService firebaseService = getIt<FirebaseService>();
 
-  String formatTimestamp(Timestamp timestamp) {
-    DateTime date = timestamp.toDate();
-    return DateFormat('jm')
-        .format(date); // 'jm' formats it in 'hh:mm AM/PM' format
-  }
-
   @override
   void initState() {
     super.initState();
     SystemChannels.lifecycle.setMessageHandler((message) {
-      LoggerUtil.logs('message ${message}');
+      LoggerUtil.logs('message $message');
       if (FirebaseUtils.user != null) {
-
         if (message.toString().contains('resume')) {
           FirebaseUtils.updateActiveStatus(true);
         }
@@ -59,9 +51,9 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: ColorConstants.greenMain,
-        title:  Text(
+        title: Text(
           FirebaseUtils.user?.name ?? "",
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
           ),
         ),
@@ -77,9 +69,12 @@ class _ChatScreenState extends State<ChatScreen> {
             color: ColorConstants.white,
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              NavigationUtil.push(context, RouteConstants.editProfileScreen,
+                  args: true);
+            },
             icon: const Icon(
-              Icons.more_vert_rounded,
+              Icons.edit,
               size: 28,
             ),
             color: ColorConstants.white,
@@ -221,13 +216,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   final chatUserId = snapshot.data!.docs[index]
                       .data()['users']
                       .firstWhere((id) => id != FirebaseUtils.user?.id);
-
-                  final List? readBy =
-                      snapshot.data!.docs[index].data()['last_message_readBy'];
                   if (chat.isGroup == false) {
+                    // Single user unread count
                     chat.unreadCount = snapshot.data!.docs[index]
                         .data()['${FirebaseUtils.user?.id}_unread_count'];
                   } else {
+                    //  condition to check if the 'read_count_group' is
+                    //  not null and it contain a key with userid
                     if (snapshot.data!.docs[index]
                             .data()
                             .containsKey('read_count_group') &&
@@ -241,7 +236,8 @@ class _ChatScreenState extends State<ChatScreen> {
                               (chat.readCountGroup ?? 0))
                           .toString();
                     } else {
-                      chat.unreadCount = chat.messageCount.toString();
+                      // group currently have no message
+                      chat.unreadCount = '0';
                     }
                   }
 
@@ -251,10 +247,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       if (asyncSnapshot.hasData) {
                         UserModel chatUser = UserModel.fromJson(
                             asyncSnapshot.data?.data() ?? {});
+                        chatUser.name = FirebaseUtils.getNameFromLocalContact(
+                            chatUser.id ?? '', context);
                         return ChatTileComponent(
                           chat: chat,
                           chatUser: chatUser,
-                          readByLength: (readBy ?? []).length,
                         );
                       }
                       return Container();

@@ -7,7 +7,10 @@ class CreateGroupChatInitial extends CreateGroupChatState {}
 
 class CreateGroupChatLoadingState extends CreateGroupChatState {}
 
-class CreateGroupChatSuccessState extends CreateGroupChatState {}
+class CreateGroupChatSuccessState extends CreateGroupChatState {
+  final ChatModel groupData;
+  CreateGroupChatSuccessState(this.groupData);
+}
 
 class CreateGroupChatFailureState extends CreateGroupChatState {
   final String error;

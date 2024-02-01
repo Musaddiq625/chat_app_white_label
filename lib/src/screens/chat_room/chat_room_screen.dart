@@ -1,13 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:chat_app_white_label/src/components/chat_input_icon_component.dart';
+import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/components/record_button_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
@@ -15,9 +15,7 @@ import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../models/usert_model.dart';
@@ -35,7 +33,7 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  int myUnreadCount = -1;
+  int myUnreadCount = 0;
   int chatUserUnreadCount = -1;
   List<MessageModel> messagesList = [];
   final _textController = TextEditingController();
@@ -127,7 +125,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     messagesList[i].readAt == null) {
                                   chatUserUnreadCount = chatUserUnreadCount + 1;
                                 } else if (messagesList[i].readAt == null) {
-                                  myUnreadCount = myUnreadCount + 1;
+                                  // myUnreadCount = myUnreadCount + 1;
                                 }
                               }
 
@@ -146,12 +144,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   data?.last.id == messagesList.last.sentAt) {
                                 LoggerUtil.logs('myUnreadCount $myUnreadCount');
                                 ChatUtils.updateUnreadCount(
-                                    widget.chatUser.id ?? '',
-                                    myUnreadCount.toString(),
-                                    true);
+                                    widget.chatUser.id ?? '', '0', true);
                               }
                               chatUserUnreadCount = 0;
-                              myUnreadCount = 0;
+                              myUnreadCount = -1;
 
                               if (messagesList.isNotEmpty) {
                                 return ListView.builder(
@@ -363,75 +359,61 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Widget _appBar() {
-    return InkWell(
-        onTap: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (_) => ViewProfileScreen(user: widget.user)));
-        },
-        child: StreamBuilder(
-            stream: ChatUtils.getUserInfo(widget.chatUser.id ?? ''),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                UserModel chatUserData =
-                    UserModel.fromJson(snapshot.data?.data() ?? {});
-                return Row(
-                  children: [
-                    IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.arrow_back,
-                            color: Colors.black54)),
+    return StreamBuilder(
+        stream: ChatUtils.getUserInfo(widget.chatUser.id ?? ''),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            UserModel chatUserData =
+                UserModel.fromJson(snapshot.data?.data() ?? {});
+            chatUserData.name = widget.chatUser.name == chatUserData.phoneNumber
+                ? chatUserData.name
+                : widget.chatUser.name;
+            return InkWell(
+              onTap: () => NavigationUtil.push(
+                  context, RouteConstants.viewUserProfile,
+                  args: chatUserData),
+              child: Row(
+                children: [
+                  IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon:
+                          const Icon(Icons.arrow_back, color: Colors.black54)),
 
-                    //user profile picture
-                    (chatUserData.image ?? '').isNotEmpty
-                        ? ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(mq.height * .03),
-                            child: CachedNetworkImage(
-                              width: mq.height * .055,
-                              height: mq.height * .055,
-                              imageUrl: chatUserData.image ?? '',
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) =>
-                                  const CircleAvatar(
-                                      child: Icon(CupertinoIcons.person)),
-                            ),
-                          )
-                        : Icon(
-                            Icons.account_circle,
-                            size: 50,
-                            color: Colors.grey.shade500,
-                          ),
-                    const SizedBox(width: 10),
-                    //user name & last seen time
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //user name
-                        Text(chatUserData.name ?? '',
-                            style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w500)),
+                  //user profile picture
+                  ProfileImageComponent(
+                    url: chatUserData.image,
+                    size: 45,
+                  ),
+                  const SizedBox(width: 10),
+                  //user name & last seen time
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //user name
+                      Text(widget.chatUser.name ?? '',
+                          style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500)),
 
-                        const SizedBox(height: 2),
-                        // last seen time of user
-                        Text(
-                            chatUserData.isOnline == true
-                                ? 'Online'
-                                : DateUtil.getLastActiveTime(
-                                    context: context,
-                                    lastActive: chatUserData.lastActive ?? ''),
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.black54)),
-                      ],
-                    )
-                  ],
-                );
-              }
-              return Container();
-            }));
+                      const SizedBox(height: 2),
+                      // last seen time of user
+                      Text(
+                          chatUserData.isOnline == true
+                              ? 'Online'
+                              : DateUtil.getLastActiveTime(
+                                  context: context,
+                                  lastActive: chatUserData.lastActive ?? ''),
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black54)),
+                    ],
+                  )
+                ],
+              ),
+            );
+          }
+          return Container();
+        });
   }
 }

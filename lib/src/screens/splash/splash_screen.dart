@@ -8,7 +8,6 @@ import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -27,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getFlavorName();
       appSettingCubit.initCamera();
-      await firebaseService.requestPermission();
+      await firebaseService.requestContactsPermission();
+      appSettingCubit.initGetLocalContacts();
       _navigateToNext();
     });
     super.initState();
@@ -49,8 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await messegingService.initializeLocalNotifications();
     await messegingService.getNotificationsForground();
     // await messegingService.getNotificationsBackground();
-    await messegingService.handleCameraAndMic(Permission.camera);
-    await messegingService.handleCameraAndMic(Permission.microphone);
+    await messegingService.requestCameraAndMicPermission();
 
     Future.delayed(const Duration(milliseconds: 1500), () async {
       if (userData != null) {
