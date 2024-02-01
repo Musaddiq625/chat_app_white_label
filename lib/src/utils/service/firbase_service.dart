@@ -50,7 +50,14 @@ class FirebaseService {
   }
 
   Future<void> requestCameraAndMicPermission() async {
-    await [Permission.camera, Permission.microphone].request();
+    final cameraStatus = await Permission.camera.status;
+    if (!cameraStatus.isGranted) {
+      await Permission.camera.request();
+    }
+    final microphoneStatus = await Permission.microphone.status;
+    if (!microphoneStatus.isGranted) {
+      await Permission.microphone.request();
+    }
   }
 
   Future<void> getNotificationSettings() async {

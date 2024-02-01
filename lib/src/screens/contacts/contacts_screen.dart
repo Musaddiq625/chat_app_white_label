@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/components/contact_tile_component.dart'
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -55,8 +56,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
       if ((localNumber ?? '').startsWith('0')) {
         localNumber = localNumber?.replaceFirst('0', '92');
       }
-      bool contactExist = (snapshot.data?.docs ?? [])
-          .any((firebaseUser) => firebaseUser.id == localNumber);
+      bool contactExist = (snapshot.data?.docs ?? []).any((firebaseUser) =>
+          firebaseUser.id == localNumber &&
+          firebaseUser.id != FirebaseUtils.phoneNumber);
       // .any for filtering in Firebase users
       if (contactExist) {
         contactToDisplay.add(ContactModel(
@@ -158,7 +160,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   ListTile(
                     onTap: () => NavigationUtil.push(
                         context, RouteConstants.selectContactsScreen,
-                        args: contactToDisplay),
+                        args: SelectContactsScreenArg(
+                            contactsList: contactToDisplay)),
                     leading: const Text(
                       'Create Group',
                       style: TextStyle(
@@ -241,11 +244,22 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                     "callerNumber": senderContactNumber,
                                   };
 
-                                  await sendFCM(firebaseContactUser.fcmToken!, 'New Call Request', 'You have a new call request', data);
+                                  await sendFCM(
+                                      firebaseContactUser.fcmToken!,
+                                      'New Call Request',
+                                      'You have a new call request',
+                                      data);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => AgoraCalling(recipientUid: int.parse(firebaseContactUser.phoneNumber!),callerName: firebaseContactUser.name, callerNumber: firebaseContactUser.phoneNumber)),
+                                        builder: (context) => AgoraCalling(
+                                            recipientUid: int.parse(
+                                                firebaseContactUser
+                                                    .phoneNumber!),
+                                            callerName:
+                                                firebaseContactUser.name,
+                                            callerNumber: firebaseContactUser
+                                                .phoneNumber)),
                                   );
                                 },
                                 onVideoCallTapped: () async {
@@ -261,11 +275,22 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                     "callerNumber": senderContactNumber,
                                   };
                                   //
-                                   await sendFCM(firebaseContactUser.fcmToken!, 'Video Call Request', 'You have a new Video call request', data);
+                                  await sendFCM(
+                                      firebaseContactUser.fcmToken!,
+                                      'Video Call Request',
+                                      'You have a new Video call request',
+                                      data);
                                   await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => AgoraVideoCalling(recipientUid: int.parse(firebaseContactUser.phoneNumber!),callerName: firebaseContactUser.name, callerNumber: firebaseContactUser.phoneNumber)),
+                                        builder: (context) => AgoraVideoCalling(
+                                            recipientUid: int.parse(
+                                                firebaseContactUser
+                                                    .phoneNumber!),
+                                            callerName:
+                                                firebaseContactUser.name,
+                                            callerNumber: firebaseContactUser
+                                                .phoneNumber)),
                                   );
                                 },
                               );

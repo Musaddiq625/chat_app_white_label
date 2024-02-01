@@ -124,9 +124,9 @@ class ChatUtils {
           .set(message.toJson())
           .then((value) async =>
                   //adding last message
-                  await chatDoc.set({
+                  await chatDoc.update({
                     'last_message': message.toJson(),
-                  }, SetOptions(merge: true))
+                  })
 
               // )
               // .then((value) =>

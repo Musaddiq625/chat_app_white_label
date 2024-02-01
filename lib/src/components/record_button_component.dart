@@ -104,10 +104,14 @@ class _RecordButtonComponentState extends State<RecordButtonComponent> {
   }
 
   Future<void> _requestPermissions() async {
-    await [
-      Permission.microphone,
-      Permission.storage,
-    ].request();
+    final microphoneStatus = await Permission.microphone.status;
+    if (!microphoneStatus.isGranted) {
+      await Permission.microphone.request();
+    }
+    final storageStatus = await Permission.storage.status;
+    if (!storageStatus.isGranted) {
+      await Permission.storage.request();
+    }
   }
 
   @override
