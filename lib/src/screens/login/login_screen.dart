@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               print(value);
                             },
                             inputFormatters: [
-                              LengthLimitingTextInputFormatter(12),
+                              LengthLimitingTextInputFormatter(10),
                               // Limit to 12 characters
                               FilteringTextInputFormatter.digitsOnly,
                               // Accept only digits
