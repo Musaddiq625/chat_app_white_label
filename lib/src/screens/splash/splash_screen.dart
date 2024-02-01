@@ -45,11 +45,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final messegingService = getIt<FirebaseService>();
 
-    await messegingService.getmessagingPermission();
     await messegingService.getNotificationSettings();
+    await messegingService.initializeLocalNotifications();
     await messegingService.getNotificationsForground();
     // await messegingService.getNotificationsBackground();
-    await messegingService.getflutterCallKitIncoming();
     await messegingService.handleCameraAndMic(Permission.camera);
     await messegingService.handleCameraAndMic(Permission.microphone);
 

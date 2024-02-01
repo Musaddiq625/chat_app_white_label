@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -9,8 +10,10 @@ import '../../main.dart';
 
 // class AgoraCalling extends StatefulWidget with WidgetsBindingObserver {
   class AgoraVideoCalling extends StatefulWidget {
-  const AgoraVideoCalling({Key? key, required this.recipientUid}) : super(key: key);
+  const AgoraVideoCalling({Key? key, required this.recipientUid,  this.callerName,  this.callerNumber}) : super(key: key);
   final int recipientUid;
+  final String? callerName;
+  final String? callerNumber;
 
   @override
   State<AgoraVideoCalling> createState() => _AgoraVideoCallingState();
@@ -240,6 +243,7 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
   int? _remoteUid;
   bool _localUserJoined = false;
   late RtcEngine _engine;
+  bool muted = false;
 
   @override
   void initState() {
@@ -248,6 +252,8 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
   }
 
   Future<void> initAgora() async {
+
+    print("recipetent Uid ${widget.recipientUid}");
     // retrieve permissions
     await [Permission.microphone, Permission.camera].request();
 
@@ -266,23 +272,32 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
             _localUserJoined = true;
           });
         },
+
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           debugPrint("remote user $remoteUid joined");
           setState(() {
             _remoteUid = remoteUid;
           });
         },
+        // onStreamMessage: (RtcConnection connection, int remoteUid, int streamId, Uint8List data, int length, int sentTs) {
+        //   String message = String.fromCharCodes(data); // Convert Uint8List to String
+        //   if (message == "callEnded") {
+        //     _dispose();
+        //   }
+        // },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           debugPrint("remote user $remoteUid left channel");
           setState(() {
             _remoteUid = null;
           });
+          _dispose();
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
           debugPrint(
               '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
         },
+
       ),
     );
 
@@ -293,7 +308,7 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
     await _engine.joinChannel(
       token: token,
       channelId: channel,
-      uid: 0,
+      uid: widget.recipientUid,
       options: const ChannelMediaOptions(),
     );
   }
@@ -302,21 +317,25 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
   void dispose() {
     super.dispose();
 
-    _dispose();
+    // _dispose();
+  }
+
+
+    void _onToggleMute() {
+    setState(() {
+      muted = !muted;
+    });
+    _engine.muteLocalAudioStream(muted);
   }
 
   Future<void> _dispose() async {
+    // await _engine.sendStreamMessage(
+    //   streamId: widget.recipientUid,
+    //   data: Uint8List.fromList('callEnded'.codeUnits),
+    //   length: 0,
+    // );
     await _engine.leaveChannel();
     await _engine.release();
-  }
-
-  Future<void> _endCall() async {
-    // Implement the logic to end the call
-    await _engine.leaveChannel();
-    setState(() {
-      _localUserJoined = false;
-      _remoteUid = null;
-    });
     NavigationUtil.pop(context);
   }
 
@@ -325,7 +344,7 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agora Video Call'),
+        title:  Text(widget.callerName ?? "Video Call"),
       ),
       body: Stack(
         children: [
@@ -340,23 +359,44 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
               child: Center(
                 child: _localUserJoined
                     ? AgoraVideoView(
-                        controller: VideoViewController(
-                          rtcEngine: _engine,
-                          canvas: const VideoCanvas(uid: 0),
-                        ),
-                      )
+                  controller: VideoViewController(
+                    rtcEngine: _engine,
+                    canvas: const VideoCanvas(uid: 0),
+                  ),
+                )
                     : const CircularProgressIndicator(),
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
+          Align(alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: _endCall,
-                child: const Text('End Call'),
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: Colors.red,
+                child: IconButton(
+                  onPressed: () => _dispose(),
+                  icon: const Icon(
+                    Icons.call_end,
+                    size: 20,
+                    color: Colors.white70,
+                  ),
+                ),
               ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: RawMaterialButton(
+              onPressed: _onToggleMute,
+              child: Icon(
+                muted ? Icons.mic_off : Icons.mic,
+                color: muted ? Colors.white : Colors.blueAccent,
+                size: 20.0,
+              ),
+              shape: CircleBorder(),
+              elevation: 2.0,
+              fillColor: muted ? Colors.blueAccent : Colors.white,
+              padding: const EdgeInsets.all(12.0),
             ),
           ),
         ],

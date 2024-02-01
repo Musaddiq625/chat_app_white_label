@@ -1,4 +1,5 @@
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
@@ -30,10 +31,11 @@ final getIt = GetIt.I;
 late Size mq;
 
 const appId = "62b3eb641dbd4ca7a203c41ce90dbca2";
-const token = "007eJxTYJAJKA4quX3ITklU/BlTbnKRcNkeLb1V19Jqvsx4kmUVP1WBwcwoyTg1yczEMCUpxSQ50TzRyMA42cQwOdXSICUpOdFIY+L21IZARoZlqXUsjAwQCOKzMJSkFpcwMAAAy5kecQ==";
+const token = "007eJxTYHj6xEvlR0/8g+c19p6Nv6TXTprzjCuPm90/JCag8q6vsakCg5lRknFqkpmJYUpSiklyonmikYFxsolhcqqlQUpScqLRa9fdqQ2BjAzLCpczMTJAIIjPwlCSWlzCwAAAcuUgQA==";
 const channel = "test";
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +52,8 @@ void main() async {
     ),
   );
 
-
+  final messegingService = getIt<FirebaseService>();
+  await messegingService.initializeLocalNotifications();
 
   runApp(const MyApp());
 

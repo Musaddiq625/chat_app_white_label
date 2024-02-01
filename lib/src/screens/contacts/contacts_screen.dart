@@ -239,7 +239,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => AgoraCalling(recipientUid: int.parse(FirebaseUtils.user!.phoneNumber!),)),
+                                        builder: (context) => AgoraCalling(recipientUid: int.parse(firebaseContactUser.phoneNumber!),callerName: firebaseContactUser.name, callerNumber: firebaseContactUser.phoneNumber)),
                                   );
                                 },
                                 onVideoCallTapped: () async{
@@ -252,12 +252,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                     "callerName": senderName,
                                     "callerNumber": senderContactNumber,
                                   };
-
-                                  await sendFCM(firebaseContactUser.fcmToken!, 'Video Call Request', 'You have a new Video call request', data);
-                                  Navigator.push(
+                                  //
+                                   await sendFCM(firebaseContactUser.fcmToken!, 'Video Call Request', 'You have a new Video call request', data);
+                                  await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => AgoraVideoCalling(recipientUid: int.parse(FirebaseUtils.user!.phoneNumber!),)),
+                                        builder: (context) => AgoraVideoCalling(recipientUid: int.parse(firebaseContactUser.phoneNumber!),callerName: firebaseContactUser.name, callerNumber: firebaseContactUser.phoneNumber)),
                                   );
                                 },
                               );
