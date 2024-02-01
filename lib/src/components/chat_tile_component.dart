@@ -1,6 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
@@ -13,13 +12,12 @@ import 'package:flutter/material.dart';
 class ChatTileComponent extends StatelessWidget {
   final ChatModel chat;
   final UserModel chatUser;
-  final int? readByLength;
 
-  const ChatTileComponent(
-      {super.key,
-      required this.chat,
-      required this.chatUser,
-      this.readByLength});
+  const ChatTileComponent({
+    super.key,
+    required this.chat,
+    required this.chatUser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,34 +29,13 @@ class ChatTileComponent extends StatelessWidget {
             : NavigationUtil.push(context, RouteConstants.groupChatRoomScreen,
                 args: chat);
       },
-      leading: chat.isGroup == false
-          ? (chatUser.image ?? '').isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: CircleAvatar(
-                      radius: 30,
-                      backgroundImage:
-                          CachedNetworkImageProvider(chatUser.image ?? '')),
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Icon(
-                    Icons.account_circle,
-                    size: 55,
-                    color: Colors.grey.shade500,
-                  ),
-                )
-          : Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: CircleAvatar(
-                radius: 30,
-                backgroundImage: (chat.groupData?.groupImage ?? '').isNotEmpty
-                    ? CachedNetworkImageProvider(
-                        chat.groupData?.groupImage ?? '')
-                    : const AssetImage(AssetConstants.group) as ImageProvider,
-              )),
+      leading: ProfileImageComponent(
+          url: chat.isGroup == false
+              ? chatUser.image
+              : chat.groupData?.groupImage,
+          isGroup: chat.isGroup ?? false),
       minVerticalPadding: 0,
-      horizontalTitleGap: 5,
+      horizontalTitleGap: 10,
       title: Text(
         chat.isGroup == false
             ? chatUser.name ?? ''
@@ -77,7 +54,8 @@ class ChatTileComponent extends StatelessWidget {
                       ? chat.lastMessage?.readAt != null
                           ? Colors.blue
                           : Colors.grey
-                      : readByLength == ((chat.users ?? []).length - 1)
+                      : chat.lastMessageReadBy?.length ==
+                              ((chat.users ?? []).length - 1)
                           ? Colors.blue
                           : Colors.grey,
                   size: 18),

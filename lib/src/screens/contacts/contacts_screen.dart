@@ -21,7 +21,7 @@ import '../../constants/color_constants.dart';
 import 'package:http/http.dart' as http;
 import '../agora_calling.dart';
 
-class ContactsScreen extends StatefulWidget  {
+class ContactsScreen extends StatefulWidget {
   const ContactsScreen({super.key});
 
   @override
@@ -66,13 +66,13 @@ class _ContactsScreenState extends State<ContactsScreen> {
     }
   }
 
-
-  Future<void> sendFCM(String fcmToken, String title, String body, Map<String, dynamic> data) async {
+  Future<void> sendFCM(String fcmToken, String title, String body,
+      Map<String, dynamic> data) async {
     Uri postUrl = Uri.parse('https://fcm.googleapis.com/fcm/send');
     final headers = {
       'content-type': 'application/json',
-      'Authorization':'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
-
+      'Authorization':
+          'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
     };
 
     final payload = {
@@ -178,21 +178,27 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             future: FirebaseUtils.getChatUser(
                                 contactToDisplay[index].phoneNumber ?? ''),
                             builder: (context, asyncSnapshot) {
-                              UserModel firebaseContactUser = UserModel.fromJson(
-                                  asyncSnapshot.data?.data() ?? {});
+                              UserModel firebaseContactUser =
+                                  UserModel.fromJson(
+                                      asyncSnapshot.data?.data() ?? {});
                               contactToDisplay[index].firebaseData =
                                   firebaseContactUser;
                               return ContactTileComponent(
-                                localName: contactToDisplay[index].localName ?? '',
+                                localName:
+                                    contactToDisplay[index].localName ?? '',
                                 chatUser: firebaseContactUser,
                                 onCallTapped: () async {
-                                  int recipientUid = int.parse(firebaseContactUser.phoneNumber ?? "");
+                                  int recipientUid = int.parse(
+                                      firebaseContactUser.phoneNumber ?? "");
                                   String? senderName = FirebaseUtils.user?.name;
-                                  String? senderContactNumber = FirebaseUtils.user?.phoneNumber;
+                                  String? senderContactNumber =
+                                      FirebaseUtils.user?.phoneNumber;
 
-                                  print("firebaseContactUser.fcmToken ${firebaseContactUser.fcmToken}");
+                                  print(
+                                      "firebaseContactUser.fcmToken ${firebaseContactUser.fcmToken}");
                                   print("recipientUid $recipientUid");
-                                  print("contactToDisplay[index].phoneNumber ${contactToDisplay[index].phoneNumber}");
+                                  print(
+                                      "contactToDisplay[index].phoneNumber ${contactToDisplay[index].phoneNumber}");
                                   //
                                   //
                                   // Uri postUrl = Uri.parse(
@@ -230,35 +236,52 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   // }
 
                                   Map<String, dynamic> data = {
-                                    "messageType" : "call",
+                                    "messageType": "call",
                                     "callerName": senderName,
                                     "callerNumber": senderContactNumber,
                                   };
 
-                                  await sendFCM(firebaseContactUser.fcmToken!, 'New Call Request', 'You have a new call request', data);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AgoraCalling(recipientUid: int.parse(FirebaseUtils.user!.phoneNumber!),)),
-                                  );
+                                  await sendFCM(
+                                      firebaseContactUser.fcmToken!,
+                                      'New Call Request',
+                                      'You have a new call request',
+                                      data);
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => AgoraCalling(
+                                  //           recipientUid: int.parse(
+                                  //               firebaseContactUser
+                                  //                   .phoneNumber!),
+                                  //           callerName:
+                                  //               firebaseContactUser.name,
+                                  //           callerNumber: firebaseContactUser
+                                  //               .phoneNumber)),
+                                  // );
                                 },
-                                onVideoCallTapped: () async{
-                                  int recipientUid = int.parse(firebaseContactUser.phoneNumber ?? "");
+                                onVideoCallTapped: () async {
+                                  int recipientUid = int.parse(
+                                      firebaseContactUser.phoneNumber ?? "");
                                   String? senderName = FirebaseUtils.user?.name;
-                                  String? senderContactNumber = FirebaseUtils.user?.phoneNumber;
+                                  String? senderContactNumber =
+                                      FirebaseUtils.user?.phoneNumber;
 
                                   Map<String, dynamic> data = {
-                                    "messageType" : "video_call",
+                                    "messageType": "video_call",
                                     "callerName": senderName,
                                     "callerNumber": senderContactNumber,
                                   };
-
-                                  await sendFCM(firebaseContactUser.fcmToken!, 'Video Call Request', 'You have a new Video call request', data);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AgoraVideoCalling(recipientUid: int.parse(FirebaseUtils.user!.phoneNumber!),)),
-                                  );
+                                  //
+                                  await sendFCM(
+                                      firebaseContactUser.fcmToken!,
+                                      'Video Call Request',
+                                      'You have a new Video call request',
+                                      data);
+                                  // await Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => AgoraVideoCalling(recipientUid: int.parse(firebaseContactUser.phoneNumber!),callerName: firebaseContactUser.name, callerNumber: firebaseContactUser.phoneNumber)),
+                                  // );
                                 },
                               );
                             });

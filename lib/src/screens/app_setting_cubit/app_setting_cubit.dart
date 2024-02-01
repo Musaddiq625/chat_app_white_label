@@ -1,5 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
+import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:contacts_service/contacts_service.dart';
+import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:meta/meta.dart';
 
 part 'app_setting_state.dart';
@@ -26,5 +30,47 @@ class AppSettingCubit extends Cubit<AppSettingState> {
   void initCamera() async {
     cameras = await availableCameras();
     firstCamera = cameras.first;
+  }
+
+  List<Contact> localContacts = [];
+  List<ContactModel> contactToDisplay = [];
+
+  void initGetLocalContacts() async {
+    localContacts = await ContactsService.getContacts(withThumbnails: false);
+
+    final snapshot = await FirebaseUtils.usersCollection.get();
+
+    if (snapshot.docs.isNotEmpty) {
+      contactToDisplay.clear();
+      for (var i = 0; i < localContacts.length; i++) {
+        String? localNumber = (localContacts[i].phones ?? [])
+            .map((item) => item.value)
+            .toList()
+            .firstWhere((phone) => phone != null && phone.trim().isNotEmpty,
+                orElse: () => null)
+            ?.replaceAll(' ', '')
+            .replaceAll('+', '');
+        if ((localNumber ?? '').startsWith('0')) {
+          localNumber = localNumber?.replaceFirst('0', '92');
+        }
+        bool contactExist = (snapshot.docs).any((firebaseUser) =>
+            firebaseUser.id == localNumber &&
+            firebaseUser.id != FirebaseUtils.phoneNumber);
+        // .any for filtering in Firebase users
+        if (contactExist) {
+          contactToDisplay.add(ContactModel(
+              localName: localContacts[i].displayName,
+              phoneNumber: localNumber ?? ''));
+        }
+      }
+    }
+
+    for (var index = 0; index < contactToDisplay.length; index++) {
+      final snapshot = await FirebaseUtils.getChatUser(
+          contactToDisplay[index].phoneNumber ?? '');
+
+      UserModel firebaseContactUser = UserModel.fromJson(snapshot.data() ?? {});
+      contactToDisplay[index].firebaseData = firebaseContactUser;
+    }
   }
 }

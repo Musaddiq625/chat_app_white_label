@@ -158,29 +158,48 @@ class ChatUtils {
   }
 
   // for creating group chat
-  static Future<void> createGroupChat(
+  static Future<ChatModel> createGroupChat(
     String groupName,
+    String groupAbout,
     String? groupImage,
     List contacts,
   ) async {
     final groupChatId =
         createGroupChatId(groupName.toLowerCase().trim().replaceAll(' ', '_'));
-
-    await chatsCollection.doc(groupChatId).set(ChatModel(
+    final chatData = ChatModel(
         id: groupChatId,
         isGroup: true,
         groupData: GroupData(
+            id: groupChatId,
             adminId: FirebaseUtils.user?.id,
             grougName: groupName,
+            groupAbout: groupAbout,
             groupImage: groupImage),
         lastMessage: null,
-        users: [FirebaseUtils.user?.id ?? '', ...contacts]).toJson());
+        users: [FirebaseUtils.user?.id ?? '', ...contacts]);
+
+    await chatsCollection.doc(groupChatId).set(chatData.toJson());
 
     await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
       'chats': FieldValue.arrayUnion([groupChatId])
     }, SetOptions(merge: true));
 
     for (var i = 0; i < contacts.length; i++) {
+      await FirebaseUtils.usersCollection.doc(contacts[i]).set({
+        'chats': FieldValue.arrayUnion([groupChatId])
+      }, SetOptions(merge: true));
+    }
+    return chatData;
+  }
+
+  static Future<void> addMoreMembersToGroupChat(
+    String groupChatId,
+    List contacts,
+  ) async {
+    for (var i = 0; i < contacts.length; i++) {
+      await chatsCollection.doc(groupChatId).set({
+        'users': FieldValue.arrayUnion([contacts[i]])
+      }, SetOptions(merge: true));
       await FirebaseUtils.usersCollection.doc(contacts[i]).set({
         'chats': FieldValue.arrayUnion([groupChatId])
       }, SetOptions(merge: true));
@@ -243,7 +262,8 @@ class ChatUtils {
                   //adding last message and adding mesage count
                   await chatDoc.set({
                     'message_count': FieldValue.increment(1),
-                    'last_message': message.toJson()
+                    'last_message': message.toJson(),
+                    'last_message_readBy': []
                   }, SetOptions(merge: true))
               // )
               // .then((value) =>
@@ -265,8 +285,6 @@ class ChatUtils {
       'readBy': FieldValue.arrayUnion([FirebaseUtils.user?.id ?? ''])
     }, SetOptions(merge: true));
 
-    message.readBy?.add(FirebaseUtils.user?.id ?? '');
-    LoggerUtil.logs('updateGroupChatReadStatusUpdated ${message.toJson()}');
     if (isLast) {
       await chatDoc.set({
         'last_message_readBy':

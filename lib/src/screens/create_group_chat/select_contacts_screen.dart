@@ -3,19 +3,31 @@ import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
+import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 
 class SelectContactsScreen extends StatefulWidget {
-  final List<ContactModel> contactsList;
-  const SelectContactsScreen({super.key, required this.contactsList});
+  final SelectContactsScreenArg selectContactsScreenArg;
+  const SelectContactsScreen(
+      {super.key, required this.selectContactsScreenArg});
 
   @override
   State<SelectContactsScreen> createState() => _SelectContactsScreenState();
 }
 
 class _SelectContactsScreenState extends State<SelectContactsScreen> {
+  bool isEditing = false;
   List selectedContacts = [];
+  @override
+  void initState() {
+    super.initState();
+    if ((widget.selectContactsScreenArg.selectedContacts ?? []).isNotEmpty) {
+      selectedContacts = widget.selectContactsScreenArg.selectedContacts!;
+      isEditing = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,24 +49,33 @@ class _SelectContactsScreenState extends State<SelectContactsScreen> {
           ),
         ),
       ),
-      body: widget.contactsList.isNotEmpty
+      body: widget.selectContactsScreenArg.contactsList.isNotEmpty
           ? ListView.builder(
-              itemCount: widget.contactsList.length,
+              itemCount: widget.selectContactsScreenArg.contactsList.length,
               padding: const EdgeInsets.only(top: 7),
               itemBuilder: (context, index) {
                 return ContactTileComponent(
-                  localName: widget.contactsList[index].localName ?? '',
-                  chatUser: widget.contactsList[index].firebaseData,
+                  localName: widget.selectContactsScreenArg.contactsList[index]
+                          .localName ??
+                      '',
+                  chatUser: widget
+                      .selectContactsScreenArg.contactsList[index].firebaseData,
                   isSelected: selectedContacts.any((contact) =>
-                      contact == widget.contactsList[index].phoneNumber),
+                      contact ==
+                      widget.selectContactsScreenArg.contactsList[index]
+                          .phoneNumber),
                   onContactTap: () {
                     if (selectedContacts.any((contact) =>
-                        contact == widget.contactsList[index].phoneNumber)) {
+                        contact ==
+                        widget.selectContactsScreenArg.contactsList[index]
+                            .phoneNumber)) {
                       selectedContacts.removeWhere((contact) =>
-                          contact == widget.contactsList[index].phoneNumber);
+                          contact ==
+                          widget.selectContactsScreenArg.contactsList[index]
+                              .phoneNumber);
                     } else {
-                      selectedContacts
-                          .add(widget.contactsList[index].phoneNumber);
+                      selectedContacts.add(widget.selectContactsScreenArg
+                          .contactsList[index].phoneNumber);
                     }
                     setState(() {});
                   },
@@ -70,10 +91,18 @@ class _SelectContactsScreenState extends State<SelectContactsScreen> {
           Icons.done,
           color: Colors.white,
         ),
-        onPressed: () {
+        onPressed: () async {
           if (selectedContacts.isNotEmpty) {
-            NavigationUtil.push(context, RouteConstants.createGroupScreen,
-                args: selectedContacts);
+            if (isEditing == false) {
+              NavigationUtil.push(context, RouteConstants.createGroupScreen,
+                  args: selectedContacts);
+            } else {
+              await ChatUtils.addMoreMembersToGroupChat(
+                widget.selectContactsScreenArg.groupChatId ?? "",
+                widget.selectContactsScreenArg.selectedContacts ?? [],
+              );
+              NavigationUtil.popAllAndPush(context, RouteConstants.chatScreen);
+            }
           } else {
             ToastComponent.showToast('Please select atleast one contact',
                 context: context);
@@ -82,4 +111,12 @@ class _SelectContactsScreenState extends State<SelectContactsScreen> {
       ),
     );
   }
+}
+
+class SelectContactsScreenArg {
+  final List<ContactModel> contactsList;
+  final List? selectedContacts;
+  final String? groupChatId;
+  SelectContactsScreenArg(
+      {required this.contactsList, this.selectedContacts, this.groupChatId});
 }

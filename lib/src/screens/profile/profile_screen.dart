@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:chat_app_white_label/src/components/custom_button.dart';
-import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,9 +14,9 @@ import '../../utils/firebase_utils.dart';
 import '../../utils/service/firbase_service.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final String phoneNumber;
-
-  const ProfileScreen({super.key, required this.phoneNumber});
+  final String? phoneNumber;
+  final bool? isEdit;
+  const ProfileScreen({super.key, this.phoneNumber, this.isEdit});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -23,124 +24,167 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   FirebaseService firebaseService = getIt<FirebaseService>();
-  final _controller = TextEditingController();
-  final _controllerAbout = TextEditingController();
-  File? _selectedImage;
+  final nameController = TextEditingController();
+  final aboutController = TextEditingController();
+  File? selectedImage;
   String? imageUrl;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEdit == true) {
+      nameController.text = FirebaseUtils.user?.name ?? '';
+      aboutController.text = FirebaseUtils.user?.about ?? '';
+      imageUrl = FirebaseUtils.user?.image;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 10, right: 10, top: 50, bottom: 10),
-          child: Column(
-            children: [
-              const Text(
-                'Profile',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  final XFile? image = await ImagePicker()
-                      .pickImage(source: ImageSource.gallery);
-                  if (image != null) {
-                    setState(() {
-                      _selectedImage = File(image.path);
-                    });
-                  }
-                },
-                child: CircleAvatar(
-                  radius: 65,
-                  backgroundImage: (_selectedImage != null
-                          ? FileImage(_selectedImage!)
-                          : const AssetImage(AssetConstants.profile))
-                      as ImageProvider,
+      appBar: AppBar(
+          backgroundColor: ColorConstants.greenMain,
+          title:
+              Text(widget.isEdit == true ? 'Edit Profile' : ' Complete Profile',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  )),
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () => NavigationUtil.pop(context),
+            icon: const Icon(
+              Icons.arrow_back,
+              size: 28,
+            ),
+            color: ColorConstants.white,
+          )),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 50, bottom: 10),
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 65,
+                      backgroundImage: (selectedImage != null
+                              ? FileImage(selectedImage!)
+                              : widget.isEdit == true && imageUrl != null
+                                  ? NetworkImage(imageUrl ?? '')
+                                  : const AssetImage(AssetConstants.profile))
+                          as ImageProvider,
+                    ),
+                    Positioned(
+                        right: 5,
+                        bottom: 5,
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (selectedImage == null) {
+                              final XFile? image = await ImagePicker()
+                                  .pickImage(source: ImageSource.gallery);
+                              if (image != null) {
+                                setState(() {
+                                  selectedImage = File(image.path);
+                                });
+                              }
+                            } else {
+                              setState(() {
+                                selectedImage = null;
+                              });
+                            }
+                          },
+                          child: CircleAvatar(
+                              radius: 15,
+                              backgroundColor:
+                                  const Color.fromARGB(255, 238, 238, 238),
+                              child: Icon(
+                                selectedImage == null
+                                    ? Icons.edit
+                                    : Icons.cancel_outlined,
+                                color: const Color.fromARGB(255, 139, 139, 139),
+                                size: 16,
+                              )),
+                        ))
+                  ],
                 ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                'Phone Number : ${widget.phoneNumber}',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SizedBox(
-                width: 300,
-                child: CustomTextField(
-                  hintText: 'Profile Name',
-                  maxLength: 30,
-                  keyboardType: TextInputType.name,
-                  controller: _controller,
-                  textAlign: TextAlign.center,
-                  onChanged: (String value) {},
+                const SizedBox(
+                  height: 30,
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 300,
-                child: CustomTextField(
-                  hintText: 'About',
-                  maxLength: 35,
-                  keyboardType: TextInputType.name,
-                  controller: _controllerAbout,
-                  textAlign: TextAlign.center,
-                  onChanged: (String value) {},
+                if (widget.isEdit == true)
+                  Text(
+                    'Phone Number :  ${widget.isEdit == true ? FirebaseUtils.user?.phoneNumber : widget.phoneNumber}',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                const SizedBox(
+                  height: 30,
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              CustomButton(
-                  buttonText: "Next",
-                  onPressedFunction: () async {
-                    if (_controller.text.isEmpty) {
-                      Fluttertoast.showToast(
-                          msg: "Please enter the name",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                      return;
-                    }
-                    try {
-                      try {
-                        if (_selectedImage != null) {
-                          imageUrl = await FirebaseUtils.uploadMedia(
-                              _selectedImage!.path, MediaType.profilePicture);
-                        }
-
-                        // print("imageUrl ${imageUrl} ");
-                        await firebaseService.firestore
-                            .collection(FirebaseConstants.users)
-                            .doc(widget.phoneNumber.replaceAll('+', ''))
-                            .update({
-                          'name': _controller.text,
-                          'image': imageUrl,
-                          'about': _controllerAbout.text,
-                          'is_profile_complete': true,
-                        });
-                      } catch (error) {
-                        print("Error during file upload or retrieval: $error");
+                SizedBox(
+                  width: 300,
+                  child: CustomTextField(
+                    hintText: 'Profile Name',
+                    maxLength: 30,
+                    keyboardType: TextInputType.name,
+                    controller: nameController,
+                    textAlign: TextAlign.center,
+                    onChanged: (String value) {},
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 300,
+                  child: CustomTextField(
+                    hintText: 'About',
+                    maxLength: 35,
+                    keyboardType: TextInputType.name,
+                    controller: aboutController,
+                    textAlign: TextAlign.center,
+                    onChanged: (String value) {},
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomButton(
+                    buttonText: widget.isEdit == true ? 'Edit' : ' Complete',
+                    onPressedFunction: () async {
+                      if (nameController.text.isEmpty) {
+                        Fluttertoast.showToast(
+                            msg: "Please enter the name",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                        return;
                       }
-                      NavigationUtil.push(context, RouteConstants.chatScreen);
-                    } catch (error) {
-                      print(
-                          "Errors $error"); // You might want to display a general error message to the user
-                    }
-                  }),
-            ],
+                      try {
+                        if (selectedImage != null) {
+                          imageUrl = await FirebaseUtils.uploadMedia(
+                              selectedImage!.path, MediaType.profilePicture);
+                        }
+                        await FirebaseUtils.updateUser(
+                            nameController.text,
+                            aboutController.text,
+                            imageUrl,
+                            widget.isEdit == true
+                                ? FirebaseUtils.user?.phoneNumber ?? ''
+                                : widget.phoneNumber ?? '');
+
+                        NavigationUtil.popAllAndPush(
+                            context, RouteConstants.chatScreen);
+                      } catch (error) {
+                        LoggerUtil.logs(
+                            "Errors $error"); // You might want to display a general error message to the user
+                      }
+                    }),
+              ],
+            ),
           ),
         ),
       ),
