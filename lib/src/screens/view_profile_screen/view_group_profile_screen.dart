@@ -1,20 +1,23 @@
 import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/user_tile_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
+import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ViewGroupProfileScreen extends StatefulWidget {
-  final ChatModel group;
+  ChatModel group;
 
-  const ViewGroupProfileScreen({super.key, required this.group});
+  ViewGroupProfileScreen({super.key, required this.group});
 
   @override
   State<ViewGroupProfileScreen> createState() => _ViewGroupProfileScreenState();
@@ -147,19 +150,28 @@ class _ViewGroupProfileScreenState extends State<ViewGroupProfileScreen> {
                                 UserModel firebaseContactUser =
                                     UserModel.fromJson(
                                         asyncSnapshot.data?.data() ?? {});
-                                return AbsorbPointer(
-                                  absorbing: true,
-                                  child: ContactTileComponent(
+                                return UserTileComponent(
                                     localName:
                                         FirebaseUtils.getNameFromLocalContact(
                                             (widget.group.users ?? [])[index],
                                             context),
                                     chatUser: firebaseContactUser,
-                                    showAdminIcon:
-                                        (widget.group.users ?? [])[index] ==
-                                            widget.group.groupData?.adminId,
-                                  ),
-                                );
+                                    showAdminIcon: widget.group.users?[index] ==
+                                        widget.group.groupData?.adminId,
+                                    onRemoveTap: widget
+                                                .group.groupData?.adminId ==
+                                            FirebaseUtils.user?.id
+                                        ? () {
+                                            ChatUtils.removeMemberFromGroupChat(
+                                                widget.group.groupData?.id ??
+                                                    '',
+                                                widget.group.users?[index] ??
+                                                    '');
+                                            widget.group.users?.remove(
+                                                widget.group.users?[index]);
+                                            setState(() {});
+                                          }
+                                        : null);
                               });
                         }),
                   ),

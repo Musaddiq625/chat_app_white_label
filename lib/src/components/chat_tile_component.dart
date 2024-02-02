@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 class ChatTileComponent extends StatelessWidget {
   final ChatModel chat;
-  final UserModel chatUser;
+  final UserModel? chatUser;
 
   const ChatTileComponent({
     super.key,
@@ -31,14 +31,14 @@ class ChatTileComponent extends StatelessWidget {
       },
       leading: ProfileImageComponent(
           url: chat.isGroup == false
-              ? chatUser.image
+              ? chatUser?.image
               : chat.groupData?.groupImage,
           isGroup: chat.isGroup ?? false),
       minVerticalPadding: 0,
       horizontalTitleGap: 10,
       title: Text(
         chat.isGroup == false
-            ? chatUser.name ?? ''
+            ? chatUser?.name ?? ''
             : chat.groupData?.grougName ?? '',
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),

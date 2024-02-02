@@ -207,34 +207,74 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Text("No Chats Available !"),
               );
             }
+            // List<ChatModel> chatList =
+            //     (snapshot.data?.docs.map((e) => ChatModel.fromJson(e.data())) ??
+            //             [])
+            //         .toList();
+            // // LoggerUtil.logs('before ${chatList.map((e) => e.id)}');
+            // LoggerUtil.logs('before ${snapshot.data?.docs.map((e) => e.id)}');
+
+            // snapshot.data?.docs.sort((a, b) {
+            //   var sentAtA = a.data()['last_message']?['sentAt'];
+            //   var sentAtB = b.data()['last_message']?['sentAt'];
+            //   // LoggerUtil.logs(' sorting a  $sentAtA b  $sentAtB');
+            //   // // If either sentAt value is null, place it at the top
+
+            //   // // If either sentAt value is null, place it at the top
+            //   String sentAtDateTimeA = sentAtA ??
+            //       DateTime.now()
+            //           .add(Duration(days: 200))
+            //           .microsecondsSinceEpoch
+            //           .toString();
+
+            //   String sentAtDateTimeB = sentAtB ??
+            //       DateTime.now()
+            //           .add(Duration(days: 200))
+            //           .microsecondsSinceEpoch
+            //           .toString();
+
+            //   LoggerUtil.logs('time ${sentAtA} ${sentAtB}');
+            //   LoggerUtil.logs('time2 ${sentAtDateTimeA} ${sentAtDateTimeB}');
+            //   LoggerUtil.logs(sentAtDateTimeA.compareTo(sentAtDateTimeB));
+            //   return int.parse(sentAtDateTimeA)
+            //       .compareTo(int.parse(sentAtDateTimeB));
+            // });
+
+            // LoggerUtil.logs('after ${snapshot.data?.docs.map((e) => e.id)}');
             return ListView.builder(
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (context, index) {
                   final ChatModel chat =
                       ChatModel.fromJson(snapshot.data!.docs[index].data());
-
-                  final chatUserId = snapshot.data!.docs[index]
-                      .data()['users']
-                      .firstWhere((id) => id != FirebaseUtils.user?.id);
+                  String? chatUserId;
                   if (chat.isGroup == false) {
+                    // get the id of other person of chat
+                    chatUserId = snapshot.data?.docs[index]
+                        .data()['users']
+                        .firstWhere((id) => id != FirebaseUtils.user?.id);
                     // Single user unread count
-                    chat.unreadCount = snapshot.data!.docs[index]
+                    chat.unreadCount = snapshot.data?.docs[index]
                         .data()['${FirebaseUtils.user?.id}_unread_count'];
                   } else {
-                    //  condition to check if the 'read_count_group' is
-                    //  not null and it contain a key with userid
+                    // condition to check if the 'read_count_group' is
+                    // not null if it is null it means group is new
                     if (snapshot.data!.docs[index]
-                            .data()
-                            .containsKey('read_count_group') &&
-                        snapshot.data!.docs[index]
-                            .data()['read_count_group']
-                            .containsKey('${FirebaseUtils.user?.id}')) {
-                      chat.readCountGroup =
-                          snapshot.data!.docs[index].data()['read_count_group']
-                              ['${FirebaseUtils.user?.id}'];
-                      chat.unreadCount = ((chat.messageCount ?? 0) -
-                              (chat.readCountGroup ?? 0))
-                          .toString();
+                        .data()
+                        .containsKey('read_count_group')) {
+                      // check if it contain a key with userid
+                      // if it does not contain it means that user has not opened
+                      if (snapshot.data?.docs[index]
+                          .data()['read_count_group']
+                          .containsKey('${FirebaseUtils.user?.id}')) {
+                        chat.readCountGroup = snapshot.data?.docs[index]
+                                .data()['read_count_group']
+                            ['${FirebaseUtils.user?.id}'];
+                        chat.unreadCount = ((chat.messageCount ?? 0) -
+                                (chat.readCountGroup ?? 0))
+                            .toString();
+                      } else {
+                        chat.unreadCount = chat.messageCount.toString();
+                      }
                     } else {
                       // group currently have no message
                       chat.unreadCount = '0';
@@ -242,19 +282,31 @@ class _ChatScreenState extends State<ChatScreen> {
                   }
 
                   return FutureBuilder(
-                    future: FirebaseUtils.getChatUser(chatUserId),
+                    future: chatUserId != null
+                        ? FirebaseUtils.getChatUser(chatUserId)
+                        : null,
                     builder: (context, asyncSnapshot) {
-                      if (asyncSnapshot.hasData) {
-                        UserModel chatUser = UserModel.fromJson(
-                            asyncSnapshot.data?.data() ?? {});
-                        chatUser.name = FirebaseUtils.getNameFromLocalContact(
-                            chatUser.id ?? '', context);
+                      // if user id is null so this is a group
+                      //  no need to read future snapshot user
+                      if (chatUserId != null) {
+                        if (asyncSnapshot.hasData) {
+                          UserModel chatUser = UserModel.fromJson(
+                              asyncSnapshot.data?.data() ?? {});
+                          chatUser.name = FirebaseUtils.getNameFromLocalContact(
+                              chatUser.id ?? '', context);
+                          return ChatTileComponent(
+                            chat: chat,
+                            chatUser: chatUser,
+                          );
+                        } else {
+                          return const SizedBox();
+                        }
+                      } else {
                         return ChatTileComponent(
                           chat: chat,
-                          chatUser: chatUser,
+                          chatUser: null,
                         );
                       }
-                      return Container();
                     },
                   );
                 });
