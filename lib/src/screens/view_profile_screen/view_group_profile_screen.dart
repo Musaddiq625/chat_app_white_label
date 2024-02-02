@@ -157,7 +157,7 @@ class _ViewGroupProfileScreenState extends State<ViewGroupProfileScreen> {
                                     chatUser: firebaseContactUser,
                                     showAdminIcon:
                                         (widget.group.users ?? [])[index] ==
-                                            FirebaseUtils.user?.id,
+                                            widget.group.groupData?.adminId,
                                   ),
                                 );
                               });
