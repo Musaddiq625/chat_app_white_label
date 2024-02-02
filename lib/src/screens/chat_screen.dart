@@ -207,40 +207,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Text("No Chats Available !"),
               );
             }
-            // List<ChatModel> chatList =
-            //     (snapshot.data?.docs.map((e) => ChatModel.fromJson(e.data())) ??
-            //             [])
-            //         .toList();
-            // // LoggerUtil.logs('before ${chatList.map((e) => e.id)}');
-            // LoggerUtil.logs('before ${snapshot.data?.docs.map((e) => e.id)}');
-
-            // snapshot.data?.docs.sort((a, b) {
-            //   var sentAtA = a.data()['last_message']?['sentAt'];
-            //   var sentAtB = b.data()['last_message']?['sentAt'];
-            //   // LoggerUtil.logs(' sorting a  $sentAtA b  $sentAtB');
-            //   // // If either sentAt value is null, place it at the top
-
-            //   // // If either sentAt value is null, place it at the top
-            //   String sentAtDateTimeA = sentAtA ??
-            //       DateTime.now()
-            //           .add(Duration(days: 200))
-            //           .microsecondsSinceEpoch
-            //           .toString();
-
-            //   String sentAtDateTimeB = sentAtB ??
-            //       DateTime.now()
-            //           .add(Duration(days: 200))
-            //           .microsecondsSinceEpoch
-            //           .toString();
-
-            //   LoggerUtil.logs('time ${sentAtA} ${sentAtB}');
-            //   LoggerUtil.logs('time2 ${sentAtDateTimeA} ${sentAtDateTimeB}');
-            //   LoggerUtil.logs(sentAtDateTimeA.compareTo(sentAtDateTimeB));
-            //   return int.parse(sentAtDateTimeA)
-            //       .compareTo(int.parse(sentAtDateTimeB));
-            // });
-
-            // LoggerUtil.logs('after ${snapshot.data?.docs.map((e) => e.id)}');
             return ListView.builder(
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (context, index) {
