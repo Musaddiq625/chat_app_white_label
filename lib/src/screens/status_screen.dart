@@ -7,6 +7,7 @@ import 'package:chat_app_white_label/src/screens/status_generate_screen.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -87,19 +88,116 @@ class _StatusScreenState extends State<StatusScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> pickImage(ImageSource source) async {
-      final ImagePicker _picker = ImagePicker();
-      final XFile? image = await _picker.pickImage(source: source);
+    // Future<void> pickImage(ImageSource source) async {
+    //   final ImagePicker _picker = ImagePicker();
+    //   final XFile? image = await _picker.pickImage(source: source);
+    //
+    //   if (image != null) {
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (context) =>
+    //             StatusGenerateScreen(imageFile: File(image.path)),
+    //       ),
+    //     );
+    //     // Use the image file as needed
+    //   }
+    // }
 
-      if (image != null) {
+
+    Future<void> pickImage(ImageSource source) async {
+      // FilePickerResult? _picker =
+      // await FilePicker.platform.pickFiles(
+      //   type: FileType.custom,
+      //   allowedExtensions: [
+      //     'jpg',
+      //     'png',
+      //     'mp4'
+      //   ],
+      //   allowMultiple: true
+      // );
+      // List<File> files = [];
+
+      // switch (source) {
+      //   case ImageSource.gallery:
+      //     List<XFile>? images = await _picker;
+      //     if (images.isNotEmpty) {
+      //       files = images.map((image) => File(image.path)).toList();
+      //     }
+      //     break;
+      //   case ImageSource.camera:
+      //     XFile? cameraImage = await _picker.pickImage(source: source);
+      //     if (cameraImage != null) {
+      //       files.add(File(cameraImage.path));
+      //     }
+      //     break;
+      //   default:
+      //     throw ArgumentError('Invalid image source');
+      // }
+
+
+      // switch (source) {
+      //   case ImageSource.gallery:
+      //     FilePickerResult? result = await FilePicker.platform.pickFiles(
+      //       type: FileType.custom,
+      //       allowedExtensions: ['jpg', 'png', 'mp4'],
+      //       allowMultiple: true,
+      //     );
+      //     break;
+      //   // case ImageSource.camera:
+      //   //   XFile? cameraImage = await _picker.pickImage(source: source);
+      //   //   if (cameraImage != null) {
+      //   //     files.add(File(cameraImage.path));
+      //   //   }
+      //   //   break;
+      //   default:
+      //     throw ArgumentError('Invalid image source');
+      // }
+
+      // if (files.isNotEmpty) {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => StatusGenerateScreen(imageFiles: files),
+      //     ),
+      //   );
+      // }
+
+      List<File> files = [];
+      if (source == ImageSource.camera) {
+        final XFile? cameraImage = await ImagePicker().pickImage(source: source);
+        if (cameraImage != null) {
+          files.add(File(cameraImage.path));
+        }
+      }else {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['jpg', 'png', 'mp4'],
+          allowMultiple: true,
+        );
+        if (result != null && result.files.isNotEmpty) {
+          files = result.files.map((file) => File(file.path!)).toList();
+        }
+      }
+
+      // if (result != null && result.files.isNotEmpty) {
+      //   List<File> files = result.files.map((file) => File(file.path!)).toList();
+      //
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => StatusGenerateScreen(imageFiles: files),
+      //     ),
+      //   );
+      // }
+
+      if (files.isNotEmpty) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                StatusGenerateScreen(imageFile: File(image.path)),
+            builder: (context) => StatusGenerateScreen(imageFiles: files),
           ),
         );
-        // Use the image file as needed
       }
     }
 
@@ -269,12 +367,20 @@ class _StatusScreenState extends State<StatusScreen> {
                 child: ListTile(
                   leading: Stack(
                     children: [
+                      if(FirebaseUtils.user!.image == null)
                       CircleAvatar(
                         radius: 25,
                         backgroundImage: AssetImage(
                           'assets/images/woman.png',
                         ),
                       ),
+                      if(FirebaseUtils.user!.image != null)
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(
+                              FirebaseUtils.user!.image!,
+                          ),
+                        ),
                       Positioned(
                         left: 30,
                         top: 30,

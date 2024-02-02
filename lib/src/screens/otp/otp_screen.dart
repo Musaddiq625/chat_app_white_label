@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,7 +29,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   bool _isOtpValid = false;
   Timer? _timer;
-  int _counter = 60;
+  int _counter = 15;
 
   void startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
@@ -69,12 +70,22 @@ class _OTPScreenState extends State<OTPScreen> {
           LoadingDialog.hideLoadingDialog(context);
           NavigationUtil.push(context, RouteConstants.profileScreen,
               args: state.phoneNumber);
-        } else if (state is OTPSuccessOldUserState) {
+        }
+        else if(state is OtpSuccessResendState){
           LoadingDialog.hideLoadingDialog(context);
+          setState(() {
+            _counter = 15; // Reset the counter
+            startTimer(); // Restart the timer
+          });
+        }
+        else if (state is OTPSuccessOldUserState) {
+
           NavigationUtil.popAllAndPush(context, RouteConstants.chatScreen);
         } else if (state is OTPFailureState) {
           LoadingDialog.hideLoadingDialog(context);
-          ToastComponent.showToast(state.error.toString(), context: context);
+          // ToastComponent.showToast(state.error.toString(), context: context);
+          ToastComponent.showToast("Invalid Otp", context: context);
+
         } else if (state is OTPCancleState) {
           LoadingDialog.hideLoadingDialog(context);
         }
@@ -107,10 +118,14 @@ class _OTPScreenState extends State<OTPScreen> {
                           style: const TextStyle(
                               color: Colors.black), // Change the color here
                         ),
-                        const TextSpan(
+                         TextSpan(
                           text: 'WrongNumber ?',
                           style: TextStyle(
-                              color: Colors.blue), // Change the color here
+                              color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              NavigationUtil.pop(context); // Navigate back to the previous screen
+                            },// Change the color here
                         ),
                       ],
                     ),
@@ -163,6 +178,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                   fontSize: 16.0);
                               return;
                             }
+                            FocusScope.of(context).unfocus();
                             otpCubit.otpUser(
                               widget.otpScreenArg.verificationId,
                               otpController.text,
@@ -172,6 +188,18 @@ class _OTPScreenState extends State<OTPScreen> {
                           child: const Text("Verify OTP"),
                         )
                       : Container(),
+                  if (_counter <= 0)
+                    ElevatedButton(
+                    onPressed: () async {
+                      otpCubit.resendOtptoUser(
+                        widget.otpScreenArg.phoneNumber,
+                        // otpController.text,
+                        // widget.otpScreenArg.phoneNumber,
+                      );
+                    },
+                    child: const Text("Resend Otp"),
+                  ),
+
                 ],
               ),
             ),

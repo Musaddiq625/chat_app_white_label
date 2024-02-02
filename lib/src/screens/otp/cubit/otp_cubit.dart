@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../main.dart';
 import '../../../utils/service/firbase_service.dart';
+import '../../login/cubit/login_cubit.dart';
 
 part 'otp_state.dart';
 
@@ -14,6 +15,8 @@ class OTPCubit extends Cubit<OTPState> {
   FirebaseService firebaseService = getIt<FirebaseService>();
 
   OTPCubit() : super(OTPInitial());
+
+
 
   otpUser(
     String verificationId,
@@ -51,6 +54,30 @@ class OTPCubit extends Cubit<OTPState> {
     } catch (e) {
       emit(OTPFailureState(e.toString()));
       LoggerUtil.logs(e.toString());
+    }
+  }
+
+  resendOtptoUser(String phoneNumber)async{
+    emit(OTPLoadingState());
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {},
+        codeSent: (String verificationId, int? resendToken) async {
+          emit(OtpSuccessResendState(verificationId));
+          // _verificationId = verificationId;
+          //_resendToken = resendToken!;
+        },
+        timeout: const Duration(seconds: 60),
+        // forceResendingToken: _resendToken,
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // verificationId = _verificationId;
+        },
+      );
+    }
+    catch(e){
+      print("Error $e");
     }
   }
 }
