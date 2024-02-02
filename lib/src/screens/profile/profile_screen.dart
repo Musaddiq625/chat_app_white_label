@@ -169,15 +169,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               selectedImage!.path, MediaType.profilePicture);
                         }
                         await FirebaseUtils.updateUser(
-                            nameController.text,
-                            aboutController.text,
-                            imageUrl,
-                            widget.isEdit == true
-                                ? FirebaseUtils.user?.phoneNumber ?? ''
-                                : widget.phoneNumber ?? '');
-
-                        NavigationUtil.popAllAndPush(
-                            context, RouteConstants.chatScreen);
+                                nameController.text,
+                                aboutController.text,
+                                imageUrl,
+                                widget.isEdit == true
+                                    ? FirebaseUtils.user?.phoneNumber ?? ''
+                                    : widget.phoneNumber ?? '')
+                            .then((value) => NavigationUtil.popAllAndPush(
+                                context, RouteConstants.chatScreen));
                       } catch (error) {
                         LoggerUtil.logs(
                             "Errors $error"); // You might want to display a general error message to the user

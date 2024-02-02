@@ -71,7 +71,7 @@ class _OTPScreenState extends State<OTPScreen> {
               args: state.phoneNumber);
         } else if (state is OTPSuccessOldUserState) {
           LoadingDialog.hideLoadingDialog(context);
-          NavigationUtil.push(context, RouteConstants.chatScreen);
+          NavigationUtil.popAllAndPush(context, RouteConstants.chatScreen);
         } else if (state is OTPFailureState) {
           LoadingDialog.hideLoadingDialog(context);
           ToastComponent.showToast(state.error.toString(), context: context);

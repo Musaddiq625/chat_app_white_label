@@ -54,13 +54,13 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(milliseconds: 1500), () async {
       if (userData != null) {
         if (userData.isProfileComplete == true) {
-          NavigationUtil.push(context, RouteConstants.chatScreen);
+          NavigationUtil.popAllAndPush(context, RouteConstants.chatScreen);
         } else {
-          NavigationUtil.push(context, RouteConstants.profileScreen,
+          NavigationUtil.popAllAndPush(context, RouteConstants.profileScreen,
               args: userData.id);
         }
       } else {
-        NavigationUtil.pushReplace(
+        NavigationUtil.popAllAndPush(
           context,
           RouteConstants.loginScreen,
         );

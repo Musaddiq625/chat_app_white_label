@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _countryCodeController.text));
         } else if (state is LoginSuccessSignInState) {
           LoadingDialog.hideLoadingDialog(context);
-          NavigationUtil.push(context, RouteConstants.chatScreen);
+          NavigationUtil.popAllAndPush(context, RouteConstants.chatScreen);
         } else if (state is LoginFailureState) {
           LoadingDialog.hideLoadingDialog(context);
         } else if (state is LoginCancleState) {
