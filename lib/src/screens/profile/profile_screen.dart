@@ -43,12 +43,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: ColorConstants.greenMain,
-          title:
-              Text(widget.isEdit == true ? 'Edit Profile' : ' Complete Profile',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  )),
+          title: Text(
+              widget.isEdit == true ? 'Update Profile' : ' Complete Profile',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              )),
           centerTitle: true,
           leading: IconButton(
             onPressed: () => NavigationUtil.pop(context),
@@ -112,11 +112,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(
                   height: 30,
                 ),
+                const Text(
+                  'Phone Number',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
                 if (widget.isEdit == true)
                   Text(
-                    'Phone Number :  ${widget.isEdit == true ? FirebaseUtils.user?.phoneNumber : widget.phoneNumber}',
+                    '${widget.isEdit == true ? FirebaseUtils.user?.phoneNumber : widget.phoneNumber}',
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                      fontSize: 15,
+                    ),
                   ),
                 const SizedBox(
                   height: 30,
@@ -150,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 20,
                 ),
                 CustomButton(
-                    buttonText: widget.isEdit == true ? 'Edit' : ' Complete',
+                    buttonText: widget.isEdit == true ? 'Update' : ' Complete',
                     onPressedFunction: () async {
                       if (nameController.text.isEmpty) {
                         Fluttertoast.showToast(

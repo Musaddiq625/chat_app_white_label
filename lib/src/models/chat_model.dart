@@ -2,6 +2,7 @@ import 'message_model.dart';
 
 class ChatModel {
   String? id;
+  String? updatedAt;
   bool? isGroup;
   List<String>? users;
   GroupData? groupData;
@@ -13,6 +14,7 @@ class ChatModel {
 
   ChatModel(
       {required this.id,
+      required this.updatedAt,
       required this.isGroup,
       required this.users,
       this.groupData,
@@ -25,6 +27,7 @@ class ChatModel {
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
         id: json['id'],
+        updatedAt: json['updated_at'],
         isGroup: json['is_group'],
         users: json['users'] == null ? [] : json['users'].cast<String>(),
         groupData: json['group_data'] != null
@@ -41,6 +44,7 @@ class ChatModel {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
+    data['updated_at'] = updatedAt;
     data['is_group'] = isGroup;
     data['users'] = users;
     if (groupData != null) {

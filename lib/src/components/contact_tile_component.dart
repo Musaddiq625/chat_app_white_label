@@ -12,17 +12,16 @@ class ContactTileComponent extends StatelessWidget {
   final VoidCallback? onCallTapped;
   final VoidCallback? onVideoCallTapped;
   final Function()? onContactTap;
-  final bool? showAdminIcon;
 
-  const ContactTileComponent(
-      {super.key,
-      required this.localName,
-      required this.chatUser,
-      this.onCallTapped,
-      this.onVideoCallTapped,
-      this.isSelected,
-      this.onContactTap,
-      this.showAdminIcon});
+  const ContactTileComponent({
+    super.key,
+    required this.localName,
+    required this.chatUser,
+    this.onCallTapped,
+    this.onVideoCallTapped,
+    this.isSelected,
+    this.onContactTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +90,6 @@ class ContactTileComponent extends StatelessWidget {
                       ),
                     ],
                   )
-                : showAdminIcon != null && (showAdminIcon ?? false)
-                    ? const Icon(Icons.admin_panel_settings,
-                        size: 30, color: ColorConstants.greenMain)
-                    : null);
+                : null);
   }
 }

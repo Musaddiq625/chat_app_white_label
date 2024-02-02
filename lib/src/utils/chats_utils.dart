@@ -31,6 +31,7 @@ class ChatUtils {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChats() {
     return chatsCollection
         .where('users', arrayContains: FirebaseUtils.user?.id)
+        .orderBy('updated_at', descending: true)
         .snapshots();
   }
 
@@ -55,6 +56,7 @@ class ChatUtils {
     await chatsCollection.doc(chatId).set(ChatModel(
         id: '${FirebaseUtils.user?.id}_${chatUser.id ?? ''}',
         isGroup: false,
+        updatedAt: FirebaseUtils.getDateTimeNowAsId(),
         users: [FirebaseUtils.user?.id ?? '', chatUser.id ?? '']).toJson());
 
     await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
@@ -126,6 +128,7 @@ class ChatUtils {
                   //adding last message
                   await chatDoc.update({
                     'last_message': message.toJson(),
+                    'updated_at': sendingTimeAsId
                   })
 
               // )
@@ -169,6 +172,7 @@ class ChatUtils {
     final chatData = ChatModel(
         id: groupChatId,
         isGroup: true,
+        updatedAt: FirebaseUtils.getDateTimeNowAsId(),
         groupData: GroupData(
             id: groupChatId,
             adminId: FirebaseUtils.user?.id,
@@ -204,6 +208,18 @@ class ChatUtils {
         'chats': FieldValue.arrayUnion([groupChatId])
       }, SetOptions(merge: true));
     }
+  }
+
+  static Future<void> removeMemberFromGroupChat(
+    String groupChatId,
+    String contactsToRemove,
+  ) async {
+    await chatsCollection.doc(groupChatId).set({
+      'users': FieldValue.arrayRemove([contactsToRemove])
+    }, SetOptions(merge: true));
+    await FirebaseUtils.usersCollection.doc(contactsToRemove).set({
+      'chats': FieldValue.arrayRemove([groupChatId])
+    }, SetOptions(merge: true));
   }
 
   // for sending group message
@@ -260,11 +276,12 @@ class ChatUtils {
           .set(message.toJson())
           .then((value) async =>
                   //adding last message and adding mesage count
-                  await chatDoc.set({
+                  await chatDoc.update({
                     'message_count': FieldValue.increment(1),
                     'last_message': message.toJson(),
+                    'updated_at': sendingTimeAsId,
                     'last_message_readBy': []
-                  }, SetOptions(merge: true))
+                  })
               // )
               // .then((value) =>
               // sendPushNotification(chatUser, type == Type.text ? msg : 'image')

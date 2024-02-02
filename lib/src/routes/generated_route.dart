@@ -1,5 +1,4 @@
 import 'package:chat_app_white_label/src/models/chat_model.dart';
-import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
