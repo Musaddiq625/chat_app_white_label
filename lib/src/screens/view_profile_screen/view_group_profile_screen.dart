@@ -1,4 +1,3 @@
-import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/user_tile_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -9,15 +8,13 @@ import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_c
 import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
-import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ViewGroupProfileScreen extends StatefulWidget {
-  ChatModel group;
-
-  ViewGroupProfileScreen({super.key, required this.group});
+  final ChatModel group;
+  const ViewGroupProfileScreen({super.key, required this.group});
 
   @override
   State<ViewGroupProfileScreen> createState() => _ViewGroupProfileScreenState();
@@ -26,42 +23,6 @@ class ViewGroupProfileScreen extends StatefulWidget {
 class _ViewGroupProfileScreenState extends State<ViewGroupProfileScreen> {
   late AppSettingCubit appSettingCubit =
       BlocProvider.of<AppSettingCubit>(context);
-  // List<Contact> localContacts = [];
-  // List<ContactModel> contactToDisplay = [];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-  //     localContacts = await ContactsService.getContacts(withThumbnails: false);
-  //   });
-  // }
-
-  // getContactsToDisplay(
-  //     AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-  //   contactToDisplay.clear();
-  //   for (var i = 0; i < localContacts.length; i++) {
-  //     String? localNumber = (localContacts[i].phones ?? [])
-  //         .map((item) => item.value)
-  //         .toList()
-  //         .firstWhere((phone) => phone != null && phone.trim().isNotEmpty,
-  //             orElse: () => null)
-  //         ?.replaceAll(' ', '')
-  //         .replaceAll('+', '');
-  //     if ((localNumber ?? '').startsWith('0')) {
-  //       localNumber = localNumber?.replaceFirst('0', '92');
-  //     }
-  //     bool contactExist = (snapshot.data?.docs ?? []).any((firebaseUser) =>
-  //         firebaseUser.id == localNumber &&
-  //         firebaseUser.id != FirebaseUtils.phoneNumber);
-  //     // .any for filtering in Firebase users
-  //     if (contactExist) {
-  //       contactToDisplay.add(ContactModel(
-  //           localName: localContacts[i].displayName,
-  //           phoneNumber: localNumber ?? ''));
-  //     }
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

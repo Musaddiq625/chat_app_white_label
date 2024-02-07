@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await messegingService.initializeLocalNotifications();
     await messegingService.getNotificationsForground();
     // await messegingService.getNotificationsBackground();
-    await messegingService.requestCameraAndMicPermission();
+    // await messegingService.requestCameraAndMicPermission();
 
     Future.delayed(const Duration(milliseconds: 1500), () async {
       if (userData != null) {

@@ -68,6 +68,34 @@ class ChatUtils {
     }, SetOptions(merge: true));
   }
 
+  static Future<void> sendMultipleMediaMessage(
+      {required UserModel chatUser,
+      required List<MessageModel> messagesList,
+      required List<String> filesPath,
+      MessageType? type}) async {
+    for (String path in filesPath) {
+      MessageType messageType;
+      String? thumbnailPath;
+      if (type == null) {
+        if (path.contains('mp4')) {
+          thumbnailPath = await FirebaseUtils.createThumbnail(path);
+          messageType = MessageType.video;
+        } else {
+          messageType = MessageType.image;
+        }
+      } else {
+        messageType = type;
+      }
+      LoggerUtil.logs('${messageType.name} Path: $path');
+      await ChatUtils.sendMessage(
+          chatUser: chatUser,
+          type: messageType,
+          isFirstMessage: messagesList.isEmpty,
+          filePath: path,
+          thumbnailPath: thumbnailPath);
+    }
+  }
+
   // for sending message
   static Future<void> sendMessage({
     required UserModel chatUser,
@@ -220,6 +248,32 @@ class ChatUtils {
     await FirebaseUtils.usersCollection.doc(contactsToRemove).set({
       'chats': FieldValue.arrayRemove([groupChatId])
     }, SetOptions(merge: true));
+  }
+
+  static Future<void> sendGroupMultipleMediaMessage(
+      {required String groupChatId,
+      required List<String> filesPath,
+      MessageType? type}) async {
+    for (String path in filesPath) {
+      MessageType messageType;
+      String? thumbnailPath;
+      if (type == null) {
+        if (path.contains('mp4')) {
+          thumbnailPath = await FirebaseUtils.createThumbnail(path);
+          messageType = MessageType.video;
+        } else {
+          messageType = MessageType.image;
+        }
+      } else {
+        messageType = type;
+      }
+      LoggerUtil.logs('${messageType.name} Path: $path');
+      await ChatUtils.sendGropuMessage(
+          groupChatId: groupChatId,
+          type: messageType,
+          filePath: path,
+          thumbnailPath: thumbnailPath);
+    }
   }
 
   // for sending group message

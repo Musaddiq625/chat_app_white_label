@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:chat_app_white_label/src/components/chat_input_icon_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
@@ -17,7 +16,6 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../models/usert_model.dart';
 import '../../models/message_model.dart';
 
@@ -158,6 +156,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     physics: const BouncingScrollPhysics(),
                                     itemBuilder: (context, index) {
                                       return MessageCard(
+                                        key: Key('msg_$index'),
                                         message: messagesList[index],
                                         isRead:
                                             messagesList[index].readAt != null,
@@ -252,8 +251,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ChatInputIconComponent(
                       icon: Icons.description_rounded,
                       onTap: () async {
+                        // Picking multiple documents
                         FilePickerResult? result =
                             await FilePicker.platform.pickFiles(
+                          allowMultiple: true,
                           type: FileType.custom,
                           allowedExtensions: [
                             'doc',
@@ -263,18 +264,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
                         if (result != null) {
                           // uploading & sending document one by one
-                          for (var i in result.files) {
-                            log('Document Path: ${i.path}');
-                            setState(() => _isUploading = true);
-
-                            await ChatUtils.sendMessage(
+                          setState(() => _isUploading = true);
+                          await ChatUtils.sendMultipleMediaMessage(
                               chatUser: widget.chatUser,
-                              type: MessageType.document,
-                              isFirstMessage: messagesList.isEmpty,
-                              filePath: i.path,
-                            );
-                            setState(() => _isUploading = false);
-                          }
+                              messagesList: messagesList,
+                              filesPath: result.files
+                                  .map((e) => e.path ?? '')
+                                  .toList(),
+                              type: MessageType.document);
+                          setState(() => _isUploading = false);
                         }
                       }),
 
@@ -282,22 +280,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ChatInputIconComponent(
                       icon: Icons.image,
                       onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-
-                        // Picking multiple images
-                        final List<XFile> images =
-                            await picker.pickMultiImage();
-
-                        // uploading & sending image one by one
-                        for (var i in images) {
-                          log('Image Path: ${i.path}');
+                        // Picking multiple images/videos
+                        FilePickerResult? result =
+                            await FilePicker.platform.pickFiles(
+                          allowMultiple: true,
+                          type: FileType.media,
+                        );
+                        if (result != null) {
+                          // uploading & sending image/videos one by one
                           setState(() => _isUploading = true);
-
-                          await ChatUtils.sendMessage(
+                          await ChatUtils.sendMultipleMediaMessage(
                               chatUser: widget.chatUser,
-                              type: MessageType.image,
-                              isFirstMessage: messagesList.isEmpty,
-                              filePath: i.path);
+                              messagesList: messagesList,
+                              filesPath: result.files
+                                  .map((e) => e.path ?? '')
+                                  .toList());
                           setState(() => _isUploading = false);
                         }
                       }),

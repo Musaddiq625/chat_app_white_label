@@ -14,7 +14,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class FirebaseUtils {
   static FirebaseService firebaseService = getIt<FirebaseService>();
@@ -55,21 +57,6 @@ class FirebaseUtils {
               false,
           orElse: () => Contact(),
         );
-
-    // for (var contact in context.read<AppSettingCubit>().localContacts) {
-    //   if (contact.phones != null) {
-    //     for (Item phone in contact.phones ?? []) {
-    //       if (formatPhoneNumber(phone.value ?? '') == phoneNumber) {
-    //         LoggerUtil.logs('phone ${formatPhoneNumber(phone.value ?? '')}');
-    //         matchedContact = contact;
-    //         break;
-    //       }
-    //     }
-    //   }
-    //   if (matchedContact != null) {
-    //     break;
-    //   }
-    // }
 
     return matchedContact.displayName ?? '+$phoneNumber';
   }
@@ -191,6 +178,20 @@ class FirebaseUtils {
     }
   }
 
+  static Future<String?> createThumbnail(String videoFilepath) async {
+    try {
+      final thumbnailPath = await VideoThumbnail.thumbnailFile(
+        video: videoFilepath, imageFormat: ImageFormat.JPEG,
+        // thumbnailPath: (await getTemporaryDirectory()).path,
+        quality: 25,
+      );
+      return thumbnailPath;
+    } catch (e) {
+      LoggerUtil.logs(e);
+      return null;
+    }
+  }
+
   static Future<String?> uploadMedia(
     String filePath,
     MediaType uploadType, [
@@ -261,7 +262,7 @@ class FirebaseUtils {
 
       final mediaUrl = await ref.getDownloadURL();
 
-      LoggerUtil.logs("downloadURL $mediaUrl");
+      LoggerUtil.logs("DownloadURL $mediaUrl");
 
       return mediaUrl;
     } catch (error) {

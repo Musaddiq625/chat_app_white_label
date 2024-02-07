@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:chat_app_white_label/src/components/chat_input_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
@@ -15,9 +14,9 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../models/message_model.dart';
 
+// ignore: must_be_immutable
 class GroupChatRoomScreen extends StatefulWidget {
   ChatModel groupChat;
   GroupChatRoomScreen({super.key, required this.groupChat});
@@ -189,6 +188,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
         },
         onDocumentSelection: () async {
           FilePickerResult? result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
             type: FileType.custom,
             allowedExtensions: [
               'doc',
@@ -198,34 +198,27 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
           if (result != null) {
             // uploading & sending document one by one
-            for (var i in result.files) {
-              log('Document Path: ${i.path}');
-              setState(() => _isUploading = true);
-
-              await ChatUtils.sendGropuMessage(
+            setState(() => _isUploading = true);
+            await ChatUtils.sendGroupMultipleMediaMessage(
                 groupChatId: widget.groupChat.id ?? '',
-                type: MessageType.document,
-                filePath: i.path,
-              );
-              setState(() => _isUploading = false);
-            }
+                filesPath: result.files.map((e) => e.path ?? '').toList(),
+                type: MessageType.document);
+            setState(() => _isUploading = false);
           }
         },
         onImageSelection: () async {
-          final ImagePicker picker = ImagePicker();
-
-          // Picking multiple images
-          final List<XFile> images = await picker.pickMultiImage();
-
-          // uploading & sending image one by one
-          for (var i in images) {
-            log('Image Path: ${i.path}');
+          // Picking multiple images/videos
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
+            type: FileType.media,
+            // allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'avi'],
+          );
+          if (result != null) {
+            // uploading & sending image/videos one by one
             setState(() => _isUploading = true);
-
-            await ChatUtils.sendGropuMessage(
+            await ChatUtils.sendGroupMultipleMediaMessage(
                 groupChatId: widget.groupChat.id ?? '',
-                type: MessageType.image,
-                filePath: i.path);
+                filesPath: result.files.map((e) => e.path ?? '').toList());
             setState(() => _isUploading = false);
           }
         },
