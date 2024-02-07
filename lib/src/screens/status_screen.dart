@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/StoryModel.dart';
+import '../utils/firebase_utils.dart';
 
 class StatusScreen extends StatefulWidget {
   const StatusScreen({Key? key}) : super(key: key);
@@ -235,9 +236,9 @@ class _StatusScreenState extends State<StatusScreen>
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ListTile(
-                  leading: const Stack(
+                  leading:  Stack(
                     children: [
-                      if(FirebaseUtils.user!.image == null)
+                      if(FirebaseUtils.user?.image == null)
                       CircleAvatar(
                         radius: 25,
                         backgroundImage: AssetImage(
@@ -353,10 +354,10 @@ class _StatusScreenState extends State<StatusScreen>
     );
   }
 
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 }
