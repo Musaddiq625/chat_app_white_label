@@ -3,7 +3,7 @@ import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/chat_room_screen.dart';
-import 'package:chat_app_white_label/src/screens/chat_screen.dart';
+import 'package:chat_app_white_label/src/screens/home_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/group_chat_room.dart';
@@ -24,8 +24,8 @@ Route generateRoute(RouteSettings settings) {
   materialRoute(Widget widget) =>
       MaterialPageRoute(builder: (context) => widget);
   switch (settings.name) {
-    case RouteConstants.chatScreen:
-      return materialRoute(const ChatScreen());
+    case RouteConstants.homeScreen:
+      return materialRoute(const HomeScreen());
 
     case RouteConstants.chatRoomScreen:
       final arg = settings.arguments as List;

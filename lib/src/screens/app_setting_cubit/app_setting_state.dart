@@ -6,3 +6,5 @@ sealed class AppSettingState {}
 final class AppSettingInitial extends AppSettingState {}
 
 final class SetFlavorState extends AppSettingState {}
+
+final class ContactsPermissionGranted extends AppSettingState {}

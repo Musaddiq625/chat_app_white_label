@@ -101,7 +101,7 @@ class _SelectContactsScreenState extends State<SelectContactsScreen> {
                 widget.selectContactsScreenArg.groupChatId ?? "",
                 widget.selectContactsScreenArg.selectedContacts ?? [],
               );
-              NavigationUtil.popAllAndPush(context, RouteConstants.chatScreen);
+              NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
             }
           } else {
             ToastComponent.showToast('Please select atleast one contact',
