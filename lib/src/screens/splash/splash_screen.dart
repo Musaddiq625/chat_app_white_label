@@ -19,15 +19,13 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   late AppSettingCubit appSettingCubit =
       BlocProvider.of<AppSettingCubit>(context);
-  FirebaseService firebaseService = getIt<FirebaseService>();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getFlavorName();
       appSettingCubit.initCamera();
-      await firebaseService.requestContactsPermission();
-      appSettingCubit.initGetLocalContacts();
+
       _navigateToNext();
     });
     super.initState();
@@ -54,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(milliseconds: 1500), () async {
       if (userData != null) {
         if (userData.isProfileComplete == true) {
-          NavigationUtil.popAllAndPush(context, RouteConstants.chatScreen);
+          NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
         } else {
           NavigationUtil.popAllAndPush(context, RouteConstants.profileScreen,
               args: userData.id);

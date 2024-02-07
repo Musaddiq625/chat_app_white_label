@@ -184,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ? FirebaseUtils.user?.phoneNumber ?? ''
                                     : widget.phoneNumber ?? '')
                             .then((value) => NavigationUtil.popAllAndPush(
-                                context, RouteConstants.chatScreen));
+                                context, RouteConstants.homeScreen));
                       } catch (error) {
                         LoggerUtil.logs(
                             "Errors $error"); // You might want to display a general error message to the user

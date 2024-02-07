@@ -80,7 +80,7 @@ class _OTPScreenState extends State<OTPScreen> {
         }
         else if (state is OTPSuccessOldUserState) {
 
-          NavigationUtil.popAllAndPush(context, RouteConstants.chatScreen);
+          NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
         } else if (state is OTPFailureState) {
           LoadingDialog.hideLoadingDialog(context);
           // ToastComponent.showToast(state.error.toString(), context: context);

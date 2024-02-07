@@ -2,31 +2,25 @@ import 'dart:io';
 
 import 'package:chat_app_white_label/src/components/status_tiles_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/status_generate_screen.dart';
-import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
-import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../main.dart';
-import '../components/StatusCard.dart';
 import '../models/StoryModel.dart';
-import '../models/story_model.dart';
 
 class StatusScreen extends StatefulWidget {
   const StatusScreen({Key? key}) : super(key: key);
 
   @override
-  _StatusScreenState createState() => _StatusScreenState();
+  State<StatusScreen> createState() => _StatusScreenState();
 }
 
-class _StatusScreenState extends State<StatusScreen> {
+class _StatusScreenState extends State<StatusScreen>
+    with AutomaticKeepAliveClientMixin {
   // Move the methods and variables that need to maintain state here
 
-  List<StoryModel> _list = [];
   List<StoryModel> stories = [];
   @override
   void initState() {
@@ -70,7 +64,6 @@ class _StatusScreenState extends State<StatusScreen> {
 
     // Initialize an empty list to store the stories
 
-
     // Loop through each document in the collection
     for (var doc in querySnapshot.docs) {
       // Convert the document snapshot to a StoryModel object
@@ -87,7 +80,10 @@ class _StatusScreenState extends State<StatusScreen> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     // Future<void> pickImage(ImageSource source) async {
     //   final ImagePicker _picker = ImagePicker();
     //   final XFile? image = await _picker.pickImage(source: source);
@@ -232,140 +228,14 @@ class _StatusScreenState extends State<StatusScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: ColorConstants.greenMain,
-        title: const Text(
-          'WhatsApp',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.search,
-              size: 28,
-            ),
-            color: ColorConstants.white,
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.more_vert_rounded,
-              size: 28,
-            ),
-            color: ColorConstants.white,
-          ),
-        ],
-        bottom: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: ColorConstants.greenMain,
-          leading: Container(
-            child: Icon(
-              Icons.group,
-              color: Colors.white.withOpacity(0.5),
-              size: 28,
-            ),
-          ),
-          actions: [
-            Container(
-              width: 80,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.transparent, width: 5),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: GestureDetector(
-                      onTap: () {
-                        NavigationUtil.push(context, RouteConstants.chatScreen);
-                      },
-                      child: Text(
-                        'Chats',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              width: 115,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.white, width: 5),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: const Text(
-                        'Status',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              width: 115,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.transparent, width: 5),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: GestureDetector(
-                      onTap: () {
-                        NavigationUtil.push(context, RouteConstants.callScreen);
-                      },
-                      child: Text(
-                        'Calls',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
       body: Stack(
         children: [
           Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 8.0),
+                padding: const EdgeInsets.only(top: 8.0),
                 child: ListTile(
-                  leading: Stack(
+                  leading: const Stack(
                     children: [
                       if(FirebaseUtils.user!.image == null)
                       CircleAvatar(
@@ -396,11 +266,11 @@ class _StatusScreenState extends State<StatusScreen> {
                       ),
                     ],
                   ),
-                  title: Text(
+                  title: const Text(
                     'My Status',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
-                  subtitle: Text(
+                  subtitle: const Text(
                     'tap to add status update',
                     style: TextStyle(
                       color: Colors.grey,
@@ -476,6 +346,12 @@ class _StatusScreenState extends State<StatusScreen> {
               //   statusNum: 3,
               //   imageName: stories[0].image,
               // ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
             ],
           ),
