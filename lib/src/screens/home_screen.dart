@@ -7,6 +7,7 @@ import 'package:chat_app_white_label/src/screens/status_screen.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/permission_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen>
     tabController = TabController(vsync: this, length: 3);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await appSettingCubit.initGetLocalContacts(context);
+      PermissionUtils.requestCameraAndMicPermission();
     });
     SystemChannels.lifecycle.setMessageHandler((message) async {
       LoggerUtil.logs('message $message');
@@ -102,9 +104,9 @@ class _HomeScreenState extends State<HomeScreen>
             indicatorWeight: 3,
             controller: tabController,
             tabs: const [
-              Tab(text: "Chats"),
-              Tab(text: "Status"),
-              Tab(text: "Calls"),
+              Tab(text: "CHATS"),
+              Tab(text: "STATUS"),
+              Tab(text: "CALLS"),
             ],
           )),
       body: TabBarView(

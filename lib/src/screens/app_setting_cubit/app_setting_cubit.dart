@@ -84,8 +84,6 @@ class AppSettingCubit extends Cubit<AppSettingState> {
       }
       isContactactsPermissionGranted = true;
       emit(ContactsPermissionGranted());
-      LoggerUtil.logs(
-          'isContactactsPermissionGranted $isContactactsPermissionGranted');
     }
   }
 }
