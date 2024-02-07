@@ -1,18 +1,24 @@
 import 'dart:async';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
+import '../constants/firebase_constants.dart';
 
 // class AgoraCalling extends StatefulWidget with WidgetsBindingObserver {
   class AgoraCalling extends StatefulWidget {
-  const AgoraCalling({Key? key, required this.recipientUid, this.callerName, this.callerNumber}) : super(key: key);
+  const AgoraCalling({Key? key, required this.recipientUid, this.callerName, this.callerNumber,this.callId}) : super(key: key);
   final int recipientUid;
   final String? callerName;
   final String? callerNumber;
+  final String? callId;
 
   @override
   State<AgoraCalling> createState() => _AgoraCallingState();
@@ -244,11 +250,37 @@ class _AgoraCallingState extends State<AgoraCalling> {
   late RtcEngine _engine;
   bool muted = false;
   bool speaker = false;
+  DateTime? _callStartTime;
+  Timer? _timer;
+  late Duration callDuration;
+  StreamSubscription<DocumentSnapshot>? _callStatusSubscription;
+
 
   @override
   void initState() {
     super.initState();
     initAgora();
+    _callStartTime = DateTime.now(); // Record the start time of the call
+    // _timer = Timer.periodic(Duration(seconds:  1), (Timer t)  {
+    //    callDuration = DateTime.now().difference(_callStartTime!);
+    // });
+    _listenForCallStatusChanges();
+  }
+
+
+  void _listenForCallStatusChanges() {
+    _callStatusSubscription = FirebaseUtils.firebaseService.firestore
+        .collection(FirebaseConstants.calls)
+        .doc(widget.callId!)
+        .snapshots()
+        .listen((DocumentSnapshot snapshot) {
+      if (snapshot.exists && snapshot['is_call_active'] == false) {
+        if (mounted) {
+          _callStatusSubscription?.cancel();// Check if the widget is still mounted
+          _dispose();
+        } // Leave the channel if is_call_active is false
+      }
+    });
   }
 
   Future<void> initAgora() async {
@@ -272,7 +304,6 @@ class _AgoraCallingState extends State<AgoraCalling> {
             _localUserJoined = true;
           });
         },
-
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           debugPrint("remote user $remoteUid joined");
           setState(() {
@@ -346,10 +377,20 @@ class _AgoraCallingState extends State<AgoraCalling> {
     //   streamId: widget.recipientUid,
     //   data: Uint8List.fromList('callEnded'.codeUnits),
     //   length: 0,
-    // );
-    await _engine.leaveChannel();
-    await _engine.release();
-    NavigationUtil.pop(context);
+    //
+
+    Duration duration = DateTime.now().difference(_callStartTime!);
+    String formattedDuration = "${duration.inMinutes}:${duration.inSeconds %  60}";
+    await FirebaseUtils.updateCallsDuration(formattedDuration,false,widget.callId!,FirebaseUtils.getDateTimeNowAsId());
+    // await FirebaseUtils.firebaseService.flutterLocalNotificationsPlugin.cancel(int.parse(widget.callerNumber!));
+
+
+    if(mounted){
+      await _engine.leaveChannel();
+      await _engine.release();
+      NavigationUtil.pop(context);
+    }
+
   }
 
   // Create UI with local view and remote view

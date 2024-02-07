@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:video_player/video_player.dart';
 
 import '../constants/color_constants.dart';
 
@@ -23,7 +24,10 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
   final TextEditingController _commentController = TextEditingController();
   late List<TextEditingController> _captionControllers;
   late LoadingDialog _customLoadingDialog;
+  Map<String, VideoPlayerController> _videoPlayers = {};
   bool _isUploading = false;
+  late VideoPlayerController _controller;
+  late Map<String, Duration> _videoPositions = {};
 
   @override
   void initState() {
@@ -32,15 +36,28 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
       widget.imageFiles.length,
           (index) => TextEditingController(),
     );
+    for (final file in widget.imageFiles) {
+      if (!isImage(file)) {
+        _videoPlayers[file.path] = _initializeVideoPlayer(file);
+      }
+    }
     // _customLoadingDialog = LoadingDialog(context);
   }
 
+
+  @override
+  void dispose() {
+    // Dispose all video players when the widget is disposed
+    _videoPlayers.values.forEach((player) => player.dispose());
+    super.dispose();
+  }
 
   Future<void> _uploadImages() async {
     setState(() {
       _isUploading = true;
     });
 
+    print("widget.imageFiles ${widget.imageFiles.length}");
     LoadingDialog.showLoadingDialog(context);
     // for (var imageFile in widget.imageFiles)
     for (int index = 0; index < widget.imageFiles.length; index++){
@@ -54,12 +71,16 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
         String caption = _captionControllers[index].text.trim();
         final snapshot = await uploadTask.whenComplete(() => {});
         final imageUrl = await snapshot.ref.getDownloadURL();
+        print("imageUrl - ${imageUrl}");
+        print("snapshot - ${snapshot}");
+        print("caption - ${caption}");
         // imageUrls.add(imageUrl);
         FirebaseFirestore.instance.collection('images').add({
           'urls': imageUrl,
           'comment': caption,
           'timestamp': FieldValue.serverTimestamp(),
         });
+
 
         // Assuming _uploadStoryData now takes a list of image URLs
         await _uploadStoryData(context, imageUrl, caption);
@@ -139,6 +160,45 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
     });
   }
 
+
+
+  VideoPlayerController _initializeVideoPlayer(File file) {
+    VideoPlayerController controller = VideoPlayerController.file(file);
+    controller.initialize().then((_) {
+      // Ensure the first frame is shown after the video is initialized
+      controller.setLooping(true); // Set looping to true so the video continues to play
+      // controller.play(); // Play the video
+    });
+    return controller;
+  }
+
+  bool isImage(File file) {
+    return file.path.endsWith('.jpg') || file.path.endsWith('.jpeg') || file.path.endsWith('.png');
+  }
+
+  void _playVideo(String videoPath) async{
+    // if (_videoPlayers[videoPath] != null && !_videoPlayers[videoPath]!.value.isPlaying) {
+    //   _videoPlayers[videoPath]!.play();
+    // }
+    if (_videoPlayers.containsKey(videoPath)) {
+      // Check if there is a stored position for this video
+      if (_videoPositions.containsKey(videoPath)) {
+        _videoPlayers[videoPath]!.seekTo(_videoPositions[videoPath]!);
+      }
+      await _videoPlayers[videoPath]!.play();
+
+      setState(() {});
+    }
+  }
+
+  void _pauseVideo(String videoPath) async{
+    if (_videoPlayers[videoPath] != null && _videoPlayers[videoPath]!.value.isPlaying) {
+      _videoPositions[videoPath] = _videoPlayers[videoPath]!.value.position; // Store current position
+     await _videoPlayers[videoPath]!.pause();
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,13 +243,56 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
           PageView.builder(
             itemCount: widget.imageFiles.length,
             itemBuilder: (context, index) {
-              return Column(
+              final file = widget.imageFiles[index];
+              String type=  widget.imageFiles[index].toString();
+              bool isImageFile = isImage(file);
+              if (!isImageFile && !_videoPlayers.containsKey(file.path)) {
+                _videoPlayers[file.path] = _initializeVideoPlayer(file);
+              }
+               return Column(
                 children: [
                   Expanded(
-                    child: Image.file(
-                      widget.imageFiles[index],
+                    child: isImageFile
+                        ? Image.file(
+                      file,
                       fit: BoxFit.cover,
+                    )
+                        : FutureBuilder(
+                      future: _videoPlayers[file.path]!.initialize(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return AspectRatio(
+                            aspectRatio: _videoPlayers[file.path]!.value.aspectRatio,
+                            child: Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                VideoPlayer(_videoPlayers[file.path]!),
+                                VideoProgressIndicator(_videoPlayers[file.path]!, allowScrubbing: true),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
                     ),
+                  ),
+                  if(type.contains('mp4'))
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(_videoPlayers[file.path]!.value.isPlaying ? Icons.pause : Icons.play_arrow),
+                        onPressed: () {
+                          if (_videoPlayers[file.path]!.value.isPlaying) {
+                            _pauseVideo(file.path);
+                          } else {
+                            _playVideo(file.path);
+                          }
+                        },
+                      ),
+                      // Add any other buttons or controls you need here
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),

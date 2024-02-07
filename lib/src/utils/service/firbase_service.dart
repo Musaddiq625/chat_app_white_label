@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_app_white_label/agora_video_calling.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../main.dart';
+import '../../constants/firebase_constants.dart';
 import '../../models/usert_model.dart';
 import '../../screens/agora_calling.dart';
 import '../firebase_utils.dart';
@@ -23,7 +26,10 @@ class FirebaseService {
   final FirebaseMessaging messaging = FirebaseMessaging.instance;
   String _currentUuid = '';
   String _callType = '';
+  String _callId = "";
+  String _callerNumber = "";
   var uuid = const Uuid();
+  StreamSubscription<DocumentSnapshot>? _callStatusSubscription;
 
   String? callerName;
   String? callerPhoneNumber;
@@ -42,6 +48,28 @@ class FirebaseService {
       await Permission.contacts.request();
     }
   }
+
+  void _listenForCallStatusChanges(String callId, int callnumber) {
+    _callStatusSubscription = FirebaseUtils.firebaseService.firestore
+        .collection(FirebaseConstants.calls)
+        .doc(callId)
+        .snapshots()
+        .listen((DocumentSnapshot snapshot) {
+          try {
+            if (snapshot.exists && snapshot['is_call_active'] == false) {
+              _callStatusSubscription
+                  ?.cancel(); // Check if the widget is still mounted
+              FirebaseUtils.firebaseService.flutterLocalNotificationsPlugin
+                  .cancel(0); // Leave the channel if is_call_active is false
+              // Leave the channel if is_call_active is false
+            }
+          }
+          catch(e){
+            print("error $e");
+          }
+    });
+  }
+
 
   Future<List<Contact>> getLocalContacts() async {
     List<Contact> contacts =
@@ -83,7 +111,8 @@ class FirebaseService {
     // FirebaseMessaging.onBackgroundMessage(getflutterCallKitIncoming);
   }
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  final FlutterLocalNotificationsPlugin
+  flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   Future<void> initializeLocalNotifications() async {
@@ -116,19 +145,25 @@ class FirebaseService {
     if (payload.actionId == "accept_action") {
       print('Call accepted. Payload: $payload');
       if (_callType == "call") {
+        FirebaseUtils.updateCallsOnReceiveOrReject(true ,_callId);
         navigatorKey.currentState!.push(MaterialPageRoute(
             builder: (context) => AgoraCalling(
                 recipientUid: int.parse(callerPhoneNumber!),
                 callerName: callerName,
-                callerNumber: callerPhoneNumber)));
+                callerNumber: callerPhoneNumber,
+                callId : _callId)));
       } else if (_callType == "video_call") {
+        FirebaseUtils.updateCallsOnReceiveOrReject(true ,_callId);
         navigatorKey.currentState!.push(MaterialPageRoute(
             builder: (context) => AgoraVideoCalling(
                 recipientUid: int.parse(callerPhoneNumber!),
                 callerName: callerName,
-                callerNumber: callerPhoneNumber)));
+                callerNumber: callerPhoneNumber,
+              callId : _callId
+            )));
       }
     } else if (payload.actionId == "reject_action") {
+      FirebaseUtils.updateCallsOnReceiveOrReject(false ,_callId);
       print('Call rejected. Payload: $payload');
     }
   }
@@ -148,6 +183,9 @@ class FirebaseService {
       // print('Received notification body : ${message.notification?.body}');
       // print('Received notification type : ${message.data["messageType"]}');
       _callType = message.data["messageType"];
+      _callId = message.data["callId"];
+      _callerNumber = message.data["callerNumber"];
+      _listenForCallStatusChanges(_callId,int.parse(_callerNumber));
       if (message.notification != null) {
         if (message.data["messageType"] == "call") {
           String? phoneNumber = message.data["callerNumber"];
@@ -184,7 +222,8 @@ class FirebaseService {
               payload: 'incoming_call',
             );
           }
-        } else if (message.data["messageType"] == "video_call") {
+        }
+        else if (message.data["messageType"] == "video_call") {
           String? phoneNumber = message.data["callerNumber"];
           callerPhoneNumber = message.data["callerNumber"];
           callerName = message.data["callerName"];

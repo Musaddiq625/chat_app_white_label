@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:chat_app_white_label/main.dart';
@@ -26,6 +27,9 @@ class FirebaseUtils {
 
   static CollectionReference<Map<String, dynamic>> get usersCollection =>
       firebaseService.firestore.collection(FirebaseConstants.users);
+
+  static CollectionReference<Map<String, dynamic>> get callsCollection =>
+      firebaseService.firestore.collection(FirebaseConstants.calls);
 
   static CollectionReference<Map<String, dynamic>> get storyCollection =>
       firebaseService.firestore.collection(FirebaseConstants.story);
@@ -92,6 +96,54 @@ class FirebaseUtils {
     LoggerUtil.logs('Created User');
   }
 
+  static Future<void> createCalls(String callId,String callerNumber , String receiverNumber, String type) async {
+
+    await callsCollection.doc(callId).set({
+      'id': callId,
+      'caller_number': callerNumber,
+      'receiver_number': receiverNumber,
+      'time': getDateTimeNowAsId(),
+      'type': type,
+      'users': [callerNumber.replaceAll("+", ""), receiverNumber.replaceAll("+", "")]
+    });
+    LoggerUtil.logs('Created Call');
+  }
+
+  static Future<void> updateCallsOnReceiveOrReject(bool isCallActive, String callId)async{
+    await firebaseService.firestore
+        .collection(FirebaseConstants.calls).doc(callId)
+        .set({
+      'is_call_active': isCallActive,
+    },SetOptions(merge: true));
+  }
+
+  static Future<void> updateCallsDuration(String duration, bool isCallActive , String callId, String endTime )async{
+    await firebaseService.firestore
+        .collection(FirebaseConstants.calls).doc(callId)
+        .set({
+      'is_call_active': isCallActive,
+      'duration': duration,
+      'end_time':endTime
+    },SetOptions(merge: true));
+  }
+
+  static Future<void> updateUserCallList(String phoneNumber,String callId)async{
+    await firebaseService.firestore
+        .collection(FirebaseConstants.users)
+        .doc(phoneNumber.replaceAll('+', ''))
+        .set({
+      'calls': FieldValue.arrayUnion([callId])
+    },SetOptions(merge: true));
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllCalls() {
+    return callsCollection
+        .where('users', arrayContains: FirebaseUtils.user?.id)
+        .orderBy('end_time', descending: true)
+        .snapshots();
+  }
+
+
   static Future<void> updateUser(
       String name, String about, String? imageUrl, String phoneNumber) async {
     await firebaseService.firestore
@@ -142,6 +194,11 @@ class FirebaseUtils {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getStoryUser() {
     return storyCollection.snapshots();
   }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getCallsUser() {
+    return storyCollection.snapshots();
+  }
+
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getStories() {
     return storiesCollection.snapshots();

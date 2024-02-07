@@ -237,9 +237,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   //   print(
                                   //       'Failed to send notification ${response.statusCode}');
                                   // }
-
+                                  final callId = "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
                                   Map<String, dynamic> data = {
                                     "messageType": "call",
+                                    "callId":callId,
                                     "callerName": senderName,
                                     "callerNumber": senderContactNumber,
                                   };
@@ -249,6 +250,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                       'New Call Request',
                                       'You have a new call request',
                                       data);
+                                  await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUser.phoneNumber!,"call" );
+                                  await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
+                                  await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -259,7 +263,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                             callerName:
                                                 firebaseContactUser.name,
                                             callerNumber: firebaseContactUser
-                                                .phoneNumber)),
+                                                .phoneNumber,
+                                          callId:callId,
+                                        )),
                                   );
                                 },
                                 onVideoCallTapped: () async {
@@ -268,9 +274,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   String? senderName = FirebaseUtils.user?.name;
                                   String? senderContactNumber =
                                       FirebaseUtils.user?.phoneNumber;
-
+                                  final callId = senderContactNumber! + "_" + firebaseContactUser.phoneNumber!.replaceAll('+', "");
                                   Map<String, dynamic> data = {
                                     "messageType": "video_call",
+                                    "callId":callId,
                                     "callerName": senderName,
                                     "callerNumber": senderContactNumber,
                                   };
@@ -280,6 +287,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                       'Video Call Request',
                                       'You have a new Video call request',
                                       data);
+
+                                  await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUser.phoneNumber!,"video_call" );
+                                  await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
+                                  await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
                                   await Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -290,7 +301,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                             callerName:
                                                 firebaseContactUser.name,
                                             callerNumber: firebaseContactUser
-                                                .phoneNumber)),
+                                                .phoneNumber,
+                                        callId: callId,
+                                        )),
                                   );
                                 },
                               );
