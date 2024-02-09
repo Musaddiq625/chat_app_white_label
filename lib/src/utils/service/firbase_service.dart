@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chat_app_white_label/agora_video_calling.dart';
+import 'package:chat_app_white_label/src/screens/agora_group_calling.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -17,6 +18,7 @@ import '../../../main.dart';
 import '../../constants/firebase_constants.dart';
 import '../../models/usert_model.dart';
 import '../../screens/agora_calling.dart';
+import '../../screens/agora_group_video_calling.dart';
 import '../firebase_utils.dart';
 
 class FirebaseService {
@@ -150,6 +152,15 @@ class FirebaseService {
                 callerNumber: callerPhoneNumber,
               callId : _callId
             )));
+      }else if (_callType == "group_call") {
+        FirebaseUtils.updateCallsOnReceiveOrReject(true ,_callId);
+        navigatorKey.currentState!.push(MaterialPageRoute(
+            builder: (context) => AgoraGroupVideoCalling(
+                recipientUid: int.parse(callerPhoneNumber!),
+                callerName: callerName,
+                callerNumber: callerPhoneNumber,
+                callId : _callId
+            )));
       }
     } else if (payload.actionId == "reject_action") {
       FirebaseUtils.updateCallsOnReceiveOrReject(false ,_callId);
@@ -158,19 +169,10 @@ class FirebaseService {
   }
 
   Future<void> getNotificationsForground() async {
-    // final alarmManager = AndroidAlarmManager.instance;
-    // final ringtoneUri = await alarmManager.getAlarmUri(AlarmType.ringtone);
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      // print('Got a message whilst in the foreground!');
-      // print('Message data: ${message.data}');
-      // print('Message from: ${message.from}');
-      // print('Message senderId: ${message.senderId}');
-      // print('Message category: ${message.category}');
-      // print('Received notification title : ${message.notification?.title}');
-      // print('Received notification body : ${message.notification?.body}');
-      // print('Received notification type : ${message.data["messageType"]}');
+
       _callType = message.data["messageType"];
       _callId = message.data["callId"];
       _callerNumber = message.data["callerNumber"];
@@ -246,6 +248,45 @@ class FirebaseService {
               0,
               'Incoming Video Call',
               'You have a new call from $callerName',
+              platformChannelSpecifics,
+              payload: 'incoming_call',
+            );
+          }
+        }
+        else if (message.data["messageType"] == "group_call") {
+          String? phoneNumber = message.data["callerNumber"];
+          callerPhoneNumber = message.data["callerNumber"];
+          callerName = message.data["callerName"];
+          if (phoneNumber != null) {
+            // await initializeLocalNotifications();
+            const AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails(
+              'test',
+              'Incoming Group Call',
+              importance: Importance.max,
+              priority: Priority.high,
+              showWhen: false,
+              enableLights: true,
+              enableVibration: true,
+              // playSound: true,
+              ongoing: true,
+              audioAttributesUsage: AudioAttributesUsage.alarm,
+              actions: <AndroidNotificationAction>[
+                AndroidNotificationAction('accept_action', 'Accept',
+                    showsUserInterface: true),
+                AndroidNotificationAction(
+                  'reject_action',
+                  'Reject',
+                  showsUserInterface: true,
+                ),
+              ],
+            );
+            const NotificationDetails platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+            await flutterLocalNotificationsPlugin.show(
+              0,
+              'Incoming Group Call',
+              'You have a new group call from $callerName',
               platformChannelSpecifics,
               payload: 'incoming_call',
             );

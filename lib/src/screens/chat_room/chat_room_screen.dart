@@ -388,7 +388,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //user name
-                      Text(widget.chatUser.name ?? '',
+                      Text(widget.chatUser.name  ?? '',
                           style: const TextStyle(
                               fontSize: 16,
                               color: Colors.black87,

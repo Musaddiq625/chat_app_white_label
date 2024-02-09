@@ -20,7 +20,7 @@ final getIt = GetIt.I;
 late Size mq;
 
 const appId = "62b3eb641dbd4ca7a203c41ce90dbca2";
-const token = "007eJxTYBD5tV0j7Nd7f7UfFidUtOTk7eoqJt5+cUZs6SxNnu+FmWIKDGZGScapSWYmhilJKSbJieaJRgbGySaGyamWBilJyYlGp6MOpzYEMjK435rCyMgAgSA+C0NJanEJAwMARoEf/A==";
+const token = "007eJxTYFh2JWvK3q4DdTf1mXd/Xm3zIu7YUV17QYUVxSdt70/d2yGqwGBmlGScmmRmYpiSlGKSnGieaGRgnGximJxqaZCSlJxo5HPkaGpDICPDpLZtDIxQCOKzMJSkFpcwMAAA9/ciEg==";
 const channel = "test";
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
