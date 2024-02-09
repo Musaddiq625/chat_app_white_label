@@ -106,7 +106,8 @@ class _ViewGroupProfileScreenState extends State<ViewGroupProfileScreen> {
                         itemBuilder: (context, index) {
                           return FutureBuilder(
                               future: FirebaseUtils.getChatUser(
-                                  (widget.group.users ?? [])[index]),
+                                  (widget.group.users
+                                      ?? [])[index]),
                               builder: (context, asyncSnapshot) {
                                 UserModel firebaseContactUser =
                                     UserModel.fromJson(

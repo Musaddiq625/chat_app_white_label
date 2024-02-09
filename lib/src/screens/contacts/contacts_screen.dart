@@ -33,6 +33,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
   FirebaseService firebaseService = getIt<FirebaseService>();
   List<Contact> localContacts = [];
   List<ContactModel> contactToDisplay = [];
+  List<String> firebaseContactUsers = [];
 
   @override
   void initState() {
@@ -244,13 +245,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                     "callerName": senderName,
                                     "callerNumber": senderContactNumber,
                                   };
+                                  firebaseContactUsers.add(firebaseContactUser.phoneNumber!);
 
                                   await sendFCM(
                                       firebaseContactUser.fcmToken!,
                                       'New Call Request',
                                       'You have a new call request',
                                       data);
-                                  await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUser.phoneNumber!,"call" );
+                                  await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUsers,"call" );
                                   await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
                                   await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
                                   Navigator.push(
@@ -282,13 +284,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                     "callerNumber": senderContactNumber,
                                   };
                                   //
+                                  firebaseContactUsers.add(firebaseContactUser.phoneNumber!);
                                   await sendFCM(
                                       firebaseContactUser.fcmToken!,
                                       'Video Call Request',
                                       'You have a new Video call request',
                                       data);
 
-                                  await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUser.phoneNumber!,"video_call" );
+                                  await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUsers,"video_call" );
                                   await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
                                   await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
                                   await Navigator.push(

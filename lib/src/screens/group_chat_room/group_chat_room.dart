@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:chat_app_white_label/src/components/chat_input_component.dart';
 import 'package:chat_app_white_label/src/components/message_uploading_component.dart';
@@ -15,6 +16,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/message_model.dart';
+import '../../models/usert_model.dart';
+import '../../utils/firebase_utils.dart';
+import '../agora_calling.dart';
+import 'package:http/http.dart' as http;
+
+import '../agora_group_calling.dart';
+import '../agora_group_video_calling.dart';
 
 // ignore: must_be_immutable
 class GroupChatRoomScreen extends StatefulWidget {
@@ -243,49 +251,189 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   Widget _appBar() {
     return InkWell(
-        onTap: () => NavigationUtil.push(
-            context, RouteConstants.viewGroupProfile,
-            args: widget.groupChat),
-        child: Row(
-          children: [
-            IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: Colors.black54)),
+      onTap: () => NavigationUtil.push(context, RouteConstants.viewGroupProfile,
+          args: widget.groupChat),
+      child: Row(
+        children: [
+          IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back, color: Colors.black54)),
+          //user profile picture
+          ProfileImageComponent(
+            url: widget.groupChat.groupData?.groupImage,
+            size: 45,
+            isGroup: true,
+          ),
+          const SizedBox(width: 10),
+          //user name & last seen time
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //user name
+              Text(widget.groupChat.groupData?.grougName ?? '',
+                  style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w500)),
 
-            //user profile picture
-            ProfileImageComponent(
-              url: widget.groupChat.groupData?.groupImage,
-              size: 45,
-              isGroup: true,
-            ),
+              const SizedBox(height: 2),
+            ],
+          ),
+          Expanded(child: Container()), // This will take up all available space
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.grey,
+                child: IconButton(
+                  onPressed: () => callTap(),
+                  icon: const Icon(
+                    Icons.call,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              CircleAvatar(
+                backgroundColor: Colors.grey,
+                child: IconButton(
+                  onPressed: () => (),
+                  icon: const Icon(
+                    Icons.video_call,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-            const SizedBox(width: 10),
-            //user name & last seen time
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //user name
-                Text(widget.groupChat.groupData?.grougName ?? '',
-                    style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500)),
+  Future<void> sendFCM(String fcmToken, String title, String body,
+      Map<String, dynamic> data) async {
+    Uri postUrl = Uri.parse('https://fcm.googleapis.com/fcm/send');
+    final headers = {
+      'content-type': 'application/json',
+      'Authorization':
+          'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
+    };
 
-                const SizedBox(height: 2),
-                // last seen time of user
+    final payload = {
+      "to": fcmToken,
+      "notification": {
+        "title": title,
+        "body": body,
+      },
+      "data": data
+    };
 
-                // Text(
-                //     chatUserData.isOnline == true
-                //         ? 'Online'
-                //         : DateUtil.getLastActiveTime(
-                //             context: context,
-                //             lastActive: chatUserData.lastActive ?? ''),
-                //     style:
-                //         TextStyle(fontSize: 12, color: Colors.black54)),
-              ],
-            )
-          ],
-        ));
+    final response = await http.post(postUrl,
+        body: json.encode(payload),
+        encoding: Encoding.getByName('utf-8'),
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification ${response.statusCode}');
+    }
+  }
+
+  Future<void> callTap() async {
+    userNumber = (widget.groupChat.users) ?? [];
+    String? senderName = FirebaseUtils.user?.name;
+    String? senderContactNumber = FirebaseUtils.user?.phoneNumber;
+
+    //
+    // print("firebaseContactUser.fcmToken ${firebaseContactUser.fcmToken}");
+    // print("recipientUid $recipientUid");
+    // print("contactToDisplay[index].phoneNumber ${contactToDisplay[index].phoneNumber}");
+
+    //
+    //
+    // Uri postUrl = Uri.parse(
+    //     'https://fcm.googleapis.com/fcm/send');
+    // final data = {
+    //   "to": firebaseContactUser.fcmToken,
+    //   "notification": {
+    //     "title": 'New Call Request',
+    //     "body": 'You have a new call request',
+    //   },
+    //   "data": {
+    //     "messageType" : "call",
+    //     "callerName": senderName,
+    //     "callerNumber": senderContactNumber,
+    //   }
+    // };
+    //
+    // final headers = {
+    //   'content-type': 'application/json',
+    //   'Authorization':
+    //       'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
+    // };
+    //
+    // final response = await http.post(postUrl,
+    //     body: json.encode(data),
+    //     encoding: Encoding.getByName('utf-8'),
+    //     headers: headers);
+    //
+    // if (response.statusCode == 200) {
+    //   print("response ${response.body}");
+    //   print('Notification sent successfully');
+    // } else {
+    //   print(
+    //       'Failed to send notification ${response.statusCode}');
+    // }
+
+    final callId =
+        "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
+    Map<String, dynamic> data = {
+      "messageType": "group_call",
+      "callId": callId,
+      "callerName": widget.groupChat.groupData?.grougName,
+      "callerNumber": senderContactNumber,
+    };
+    userNumber =
+        userNumber.where((number) => number != FirebaseUtils.user!.id).toList();
+
+    for (String userNumbers in userNumber) {
+      final getUserData = await FirebaseUtils.getChatUser(userNumbers);
+      UserModel chatUser = UserModel.fromJson(getUserData.data() ?? {});
+      await sendFCM(chatUser.fcmToken!, 'New Group Call Request',
+          'You have a new Group call request', data);
+      FirebaseUtils.updateUserCallList(chatUser.phoneNumber!, callId);
+    }
+
+    // await sendFCM(
+    //     firebaseContactUser.fcmToken!,
+    //     'New Call Request',
+    //     'You have a new call request',
+    //     data);
+    // await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUser.phoneNumber!,"call" );
+    // await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
+    // await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
+    await FirebaseUtils.createCalls(
+        callId, senderContactNumber, userNumber, "group_call");
+    await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!, callId);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => AgoraGroupVideoCalling(
+                recipientUid: int.parse(FirebaseUtils.getDateTimeNowAsId()),
+                callerName: widget.groupChat.groupData?.grougName,
+                callId: callId,
+              )),
+    );
   }
 }

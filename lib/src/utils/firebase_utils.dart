@@ -83,7 +83,7 @@ class FirebaseUtils {
     LoggerUtil.logs('Created User');
   }
 
-  static Future<void> createCalls(String callId,String callerNumber , String receiverNumber, String type) async {
+  static Future<void> createCalls(String callId,String callerNumber , List<String> receiverNumber, String type) async {
 
     await callsCollection.doc(callId).set({
       'id': callId,
@@ -91,7 +91,7 @@ class FirebaseUtils {
       'receiver_number': receiverNumber,
       'time': getDateTimeNowAsId(),
       'type': type,
-      'users': [callerNumber.replaceAll("+", ""), receiverNumber.replaceAll("+", "")]
+      'users': receiverNumber
     });
     LoggerUtil.logs('Created Call');
   }
