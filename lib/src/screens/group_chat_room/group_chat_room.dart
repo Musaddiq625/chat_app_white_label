@@ -39,7 +39,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   final _textController = TextEditingController();
   List<MessageModel> messagesList = [];
-
+  List<String> userNumber = [];
   @override
   Widget build(BuildContext context) {
     LoggerUtil.logs('Group Chat Room Build');
