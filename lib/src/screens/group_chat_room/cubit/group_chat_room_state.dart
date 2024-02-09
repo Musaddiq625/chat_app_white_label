@@ -15,3 +15,7 @@ final class MediaSelectedState extends GroupChatRoomState {
   final MessageType type;
   MediaSelectedState(this.filePath, this.thumbnailPath, this.type);
 }
+
+final class UploadingState extends GroupChatRoomState {}
+
+final class ShowEmojiState extends GroupChatRoomState {}

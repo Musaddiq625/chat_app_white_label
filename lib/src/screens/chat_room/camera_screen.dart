@@ -3,6 +3,7 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
+import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +14,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart' as video_thumbnail;
 
 class CameraScreen extends StatefulWidget {
-  // final CameraDescription camera;
+  final bool isGroup;
 
-  const CameraScreen({
-    Key? key,
-    //  required this.camera
-  }) : super(key: key);
+  const CameraScreen({Key? key, required this.isGroup}) : super(key: key);
   @override
   State<CameraScreen> createState() => _CameraScreenState();
 }
@@ -191,6 +189,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 builder: (context) => MediaPreviewScreen(
                       file: videoFile,
                       type: MessageType.video,
+                      isGroup: widget.isGroup,
                     )));
       } else {
         await controller?.prepareForVideoRecording();
@@ -217,6 +216,7 @@ class _CameraScreenState extends State<CameraScreen> {
           builder: (context) => MediaPreviewScreen(
             file: image!,
             type: MessageType.image,
+            isGroup: widget.isGroup,
           ),
         ),
       );
@@ -230,8 +230,13 @@ class _CameraScreenState extends State<CameraScreen> {
 class MediaPreviewScreen extends StatefulWidget {
   final XFile file;
   final MessageType type;
+  final bool isGroup;
 
-  const MediaPreviewScreen({super.key, required this.file, required this.type});
+  const MediaPreviewScreen(
+      {super.key,
+      required this.file,
+      required this.type,
+      required this.isGroup});
 
   @override
   State<MediaPreviewScreen> createState() => _MediaPreviewScreenState();
@@ -239,6 +244,8 @@ class MediaPreviewScreen extends StatefulWidget {
 
 class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
   late ChatRoomCubit chatRoomCubit = BlocProvider.of<ChatRoomCubit>(context);
+  late GroupChatRoomCubit groupChatRoomCubit =
+      BlocProvider.of<GroupChatRoomCubit>(context);
   VideoPlayerController? videoController;
   String? thumbnailPath;
   bool thumbnailLoading = false;
@@ -316,18 +323,27 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
                     GestureDetector(
                       onTap: () async {
                         if (widget.type == MessageType.image) {
-                          chatRoomCubit.onMediaSelected(
-                              widget.file.path, widget.type);
+                          widget.isGroup
+                              ? groupChatRoomCubit.onMediaSelected(
+                                  widget.file.path, widget.type)
+                              : chatRoomCubit.onMediaSelected(
+                                  widget.file.path, widget.type);
                           NavigationUtil.pop(context);
                           NavigationUtil.pop(context);
                         } else {
                           thumbnailPath = await createThumbnail(widget.file);
                           if (thumbnailPath != null) {
-                            chatRoomCubit.onMediaSelected(
-                              widget.file.path,
-                              widget.type,
-                              thumbnailPath,
-                            );
+                            widget.isGroup
+                                ? groupChatRoomCubit.onMediaSelected(
+                                    widget.file.path,
+                                    widget.type,
+                                    thumbnailPath,
+                                  )
+                                : chatRoomCubit.onMediaSelected(
+                                    widget.file.path,
+                                    widget.type,
+                                    thumbnailPath,
+                                  );
                             NavigationUtil.pop(context);
                             NavigationUtil.pop(context);
                           }

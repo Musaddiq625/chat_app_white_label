@@ -1,8 +1,7 @@
 import 'dart:io';
-import 'package:chat_app_white_label/src/components/chat_input_icon_component.dart';
+import 'package:chat_app_white_label/src/components/chat_input_component.dart';
+import 'package:chat_app_white_label/src/components/message_uploading_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/components/record_button_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
@@ -31,13 +30,15 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
+  late ChatRoomCubit chatRoomCubit = BlocProvider.of<ChatRoomCubit>(context);
   int myUnreadCount = 0;
   int chatUserUnreadCount = -1;
   List<MessageModel> messagesList = [];
   final _textController = TextEditingController();
   //showEmoji -- for storing value of showing or hiding emoji
   //isUploading -- for checking if image is uploading or not?
-  bool _showEmoji = false, _isUploading = false;
+  // bool _showEmoji = false;
+  //   = false;
   @override
   void initState() {
     super.initState();
@@ -60,17 +61,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    LoggerUtil.logs('Chat Room Build');
     return BlocConsumer<ChatRoomCubit, ChatRoomState>(
       listener: (context, state) async {
         if (state is MediaSelectedState) {
-          setState(() => _isUploading = true);
+          chatRoomCubit.setUploading(true);
           await ChatUtils.sendMessage(
               chatUser: widget.chatUser,
               type: state.type,
               isFirstMessage: messagesList.isEmpty,
               filePath: state.filePath,
               thumbnailPath: state.thumbnailPath);
-          setState(() => _isUploading = false);
+          chatRoomCubit.setUploading(false);
         }
       },
       builder: (context, state) {
@@ -81,8 +83,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               //if emojis are shown & back button is pressed then hide emojis
               //or else simple close current screen on back button click
               onWillPop: () {
-                if (_showEmoji) {
-                  setState(() => _showEmoji = !_showEmoji);
+                if (chatRoomCubit.showEmoji) {
+                  chatRoomCubit.setShowEmoji(!chatRoomCubit.showEmoji);
                   return Future.value(false);
                 } else {
                   return Future.value(true);
@@ -174,33 +176,27 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     ),
 
                     //progress indicator for showing uploading
-                    if (_isUploading)
-                      const Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 20),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              ))),
+                    if (state is UploadinState)
+                      if (chatRoomCubit.isUploading)
+                        const MessageUploadingComponent(),
 
                     //chat input filed
                     _chatInput(),
 
                     // show emojis on keyboard emoji button click & vice versa
-                    if (_showEmoji)
-                      SizedBox(
-                        height: mq.height * .35,
-                        child: EmojiPicker(
-                          textEditingController: _textController,
-                          config: Config(
-                            bgColor: const Color.fromARGB(255, 234, 248, 255),
-                            columns: 8,
-                            emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                    if (state is ShowEmojiState)
+                      if (chatRoomCubit.showEmoji)
+                        SizedBox(
+                          height: mq.height * .35,
+                          child: EmojiPicker(
+                            textEditingController: _textController,
+                            config: Config(
+                              bgColor: const Color.fromARGB(255, 234, 248, 255),
+                              columns: 8,
+                              emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                            ),
                           ),
-                        ),
-                      )
+                        )
                   ],
                 ),
               ),
@@ -213,147 +209,227 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   // bottom chat input field
   Widget _chatInput() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          vertical: mq.height * .01, horizontal: mq.width * .025),
-      child: Row(
-        children: [
-          //input field & buttons
-          Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: Row(
-                children: [
-                  //emoji button
-                  ChatInputIconComponent(
-                      icon: Icons.emoji_emotions,
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        setState(() => _showEmoji = !_showEmoji);
-                      }),
+    return ChatInputComponent(
+        controller: _textController,
+        onTextInputTap: () {
+          if (chatRoomCubit.showEmoji) {
+            chatRoomCubit.setShowEmoji(!chatRoomCubit.showEmoji);
+          }
+        },
+        onEmojiTap: () {
+          FocusScope.of(context).unfocus();
+          chatRoomCubit.setShowEmoji(!chatRoomCubit.showEmoji);
+        },
+        onDocumentSelection: () async {
+          // Picking multiple documents
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
+            type: FileType.custom,
+            allowedExtensions: [
+              'doc',
+              'pdf',
+            ],
+          );
 
-                  Expanded(
-                      child: TextField(
-                    controller: _textController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    onTap: () {
-                      if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
-                    },
-                    decoration: const InputDecoration(
-                        hintText: 'Type Something...',
-                        hintStyle: TextStyle(color: Colors.blueAccent),
-                        border: InputBorder.none),
-                  )),
+          if (result != null) {
+            // uploading & sending document one by one
+            chatRoomCubit.setUploading(true);
+            await ChatUtils.sendMultipleMediaMessage(
+                chatUser: widget.chatUser,
+                messagesList: messagesList,
+                selectedFiles: result.files,
+                type: MessageType.document);
+            chatRoomCubit.setUploading(false);
+          }
+        },
+        onImageSelection: () async {
+          // Picking multiple images/videos
+          FilePickerResult? result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
+            type: FileType.media,
+          );
+          if (result != null) {
+            // uploading & sending image/videos one by one
+            chatRoomCubit.setUploading(true);
+            await ChatUtils.sendMultipleMediaMessage(
+                chatUser: widget.chatUser,
+                messagesList: messagesList,
+                selectedFiles: result.files);
+            chatRoomCubit.setUploading(false);
+            // chatRoomCubit.isUploading = false;
+          }
+        },
+        onCameraSelection: () async {
+          NavigationUtil.push(context, RouteConstants.cameraScreen,
+              args: false);
+        },
+        onRecordingFinished: (path, duration) async {
+          LoggerUtil.logs('Voice Path: $path');
+          chatRoomCubit.setUploading(true);
 
-                  //pick doc from storage button
-                  ChatInputIconComponent(
-                      icon: Icons.description_rounded,
-                      onTap: () async {
-                        // Picking multiple documents
-                        FilePickerResult? result =
-                            await FilePicker.platform.pickFiles(
-                          allowMultiple: true,
-                          type: FileType.custom,
-                          allowedExtensions: [
-                            'doc',
-                            'pdf',
-                          ],
-                        );
-
-                        if (result != null) {
-                          // uploading & sending document one by one
-                          setState(() => _isUploading = true);
-                          await ChatUtils.sendMultipleMediaMessage(
-                              chatUser: widget.chatUser,
-                              messagesList: messagesList,
-                              filesPath: result.files
-                                  .map((e) => e.path ?? '')
-                                  .toList(),
-                              type: MessageType.document);
-                          setState(() => _isUploading = false);
-                        }
-                      }),
-
-                  //pick image from gallery button
-                  ChatInputIconComponent(
-                      icon: Icons.image,
-                      onTap: () async {
-                        // Picking multiple images/videos
-                        FilePickerResult? result =
-                            await FilePicker.platform.pickFiles(
-                          allowMultiple: true,
-                          type: FileType.media,
-                        );
-                        if (result != null) {
-                          // uploading & sending image/videos one by one
-                          setState(() => _isUploading = true);
-                          await ChatUtils.sendMultipleMediaMessage(
-                              chatUser: widget.chatUser,
-                              messagesList: messagesList,
-                              filesPath: result.files
-                                  .map((e) => e.path ?? '')
-                                  .toList());
-                          setState(() => _isUploading = false);
-                        }
-                      }),
-
-                  //take image from camera button
-                  ChatInputIconComponent(
-                      icon: Icons.camera_alt_rounded,
-                      onTap: () async {
-                        NavigationUtil.push(
-                            context, RouteConstants.cameraScreen);
-                      }),
-
-                  //voice message mutton
-                  RecordButtonComponent(
-                    onRecordingFinished: (path, duration) async {
-                      LoggerUtil.logs('Voice Path: $path');
-                      setState(() => _isUploading = true);
-
-                      await ChatUtils.sendMessage(
-                          chatUser: widget.chatUser,
-                          type: MessageType.audio,
-                          isFirstMessage: messagesList.isEmpty,
-                          filePath: path,
-                          length: duration);
-                      setState(() => _isUploading = false);
-                    },
-                  ),
-
-                  //adding some space
-                  SizedBox(width: mq.width * .02),
-                ],
-              ),
-            ),
-          ),
-
-          //send message
-          MaterialButton(
-            onPressed: () {
-              if (_textController.text.isNotEmpty) {
-                ChatUtils.sendMessage(
-                  chatUser: widget.chatUser,
-                  msg: _textController.text,
-                  type: MessageType.text,
-                  isFirstMessage: messagesList.isEmpty,
-                );
-                _textController.clear();
-              }
-            },
-            minWidth: 0,
-            padding:
-                const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
-            shape: const CircleBorder(),
-            color: Colors.green,
-            child: const Icon(Icons.send, color: Colors.white, size: 28),
-          )
-        ],
-      ),
-    );
+          await ChatUtils.sendMessage(
+              chatUser: widget.chatUser,
+              type: MessageType.audio,
+              isFirstMessage: messagesList.isEmpty,
+              filePath: path,
+              length: duration);
+          chatRoomCubit.setUploading(false);
+        },
+        onSendButtonTap: () {
+          if (_textController.text.isNotEmpty) {
+            ChatUtils.sendMessage(
+              chatUser: widget.chatUser,
+              msg: _textController.text,
+              type: MessageType.text,
+              isFirstMessage: messagesList.isEmpty,
+            );
+            _textController.clear();
+          }
+        });
   }
+
+  // // bottom chat input field
+  // Widget _chatInput() {
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(
+  //         vertical: mq.height * .01, horizontal: mq.width * .025),
+  //     child: Row(
+  //       children: [
+  //         //input field & buttons
+  //         Expanded(
+  //           child: Card(
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(15)),
+  //             child: Row(
+  //               children: [
+  //                 //emoji button
+  //                 ChatInputIconComponent(
+  //                     icon: Icons.emoji_emotions,
+  //                     onTap: () {
+  //                       FocusScope.of(context).unfocus();
+  //                       setState(() => _showEmoji = !_showEmoji);
+  //                     }),
+
+  //                 Expanded(
+  //                     child: TextField(
+  //                   controller: _textController,
+  //                   keyboardType: TextInputType.multiline,
+  //                   maxLines: null,
+  //                   onTap: () {
+  //                     if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
+  //                   },
+  //                   decoration: const InputDecoration(
+  //                       hintText: 'Type Something...',
+  //                       hintStyle: TextStyle(color: Colors.blueAccent),
+  //                       border: InputBorder.none),
+  //                 )),
+
+  //                 //pick doc from storage button
+  //                 ChatInputIconComponent(
+  //                     icon: Icons.description_rounded,
+  //                     onTap: () async {
+  //                       // Picking multiple documents
+  //                       FilePickerResult? result =
+  //                           await FilePicker.platform.pickFiles(
+  //                         allowMultiple: true,
+  //                         type: FileType.custom,
+  //                         allowedExtensions: [
+  //                           'doc',
+  //                           'pdf',
+  //                         ],
+  //                       );
+
+  //                       if (result != null) {
+  //                         // uploading & sending document one by one
+  //                         setState(() => _isUploading = true);
+  //                         await ChatUtils.sendMultipleMediaMessage(
+  //                             chatUser: widget.chatUser,
+  //                             messagesList: messagesList,
+  //                             selectedFiles: result.files,
+  //                             type: MessageType.document);
+  //                         setState(() => _isUploading = false);
+  //                       }
+  //                     }),
+
+  //                 //pick image from gallery button
+  //                 ChatInputIconComponent(
+  //                     icon: Icons.image,
+  //                     onTap: () async {
+  //                       // Picking multiple images/videos
+  //                       FilePickerResult? result =
+  //                           await FilePicker.platform.pickFiles(
+  //                         allowMultiple: true,
+  //                         type: FileType.media,
+  //                       );
+  //                       if (result != null) {
+  //                         // uploading & sending image/videos one by one
+  //                         setState(() => _isUploading = true);
+  //                         await ChatUtils.sendMultipleMediaMessage(
+  //                             chatUser: widget.chatUser,
+  //                             messagesList: messagesList,
+  //                             selectedFiles: result.files
+  //                                 .map((e) => e.path ?? '')
+  //                                 .toList());
+  //                         setState(() => _isUploading = false);
+  //                       }
+  //                     }),
+
+  //                 //take image from camera button
+  //                 ChatInputIconComponent(
+  //                     icon: Icons.camera_alt_rounded,
+  //                     onTap: () async {
+  //                       NavigationUtil.push(
+  //                           context, RouteConstants.cameraScreen,
+  //                           args: false);
+  //                     }),
+
+  //                 //voice message mutton
+  //                 RecordButtonComponent(
+  //                   onRecordingFinished: (path, duration) async {
+  //                     LoggerUtil.logs('Voice Path: $path');
+  //                     setState(() => _isUploading = true);
+
+  //                     await ChatUtils.sendMessage(
+  //                         chatUser: widget.chatUser,
+  //                         type: MessageType.audio,
+  //                         isFirstMessage: messagesList.isEmpty,
+  //                         filePath: path,
+  //                         length: duration);
+  //                     setState(() => _isUploading = false);
+  //                   },
+  //                 ),
+
+  //                 //adding some space
+  //                 SizedBox(width: mq.width * .02),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+
+  //         //send message
+  //         MaterialButton(
+  //           onPressed: () {
+  //             if (_textController.text.isNotEmpty) {
+  //               ChatUtils.sendMessage(
+  //                 chatUser: widget.chatUser,
+  //                 msg: _textController.text,
+  //                 type: MessageType.text,
+  //                 isFirstMessage: messagesList.isEmpty,
+  //               );
+  //               _textController.clear();
+  //             }
+  //           },
+  //           minWidth: 0,
+  //           padding:
+  //               const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
+  //           shape: const CircleBorder(),
+  //           color: Colors.green,
+  //           child: const Icon(Icons.send, color: Colors.white, size: 28),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _appBar() {
     return StreamBuilder(

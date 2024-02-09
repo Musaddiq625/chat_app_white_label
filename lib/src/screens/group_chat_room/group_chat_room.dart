@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:chat_app_white_label/src/components/chat_input_component.dart';
+import 'package:chat_app_white_label/src/components/message_uploading_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
@@ -31,24 +31,20 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   final _textController = TextEditingController();
   List<MessageModel> messagesList = [];
-  bool _showEmoji = false, _isUploading = false;
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
+    LoggerUtil.logs('Group Chat Room Build');
     return BlocConsumer<GroupChatRoomCubit, GroupChatRoomState>(
       listener: (context, state) async {
         if (state is MediaSelectedState) {
-          setState(() => _isUploading = true);
+          groupChatRoomCubit.setUploading(true);
           await ChatUtils.sendGropuMessage(
               groupChatId: widget.groupChat.id ?? '',
               type: state.type,
               filePath: state.filePath,
               thumbnailPath: state.thumbnailPath);
-          setState(() => _isUploading = false);
+          groupChatRoomCubit.setUploading(false);
         }
       },
       builder: (context, state) {
@@ -59,8 +55,9 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
               //if emojis are shown & back button is pressed then hide emojis
               //or else simple close current screen on back button click
               onWillPop: () {
-                if (_showEmoji) {
-                  setState(() => _showEmoji = !_showEmoji);
+                if (groupChatRoomCubit.showEmoji) {
+                  groupChatRoomCubit
+                      .setShowEmoji(!groupChatRoomCubit.showEmoji);
                   return Future.value(false);
                 } else {
                   return Future.value(true);
@@ -138,33 +135,27 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                     )),
 
                     //progress indicator for showing uploading
-                    if (_isUploading)
-                      const Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 20),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              ))),
+                    if (state is UploadingState)
+                      if (groupChatRoomCubit.isUploading)
+                        const MessageUploadingComponent(),
 
                     //chat input filed
                     _chatInput(),
 
                     // show emojis on keyboard emoji button click & vice versa
-                    if (_showEmoji)
-                      SizedBox(
-                        height: mq.height * .35,
-                        child: EmojiPicker(
-                          textEditingController: _textController,
-                          config: Config(
-                            bgColor: const Color.fromARGB(255, 234, 248, 255),
-                            columns: 8,
-                            emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                    if (state is ShowEmojiState)
+                      if (groupChatRoomCubit.showEmoji)
+                        SizedBox(
+                          height: mq.height * .35,
+                          child: EmojiPicker(
+                            textEditingController: _textController,
+                            config: Config(
+                              bgColor: const Color.fromARGB(255, 234, 248, 255),
+                              columns: 8,
+                              emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                            ),
                           ),
-                        ),
-                      )
+                        )
                   ],
                 ),
               ),
@@ -180,11 +171,13 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     return ChatInputComponent(
         controller: _textController,
         onTextInputTap: () {
-          if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
+          if (groupChatRoomCubit.showEmoji) {
+            groupChatRoomCubit.setShowEmoji(!groupChatRoomCubit.showEmoji);
+          }
         },
         onEmojiTap: () {
           FocusScope.of(context).unfocus();
-          setState(() => _showEmoji = !_showEmoji);
+          groupChatRoomCubit.setShowEmoji(!groupChatRoomCubit.showEmoji);
         },
         onDocumentSelection: () async {
           FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -198,12 +191,12 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
           if (result != null) {
             // uploading & sending document one by one
-            setState(() => _isUploading = true);
+            groupChatRoomCubit.setUploading(true);
             await ChatUtils.sendGroupMultipleMediaMessage(
                 groupChatId: widget.groupChat.id ?? '',
-                filesPath: result.files.map((e) => e.path ?? '').toList(),
+                selectedFiles: result.files,
                 type: MessageType.document);
-            setState(() => _isUploading = false);
+            groupChatRoomCubit.setUploading(false);
           }
         },
         onImageSelection: () async {
@@ -215,26 +208,26 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           );
           if (result != null) {
             // uploading & sending image/videos one by one
-            setState(() => _isUploading = true);
+            groupChatRoomCubit.setUploading(true);
             await ChatUtils.sendGroupMultipleMediaMessage(
                 groupChatId: widget.groupChat.id ?? '',
-                filesPath: result.files.map((e) => e.path ?? '').toList());
-            setState(() => _isUploading = false);
+                selectedFiles: result.files);
+            groupChatRoomCubit.setUploading(false);
           }
         },
         onCameraSelection: () async {
-          NavigationUtil.push(context, RouteConstants.cameraScreen);
+          NavigationUtil.push(context, RouteConstants.cameraScreen, args: true);
         },
         onRecordingFinished: (path, duration) async {
           LoggerUtil.logs('Voice Path: $path');
-          setState(() => _isUploading = true);
 
+          groupChatRoomCubit.setUploading(true);
           await ChatUtils.sendGropuMessage(
               groupChatId: widget.groupChat.id ?? '',
               type: MessageType.audio,
               filePath: path,
               length: duration);
-          setState(() => _isUploading = false);
+          groupChatRoomCubit.setUploading(false);
         },
         onSendButtonTap: () {
           if (_textController.text.isNotEmpty) {

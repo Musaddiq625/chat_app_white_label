@@ -70,7 +70,10 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const CallScreen());
 
     case RouteConstants.cameraScreen:
-      return materialRoute(const CameraScreen());
+      final arg = settings.arguments as bool;
+      return materialRoute(CameraScreen(
+        isGroup: arg,
+      ));
 
     case RouteConstants.selectContactsScreen:
       final arg = settings.arguments! as SelectContactsScreenArg;

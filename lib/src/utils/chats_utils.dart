@@ -68,44 +68,51 @@ class ChatUtils {
     }, SetOptions(merge: true));
   }
 
-  static Future<void> sendMultipleMediaMessage(
-      {required UserModel chatUser,
-      required List<MessageModel> messagesList,
-      required List<String> filesPath,
-      MessageType? type}) async {
-    for (String path in filesPath) {
+  static Future<void> sendMultipleMediaMessage({
+    required UserModel chatUser,
+    required List<MessageModel> messagesList,
+    required List selectedFiles,
+    MessageType? type,
+  }) async {
+    for (var i = 0; i < selectedFiles.length; i++) {
       MessageType messageType;
       String? thumbnailPath;
+      String? fileName;
       if (type == null) {
-        if (path.contains('mp4')) {
-          thumbnailPath = await FirebaseUtils.createThumbnail(path);
+        // File is Images/Videos
+        if (selectedFiles[i].path.contains('mp4')) {
+          thumbnailPath =
+              await FirebaseUtils.createThumbnail(selectedFiles[i].path);
           messageType = MessageType.video;
         } else {
           messageType = MessageType.image;
         }
       } else {
+        //  File is Document
         messageType = type;
+        fileName = selectedFiles[i].name;
       }
-      LoggerUtil.logs('${messageType.name} Path: $path');
+      LoggerUtil.logs('${messageType.name} Path: ${selectedFiles[i].path}');
       await ChatUtils.sendMessage(
           chatUser: chatUser,
           type: messageType,
           isFirstMessage: messagesList.isEmpty,
-          filePath: path,
-          thumbnailPath: thumbnailPath);
+          filePath: selectedFiles[i].path,
+          thumbnailPath: thumbnailPath,
+          fileName: fileName);
     }
   }
 
   // for sending message
-  static Future<void> sendMessage({
-    required UserModel chatUser,
-    required MessageType type,
-    required bool isFirstMessage,
-    String? msg,
-    String? filePath,
-    int? length,
-    String? thumbnailPath,
-  }) async {
+  static Future<void> sendMessage(
+      {required UserModel chatUser,
+      required MessageType type,
+      required bool isFirstMessage,
+      String? msg,
+      String? filePath,
+      int? length,
+      String? thumbnailPath,
+      String? fileName}) async {
     try {
       // if message type is text
       String? sendingMessage = msg;
@@ -138,15 +145,15 @@ class ChatUtils {
       final chatDoc = chatsCollection.doc(chatId);
 
       final MessageModel message = MessageModel(
-        toId: chatUser.id ?? '',
-        msg: sendingMessage,
-        readAt: null,
-        type: type,
-        fromId: FirebaseUtils.user?.id ?? '',
-        sentAt: sendingTimeAsId,
-        length: length,
-        thumbnail: thumbnail,
-      );
+          toId: chatUser.id ?? '',
+          msg: sendingMessage,
+          readAt: null,
+          type: type,
+          fromId: FirebaseUtils.user?.id ?? '',
+          sentAt: sendingTimeAsId,
+          length: length,
+          thumbnail: thumbnail,
+          fileName: fileName);
 
       await chatDoc
           .collection(FirebaseConstants.messages)
@@ -251,39 +258,45 @@ class ChatUtils {
 
   static Future<void> sendGroupMultipleMediaMessage(
       {required String groupChatId,
-      required List<String> filesPath,
+      required List selectedFiles,
       MessageType? type}) async {
-    for (String path in filesPath) {
+    for (var i = 0; i < selectedFiles.length; i++) {
       MessageType messageType;
       String? thumbnailPath;
+      String? fileName;
       if (type == null) {
-        if (path.contains('mp4')) {
-          thumbnailPath = await FirebaseUtils.createThumbnail(path);
+        // File is Images/Videos
+        if (selectedFiles[i].path.contains('mp4')) {
+          thumbnailPath =
+              await FirebaseUtils.createThumbnail(selectedFiles[i].path);
           messageType = MessageType.video;
         } else {
           messageType = MessageType.image;
         }
       } else {
+        //  File is Document
         messageType = type;
+        fileName = selectedFiles[i].name;
       }
-      LoggerUtil.logs('${messageType.name} Path: $path');
+      LoggerUtil.logs('${messageType.name} Path: ${selectedFiles[i].path}');
       await ChatUtils.sendGropuMessage(
           groupChatId: groupChatId,
           type: messageType,
-          filePath: path,
-          thumbnailPath: thumbnailPath);
+          filePath: selectedFiles[i].path,
+          thumbnailPath: thumbnailPath,
+          fileName: fileName);
     }
   }
 
   // for sending group message
-  static Future<void> sendGropuMessage({
-    required String groupChatId,
-    required MessageType type,
-    String? msg,
-    String? filePath,
-    int? length,
-    String? thumbnailPath,
-  }) async {
+  static Future<void> sendGropuMessage(
+      {required String groupChatId,
+      required MessageType type,
+      String? msg,
+      String? filePath,
+      int? length,
+      String? thumbnailPath,
+      String? fileName}) async {
     try {
       // if message type is text
       String? sendingMessage = msg;
@@ -313,15 +326,15 @@ class ChatUtils {
       final chatDoc = chatsCollection.doc(chatId);
 
       final MessageModel message = MessageModel(
-        toId: null,
-        msg: sendingMessage,
-        readAt: null,
-        type: type,
-        fromId: FirebaseUtils.user?.id ?? '',
-        sentAt: sendingTimeAsId,
-        length: length,
-        thumbnail: thumbnail,
-      );
+          toId: null,
+          msg: sendingMessage,
+          readAt: null,
+          type: type,
+          fromId: FirebaseUtils.user?.id ?? '',
+          sentAt: sendingTimeAsId,
+          length: length,
+          thumbnail: thumbnail,
+          fileName: fileName);
 
       await chatDoc
           .collection(FirebaseConstants.messages)
