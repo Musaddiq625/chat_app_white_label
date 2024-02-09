@@ -46,30 +46,37 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoadingState());
 
     try {
+      print("Phone1 ");
       LoggerUtil.logs(phoneNumber);
       await firebaseService.auth.verifyPhoneNumber(
+
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
+          print("Phone2 $credential");
           try {
             // Sign in with the credential
-            final UserCredential userCredential = await firebaseService.auth.signInWithCredential(credential);
-            if (userCredential.user != null) {
-              emit(LoginSuccessSignInState());
-            } else {
-              emit(LoginFailureState('Unable to sign in with the provided credential.'));
-            }
+            // final UserCredential userCredential = await firebaseService.auth.signInWithCredential(credential);
+            // if (userCredential.user != null) {
+            //   emit(LoginSuccessSignInState());
+            // } else {
+            //   emit(LoginFailureState('Unable to sign in with the provided credential.'));
+            // }
           } catch (e) {
+            print("Phone2 $e credential $credential");
             emit(LoginFailureState(e.toString()));
           }
         },
         verificationFailed: (FirebaseAuthException error) {
           emit(LoginFailureState(error.toString()));
           LoggerUtil.logs("Verification Error: $error");
+          print("Phone3 $error ");
         },
         codeSent: (String verificationId, int? forceResendingToken) {
+          print("Phone4 $verificationId");
           emit(LoginSuccessSignUpState(verificationId));
         },
         codeAutoRetrievalTimeout: (String verificationId) {
+          print("Phone5 $verificationId");
           // emit(LoginCodeAutoRetrievalTimeoutState(verificationId));
         },
       );

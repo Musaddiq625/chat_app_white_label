@@ -13,6 +13,13 @@ class OTPSuccessOldUserState extends OTPState {
   OTPSuccessOldUserState(this.user);
 }
 
+class OtpSuccessResendState extends OTPState {
+  final String verificationId;
+
+  OtpSuccessResendState(this.verificationId);
+}
+
+
 class OTPSuccessNewUserState extends OTPState {
   final String phoneNumber;
   final String? fcmToken;

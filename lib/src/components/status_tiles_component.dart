@@ -262,16 +262,22 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
                                   story.userId == _storylist[index].userId)
                               .toList();
                           print("userStories ${userStories}");
-                          final List<StoryItem> storyItems = userStories
-                              .map((story) => StoryItem.pageImage(
-                                    url: story.storyImage ?? '',
-                                    // Replace with the correct property if different
-                                    caption: story.storyMsg,
-                                    // Replace with the correct property if different
-                                    controller:
-                                        StoryController(), // You need to use the same controller for all items
-                                  ))
-                              .toList();
+                          final List<StoryItem> storyItems = userStories.map((story) {
+                            if (story.storyImage != null && story.storyImage!.contains('mp4')) {
+                              return StoryItem.pageVideo(
+                                story.storyImage ?? '',
+                                caption: story.storyMsg,
+                                imageFit: BoxFit.fitHeight,
+                                controller: StoryController(),
+                              );
+                            } else {
+                              return StoryItem.pageImage(
+                                url: story.storyImage ?? '',
+                                caption: story.storyMsg, // Replace with the correct property if different
+                                controller: StoryController(), // You need to use the same controller for all items
+                              );
+                            }
+                          }).toList();
 
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {

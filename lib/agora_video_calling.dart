@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -10,10 +13,12 @@ import '../../main.dart';
 
 // class AgoraCalling extends StatefulWidget with WidgetsBindingObserver {
   class AgoraVideoCalling extends StatefulWidget {
-  const AgoraVideoCalling({Key? key, required this.recipientUid,  this.callerName,  this.callerNumber}) : super(key: key);
+  const AgoraVideoCalling({Key? key, required this.recipientUid,  this.callerName,  this.callerNumber, this.callId}) : super(key: key);
   final int recipientUid;
   final String? callerName;
   final String? callerNumber;
+  final String? callId;
+
 
   @override
   State<AgoraVideoCalling> createState() => _AgoraVideoCallingState();
@@ -244,11 +249,15 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
   bool _localUserJoined = false;
   late RtcEngine _engine;
   bool muted = false;
+  DateTime? _callStartTime;
+  StreamSubscription<DocumentSnapshot>? _callStatusSubscription;
 
   @override
   void initState() {
     super.initState();
+    _callStartTime = DateTime.now();
     initAgora();
+    _listenForCallStatusChanges();
   }
 
   Future<void> initAgora() async {
@@ -320,6 +329,20 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
     // _dispose();
   }
 
+  void _listenForCallStatusChanges() {
+    _callStatusSubscription = FirebaseUtils.firebaseService.firestore
+        .collection(FirebaseConstants.calls)
+        .doc(widget.callId!)
+        .snapshots()
+        .listen((DocumentSnapshot snapshot) {
+      if (snapshot.exists && snapshot['is_call_active'] == false) {
+        if (mounted) {
+          _callStatusSubscription?.cancel();// Check if the widget is still mounted
+          _dispose();
+        } // Leave the channel if is_call_active is false
+      }
+    });
+  }
 
     void _onToggleMute() {
     setState(() {
@@ -334,6 +357,9 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
     //   data: Uint8List.fromList('callEnded'.codeUnits),
     //   length: 0,
     // );
+    Duration duration = DateTime.now().difference(_callStartTime!);
+    String formattedDuration = "${duration.inMinutes}:${duration.inSeconds %  60}";
+    await FirebaseUtils.updateCallsDuration(formattedDuration,false,widget.callId!,FirebaseUtils.getDateTimeNowAsId());
     await _engine.leaveChannel();
     await _engine.release();
     NavigationUtil.pop(context);

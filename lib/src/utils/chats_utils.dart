@@ -215,7 +215,6 @@ class ChatUtils {
     await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
       'chats': FieldValue.arrayUnion([groupChatId])
     }, SetOptions(merge: true));
-
     for (var i = 0; i < contacts.length; i++) {
       await FirebaseUtils.usersCollection.doc(contacts[i]).set({
         'chats': FieldValue.arrayUnion([groupChatId])
