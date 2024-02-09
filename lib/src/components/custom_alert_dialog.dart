@@ -55,10 +55,8 @@ class CustomAlertDialog extends StatelessWidget {
               children: [
                 Text(
                   message!,
-                  style: hideCancel
-                      ? null
-                      : const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w700),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                 ),
                 if (note != null && note != null)
