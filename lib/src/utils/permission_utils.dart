@@ -19,8 +19,8 @@ class PermissionUtils {
           hideCancel: true,
           btnTapRight: () async {
             if (status.isDenied) {
-              await Permission.contacts.request();
               NavigationUtil.pop(context);
+              await Permission.contacts.request();
             } else {
               await openAppSettings();
               status = await Permission.contacts.status;

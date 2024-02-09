@@ -288,6 +288,67 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         });
   }
 
+  Widget _appBar() {
+    return StreamBuilder(
+        stream: ChatUtils.getUserInfo(widget.chatUser.id ?? ''),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            UserModel chatUserData =
+                UserModel.fromJson(snapshot.data?.data() ?? {});
+            chatUserData.name = widget.chatUser.name == chatUserData.phoneNumber
+                ? chatUserData.name
+                : widget.chatUser.name;
+            return InkWell(
+              onTap: () => NavigationUtil.push(
+                  context, RouteConstants.viewUserProfile,
+                  args: chatUserData),
+              child: Row(
+                children: [
+                  IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon:
+                          const Icon(Icons.arrow_back, color: Colors.black54)),
+
+                  //user profile picture
+                  ProfileImageComponent(
+                    url: chatUserData.image,
+                    size: 45,
+                  ),
+                  const SizedBox(width: 10),
+                  //user name & last seen time
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //user name
+                      Text(widget.chatUser.name ?? '',
+                          style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500)),
+
+                      const SizedBox(height: 2),
+                      // last seen time of user
+                      Text(
+                          chatUserData.isOnline == true
+                              ? 'Online'
+                              : DateUtil.getLastActiveTime(
+                                  context: context,
+                                  lastActive: chatUserData.lastActive ?? ''),
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black54)),
+                    ],
+                  )
+                ],
+              ),
+            );
+          }
+          return Container();
+        });
+  }
+}
+
+
   // // bottom chat input field
   // Widget _chatInput() {
   //   return Padding(
@@ -430,63 +491,3 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   //     ),
   //   );
   // }
-
-  Widget _appBar() {
-    return StreamBuilder(
-        stream: ChatUtils.getUserInfo(widget.chatUser.id ?? ''),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            UserModel chatUserData =
-                UserModel.fromJson(snapshot.data?.data() ?? {});
-            chatUserData.name = widget.chatUser.name == chatUserData.phoneNumber
-                ? chatUserData.name
-                : widget.chatUser.name;
-            return InkWell(
-              onTap: () => NavigationUtil.push(
-                  context, RouteConstants.viewUserProfile,
-                  args: chatUserData),
-              child: Row(
-                children: [
-                  IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon:
-                          const Icon(Icons.arrow_back, color: Colors.black54)),
-
-                  //user profile picture
-                  ProfileImageComponent(
-                    url: chatUserData.image,
-                    size: 45,
-                  ),
-                  const SizedBox(width: 10),
-                  //user name & last seen time
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //user name
-                      Text(widget.chatUser.name  ?? '',
-                          style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w500)),
-
-                      const SizedBox(height: 2),
-                      // last seen time of user
-                      Text(
-                          chatUserData.isOnline == true
-                              ? 'Online'
-                              : DateUtil.getLastActiveTime(
-                                  context: context,
-                                  lastActive: chatUserData.lastActive ?? ''),
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.black54)),
-                    ],
-                  )
-                ],
-              ),
-            );
-          }
-          return Container();
-        });
-  }
-}
