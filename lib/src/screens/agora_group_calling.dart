@@ -13,11 +13,12 @@ import '../../main.dart';
 import '../constants/firebase_constants.dart';
 
   class AgoraGroupCalling extends StatefulWidget {
-  const AgoraGroupCalling({Key? key, required this.recipientUid, this.callerName, this.callerNumber,this.callId}) : super(key: key);
+  const AgoraGroupCalling({Key? key, required this.recipientUid, this.callerName, this.callerNumber,this.callId,this.ownNumber}) : super(key: key);
   final int recipientUid;
   final String? callerName;
   final String? callerNumber;
   final String? callId;
+  final int? ownNumber;
 
   @override
   State<AgoraGroupCalling> createState() => _AgoraGroupCallingState();
@@ -32,6 +33,8 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
   DateTime? _callStartTime;
   late Duration callDuration;
   StreamSubscription<DocumentSnapshot>? _callStatusSubscription;
+  Map<int, AgoraVideoView> _remoteViews = {};
+  Map<int, String> _remoteUserNames = {};
 
 
   @override
@@ -59,7 +62,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
   }
 
   Future<void> initAgora() async {
-
+    int remoteUserCount = _remoteUserNames.length;
     print("recipetent Uid ${widget.recipientUid}");
     await [Permission.microphone, Permission.camera].request();
 
@@ -82,12 +85,23 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
           setState(() {
             _remoteUid = remoteUid;
           });
+          debugPrint("remote user $remoteUid joined");
+          // Retrieve the user name from somewhere (e.g., Firestore, local cache)
+          String userName = 'Unknown'; // Replace with actual user name retrieval logic
+          setState(() {
+            _remoteUserNames[remoteUid] = userName;
+          });
         },
-        onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) {
+        onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
+          //debugPrint("remote user $remoteUid left channel");
+          // setState(() {
+          //   _remoteUid = null;
+          // });
+          // _dispose();
+
           debugPrint("remote user $remoteUid left channel");
           setState(() {
-            _remoteUid = null;
+            _remoteUserNames.remove(remoteUid);
           });
           _dispose();
         },
@@ -106,7 +120,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
     await _engine.joinChannel(
       token: token,
       channelId: channel,
-      uid: widget.recipientUid,
+      uid: widget.ownNumber!,
       options: const ChannelMediaOptions(),
     );
 
@@ -148,6 +162,8 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
 
   @override
   Widget build(BuildContext context) {
+    int remoteUserCount = _remoteUserNames.length;
+    int crossAxisCount = remoteUserCount <=  2 ?  2 :  3;
     return Scaffold(
       appBar: AppBar(
         title:  Text(widget.callerName ?? "Video Call"),
@@ -156,6 +172,14 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
         children: [
           Center(
             child: _remoteVideo(),
+          ),
+          GridView.count(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: crossAxisCount,
+            children: _remoteUserNames.entries.map((entry) {
+              return Text(entry.value); // Display the user name
+            }).toList(),
           ),
           Align(
             alignment: Alignment.topLeft,

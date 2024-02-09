@@ -152,13 +152,26 @@ class FirebaseService {
                 callerNumber: callerPhoneNumber,
               callId : _callId
             )));
-      }else if (_callType == "group_call") {
+      }
+      else if (_callType == "group_call") {
+        FirebaseUtils.updateCallsOnReceiveOrReject(true ,_callId);
+        navigatorKey.currentState!.push(MaterialPageRoute(
+            builder: (context) => AgoraGroupCalling(
+                recipientUid: int.parse(callerPhoneNumber!),
+                callerName: callerName,
+                callerNumber: callerPhoneNumber,
+                callId : _callId,
+              ownNumber: int.parse(FirebaseUtils.phoneNumber!) ,
+            )));
+      }
+      else if (_callType == "group_video_call") {
         FirebaseUtils.updateCallsOnReceiveOrReject(true ,_callId);
         navigatorKey.currentState!.push(MaterialPageRoute(
             builder: (context) => AgoraGroupVideoCalling(
                 recipientUid: int.parse(callerPhoneNumber!),
                 callerName: callerName,
                 callerNumber: callerPhoneNumber,
+                ownNumber: int.parse(FirebaseUtils.phoneNumber!)  ,
                 callId : _callId
             )));
       }
@@ -287,6 +300,45 @@ class FirebaseService {
               0,
               'Incoming Group Call',
               'You have a new group call from $callerName',
+              platformChannelSpecifics,
+              payload: 'incoming_call',
+            );
+          }
+        }
+        else if (message.data["messageType"] == "group_video_call") {
+          String? phoneNumber = message.data["callerNumber"];
+          callerPhoneNumber = message.data["callerNumber"];
+          callerName = message.data["callerName"];
+          if (phoneNumber != null) {
+            // await initializeLocalNotifications();
+            const AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails(
+              'test',
+              'Incoming Group Video Call',
+              importance: Importance.max,
+              priority: Priority.high,
+              showWhen: false,
+              enableLights: true,
+              enableVibration: true,
+              // playSound: true,
+              ongoing: true,
+              audioAttributesUsage: AudioAttributesUsage.alarm,
+              actions: <AndroidNotificationAction>[
+                AndroidNotificationAction('accept_action', 'Accept',
+                    showsUserInterface: true),
+                AndroidNotificationAction(
+                  'reject_action',
+                  'Reject',
+                  showsUserInterface: true,
+                ),
+              ],
+            );
+            const NotificationDetails platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+            await flutterLocalNotificationsPlugin.show(
+              0,
+              'Incoming Group Video Call',
+              'You have a new group video call from $callerName',
               platformChannelSpecifics,
               payload: 'incoming_call',
             );

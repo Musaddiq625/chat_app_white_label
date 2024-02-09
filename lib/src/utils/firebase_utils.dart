@@ -104,6 +104,7 @@ class FirebaseUtils {
     },SetOptions(merge: true));
   }
 
+
   static Future<void> updateCallsDuration(String duration, bool isCallActive , String callId, String endTime )async{
     await firebaseService.firestore
         .collection(FirebaseConstants.calls).doc(callId)

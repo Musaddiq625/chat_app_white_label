@@ -12,11 +12,12 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../main.dart';
 
   class AgoraGroupVideoCalling extends StatefulWidget {
-  const AgoraGroupVideoCalling({Key? key, required this.recipientUid,  this.callerName,  this.callerNumber, this.callId}) : super(key: key);
+  const AgoraGroupVideoCalling({Key? key, required this.recipientUid,  this.callerName,  this.callerNumber, this.callId, this.ownNumber}) : super(key: key);
   final int recipientUid;
   final String? callerName;
   final String? callerNumber;
   final String? callId;
+  final int? ownNumber;
 
 
   @override
@@ -97,7 +98,7 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
     await _engine.joinChannel(
       token: token,
       channelId: channel,
-      uid: 0,
+      uid: widget.ownNumber!,
       options: const ChannelMediaOptions(),
     );
   }
