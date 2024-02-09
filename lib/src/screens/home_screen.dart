@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen>
           FirebaseUtils.updateActiveStatus(true);
           if (appSettingCubit.isContactactsPermissionGranted == false) {
             await appSettingCubit.initGetLocalContacts(context);
+            PermissionUtils.requestCameraAndMicPermission();
           }
         }
         if (message.toString().contains('pause')) {

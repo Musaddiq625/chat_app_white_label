@@ -115,6 +115,7 @@ class _MessageCardState extends State<MessageCard> {
                       else if (widget.message.type == MessageType.document)
                         DocumentMessageComponent(
                           downloadUrl: widget.message.msg ?? '',
+                          fileNameWithExt: widget.message.fileName ?? '',
                         )
                       else
                         Text(
@@ -196,6 +197,7 @@ class _MessageCardState extends State<MessageCard> {
                       else if (widget.message.type == MessageType.document)
                         DocumentMessageComponent(
                           downloadUrl: widget.message.msg ?? '',
+                          fileNameWithExt: widget.message.fileName ?? '',
                         )
                       else
                         Text(
@@ -639,14 +641,10 @@ class VideoMessageComponent extends StatelessWidget {
 // ignore: must_be_immutable
 class DocumentMessageComponent extends StatefulWidget {
   final String downloadUrl;
-  // String? filePathToExternalStorage;
-  // String? fileNameWithExt;
-  DocumentMessageComponent({
-    super.key,
-    required this.downloadUrl,
-    // this.filePathToExternalStorage,
-    // this.fileNameWithExt
-  });
+
+  final String fileNameWithExt;
+  const DocumentMessageComponent(
+      {super.key, required this.downloadUrl, required this.fileNameWithExt});
 
   @override
   State<DocumentMessageComponent> createState() =>
@@ -654,21 +652,19 @@ class DocumentMessageComponent extends StatefulWidget {
 }
 
 class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
-  DocumentMessageModel? documentMessage;
+  ValueNotifier<String?> filePathToExternalStorage =
+      ValueNotifier<String?>(null);
   @override
   void initState() {
     super.initState();
-    if (documentMessage == null &&
-        documentMessage?.downloadUrl != widget.downloadUrl) {
-      documentMessage = DocumentMessageModel(downloadUrl: widget.downloadUrl);
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        setState(() {});
-        await getFileNameAndExt(widget.downloadUrl);
-        await getFilePathToExternalStorage(widget.downloadUrl);
-        LoggerUtil.logs(
-            'widget.fileNameWithExt ${documentMessage?.fileNameWithExt}');
-      });
-    }
+    getFilePathToExternalStorage();
+    // if (documentMessage == null &&
+    //     documentMessage?.downloadUrl != widget.downloadUrl) {
+    //   documentMessage = DocumentMessageModel(downloadUrl: widget.downloadUrl);
+    //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    //     await getFilePathToExternalStorage(widget.downloadUrl);
+    //   });
+    // }
   }
 
   @override
@@ -676,57 +672,58 @@ class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
     return SizedBox(
       width: mq.width * 0.5,
       height: 35,
-      child: FutureBuilder<bool>(
-        future: isFileDownloaded(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            final isDownloaded = snapshot.data!;
-            // LoggerUtil.logs(
-            //     'isDownloaded ${widget.fileNameWithExt} $isDownloaded');
-            return GestureDetector(
-              onTap: () async =>
-                  isDownloaded ? openDocument() : downloadAndOpenDocument(),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  documentMessage?.fileNameWithExt != null
-                      ? Text(
-                          '${documentMessage?.fileNameWithExt ?? ''} ',
+      child: ValueListenableBuilder<String?>(
+          valueListenable: filePathToExternalStorage,
+          builder: (context, value, child) {
+            return FutureBuilder<bool>(
+              future: isFileDownloaded(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final isDownloaded = snapshot.data!;
+                  return GestureDetector(
+                    onTap: () async => isDownloaded
+                        ? openDocument()
+                        : downloadAndOpenDocument(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${widget.fileNameWithExt} ',
                           style: const TextStyle(
                               color: ColorConstants.blackLight,
                               fontWeight: FontWeight.w500),
-                        )
-                      : CircularProgressIndicator(),
-                  Icon(
-                      !isDownloaded
-                          ? Icons.downloading_rounded
-                          : Icons.description_rounded,
-                      size: 20,
-                      color: ColorConstants.blackLight),
-                ],
-              ),
+                        ),
+                        Icon(
+                            !isDownloaded
+                                ? Icons.downloading_rounded
+                                : Icons.description_rounded,
+                            size: 20,
+                            color: ColorConstants.blackLight),
+                      ],
+                    ),
+                  );
+                } else {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: ColorConstants.greenMain,
+                  ));
+                }
+              },
             );
-          } else {
-            return const Center(
-                child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: ColorConstants.greenMain,
-            ));
-          }
-        },
-      ),
+          }),
     );
   }
 
   Future<bool> isFileDownloaded() async {
-    return File(documentMessage?.filePathToExternalStorage ?? '').exists();
+    return File(filePathToExternalStorage.value ?? '').exists();
   }
 
   openDocument() async {
     await Permission.manageExternalStorage.request();
     try {
       await OpenFilex.open(
-        documentMessage?.filePathToExternalStorage,
+        filePathToExternalStorage.value,
       );
     } on Exception catch (e) {
       LoggerUtil.logs(e);
@@ -735,49 +732,31 @@ class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
 
   downloadAndOpenDocument() async {
     await FirebaseUtils.downloadDocument(
-        widget.downloadUrl, documentMessage?.filePathToExternalStorage ?? '');
+        widget.downloadUrl, filePathToExternalStorage.value ?? '');
     setState(() {});
     openDocument();
   }
 
-  getFilePathToExternalStorage(String downloadUrl) async {
+  getFilePathToExternalStorage() async {
     final directory = await getExternalStorageDirectory();
     final String dirPath = '${directory?.path ?? ''}/documents';
     await Directory(dirPath).create(recursive: true);
-    documentMessage?.filePathToExternalStorage =
-        '$dirPath/${documentMessage?.fileNameWithExt}';
-    setState(() {});
+    filePathToExternalStorage.value = '$dirPath/${widget.fileNameWithExt}';
   }
 
-  getFileNameAndExt(String downloadUrl) {
-    final splitted = downloadUrl.split('?');
-    documentMessage?.fileNameWithExt =
-        splitted[splitted.length - 2].split('_we_uno_chat_').last;
-    setState(() {});
-  }
+  // getFileNameAndExt(String downloadUrl) {
+  //   final splitted = downloadUrl.split('?');
+  //   documentMessage?.fileNameWithExt =
+  //       splitted[splitted.length - 2].split('_we_uno_chat_').last;
+  //   setState(() {});
+  // }
 }
 
 class DocumentMessageModel {
   final String downloadUrl;
-  String? fileNameWithExt;
-  String?
-      filePathToExternalStorage; // Optional, as it might not always be available
-
+  String? filePathToExternalStorage;
   DocumentMessageModel({
     required this.downloadUrl,
-    this.fileNameWithExt,
     this.filePathToExternalStorage,
   });
-}
-
-getFileNameAndExt(String downloadUrl) {
-  final splitted = downloadUrl.split('?');
-  return splitted[splitted.length - 2].split('_we_uno_chat_').last;
-}
-
-getFilePathToExternalStorage(String downloadUrl, String fileNameWithExt) async {
-  final directory = await getExternalStorageDirectory();
-  final String dirPath = '${directory?.path ?? ''}/documents';
-  await Directory(dirPath).create(recursive: true);
-  return '$dirPath/$fileNameWithExt';
 }

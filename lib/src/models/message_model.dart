@@ -8,6 +8,7 @@ class MessageModel {
       required this.sentAt,
       this.length,
       this.thumbnail,
+      this.fileName,
       this.readBy});
   String? fromId;
   String? toId;
@@ -17,6 +18,7 @@ class MessageModel {
   String? sentAt;
   int? length;
   String? thumbnail;
+  String? fileName;
   List<String>? readBy;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
@@ -36,6 +38,7 @@ class MessageModel {
         sentAt: json['sentAt'],
         length: json['length'],
         thumbnail: json['thumbnail'],
+        fileName: json['fileName'],
         readBy: json['readBy'] == null ? [] : json['readBy'].cast<String>(),
       );
 
@@ -57,6 +60,9 @@ class MessageModel {
     if (thumbnail != null) {
       data['thumbnail'] = thumbnail;
     }
+    if (fileName != null) {
+      data['fileName'] = fileName;
+    }
     if (readBy != null) {
       data['readBy'] = readBy;
     }
@@ -65,35 +71,3 @@ class MessageModel {
 }
 
 enum MessageType { text, image, audio, video, document }
-
-
-// import 'package:cloud_firestore/cloud_firestore.dart';
-
-// class Message {
-//   final String? message;
-//   final String? msgType;
-//   final String? name;
-//   final bool? received;
-//   final bool? seen;
-//   final Timestamp? time;
-
-//   const Message({
-//     required this.message,
-//     required this.msgType,
-//     required this.name,
-//     required this.received,
-//     required this.seen,
-//     required this.time,
-//   });
-
-//   factory Message.fromJson(Map<String, dynamic> json) {
-//     return Message(
-//       message: json['message'],
-//       msgType: json['msgType'],
-//       name: json['name'],
-//       received: json['received'],
-//       seen: json['seen'],
-//       time: json['time'] as Timestamp,
-//     );
-//   }
-// }

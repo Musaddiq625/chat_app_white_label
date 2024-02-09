@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:chat_app_white_label/src/components/chat_input_component.dart';
+import 'package:chat_app_white_label/src/components/message_uploading_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
@@ -40,24 +40,19 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
   final _textController = TextEditingController();
   List<MessageModel> messagesList = [];
   List<String> userNumber = [];
-  bool _showEmoji = false, _isUploading = false;
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    LoggerUtil.logs('Group Chat Room Build');
     return BlocConsumer<GroupChatRoomCubit, GroupChatRoomState>(
       listener: (context, state) async {
         if (state is MediaSelectedState) {
-          setState(() => _isUploading = true);
+          groupChatRoomCubit.setUploading(true);
           await ChatUtils.sendGropuMessage(
               groupChatId: widget.groupChat.id ?? '',
               type: state.type,
               filePath: state.filePath,
               thumbnailPath: state.thumbnailPath);
-          setState(() => _isUploading = false);
+          groupChatRoomCubit.setUploading(false);
         }
       },
       builder: (context, state) {
@@ -68,8 +63,9 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
               //if emojis are shown & back button is pressed then hide emojis
               //or else simple close current screen on back button click
               onWillPop: () {
-                if (_showEmoji) {
-                  setState(() => _showEmoji = !_showEmoji);
+                if (groupChatRoomCubit.showEmoji) {
+                  groupChatRoomCubit
+                      .setShowEmoji(!groupChatRoomCubit.showEmoji);
                   return Future.value(false);
                 } else {
                   return Future.value(true);
@@ -147,33 +143,27 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                     )),
 
                     //progress indicator for showing uploading
-                    if (_isUploading)
-                      const Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 20),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorConstants.greenMain,
-                              ))),
+                    if (state is UploadingState)
+                      if (groupChatRoomCubit.isUploading)
+                        const MessageUploadingComponent(),
 
                     //chat input filed
                     _chatInput(),
 
                     // show emojis on keyboard emoji button click & vice versa
-                    if (_showEmoji)
-                      SizedBox(
-                        height: mq.height * .35,
-                        child: EmojiPicker(
-                          textEditingController: _textController,
-                          config: Config(
-                            bgColor: const Color.fromARGB(255, 234, 248, 255),
-                            columns: 8,
-                            emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                    if (state is ShowEmojiState)
+                      if (groupChatRoomCubit.showEmoji)
+                        SizedBox(
+                          height: mq.height * .35,
+                          child: EmojiPicker(
+                            textEditingController: _textController,
+                            config: Config(
+                              bgColor: const Color.fromARGB(255, 234, 248, 255),
+                              columns: 8,
+                              emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                            ),
                           ),
-                        ),
-                      )
+                        )
                   ],
                 ),
               ),
@@ -189,11 +179,13 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     return ChatInputComponent(
         controller: _textController,
         onTextInputTap: () {
-          if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
+          if (groupChatRoomCubit.showEmoji) {
+            groupChatRoomCubit.setShowEmoji(!groupChatRoomCubit.showEmoji);
+          }
         },
         onEmojiTap: () {
           FocusScope.of(context).unfocus();
-          setState(() => _showEmoji = !_showEmoji);
+          groupChatRoomCubit.setShowEmoji(!groupChatRoomCubit.showEmoji);
         },
         onDocumentSelection: () async {
           FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -207,12 +199,12 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
           if (result != null) {
             // uploading & sending document one by one
-            setState(() => _isUploading = true);
+            groupChatRoomCubit.setUploading(true);
             await ChatUtils.sendGroupMultipleMediaMessage(
                 groupChatId: widget.groupChat.id ?? '',
-                filesPath: result.files.map((e) => e.path ?? '').toList(),
+                selectedFiles: result.files,
                 type: MessageType.document);
-            setState(() => _isUploading = false);
+            groupChatRoomCubit.setUploading(false);
           }
         },
         onImageSelection: () async {
@@ -224,26 +216,26 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           );
           if (result != null) {
             // uploading & sending image/videos one by one
-            setState(() => _isUploading = true);
+            groupChatRoomCubit.setUploading(true);
             await ChatUtils.sendGroupMultipleMediaMessage(
                 groupChatId: widget.groupChat.id ?? '',
-                filesPath: result.files.map((e) => e.path ?? '').toList());
-            setState(() => _isUploading = false);
+                selectedFiles: result.files);
+            groupChatRoomCubit.setUploading(false);
           }
         },
         onCameraSelection: () async {
-          NavigationUtil.push(context, RouteConstants.cameraScreen);
+          NavigationUtil.push(context, RouteConstants.cameraScreen, args: true);
         },
         onRecordingFinished: (path, duration) async {
           LoggerUtil.logs('Voice Path: $path');
-          setState(() => _isUploading = true);
 
+          groupChatRoomCubit.setUploading(true);
           await ChatUtils.sendGropuMessage(
               groupChatId: widget.groupChat.id ?? '',
               type: MessageType.audio,
               filePath: path,
               length: duration);
-          setState(() => _isUploading = false);
+          groupChatRoomCubit.setUploading(false);
         },
         onSendButtonTap: () {
           if (_textController.text.isNotEmpty) {
@@ -259,8 +251,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   Widget _appBar() {
     return InkWell(
-      onTap: () => NavigationUtil.push(
-          context, RouteConstants.viewGroupProfile,
+      onTap: () => NavigationUtil.push(context, RouteConstants.viewGroupProfile,
           args: widget.groupChat),
       child: Row(
         children: [
@@ -270,10 +261,10 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           //user profile picture
           ProfileImageComponent(
             url: widget.groupChat.groupData?.groupImage,
-            size:  45,
+            size: 45,
             isGroup: true,
           ),
-          const SizedBox(width:  10),
+          const SizedBox(width: 10),
           //user name & last seen time
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -282,11 +273,11 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
               //user name
               Text(widget.groupChat.groupData?.grougName ?? '',
                   style: const TextStyle(
-                      fontSize:  16,
+                      fontSize: 16,
                       color: Colors.black87,
                       fontWeight: FontWeight.w500)),
 
-              const SizedBox(height:  2),
+              const SizedBox(height: 2),
             ],
           ),
           Expanded(child: Container()), // This will take up all available space
@@ -296,27 +287,31 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
               CircleAvatar(
                 backgroundColor: Colors.grey,
                 child: IconButton(
-                  onPressed: ()=>callTap(),
+                  onPressed: () => callTap(),
                   icon: const Icon(
                     Icons.call,
-                    size:  20,
+                    size: 20,
                     color: Colors.white,
                   ),
                 ),
               ),
-              SizedBox(width: 10,),
+              SizedBox(
+                width: 10,
+              ),
               CircleAvatar(
                 backgroundColor: Colors.grey,
                 child: IconButton(
                   onPressed: ()=>videoTap(),
                   icon: const Icon(
                     Icons.video_call,
-                    size:  20,
+                    size: 20,
                     color: Colors.white,
                   ),
                 ),
               ),
-              SizedBox(width: 10,),
+              SizedBox(
+                width: 10,
+              ),
             ],
           ),
         ],
@@ -330,7 +325,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     final headers = {
       'content-type': 'application/json',
       'Authorization':
-      'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
+          'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
     };
 
     final payload = {
@@ -357,9 +352,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
   Future<void> callTap() async {
     userNumber = (widget.groupChat.users) ?? [];
     String? senderName = FirebaseUtils.user?.name;
-    String? senderContactNumber =
-        FirebaseUtils.user?.phoneNumber;
-
+    String? senderContactNumber = FirebaseUtils.user?.phoneNumber;
 
     //
     // print("firebaseContactUser.fcmToken ${firebaseContactUser.fcmToken}");
@@ -406,19 +399,18 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     await FirebaseUtils.createCalls(callId,senderContactNumber,userNumber,"group_call" );
     Map<String, dynamic> data = {
       "messageType": "group_call",
-      "callId":callId,
+      "callId": callId,
       "callerName": widget.groupChat.groupData?.grougName,
       "callerNumber": senderContactNumber,
     };
-    userNumber = userNumber.where((number) => number != FirebaseUtils.user!.id).toList();
+    userNumber =
+        userNumber.where((number) => number != FirebaseUtils.user!.id).toList();
 
     for (String userNumbers in userNumber) {
       final getUserData = await FirebaseUtils.getChatUser(userNumbers);
       UserModel chatUser = UserModel.fromJson(getUserData.data() ?? {});
-      await sendFCM(chatUser.fcmToken!,
-          'New Group Call Request',
-          'You have a new Group call request',
-          data);
+      await sendFCM(chatUser.fcmToken!, 'New Group Call Request',
+          'You have a new Group call request', data);
       FirebaseUtils.updateUserCallList(chatUser.phoneNumber!, callId);
     }
 
