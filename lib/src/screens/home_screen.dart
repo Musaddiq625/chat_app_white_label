@@ -74,25 +74,31 @@ class _HomeScreenState extends State<HomeScreen>
               color: Colors.white,
             ),
           ),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await FirebaseUtils.logOut(context);
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              surfaceTintColor: Colors.white,
+              onSelected: (String result) {
+                if (result == 'logout') {
+                  FirebaseUtils.logOut(context);
+                } else if (result == 'editProfile') {
+                  NavigationUtil.push(context, RouteConstants.editProfileScreen, args: true);
+                }
               },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+
+                const PopupMenuItem<String>(
+                  value: 'editProfile',
+                  child: Text('Edit Profile'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Text('Logout'),
+                ),
+              ],
               icon: const Icon(
-                Icons.logout,
-                size: 28,
-              ),
-              color: ColorConstants.white,
-            ),
-            IconButton(
-              onPressed: () {
-                NavigationUtil.push(context, RouteConstants.editProfileScreen,
-                    args: true);
-              },
-              icon: const Icon(
-                Icons.edit,
-                size: 28,
+                Icons.more_vert,
+                size:   28,
+                color: Colors.white,
               ),
               color: ColorConstants.white,
             ),

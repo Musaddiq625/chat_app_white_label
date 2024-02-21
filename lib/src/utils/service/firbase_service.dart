@@ -11,16 +11,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../main.dart';
 import '../../constants/firebase_constants.dart';
 import '../../models/call_data_model.dart';
-import '../../models/usert_model.dart';
 import '../../screens/agora_calling.dart';
 import '../../screens/agora_group_video_calling.dart';
 import '../firebase_utils.dart';
@@ -43,7 +40,6 @@ class FirebaseService {
   String? selectedNotificationPayload;
 
   late final phoneRingtoneSound;
-
 
   void initializeNotification() {}
 
@@ -230,9 +226,6 @@ class FirebaseService {
   }
 
   void incomingCall(NotificationResponse payload) {
-
-
-
     try {
       print("payload $payload");
       print("Payload-payload ${payload.payload}");
@@ -307,19 +300,11 @@ class FirebaseService {
     }
   }
 
-
+  // Future<String?> getDefaultCallRingtoneUri() async {
+  //   return await FlutterRingtonePlayer.playRingtone();
+  // }
 
   Future<void> getNotificationsForground() async {
-
-    //
-    // final ringtoneManager = RingtoneManager(
-    //   android: AndroidRingtoneManager.defaultRingtoneUri,
-    // );
-    // final ringtoneUri = await ringtoneManager.getDefaultRingtoneUri();
-    // const ringtoneUri = await FlutterRingtonePlayer.playRingtone();
-    // const defaultRingtone = AndroidNotificationSound('default_ringtone.mp3');
-    // AndroidNotificationSound defaultRingtone = FlutterRingtonePlayer.playRingtone();
-
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -340,7 +325,6 @@ class FirebaseService {
         callerPhoneNumber = message.data["callerNumber"];
         callerName = message.data["callerName"];
         if (phoneNumber != null) {
-          // await initializeLocalNotifications();
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
             'test',
@@ -350,8 +334,8 @@ class FirebaseService {
             showWhen: false,
             enableLights: true,
             enableVibration: true,
-            playSound: true,
-
+            sound: UriAndroidNotificationSound(
+                'content://settings/system/ringtone'),
             actions: <AndroidNotificationAction>[
               AndroidNotificationAction('accept_action', 'Accept',
                   showsUserInterface: true),
@@ -387,7 +371,9 @@ class FirebaseService {
             showWhen: false,
             enableLights: true,
             enableVibration: true,
-            // playSound: true,
+            playSound: true,
+            sound: UriAndroidNotificationSound(
+                'content://settings/system/ringtone'),
             ongoing: true,
             audioAttributesUsage: AudioAttributesUsage.alarm,
             actions: <AndroidNotificationAction>[
@@ -426,6 +412,8 @@ class FirebaseService {
             enableLights: true,
             enableVibration: true,
             // playSound: true,
+                sound: UriAndroidNotificationSound(
+                    'content://settings/system/ringtone'),
             ongoing: true,
             audioAttributesUsage: AudioAttributesUsage.alarm,
             actions: <AndroidNotificationAction>[
@@ -464,6 +452,8 @@ class FirebaseService {
             enableLights: true,
             enableVibration: true,
             // playSound: true,
+                sound: UriAndroidNotificationSound(
+                    'content://settings/system/ringtone'),
             ongoing: true,
             audioAttributesUsage: AudioAttributesUsage.alarm,
             actions: <AndroidNotificationAction>[

@@ -168,6 +168,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           priority: Priority.high,
           showWhen: false,
           enableLights: true,
+          sound: UriAndroidNotificationSound(
+              'content://settings/system/ringtone'),
           enableVibration: true,
           actions: <AndroidNotificationAction>[
             AndroidNotificationAction('accept_action', 'Accept',
