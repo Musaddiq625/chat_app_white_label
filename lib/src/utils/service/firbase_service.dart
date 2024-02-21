@@ -316,7 +316,7 @@ class FirebaseService {
     //   android: AndroidRingtoneManager.defaultRingtoneUri,
     // );
     // final ringtoneUri = await ringtoneManager.getDefaultRingtoneUri();
-    const ringtoneUri = await FlutterRingtonePlayer.playRingtone();
+    // const ringtoneUri = await FlutterRingtonePlayer.playRingtone();
     // const defaultRingtone = AndroidNotificationSound('default_ringtone.mp3');
     // AndroidNotificationSound defaultRingtone = FlutterRingtonePlayer.playRingtone();
 
