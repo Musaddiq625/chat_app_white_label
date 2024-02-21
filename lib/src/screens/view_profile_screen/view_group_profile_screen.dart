@@ -109,9 +109,7 @@ class _ViewGroupProfileScreenState extends State<ViewGroupProfileScreen> {
                                   (widget.group.users
                                       ?? [])[index]),
                               builder: (context, asyncSnapshot) {
-                                UserModel firebaseContactUser =
-                                    UserModel.fromJson(
-                                        asyncSnapshot.data?.data() ?? {});
+                                UserModel firebaseContactUser = UserModel.fromJson(asyncSnapshot.data?.data() ?? {});
                                 return UserTileComponent(
                                     localName:
                                         FirebaseUtils.getNameFromLocalContact(

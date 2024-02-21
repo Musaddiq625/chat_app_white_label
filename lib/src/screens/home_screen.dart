@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen>
           automaticallyImplyLeading: false,
           backgroundColor: ColorConstants.greenMain,
           title: Text(
-            FirebaseUtils.user?.name ?? "",
+          "WhatsApp",  // FirebaseUtils.user?.name ?? "",
             style: const TextStyle(
               color: Colors.white,
             ),

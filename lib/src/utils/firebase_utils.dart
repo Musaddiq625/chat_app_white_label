@@ -68,6 +68,7 @@ class FirebaseUtils {
   static Future<void> logOut(context) async {
     await firebaseService.auth.signOut();
     FirebaseUtils.updateActiveStatus(false);
+    FirebaseUtils.deleteFcmToken(FirebaseUtils.user!.phoneNumber!);
     user = null;
 
     NavigationUtil.popAllAndPush(context, RouteConstants.loginScreen);
@@ -88,12 +89,53 @@ class FirebaseUtils {
     await callsCollection.doc(callId).set({
       'id': callId,
       'caller_number': callerNumber,
-      'receiver_number': receiverNumber,
       'time': getDateTimeNowAsId(),
       'type': type,
       'users': receiverNumber
     });
+    // await callsCollection.doc(callId).set({
+    //   'id': callId,
+    //   'caller_number': callerNumber,
+    //   'receiver_number': receiverNumber,
+    //   'time': getDateTimeNowAsId(),
+    //   'type': type,
+    //   'users': receiverNumber
+    // });
     LoggerUtil.logs('Created Call');
+  }
+
+  static Future<void> createGroupCalls(String callId,String groupId,String callerNumber , List<String> receiverNumber, String type, String name) async {
+
+    await callsCollection.doc(callId).set({
+      'id': callId,
+      "group_id" : groupId,
+      'caller_number': callerNumber,
+      'time': getDateTimeNowAsId(),
+      'type': type,
+      'users': receiverNumber
+    });
+
+    // "name":name,
+
+
+    // await callsCollection.doc(callId).set({
+    //   'id': callId,
+    //   'caller_number': callerNumber,
+    //   'receiver_number': receiverNumber,
+    //   'time': getDateTimeNowAsId(),
+    //   'type': type,
+    //   'users': receiverNumber
+    // });
+    LoggerUtil.logs('Created Call');
+  }
+
+  static Future<void> updateCallsOnReceiveOfUser(List<String> receiverNumbers, String callId)async{
+    await firebaseService.firestore
+        .collection(FirebaseConstants.calls).doc(callId)
+        .set({
+      'receiver_numbers': FieldValue.arrayUnion(receiverNumbers),
+    },SetOptions(merge: true));
+    LoggerUtil.logs('Updated the CallsOnReceiveOrReject');
   }
 
   static Future<void> updateCallsOnReceiveOrReject(bool isCallActive, String callId)async{
@@ -102,6 +144,7 @@ class FirebaseUtils {
         .set({
       'is_call_active': isCallActive,
     },SetOptions(merge: true));
+    LoggerUtil.logs('Updated the CallsOnReceiveOrReject');
   }
 
 
@@ -156,6 +199,14 @@ class FirebaseUtils {
       'fcm_token': fcmToken,
     }, SetOptions(merge: true));
     LoggerUtil.logs('FCM Token $fcmToken');
+  }
+
+  static Future<void> deleteFcmToken(String phoneNumber) async {
+    final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
+    await usersCollection.doc(replacedPhoneNumber).update({
+      'fcm_token': FieldValue.delete(),
+    });
+    LoggerUtil.logs('FCM Token deleted for phone number $replacedPhoneNumber');
   }
 
   static Future<UserModel?> getCurrentUser() async {

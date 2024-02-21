@@ -67,24 +67,25 @@ class ContactTileComponent extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CircleAvatar(
-                        backgroundColor: Colors.lightGreenAccent,
+                        backgroundColor: ColorConstants.greenMain,
                         child: IconButton(
                           onPressed: () => onCallTapped!(),
                           icon: const Icon(
                             Icons.call,
                             size: 20,
-                            color: Colors.green,
+                            color: Colors.white,
                           ),
                         ),
                       ),
+                      SizedBox(width: 5,),
                       CircleAvatar(
-                        backgroundColor: Colors.lightGreenAccent,
+                        backgroundColor:  ColorConstants.greenMain,
                         child: IconButton(
                           onPressed: () => onVideoCallTapped!(),
                           icon: const Icon(
                             Icons.video_call,
                             size: 20,
-                            color: Colors.green,
+                            color: Colors.white,
                           ),
                         ),
                       ),

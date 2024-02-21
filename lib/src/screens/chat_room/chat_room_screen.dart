@@ -15,6 +15,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../constants/color_constants.dart';
 import '../../models/usert_model.dart';
 import '../../models/message_model.dart';
 
@@ -91,7 +92,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 }
               },
               child: Scaffold(
+
                 appBar: AppBar(
+                  backgroundColor: ColorConstants.greenMain,
                   automaticallyImplyLeading: false,
                   flexibleSpace: _appBar(),
                 ),
@@ -299,16 +302,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ? chatUserData.name
                 : widget.chatUser.name;
             return InkWell(
+
               onTap: () => NavigationUtil.push(
                   context, RouteConstants.viewUserProfile,
                   args: chatUserData),
               child: Row(
                 children: [
                   IconButton(
+                    color: Colors.white,
                       onPressed: () => Navigator.pop(context),
                       icon:
-                          const Icon(Icons.arrow_back, color: Colors.black54)),
-
+                          const Icon(Icons.arrow_back, color: Colors.white)),
                   //user profile picture
                   ProfileImageComponent(
                     url: chatUserData.image,
@@ -324,7 +328,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       Text(widget.chatUser.name ?? '',
                           style: const TextStyle(
                               fontSize: 16,
-                              color: Colors.black87,
+                              color: Colors.white,
                               fontWeight: FontWeight.w500)),
 
                       const SizedBox(height: 2),
@@ -336,7 +340,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   context: context,
                                   lastActive: chatUserData.lastActive ?? ''),
                           style: const TextStyle(
-                              fontSize: 12, color: Colors.black54)),
+                              fontSize: 12, color: Colors.white)),
                     ],
                   )
                 ],

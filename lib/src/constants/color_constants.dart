@@ -10,6 +10,8 @@ class ColorConstants {
 
   static const Color green = Color(0xff25d366);
   static const Color greenLight = Color.fromARGB(255, 218, 255, 176);
+  static const Color greenLighticon = Color.fromARGB(255, 184, 241, 118);
+
 
   static const Color blue = Colors.blueAccent;
   static const Color blueLight = Color.fromARGB(255, 221, 245, 255);

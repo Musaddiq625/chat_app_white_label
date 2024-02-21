@@ -171,7 +171,7 @@ class _MessageCardState extends State<MessageCard> {
                       ? mq.width * 0.6
                       : null,
                   padding: EdgeInsets.only(
-                      left: widget.message.type == MessageType.audio ? 0 : 10,
+                      left: widget.message.type == MessageType.audio ? 5 : 10,
                       right: widget.message.type == MessageType.audio ? 0 : 10,
                       top: 10,
                       bottom: 10),

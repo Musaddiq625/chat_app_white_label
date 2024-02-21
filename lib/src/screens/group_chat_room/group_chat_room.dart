@@ -15,6 +15,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../constants/color_constants.dart';
 import '../../models/message_model.dart';
 import '../../models/usert_model.dart';
 import '../../utils/firebase_utils.dart';
@@ -74,6 +75,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
               child: Scaffold(
                 appBar: AppBar(
                   automaticallyImplyLeading: false,
+                  backgroundColor: ColorConstants.greenMain,
                   flexibleSpace: _appBar(),
                 ),
                 backgroundColor: const Color.fromARGB(255, 234, 248, 255),
@@ -257,7 +259,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
         children: [
           IconButton(
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.arrow_back, color: Colors.black54)),
+              icon: const Icon(Icons.arrow_back, color: Colors.white)),
           //user profile picture
           ProfileImageComponent(
             url: widget.groupChat.groupData?.groupImage,
@@ -274,7 +276,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
               Text(widget.groupChat.groupData?.grougName ?? '',
                   style: const TextStyle(
                       fontSize: 16,
-                      color: Colors.black87,
+                      color: Colors.white,
                       fontWeight: FontWeight.w500)),
 
               const SizedBox(height: 2),
@@ -284,29 +286,20 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.grey,
-                child: IconButton(
-                  onPressed: () => callTap(),
-                  icon: const Icon(
-                    Icons.call,
-                    size: 20,
-                    color: Colors.white,
-                  ),
+              IconButton(
+                onPressed: () => callTap(),
+                icon: const Icon(
+                  Icons.call,
+                  size: 25,
+                  color: Colors.white,
                 ),
               ),
-              SizedBox(
-                width: 10,
-              ),
-              CircleAvatar(
-                backgroundColor: Colors.grey,
-                child: IconButton(
-                  onPressed: ()=>videoTap(),
-                  icon: const Icon(
-                    Icons.video_call,
-                    size: 20,
-                    color: Colors.white,
-                  ),
+              IconButton(
+                onPressed: ()=>videoTap(),
+                icon: const Icon(
+                  Icons.video_call,
+                  size: 25,
+                  color: Colors.white,
                 ),
               ),
               SizedBox(
@@ -330,10 +323,10 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
     final payload = {
       "to": fcmToken,
-      "notification": {
-        "title": title,
-        "body": body,
-      },
+      // "notification": {
+      //   "title": title,
+      //   "body": body,
+      // },
       "data": data
     };
 
@@ -396,7 +389,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     // }
 
     final callId = "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
-    await FirebaseUtils.createCalls(callId,senderContactNumber,userNumber,"group_call" );
+    await FirebaseUtils.createGroupCalls(callId,widget.groupChat.groupData!.id!,senderContactNumber,userNumber,"group_call", widget.groupChat.groupData!.grougName! );
     Map<String, dynamic> data = {
       "messageType": "group_call",
       "callId": callId,
@@ -409,8 +402,10 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     for (String userNumbers in userNumber) {
       final getUserData = await FirebaseUtils.getChatUser(userNumbers);
       UserModel chatUser = UserModel.fromJson(getUserData.data() ?? {});
-      await sendFCM(chatUser.fcmToken!, 'New Group Call Request',
-          'You have a new Group call request', data);
+      if(chatUser.fcmToken != null) {
+        await sendFCM(chatUser.fcmToken ?? "", 'New Group Call Request',
+            'You have a new Group call request', data);
+      }
       FirebaseUtils.updateUserCallList(chatUser.phoneNumber!, callId);
     }
 
@@ -432,6 +427,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           builder: (context) => AgoraGroupCalling(
             recipientUid: int.parse(FirebaseUtils.getDateTimeNowAsId()),
             callerName: widget.groupChat.groupData?.grougName,
+            groupImage:widget.groupChat.groupData?.groupImage,
             callId:callId,
           )),
     );
@@ -486,7 +482,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     // }
 
     final callId = "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
-    await FirebaseUtils.createCalls(callId,senderContactNumber,userNumber,"group_call" );
+    await FirebaseUtils.createGroupCalls(callId,widget.groupChat.groupData!.id!,senderContactNumber,userNumber,"group_call", widget.groupChat.groupData!.grougName! );
     Map<String, dynamic> data = {
       "messageType": "group_video_call",
       "callId":callId,
@@ -498,10 +494,12 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     for (String userNumbers in userNumber) {
       final getUserData = await FirebaseUtils.getChatUser(userNumbers);
       UserModel chatUser = UserModel.fromJson(getUserData.data() ?? {});
-      await sendFCM(chatUser.fcmToken!,
-          'New Group Call Request',
-          'You have a new Group call request',
-          data);
+      if(chatUser.fcmToken != null) {
+        await sendFCM(chatUser.fcmToken ?? "",
+            'New Group Call Request',
+            'You have a new Group call request',
+            data);
+      }
       FirebaseUtils.updateUserCallList(chatUser.phoneNumber!, callId);
     }
 
@@ -523,6 +521,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           builder: (context) => AgoraGroupVideoCalling(
             recipientUid: int.parse(FirebaseUtils.getDateTimeNowAsId()),
             callerName: widget.groupChat.groupData?.grougName,
+            groupImage:widget.groupChat.groupData?.groupImage,
             callId:callId,
           )),
     );

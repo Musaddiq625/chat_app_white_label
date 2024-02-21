@@ -122,16 +122,17 @@ class _ChatScreenState extends State<ChatScreen>
               color: ColorConstants.greenMain,
             )),
       floatingActionButton: SizedBox(
-        width: 70,
-        height: 70,
+        width: 60,
+        height: 60,
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {
               NavigationUtil.push(context, RouteConstants.contactsScreen);
             },
-            backgroundColor: ColorConstants.green,
+            backgroundColor: ColorConstants.greenMain,
             child: const Icon(
               Icons.message,
+              color: Colors.white,
             ),
           ),
         ),

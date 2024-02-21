@@ -35,9 +35,9 @@ class ChatUtils {
         .snapshots();
   }
 
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> getGroupChat(
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getGroupChat(
       String groupChatId) {
-    return chatsCollection.doc(groupChatId).snapshots();
+    return chatsCollection.doc(groupChatId).get();
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(

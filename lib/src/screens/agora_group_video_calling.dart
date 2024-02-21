@@ -10,14 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
+import '../components/profile_image_component.dart';
+import '../constants/color_constants.dart';
 
   class AgoraGroupVideoCalling extends StatefulWidget {
-  const AgoraGroupVideoCalling({Key? key, required this.recipientUid,  this.callerName,  this.callerNumber, this.callId, this.ownNumber}) : super(key: key);
+  const AgoraGroupVideoCalling({Key? key, required this.recipientUid,  this.callerName,  this.callerNumber, this.callId, this.groupImage ,this.ownNumber}) : super(key: key);
   final int recipientUid;
   final String? callerName;
   final String? callerNumber;
   final String? callId;
   final int? ownNumber;
+  final String? groupImage;
 
 
   @override
@@ -65,6 +68,7 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           debugPrint("remote user $remoteUid joined");
           setState(() {
+            _remoteUid = remoteUid;
             _remoteViews[remoteUid] = AgoraVideoView(
               controller: VideoViewController.remote(
                 rtcEngine: _engine,
@@ -98,7 +102,7 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
     await _engine.joinChannel(
       token: token,
       channelId: channel,
-      uid: widget.ownNumber!,
+      uid: 0!,
       options: const ChannelMediaOptions(),
     );
   }
@@ -149,66 +153,85 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
     int crossAxisCount = remoteUserCount <=  2 ?  1 :  2; // Adjust the number of columns as needed
 
     return Scaffold(
-      appBar: AppBar(
-        title:  Text(widget.callerName ?? "Group Video Call"),
-      ),
+      // appBar: AppBar(
+      //   title:  Text(widget.callerName ?? "Group Video Call"),
+      // ),
       body: Stack(
         children: [
-          // Center(
-          //   child: _remoteVideo(),
-          // ),
-          GridView.count(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: crossAxisCount,
-            children: _remoteViews.values.toList(),
+          Center(
+            child: _remoteVideo(),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: SizedBox(
-              width: 100,
-              height: 150,
-              child: Center(
-                child: _localUserJoined
-                    ? AgoraVideoView(
-                  controller: VideoViewController(
-                    rtcEngine: _engine,
-                    canvas: const VideoCanvas(uid: 0),
-                  ),
-                )
-                    : const CircularProgressIndicator(),
+          if (remoteUserCount ==  1)
+            Center(
+              child: _remoteViews.values.first, // Display the first (and only) remote view
+            ),
+          if (remoteUserCount >  1)
+            GridView.count(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: crossAxisCount,
+              children: _remoteViews.values.toList(),
+            ),
+          _remoteUid !=null ?
+          Padding(
+            padding: const EdgeInsets.only(bottom: 15.0,right: 10),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: SizedBox(
+                width: 100,
+                height: 150,
+                child: Center(
+                  child: _localUserJoined
+                      ? AgoraVideoView(
+                    controller: VideoViewController(
+                      rtcEngine: _engine,
+                      canvas: const VideoCanvas(uid: 0),
+                    ),
+                  )
+                      : const CircularProgressIndicator(),
+                ),
               ),
             ),
-          ),
-          Align(alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+          ) : SizedBox(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Align(
+              alignment: Alignment.bottomCenter,
               child: CircleAvatar(
+                radius: 30,
                 backgroundColor: Colors.red,
                 child: IconButton(
                   onPressed: () => _dispose(),
                   icon: const Icon(
                     Icons.call_end,
-                    size: 20,
-                    color: Colors.white70,
+                    size: 28,
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: RawMaterialButton(
-              onPressed: _onToggleMute,
-              child: Icon(
-                muted ? Icons.mic_off : Icons.mic,
-                color: muted ? Colors.white : Colors.blueAccent,
-                size: 20.0,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 25.0),
+                child: RawMaterialButton(
+                  onPressed: _onToggleMute,
+                  child: Icon(
+                    muted ? Icons.mic_off : Icons.mic,
+                    color: muted ? Colors.white : Colors.white,
+                    size: 20.0,
+                  ),
+                  shape: CircleBorder(),
+                  elevation: 2.0,
+                  fillColor: muted
+                      ? ColorConstants.greenMain
+                      : ColorConstants.greenMain,
+                  padding: const EdgeInsets.all(12.0),
+                ),
               ),
-              shape: CircleBorder(),
-              elevation: 2.0,
-              fillColor: muted ? Colors.blueAccent : Colors.white,
-              padding: const EdgeInsets.all(12.0),
             ),
           ),
         ],
@@ -218,17 +241,70 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
 
   Widget _remoteVideo() {
     if (_remoteUid != null) {
-      return AgoraVideoView(
-        controller: VideoViewController.remote(
-          rtcEngine: _engine,
-          canvas: VideoCanvas(uid: _remoteUid),
-          connection: const RtcConnection(channelId: channel),
+      // return AgoraVideoView(
+      //   controller: VideoViewController.remote(
+      //     rtcEngine: _engine,
+      //     canvas: VideoCanvas(uid: _remoteUid),
+      //     connection: const RtcConnection(channelId: channel),
+      //   ),
+      // );
+      return Container(
+        alignment: Alignment.bottomRight,
+        child: Column(
         ),
       );
     } else {
-      return const Text(
-        'Please wait for remote user to join',
-        textAlign: TextAlign.center,
+      return Container(
+        color: null,
+        child: Stack(
+          alignment: Alignment.center, // Aligns the children at the center
+          children: [
+            Center(
+              child: _localUserJoined
+                  ? AgoraVideoView(
+                controller: VideoViewController(
+                  rtcEngine: _engine,
+                  canvas: const VideoCanvas(uid: 0),
+                ),
+              )
+                  : const CircularProgressIndicator(),
+            ),
+            _remoteUid == null ?
+            Container(
+              color: _localUserJoined? Colors.grey.withOpacity(0.5) : Colors.white,
+              // Semi-transparent grey
+            ): Container(
+              // Semi-transparent grey
+            ),
+            // Add your text widget here
+            Padding(
+              padding: const EdgeInsets.only(top:80.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  widget.callerName ?? "",
+                  style: TextStyle(
+                    fontSize: 24, // Adjust the font size as needed
+                    color: _localUserJoined ? Colors.white : Colors.black, // Change the color as needed
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10,),
+            Padding(
+              padding: const EdgeInsets.only(top: 140.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  "Waiting for others...",
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                      color:  _localUserJoined ? Colors.white70 : Colors.black54 ), // Change the color as needed
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
   }
