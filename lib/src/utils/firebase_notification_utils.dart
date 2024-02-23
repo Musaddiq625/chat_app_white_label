@@ -169,14 +169,17 @@ class FirebaseNotificationUtils {
       print('Call accepted. Payload: ${payload.payload}');
       print("_callType 1 ${messageType}");
 
-      if (messageType == "call") {
+      var callType = payloadMap["callType"];
 
-        try {
-          FirebaseUtils.updateCallsOnReceiveOfUser([FirebaseUtils.phoneNumber!], callId);
-          FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
-        // await  Future.delayed(const Duration(seconds: 2), () {
-          print("callerNumber $callerNumber callerName${callerName}  callId${callId} FirebaseUtils.phoneNumber${FirebaseUtils.phoneNumber}");
-          print("Calllllllling");
+      if(callType == "background"){
+        if (messageType == "call") {
+
+          try {
+            FirebaseUtils.updateCallsOnReceiveOfUser([FirebaseUtils.phoneNumber!], callId);
+            FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
+            // await  Future.delayed(const Duration(seconds: 2), () {
+            print("callerNumber $callerNumber callerName${callerName}  callId${callId} FirebaseUtils.phoneNumber${FirebaseUtils.phoneNumber}");
+            print("Calllllllling");
             navigatorKey.currentState!.push(MaterialPageRoute(
                 builder: (context) => AgoraCalling(
                   recipientUid: int.parse(callerNumber),
@@ -184,75 +187,77 @@ class FirebaseNotificationUtils {
                   callerNumber: callerNumber,
                   callId: callId,
                 )));
-          // });
-        } catch (e) {
-          print("Error Call--- $e");
+            // });
+          } catch (e) {
+            print("Error Call--- $e");
+          }
         }
-      }
-      else if (messageType == "video_call") {
-        try {
-          FirebaseUtils.updateCallsOnReceiveOfUser(
-              [FirebaseUtils.phoneNumber!], callId);
-          FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
-          navigatorKey.currentState!.push(MaterialPageRoute(
-              builder: (context) => AgoraVideoCalling(
-                    recipientUid: int.parse(callerNumber!),
-                    callerName: callerName,
-                    callerNumber: callerNumber,
-                    callId: callId,
-                  )));
-        } catch (e) {
-          print("Error videocall $e");
-        }
-      }
-      else if (messageType == "group_call") {
-        try {
-          print(
-              "Hello calltype ${messageType} callerNumber ${callerNumber} callerName ${callerName} callId${callId} FirebaseUtils.phoneNumber${FirebaseUtils.phoneNumber} ");
+        else if (messageType == "video_call") {
           try {
             FirebaseUtils.updateCallsOnReceiveOfUser(
                 [FirebaseUtils.phoneNumber!], callId);
-          } catch (e) {
-            print("error 0 $e");
-          }
-          try {
             FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
-          } catch (e) {
-            print("error 1 $e");
-          }
-          try {
             navigatorKey.currentState!.push(MaterialPageRoute(
-                builder: (context) => AgoraGroupCalling(
-                      recipientUid: int.parse(callerNumber!),
-                      callerName: callerName,
-                      callerNumber: callerNumber,
-                      callId: callId,
-                      ownNumber: int.parse(FirebaseUtils.phoneNumber!),
-                    )));
+                builder: (context) => AgoraVideoCalling(
+                  recipientUid: int.parse(callerNumber!),
+                  callerName: callerName,
+                  callerNumber: callerNumber,
+                  callId: callId,
+                )));
           } catch (e) {
-            print("error 2 $e");
+            print("Error videocall $e");
           }
-        } catch (e) {
-          print("GroupCall Error $e");
         }
-      }
-      else if (messageType == "group_video_call") {
-        try {
-          FirebaseUtils.updateCallsOnReceiveOfUser(
-              [FirebaseUtils.phoneNumber!], callId);
-          FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
-          navigatorKey.currentState!.push(MaterialPageRoute(
-              builder: (context) => AgoraGroupVideoCalling(
-                    recipientUid: int.parse(callerNumber!),
+        else if (messageType == "group_call") {
+          try {
+            print(
+                "Hello calltype ${messageType} callerNumber ${callerNumber} callerName ${callerName} callId${callId} FirebaseUtils.phoneNumber${FirebaseUtils.phoneNumber} ");
+            try {
+              FirebaseUtils.updateCallsOnReceiveOfUser(
+                  [FirebaseUtils.phoneNumber!], callId);
+            } catch (e) {
+              print("error 0 $e");
+            }
+            try {
+              FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
+            } catch (e) {
+              print("error 1 $e");
+            }
+            try {
+              navigatorKey.currentState!.push(MaterialPageRoute(
+                  builder: (context) => AgoraGroupCalling(
+                    recipientUid: int.parse(callerNumber ?? ""),
                     callerName: callerName,
                     callerNumber: callerNumber,
-                    ownNumber: int.parse(FirebaseUtils.phoneNumber!),
                     callId: callId,
+                    ownNumber: int.parse(FirebaseUtils.phoneNumber!),
                   )));
-        } catch (e) {
-          print("Error video group call $e");
+            } catch (e) {
+              print("error 2 $e");
+            }
+          } catch (e) {
+            print("GroupCall Error $e");
+          }
+        }
+        else if (messageType == "group_video_call") {
+          try {
+            FirebaseUtils.updateCallsOnReceiveOfUser(
+                [FirebaseUtils.phoneNumber!], callId);
+            FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
+            navigatorKey.currentState!.push(MaterialPageRoute(
+                builder: (context) => AgoraGroupVideoCalling(
+                  recipientUid: int.parse(callerNumber),
+                  callerName: callerName,
+                  callerNumber: callerNumber,
+                  ownNumber: int.parse(FirebaseUtils.phoneNumber!),
+                  callId: callId,
+                )));
+          } catch (e) {
+            print("Error video group call $e");
+          }
         }
       }
+
     } else if (payload.actionId == "reject_action") {
       FirebaseUtils.updateCallsOnReceiveOrReject(false, callId);
       print('Call rejected. Payload: $payload');

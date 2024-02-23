@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
@@ -26,14 +28,23 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-
+      await flutterLocalNotificationsPlugin.cancelAll();
       final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
       print("flutterLocalNotificationsPlugin-splash $flutterLocalNotificationsPlugin");
       if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
         NotificationResponse? notificationResponse = notificationAppLaunchDetails!.notificationResponse;
-        FirebaseNotificationUtils.backgroundincomingCall(notificationResponse!);
-        selectedNotificationPayload = notificationAppLaunchDetails!.notificationResponse?.payload;
-        print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
+        var payloadMap = jsonDecode(notificationResponse!.payload!) as Map<String, dynamic>;
+        var callType = payloadMap["callType"];
+
+        if(callType=="background"){
+          FirebaseNotificationUtils.backgroundincomingCall(notificationResponse!);
+          selectedNotificationPayload = notificationAppLaunchDetails!.notificationResponse?.payload;
+          print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
+        }
+        else{
+          _navigateToNext();
+        }
+
       }
       else{
         _navigateToNext();

@@ -54,6 +54,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
   List<Contact> localContacts = [];
   UserModel? userData;
   Set<String> processedNumbers = {};
+  int remoteUserCount =0;
 
   @override
   void initState() {
@@ -75,12 +76,19 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
         .snapshots()
         .listen((DocumentSnapshot snapshot) {
       if (mounted) {
-        if (snapshot.exists && snapshot['is_call_active'] == false) {
-          _callStatusSubscription
-              ?.cancel(); // Check if the widget is still mounted
-          _dispose();
-        }
+        print("_remoteUserNames-count ${remoteUserCount}");
+          print("user now remove from call");
+          if(remoteUserCount < 1) {
+            if (snapshot.exists && snapshot['is_call_active'] == false) {
+              _callStatusSubscription
+                  ?.cancel(); // Check if the widget is still mounted
+              _dispose();
+            }
+          }
       }
+      // setState(() {
+      //   remoteUserCount = _remoteUserNames.length;
+      // });
     });
   }
 
@@ -134,7 +142,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
   }
 
   Future<void> initAgora() async {
-    int remoteUserCount = _remoteUserNames.length;
+    // int remoteUserCount = _remoteUserNames.length;
     print("recipetent Uid ${widget.recipientUid}");
     await [Permission.microphone, Permission.camera].request();
 
@@ -198,6 +206,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
                 // Update the _remoteUserNames map with the new contact name or number
                 setState(() {
                   _remoteUserNames[int.parse(newNumber)] = {'name': displayName, 'image': displayImage};
+                  remoteUserCount = _remoteUserNames.length;
                 });
 
                 // Mark the number as processed
@@ -215,10 +224,16 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
           // _dispose();
 
           debugPrint("remote user $remoteUid left channel");
+          print("remoteUserCount ${remoteUserCount}");
           setState(() {
             _remoteUserNames.remove(remoteUid);
+              remoteUserCount--;
           });
-          _dispose();
+          print("user-left _remoteUserNames.length  ${_remoteUserNames.length } count ${remoteUserCount}");
+          if(remoteUserCount <= 1){
+            _dispose();
+          }
+
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
           debugPrint(
@@ -275,7 +290,8 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
 
   @override
   Widget build(BuildContext context) {
-    int remoteUserCount = _remoteUserNames.length;
+
+     // remoteUserCount = _remoteUserNames.length;
     print("remoteruasercount $remoteUserCount");
     print("_remoteUserNames $_remoteUserNames");
 

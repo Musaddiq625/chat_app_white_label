@@ -35,6 +35,7 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
   DateTime? _callStartTime;
   StreamSubscription<DocumentSnapshot>? _callStatusSubscription;
   Map<int, AgoraVideoView> _remoteViews = {};
+  int remoteUserCount =0;
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
           debugPrint("remote user $remoteUid joined");
           setState(() {
             _remoteUid = remoteUid;
+
             _remoteViews[remoteUid] = AgoraVideoView(
               controller: VideoViewController.remote(
                 rtcEngine: _engine,
@@ -76,6 +78,7 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
                 connection: const RtcConnection(channelId: channel),
               ),
             );
+            remoteUserCount = _remoteViews.length;
           });
         },
 
@@ -84,8 +87,12 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
           debugPrint("remote user $remoteUid left channel");
           setState(() {
             _remoteViews.remove(remoteUid);
+            remoteUserCount--;
           });
-          _dispose();
+          print("user-left _remoteUserNames.length  ${_remoteViews.length } count ${remoteUserCount}");
+          if(remoteUserCount < 1){
+            _dispose();
+          }
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
           debugPrint(
