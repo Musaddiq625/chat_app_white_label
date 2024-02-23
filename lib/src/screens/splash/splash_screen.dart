@@ -1,12 +1,14 @@
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
+import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,12 +23,23 @@ class _SplashScreenState extends State<SplashScreen> {
       BlocProvider.of<AppSettingCubit>(context);
 
   @override
-  void initState() {
+  void initState() async{
+    await FirebaseNotificationUtils.getNotificationsForground();
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    print("flutterLocalNotificationsPlugin-splash $flutterLocalNotificationsPlugin");
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+      NotificationResponse? notificationResponse = notificationAppLaunchDetails!.notificationResponse;
+      FirebaseNotificationUtils.backgroundincomingCall(notificationResponse!);
+      selectedNotificationPayload = notificationAppLaunchDetails!.notificationResponse?.payload;
+      print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
+    }
+    else{
+      _navigateToNext();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getFlavorName();
       appSettingCubit.initCamera();
 
-      _navigateToNext();
     });
     super.initState();
   }
@@ -41,15 +54,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _navigateToNext() async {
     final userData = await FirebaseUtils.getCurrentUser();
 
-    final messegingService = getIt<FirebaseService>();
 
-    await messegingService.getNotificationSettings();
-    await messegingService.initializeLocalNotifications();
-    await messegingService.getNotificationsForground();
-    // await messegingService.getNotificationsBackground();
-    // await messegingService.requestCameraAndMicPermission();
-
-    Future.delayed(const Duration(milliseconds: 1500), () async {
+    Future.delayed(const Duration(milliseconds: 100), () async {
       if (userData != null) {
         if (userData.isProfileComplete == true) {
           NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
@@ -63,7 +69,6 @@ class _SplashScreenState extends State<SplashScreen> {
           RouteConstants.loginScreen,
         );
       }
-      ;
     });
   }
 

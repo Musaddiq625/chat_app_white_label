@@ -228,7 +228,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   String? senderName = FirebaseUtils.user?.name;
                                   String? senderContactNumber =
                                       FirebaseUtils.user?.phoneNumber;
-                                  final callId = senderContactNumber! + "_" + firebaseContactUser.phoneNumber!.replaceAll('+', "");
+                                  final callId = "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
                                   Map<String, dynamic> data = {
                                     "messageType": "video_call",
                                     "callId":callId,

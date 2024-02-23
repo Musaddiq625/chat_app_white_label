@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
 import '../constants/firebase_constants.dart';
+import '../constants/route_constants.dart';
 
 class AgoraCalling extends StatefulWidget {
   const AgoraCalling(
@@ -107,12 +108,6 @@ class _AgoraCallingState extends State<AgoraCalling> {
           });
 
         },
-        // onStreamMessage: (RtcConnection connection, int remoteUid, int streamId, Uint8List data, int length, int sentTs) {
-        //   String message = String.fromCharCodes(data); // Convert Uint8List to String
-        //   if (message == "callEnded") {
-        //     _dispose();
-        //   }
-        // },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           debugPrint("remote user $remoteUid left channel");
@@ -178,7 +173,8 @@ class _AgoraCallingState extends State<AgoraCalling> {
     if (mounted) {
       await _engine.leaveChannel();
       await _engine.release();
-      NavigationUtil.pop(context);
+      // NavigationUtil.pop(context);
+      NavigationUtil.popAllAndPush(context,RouteConstants.homeScreen);
     }
   }
 

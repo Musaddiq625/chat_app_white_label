@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen>
     tabController = TabController(vsync: this, length: 3);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await appSettingCubit.initGetLocalContacts(context);
-      PermissionUtils.requestCameraAndMicPermission();
+       PermissionUtils.requestCameraAndMicPermission();
     });
     SystemChannels.lifecycle.setMessageHandler((message) async {
       LoggerUtil.logs('message $message');
@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen>
           FirebaseUtils.updateActiveStatus(true);
           if (appSettingCubit.isContactactsPermissionGranted == false) {
             await appSettingCubit.initGetLocalContacts(context);
-            PermissionUtils.requestCameraAndMicPermission();
+            await PermissionUtils.requestCameraAndMicPermission();
           }
         }
         if (message.toString().contains('pause')) {

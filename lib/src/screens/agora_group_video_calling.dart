@@ -140,9 +140,11 @@ class _AgoraGroupVideoCallingState extends State<AgoraGroupVideoCalling> {
     Duration duration = DateTime.now().difference(_callStartTime!);
     String formattedDuration = "${duration.inMinutes}:${duration.inSeconds %  60}";
     await FirebaseUtils.updateCallsDuration(formattedDuration,false,widget.callId!,FirebaseUtils.getDateTimeNowAsId());
-    await _engine.leaveChannel();
-    await _engine.release();
-    NavigationUtil.pop(context);
+    if (mounted) {
+      await _engine.leaveChannel();
+      await _engine.release();
+      NavigationUtil.pop(context);
+    }
   }
 
   @override
