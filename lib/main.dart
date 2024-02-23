@@ -65,6 +65,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     } catch (e) {
       print('Error initializing CallDataModel: $e');
     }
+    callId = message.data["callId"];
+    callerNumber = message.data["callerNumber"];
+    FirebaseNotificationUtils.listenForCallStatusChanges(callId, int.parse(callerNumber));
     FirebaseNotificationUtils.initializeLocalNotifications();
     messegingService.handleIncomingCall(messegingService.callData);
     print("_callType 0 ${FirebaseNotificationUtils.callData.messageType}");

@@ -281,7 +281,7 @@ class FirebaseNotificationUtils {
       print("_callType : " + _callType.toString());
       _callId = message.data["callId"];
       _callerNumber = message.data["callerNumber"];
-      _listenForCallStatusChanges(_callId, int.parse(_callerNumber));
+      listenForCallStatusChanges(_callId, int.parse(_callerNumber));
       if (message.data["messageType"] == "call") {
         String? phoneNumber = message.data["callerNumber"];
         callerPhoneNumber = message.data["callerNumber"];
@@ -443,7 +443,8 @@ class FirebaseNotificationUtils {
 
   }
 
-  static void _listenForCallStatusChanges(String callId, int callnumber) {
+  @pragma('vm:entry-point')
+  static void listenForCallStatusChanges(String callId, int callnumber) {
     _callStatusSubscription = FirebaseUtils.firebaseService.firestore
         .collection(FirebaseConstants.calls)
         .doc(callId)
