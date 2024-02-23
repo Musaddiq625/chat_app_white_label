@@ -23,20 +23,22 @@ class _SplashScreenState extends State<SplashScreen> {
       BlocProvider.of<AppSettingCubit>(context);
 
   @override
-  void initState() async{
-    await FirebaseNotificationUtils.getNotificationsForground();
-    final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-    print("flutterLocalNotificationsPlugin-splash $flutterLocalNotificationsPlugin");
-    if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-      NotificationResponse? notificationResponse = notificationAppLaunchDetails!.notificationResponse;
-      FirebaseNotificationUtils.backgroundincomingCall(notificationResponse!);
-      selectedNotificationPayload = notificationAppLaunchDetails!.notificationResponse?.payload;
-      print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
-    }
-    else{
-      _navigateToNext();
-    }
+  void initState() {
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+
+      final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+      print("flutterLocalNotificationsPlugin-splash $flutterLocalNotificationsPlugin");
+      if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+        NotificationResponse? notificationResponse = notificationAppLaunchDetails!.notificationResponse;
+        FirebaseNotificationUtils.backgroundincomingCall(notificationResponse!);
+        selectedNotificationPayload = notificationAppLaunchDetails!.notificationResponse?.payload;
+        print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
+      }
+      else{
+        _navigateToNext();
+      }
+      await FirebaseNotificationUtils.getNotificationsForground();
       await getFlavorName();
       appSettingCubit.initCamera();
 
