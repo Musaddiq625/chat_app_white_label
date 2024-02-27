@@ -7,7 +7,6 @@ import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart'
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
-import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -30,16 +29,20 @@ class _SplashScreenState extends State<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await flutterLocalNotificationsPlugin.cancelAll();
       final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-      print("flutterLocalNotificationsPlugin-splash $flutterLocalNotificationsPlugin");
       if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
         NotificationResponse? notificationResponse = notificationAppLaunchDetails!.notificationResponse;
         var payloadMap = jsonDecode(notificationResponse!.payload!) as Map<String, dynamic>;
         var callType = payloadMap["callType"];
-
+        var messageType= payloadMap["messageType"];
         if(callType=="background"){
-          FirebaseNotificationUtils.backgroundincomingCall(notificationResponse!);
-          selectedNotificationPayload = notificationAppLaunchDetails!.notificationResponse?.payload;
-          print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
+          if(messageType != "missed-call" ){
+            FirebaseNotificationUtils.backgroundincomingCall(notificationResponse!);
+            selectedNotificationPayload = notificationAppLaunchDetails!.notificationResponse?.payload;
+            print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
+          }
+          else{
+            _navigateToNext();
+          }
         }
         else{
           _navigateToNext();

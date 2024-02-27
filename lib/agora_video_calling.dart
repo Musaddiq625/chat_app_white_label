@@ -4,6 +4,7 @@ import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,12 +20,13 @@ class AgoraVideoCalling extends StatefulWidget {
       required this.recipientUid,
       this.callerName,
       this.callerNumber,
-      this.callId})
+      this.callId,this.contactUserFcm})
       : super(key: key);
   final int recipientUid;
   final String? callerName;
   final String? callerNumber;
   final String? callId;
+  final String? contactUserFcm;
 
   @override
   State<AgoraVideoCalling> createState() => _AgoraVideoCallingState();
@@ -152,6 +154,34 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
       print("Error on dispose $e");
     }
   }
+
+
+  Future<void>  _disposeEndCall() async {
+    try {
+      Duration duration = DateTime.now().difference(_callStartTime!);
+      String formattedDuration =
+          "${duration.inMinutes}:${duration.inSeconds % 60}";
+      await FirebaseUtils.updateCallsDuration(formattedDuration, false,
+          widget.callId!, FirebaseUtils.getDateTimeNowAsId());
+      Map<String, dynamic> data = {
+        "messageType": "missed-video-call",
+        "callId":callId,
+        "callerName": FirebaseUtils.user?.name,
+        "callerNumber": FirebaseUtils.user?.phoneNumber,
+      };
+      if(_remoteUid == null){
+        FirebaseNotificationUtils.sendFCM(widget.contactUserFcm!, "Missed Video Call", "You have a Video call request", data);
+      }
+      if (mounted) {
+        await _engine.leaveChannel();
+        await _engine.release();
+        NavigationUtil.popAllAndPush(context,RouteConstants.homeScreen);
+      }
+    } catch (e) {
+      print("Error on dispose $e");
+    }
+  }
+
 
   // Create UI with local view and remote view
   @override

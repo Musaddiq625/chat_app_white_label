@@ -1,14 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../../main.dart';
 import '../constants/firebase_constants.dart';
 import '../constants/route_constants.dart';
@@ -19,7 +20,7 @@ class AgoraCalling extends StatefulWidget {
       required this.recipientUid,
       this.callerName,
       this.callerNumber,
-      this.callId, this.callerImage
+      this.callId, this.callerImage, this.contactUserFcm
       })
       : super(key: key);
   final int recipientUid;
@@ -27,6 +28,7 @@ class AgoraCalling extends StatefulWidget {
   final String? callerNumber;
   final String? callId;
   final String? callerImage;
+  final String? contactUserFcm;
 
   @override
   State<AgoraCalling> createState() => _AgoraCallingState();
@@ -48,12 +50,6 @@ class _AgoraCallingState extends State<AgoraCalling> {
   void initState() {
     super.initState();
     initAgora();
-    // _callStartTime = DateTime.now(); // Record the start time of the call
-    // _timer = Timer.periodic(Duration(seconds:  1), (Timer t) {
-    //   setState(() {
-    //     callDuration = DateTime.now().difference(_callStartTime!);
-    //   });
-    // });
     _listenForCallStatusChanges();
   }
 
@@ -124,12 +120,8 @@ class _AgoraCallingState extends State<AgoraCalling> {
     );
 
     await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
-    // await _engine.enableVideo();
     await _engine.disableVideo();
-    // await _engine.enableAudio();
-    // await _engine.disableAudio();
     await _engine.setDefaultAudioRouteToSpeakerphone(false);
-    // await _engine.startPreview();
 
     await _engine.joinChannel(
       token: token,
@@ -166,19 +158,43 @@ class _AgoraCallingState extends State<AgoraCalling> {
     Duration duration = DateTime.now().difference(_callStartTime ?? DateTime.now());
     String formattedDuration =
         "${duration.inMinutes}:${duration.inSeconds % 60}";
-    await FirebaseUtils.updateCallsDuration(formattedDuration, false,
-        widget.callId!, FirebaseUtils.getDateTimeNowAsId());
-    // await FirebaseUtils.firebaseService.flutterLocalNotificationsPlugin.cancel(int.parse(widget.callerNumber!));
+    await FirebaseUtils.updateCallsDuration(formattedDuration, false, widget.callId!, FirebaseUtils.getDateTimeNowAsId());
+    Map<String, dynamic> data = {
+      "messageType": "missed-call",
+      "callId":callId,
+      "callerName": FirebaseUtils.user?.name,
+      "callerNumber": FirebaseUtils.user?.phoneNumber,
+    };
 
     if (mounted) {
       await _engine.leaveChannel();
       await _engine.release();
-      // NavigationUtil.pop(context);
       NavigationUtil.popAllAndPush(context,RouteConstants.homeScreen);
     }
   }
 
-  // Create UI with local view and remote view
+  Future<void> _disposeEndCall() async {
+    Duration duration = DateTime.now().difference(_callStartTime ?? DateTime.now());
+    String formattedDuration =
+        "${duration.inMinutes}:${duration.inSeconds % 60}";
+    await FirebaseUtils.updateCallsDuration(formattedDuration, false, widget.callId!, FirebaseUtils.getDateTimeNowAsId());
+    Map<String, dynamic> data = {
+      "messageType": "missed-call",
+      "callId":callId,
+      "callerName": FirebaseUtils.user?.name,
+      "callerNumber": FirebaseUtils.user?.phoneNumber,
+    };
+    if(_remoteUid == null){
+      FirebaseNotificationUtils.sendFCM(widget.contactUserFcm!, "Missed Call", "You have a call request", data);
+    }
+
+    if (mounted) {
+      await _engine.leaveChannel();
+      await _engine.release();
+      NavigationUtil.popAllAndPush(context,RouteConstants.homeScreen);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -196,7 +212,7 @@ class _AgoraCallingState extends State<AgoraCalling> {
                 radius: 30,
                 backgroundColor: Colors.red,
                 child: IconButton(
-                  onPressed: () => _dispose(),
+                  onPressed: () => _disposeEndCall(),
                   icon: const Icon(
                     Icons.call_end,
                     size: 28,

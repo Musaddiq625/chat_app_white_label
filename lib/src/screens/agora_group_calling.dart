@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -16,8 +18,6 @@ import '../models/contacts_model.dart';
 import '../models/usert_model.dart';
 
 class AgoraGroupCalling extends StatefulWidget {
-
-
   const AgoraGroupCalling(
       {Key? key,
       required this.recipientUid,
@@ -54,7 +54,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
   List<Contact> localContacts = [];
   UserModel? userData;
   Set<String> processedNumbers = {};
-  int remoteUserCount =0;
+  int remoteUserCount = 0;
 
   @override
   void initState() {
@@ -77,14 +77,14 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
         .listen((DocumentSnapshot snapshot) {
       if (mounted) {
         print("_remoteUserNames-count ${remoteUserCount}");
-          print("user now remove from call");
-          if(remoteUserCount < 1) {
-            if (snapshot.exists && snapshot['is_call_active'] == false) {
-              _callStatusSubscription
-                  ?.cancel(); // Check if the widget is still mounted
-              _dispose();
-            }
+        print("user now remove from call");
+        if (remoteUserCount < 1) {
+          if (snapshot.exists && snapshot['is_call_active'] == false) {
+            _callStatusSubscription
+                ?.cancel(); // Check if the widget is still mounted
+            _dispose();
           }
+        }
       }
       // setState(() {
       //   remoteUserCount = _remoteUserNames.length;
@@ -156,12 +156,14 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           debugPrint("local user ${connection.localUid} joined");
-          FirebaseUtils.updateCallsOnReceiveOfUser([FirebaseUtils.phoneNumber!], widget.callId!);
+          FirebaseUtils.updateCallsOnReceiveOfUser(
+              [FirebaseUtils.phoneNumber!], widget.callId!);
           setState(() {
             _localUserJoined = true;
           });
         },
-        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) async {
+        onUserJoined:
+            (RtcConnection connection, int remoteUid, int elapsed) async {
           debugPrint("remote user $remoteUid joined");
           setState(() {
             _remoteUid = remoteUid;
@@ -175,7 +177,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
               .then((DocumentSnapshot snapshot) async {
             if (snapshot.exists && snapshot['receiver_numbers'] != null) {
               List<String> receiverNumbers =
-              List<String>.from(snapshot['receiver_numbers']);
+                  List<String>.from(snapshot['receiver_numbers']);
               print("receiverNumbers $receiverNumbers");
 
               // Filter out numbers that have already been processed
@@ -186,7 +188,8 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
               // Process each unprocessed number
               for (String newNumber in unprocessedNumbers) {
                 final newUserData = await FirebaseUtils.getChatUser(newNumber);
-                UserModel userData = UserModel.fromJson(newUserData.data() ?? {});
+                UserModel userData =
+                    UserModel.fromJson(newUserData.data() ?? {});
                 String displayImage = userData?.image ?? "";
                 print("displayImage $displayImage");
                 print("newNumber $newNumber");
@@ -195,17 +198,19 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
                 Contact? contact = getContactByPhoneNumber(newNumber);
                 print(" contact?.displayName ${contact?.displayName}");
                 String displayName;
-                if(newNumber == FirebaseUtils.user?.id){
-                   displayName = "You";
-                }
-                else{
+                if (newNumber == FirebaseUtils.user?.id) {
+                  displayName = "You";
+                } else {
                   displayName = contact?.displayName ?? newNumber;
                 }
                 print("displayName $displayName");
 
                 // Update the _remoteUserNames map with the new contact name or number
                 setState(() {
-                  _remoteUserNames[int.parse(newNumber)] = {'name': displayName, 'image': displayImage};
+                  _remoteUserNames[int.parse(newNumber)] = {
+                    'name': displayName,
+                    'image': displayImage
+                  };
                   remoteUserCount = _remoteUserNames.length;
                 });
 
@@ -216,7 +221,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
           });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) {
+            UserOfflineReasonType reason) async {
           //debugPrint("remote user $remoteUid left channel");
           // setState(() {
           //   _remoteUid = null;
@@ -227,13 +232,54 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
           print("remoteUserCount ${remoteUserCount}");
           setState(() {
             _remoteUserNames.remove(remoteUid);
-              remoteUserCount--;
+            remoteUserCount--;
           });
-          print("user-left _remoteUserNames.length  ${_remoteUserNames.length } count ${remoteUserCount}");
-          if(remoteUserCount <= 1){
-            _dispose();
-          }
+          print("User names to left ${_remoteUserNames.toString()}");
+          print(
+              "user-left _remoteUserNames.length  ${_remoteUserNames.length} count ${remoteUserCount}");
+          if (remoteUserCount <= 1) {
+            await FirebaseUtils.firebaseService.firestore
+                .collection(FirebaseConstants.calls)
+                .doc(widget.callId)
+                .get()
+                .then((DocumentSnapshot snapshot) async {
+              if (snapshot.exists && snapshot['users'] != null) {
+                List<String> userNumbers =
+                List<String>.from(snapshot['users']);
+                print("receiverNumbers $userNumbers");
+                List<int> remoteUserNumbers = _remoteUserNames.keys.toList();
 
+                List<String> nonExistentUserNumbers = [];
+                for (String userNumber in userNumbers) {
+                  int number = int.parse(userNumber);
+                  if (!remoteUserNumbers.contains(number)) {
+                    nonExistentUserNumbers.add(userNumber);
+                  }
+                }
+                if(nonExistentUserNumbers.isNotEmpty){
+                  for (String newNumber in nonExistentUserNumbers) {
+                    final newUserData = await FirebaseUtils.getChatUser(
+                        newNumber);
+
+                    Map<String, dynamic> data = {
+                      "messageType": "missed-group-call",
+                      "callId":widget.callId,
+                      "callerName": widget.callerName,
+                      // "callerNumber": FirebaseUtils.user?.phoneNumber,
+                    };
+
+                    UserModel userData =
+                    UserModel.fromJson(newUserData.data() ?? {});
+                    final userFcmToken = userData.fcmToken;
+                    FirebaseNotificationUtils.sendFCM(userFcmToken!, "Missed Group Call", "You have a Group call request", data);
+                  }
+                }
+
+              }
+            });
+
+            _disposeEndCall();
+          }
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
           debugPrint(
@@ -283,19 +329,31 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
     if (mounted) {
       await _engine.leaveChannel();
       await _engine.release();
+    }
+    NavigationUtil.pop(context);
+  }
 
+  Future<void> _disposeEndCall() async {
+    Duration duration = DateTime.now().difference(_callStartTime!);
+    String formattedDuration =
+        "${duration.inMinutes}:${duration.inSeconds % 60}";
+    await FirebaseUtils.updateCallsDuration(formattedDuration, false,
+        widget.callId!, FirebaseUtils.getDateTimeNowAsId());
+
+    if (mounted) {
+      await _engine.leaveChannel();
+      await _engine.release();
     }
     NavigationUtil.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-
-     // remoteUserCount = _remoteUserNames.length;
+    // remoteUserCount = _remoteUserNames.length;
     print("remoteruasercount $remoteUserCount");
     print("_remoteUserNames $_remoteUserNames");
 
-    int crossAxisCount = remoteUserCount <=  2 ?  1 :  2;
+    int crossAxisCount = remoteUserCount <= 2 ? 1 : 2;
     // _remoteUserNames[4] = {'name': 'displayName4', 'image': null};
     // _remoteUserNames[5] = {'name': 'displayName5', 'image': null};
     // _remoteUserNames[6] = {'name': 'displayName6', 'image': null};
@@ -333,7 +391,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                    entry.value['name'], // Display the user name
+                          entry.value['name'], // Display the user name
                           style: TextStyle(fontSize: 16.0), // Style the text
                         ),
                         SizedBox(height: 18.0),

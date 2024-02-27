@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
@@ -27,12 +26,9 @@ late Size mq;
 
 const appId = "dd77f448b0004006b22181d772231fd0";
 const token =
-    "007eJxTYJCtf1Gx6c4Ns12hcg7XC/fmRfonu7351n8l89Hd/z0zVt1SYEhJMTdPMzGxSDIwMDAxMDBLMjIytDAEChoZGRumpRjs8L6e2hDIyCAUs4KBEQpBfBaGktTiEgYGABtnIcs=";
+    "007eJxTYNC2vlHDFNvGcuVWxfYfzG7S9kLGj1hUrcL899drNlS6SyowpKSYm6eZmFgkGRgYmBgYmCUZGRlaGAIFjYyMDdNSDJii7qQ2BDIySGlasTAyQCCIz8JQklpcwsAAAOhxGcE=";
 const channel = "test";
-String callType = '';
 String callId = "";
-String callerNumber = "";
-
 String? callerName;
 String? callerPhoneNumber;
 String? selectedNotificationPayload;
@@ -43,16 +39,12 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
-  //
   await Firebase.initializeApp();
   final getIt = GetIt.I;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  // Check if FirebaseService is already registered
   if (!getIt.isRegistered<FirebaseService>()) {
-    // If not registered, register it as a singleton
     getIt.registerSingleton(FirebaseService());
   }
   final messegingService = getIt<FirebaseService>();
@@ -66,8 +58,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       print('Error initializing CallDataModel: $e');
     }
     callId = message.data["callId"];
-    callerNumber = message.data["callerNumber"];
-    FirebaseNotificationUtils.listenForCallStatusChanges(callId, int.parse(callerNumber));
+    FirebaseNotificationUtils.listenForCallStatusChanges(
+        callId, int.parse(message.data["callerNumber"]));
     FirebaseNotificationUtils.initializeLocalNotifications();
     messegingService.handleIncomingCall(messegingService.callData);
     print("_callType 0 ${FirebaseNotificationUtils.callData.messageType}");
@@ -81,22 +73,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     };
     final payloadString = jsonEncode(data);
 
-    final String? action = message.data["action"];
-
-    if (action == "accept_action") {
-      // User tapped on "Accept" action, open the app or perform desired action
-      // based on your app logic
-    } else if (action == "reject_action") {
-      // User tapped on "Reject" action, do not open the app
-      return;
-    }
-
     if (message.data["messageType"] == "call") {
       String? phoneNumber = message.data["callerNumber"];
-      // callData.callerPhoneNumber = message.data["callerNumber"];
       callerName = message.data["callerName"];
       if (phoneNumber != null) {
-        // await initializeLocalNotifications();
         const AndroidNotificationDetails androidPlatformChannelSpecifics =
             AndroidNotificationDetails(
           'test',
@@ -134,7 +114,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       callerPhoneNumber = message.data["callerNumber"];
       callerName = message.data["callerName"];
       if (phoneNumber != null) {
-        // await initializeLocalNotifications();
         const AndroidNotificationDetails androidPlatformChannelSpecifics =
             AndroidNotificationDetails(
           'test',
@@ -143,6 +122,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           priority: Priority.high,
           showWhen: false,
           enableLights: true,
+          sound:
+              UriAndroidNotificationSound('content://settings/system/ringtone'),
           enableVibration: true,
           actions: <AndroidNotificationAction>[
             AndroidNotificationAction('accept_action', 'Accept',
@@ -171,7 +152,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       callerName = message.data["callerName"];
 
       if (phoneNumber != null) {
-        // await initializeLocalNotifications();
         const AndroidNotificationDetails androidPlatformChannelSpecifics =
             AndroidNotificationDetails(
           'test',
@@ -180,8 +160,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           priority: Priority.high,
           showWhen: false,
           enableLights: true,
+          sound:
+              UriAndroidNotificationSound('content://settings/system/ringtone'),
           enableVibration: true,
-          // playSound: true,
           ongoing: true,
           audioAttributesUsage: AudioAttributesUsage.alarm,
           actions: <AndroidNotificationAction>[
@@ -211,7 +192,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       callerPhoneNumber = message.data["callerNumber"];
       callerName = message.data["callerName"];
       if (phoneNumber != null) {
-        // await initializeLocalNotifications();
         const AndroidNotificationDetails androidPlatformChannelSpecifics =
             AndroidNotificationDetails(
           'test',
@@ -220,8 +200,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           priority: Priority.high,
           showWhen: false,
           enableLights: true,
+          sound:
+              UriAndroidNotificationSound('content://settings/system/ringtone'),
           enableVibration: true,
-          // playSound: true,
           ongoing: true,
           audioAttributesUsage: AudioAttributesUsage.alarm,
           actions: <AndroidNotificationAction>[
@@ -231,7 +212,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
               'reject_action',
               'Reject',
               cancelNotification: true,
-              // showsUserInterface: true,
             ),
           ],
         );
@@ -246,9 +226,58 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         );
       }
     }
-
-    // Your background message handling logic here
-    // Same as the logic in getNotificationsBackground method
+    else if (message.data["messageType"] == "missed-call") {
+      String? phoneNumber = message.data["callerNumber"];
+      callerPhoneNumber = message.data["callerNumber"];
+      callerName = message.data["callerName"];
+      if (phoneNumber != null) {
+        const AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails(
+          'test',
+          'Missed Call',
+          importance: Importance.max,
+          priority: Priority.high,
+          showWhen: false,
+          enableLights: true,
+          enableVibration: true,
+        );
+        const NotificationDetails platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+        await flutterLocalNotificationsPlugin.show(
+          0,
+          'Missed Call',
+          'You have missed a call from $callerName',
+          platformChannelSpecifics,
+          payload: payloadString,
+        );
+      }
+    }
+    else if (message.data["messageType"] == "missed-video-call") {
+      String? phoneNumber = message.data["callerNumber"];
+      callerPhoneNumber = message.data["callerNumber"];
+      callerName = message.data["callerName"];
+      if (phoneNumber != null) {
+        const AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails(
+          'test',
+          'Missed Call',
+          importance: Importance.max,
+          priority: Priority.high,
+          showWhen: false,
+          enableLights: true,
+          enableVibration: true,
+        );
+        const NotificationDetails platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+        await flutterLocalNotificationsPlugin.show(
+          0,
+          'Missed Video Call',
+          'You have missed a Video call from $callerName',
+          platformChannelSpecifics,
+          payload: payloadString,
+        );
+      }
+    }
   } catch (e) {
     print("Error handling background message: $e");
   }
@@ -256,20 +285,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-  //     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  // print(
-  //     "flutterLocalNotificationsPlugin-splash $flutterLocalNotificationsPlugin");
-  // if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-  //   NotificationResponse? notificationResponse =
-  //       notificationAppLaunchDetails!.notificationResponse;
-  //   print("notificationResponse?.actionId ${notificationResponse?.actionId}");
-  //   if (notificationResponse?.actionId == "reject_action") {
-  //     exit(0);
-  //   }
-  //   selectedNotificationPayload = notificationAppLaunchDetails.notificationResponse?.payload;
-  //   print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
-  // }
 
   await Firebase.initializeApp();
   FirebaseNotificationUtils.getNotificationSettings();
@@ -292,6 +307,19 @@ void main() async {
 
   runApp(const MyApp());
 }
+
+// void main() => runApp(const BottomNavigationBarExampleApp());
+//
+// class BottomNavigationBarExampleApp extends StatelessWidget {
+//   const BottomNavigationBarExampleApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return const MaterialApp(
+//       home: BottomNavBar(),
+//     );
+//   }
+// }
 
 Future<void> _initRepos() async {
   getIt.registerSingleton(FirebaseService());
@@ -339,7 +367,6 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        // initialRoute: RouteConstants.myApp,
         initialRoute: RouteConstants.splashScreen,
         onGenerateRoute: generateRoute,
         debugShowCheckedModeBanner: false,

@@ -1,9 +1,10 @@
-import 'dart:convert';
+
 import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
+import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -13,7 +14,6 @@ import 'package:flutter/material.dart';
 import '../../../agora_video_calling.dart';
 import '../../../main.dart';
 import '../../constants/color_constants.dart';
-import 'package:http/http.dart' as http;
 import '../agora_calling.dart';
 
 class ContactsScreen extends StatefulWidget {
@@ -54,39 +54,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
       bool contactExist = (snapshot.data?.docs ?? []).any((firebaseUser) =>
           firebaseUser.id == localNumber &&
           firebaseUser.id != FirebaseUtils.phoneNumber);
-      // .any for filtering in Firebase users
       if (contactExist) {
         contactToDisplay.add(ContactModel(
             localName: localContacts[i].displayName,
             phoneNumber: localNumber ?? '',
         ));
       }
-    }
-  }
-
-  Future<void> sendFCM(String fcmToken, String title, String body,
-      Map<String, dynamic> data) async {
-    Uri postUrl = Uri.parse('https://fcm.googleapis.com/fcm/send');
-    final headers = {
-      'content-type': 'application/json',
-      'Authorization':
-          'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
-    };
-
-    final payload = {
-      "to": fcmToken,
-      "data": data
-    };
-
-    final response = await http.post(postUrl,
-        body: json.encode(payload),
-        encoding: Encoding.getByName('utf-8'),
-        headers: headers);
-
-    if (response.statusCode == 200) {
-      print('Notification sent successfully');
-    } else {
-      print('Failed to send notification ${response.statusCode}');
     }
   }
 
@@ -110,26 +83,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
             fontSize: 18,
           ),
         ),
-        actions: const [
-          // IconButton(
-          //   onPressed: () {},
-          //   icon: const Icon(
-          //     Icons.search,
-          //     size: 28,
-          //   ),
-          //   color: ColorConstants.white,
-          // ),
-          // IconButton(
-          //   onPressed: () {
-          //     NavigationUtil.pop(context);
-          //   },
-          //   icon: const Icon(
-          //     Icons.more_vert_rounded,
-          //     size: 28,
-          //   ),
-          //   color: ColorConstants.white,
-          // ),
-        ],
       ),
       body: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
           future: FirebaseUtils.getAllUsers(),
@@ -197,7 +150,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   firebaseContactUsers.add(firebaseContactUser.id!);
                                   firebaseContactUsers.add(FirebaseUtils.user!.id!);
                                   if( firebaseContactUser.fcmToken != null) {
-                                    await sendFCM(
+                                    await FirebaseNotificationUtils.sendFCM(
                                         firebaseContactUser.fcmToken ?? "",
                                         'New Call Request',
                                         'You have a new call request',
@@ -213,12 +166,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                             recipientUid: int.parse(
                                                 firebaseContactUser
                                                     .phoneNumber!),
-                                            callerName:
-                                                firebaseContactUser.name,
-                                            callerNumber: firebaseContactUser
-                                                .phoneNumber,
+                                            callerName: firebaseContactUser.name,
+                                            callerNumber: firebaseContactUser.phoneNumber,
                                           callId:callId,
                                           callerImage : firebaseContactUser.image,
+                                          contactUserFcm: firebaseContactUser.fcmToken,
                                         )),
                                   );
                                 },
@@ -239,7 +191,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   firebaseContactUsers.add(firebaseContactUser.id!);
                                   firebaseContactUsers.add(FirebaseUtils.user!.id!);
                                   if( firebaseContactUser.fcmToken != null){
-                                    await sendFCM(
+                                    await FirebaseNotificationUtils.sendFCM(
                                         firebaseContactUser.fcmToken ?? "",
                                         'Video Call Request',
                                         'You have a new Video call request',
@@ -261,6 +213,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                             callerNumber: firebaseContactUser
                                                 .phoneNumber,
                                         callId: callId,
+                                          contactUserFcm: firebaseContactUser.fcmToken,
                                         )),
                                   );
                                 },

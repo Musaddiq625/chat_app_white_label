@@ -18,6 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants/color_constants.dart';
 import '../../models/message_model.dart';
 import '../../models/usert_model.dart';
+import '../../utils/firebase_notification_utils.dart';
 import '../../utils/firebase_utils.dart';
 import '../agora_calling.dart';
 import 'package:http/http.dart' as http;
@@ -312,36 +313,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     );
   }
 
-  Future<void> sendFCM(String fcmToken, String title, String body,
-      Map<String, dynamic> data) async {
-    Uri postUrl = Uri.parse('https://fcm.googleapis.com/fcm/send');
-    final headers = {
-      'content-type': 'application/json',
-      'Authorization':
-          'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
-    };
-
-    final payload = {
-      "to": fcmToken,
-      // "notification": {
-      //   "title": title,
-      //   "body": body,
-      // },
-      "data": data
-    };
-
-    final response = await http.post(postUrl,
-        body: json.encode(payload),
-        encoding: Encoding.getByName('utf-8'),
-        headers: headers);
-
-    if (response.statusCode == 200) {
-      print('Notification sent successfully');
-    } else {
-      print('Failed to send notification ${response.statusCode}');
-    }
-  }
-
   Future<void> callTap() async {
     userNumber = (widget.groupChat.users) ?? [];
     String? senderName = FirebaseUtils.user?.name;
@@ -403,21 +374,14 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
       final getUserData = await FirebaseUtils.getChatUser(userNumbers);
       UserModel chatUser = UserModel.fromJson(getUserData.data() ?? {});
       if(chatUser.fcmToken != null) {
-        await sendFCM(chatUser.fcmToken ?? "", 'New Group Call Request',
+        await FirebaseNotificationUtils.sendFCM(chatUser.fcmToken ?? "", 'New Group Call Request',
             'You have a new Group call request', data);
       }
       FirebaseUtils.updateUserCallList(chatUser.phoneNumber!, callId);
     }
 
 
-    // await sendFCM(
-    //     firebaseContactUser.fcmToken!,
-    //     'New Call Request',
-    //     'You have a new call request',
-    //     data);
-    // await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUser.phoneNumber!,"call" );
-    // await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
-    // await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
+
 
     await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
 
@@ -495,7 +459,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
       final getUserData = await FirebaseUtils.getChatUser(userNumbers);
       UserModel chatUser = UserModel.fromJson(getUserData.data() ?? {});
       if(chatUser.fcmToken != null) {
-        await sendFCM(chatUser.fcmToken ?? "",
+        await FirebaseNotificationUtils.sendFCM(chatUser.fcmToken ?? "",
             'New Group Call Request',
             'You have a new Group call request',
             data);
@@ -503,15 +467,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
       FirebaseUtils.updateUserCallList(chatUser.phoneNumber!, callId);
     }
 
-
-    // await sendFCM(
-    //     firebaseContactUser.fcmToken!,
-    //     'New Call Request',
-    //     'You have a new call request',
-    //     data);
-    // await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUser.phoneNumber!,"call" );
-    // await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
-    // await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
 
     await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
 
