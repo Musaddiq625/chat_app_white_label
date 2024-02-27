@@ -3,12 +3,10 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../models/usert_model.dart';
 import '../models/message_model.dart';
+import '../models/usert_model.dart';
 
 class APIs {
   // for authentication

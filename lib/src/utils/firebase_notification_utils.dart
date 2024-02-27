@@ -11,7 +11,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
 import '../../agora_video_calling.dart';
-import '../../main.dart';
+import '../../globals.dart';
+import '../../globals.dart';
+import '../../globals.dart';
 import '../constants/firebase_constants.dart';
 import '../constants/route_constants.dart';
 import '../models/call_data_model.dart';
@@ -500,9 +502,7 @@ class FirebaseNotificationUtils {
         if (snapshot.exists && snapshot['is_call_active'] == false) {
           _callStatusSubscription
               ?.cancel(); // Check if the widget is still mounted
-          FirebaseUtils.firebaseService.flutterLocalNotificationsPlugin
-              .cancel(0); // Leave the channel if is_call_active is false
-          // Leave the channel if is_call_active is false
+          flutterLocalNotificationsPlugin.cancel(0);// Leave the channel if is_call_active is false
         }
       } catch (e) {
         print("error _listenForCallStatusChanges $e");

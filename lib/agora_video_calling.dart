@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
+import 'globals.dart';
 
 // class AgoraCalling extends StatefulWidget with WidgetsBindingObserver {
 class AgoraVideoCalling extends StatefulWidget {

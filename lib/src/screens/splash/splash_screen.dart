@@ -12,6 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../globals.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -25,37 +27,38 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await flutterLocalNotificationsPlugin.cancelAll();
-      final NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+      final NotificationAppLaunchDetails? notificationAppLaunchDetails =
+          await flutterLocalNotificationsPlugin
+              .getNotificationAppLaunchDetails();
       if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-        NotificationResponse? notificationResponse = notificationAppLaunchDetails!.notificationResponse;
-        var payloadMap = jsonDecode(notificationResponse!.payload!) as Map<String, dynamic>;
+        NotificationResponse? notificationResponse =
+            notificationAppLaunchDetails!.notificationResponse;
+        var payloadMap =
+            jsonDecode(notificationResponse!.payload!) as Map<String, dynamic>;
         var callType = payloadMap["callType"];
-        var messageType= payloadMap["messageType"];
-        if(callType=="background"){
-          if(messageType != "missed-call" ){
-            FirebaseNotificationUtils.backgroundincomingCall(notificationResponse!);
-            selectedNotificationPayload = notificationAppLaunchDetails!.notificationResponse?.payload;
-            print("selectedNotificationPayload-splash ${selectedNotificationPayload}");
-          }
-          else{
+        var messageType = payloadMap["messageType"];
+        if (callType == "background") {
+          if (messageType != "missed-call") {
+            FirebaseNotificationUtils.backgroundincomingCall(
+                notificationResponse!);
+            selectedNotificationPayload =
+                notificationAppLaunchDetails!.notificationResponse?.payload;
+            print(
+                "selectedNotificationPayload-splash ${selectedNotificationPayload}");
+          } else {
             _navigateToNext();
           }
-        }
-        else{
+        } else {
           _navigateToNext();
         }
-
-      }
-      else{
+      } else {
         _navigateToNext();
       }
       await FirebaseNotificationUtils.getNotificationsForground();
       await getFlavorName();
       appSettingCubit.initCamera();
-
     });
     super.initState();
   }
@@ -69,7 +72,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _navigateToNext() async {
     final userData = await FirebaseUtils.getCurrentUser();
-
 
     Future.delayed(const Duration(milliseconds: 100), () async {
       if (userData != null) {

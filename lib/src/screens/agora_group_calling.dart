@@ -7,11 +7,10 @@ import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../main.dart';
+import '../../globals.dart';
 import '../constants/color_constants.dart';
 import '../constants/firebase_constants.dart';
 import '../models/contacts_model.dart';
@@ -244,8 +243,7 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
                 .get()
                 .then((DocumentSnapshot snapshot) async {
               if (snapshot.exists && snapshot['users'] != null) {
-                List<String> userNumbers =
-                List<String>.from(snapshot['users']);
+                List<String> userNumbers = List<String>.from(snapshot['users']);
                 print("receiverNumbers $userNumbers");
                 List<int> remoteUserNumbers = _remoteUserNames.keys.toList();
 
@@ -256,25 +254,28 @@ class _AgoraGroupCallingState extends State<AgoraGroupCalling> {
                     nonExistentUserNumbers.add(userNumber);
                   }
                 }
-                if(nonExistentUserNumbers.isNotEmpty){
+                if (nonExistentUserNumbers.isNotEmpty) {
                   for (String newNumber in nonExistentUserNumbers) {
-                    final newUserData = await FirebaseUtils.getChatUser(
-                        newNumber);
+                    final newUserData =
+                        await FirebaseUtils.getChatUser(newNumber);
 
                     Map<String, dynamic> data = {
                       "messageType": "missed-group-call",
-                      "callId":widget.callId,
+                      "callId": widget.callId,
                       "callerName": widget.callerName,
                       // "callerNumber": FirebaseUtils.user?.phoneNumber,
                     };
 
                     UserModel userData =
-                    UserModel.fromJson(newUserData.data() ?? {});
+                        UserModel.fromJson(newUserData.data() ?? {});
                     final userFcmToken = userData.fcmToken;
-                    FirebaseNotificationUtils.sendFCM(userFcmToken!, "Missed Group Call", "You have a Group call request", data);
+                    FirebaseNotificationUtils.sendFCM(
+                        userFcmToken!,
+                        "Missed Group Call",
+                        "You have a Group call request",
+                        data);
                   }
                 }
-
               }
             });
 

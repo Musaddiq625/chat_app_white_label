@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
@@ -10,7 +9,8 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../main.dart';
+
+import '../../globals.dart';
 import '../constants/firebase_constants.dart';
 import '../constants/route_constants.dart';
 
@@ -20,8 +20,9 @@ class AgoraCalling extends StatefulWidget {
       required this.recipientUid,
       this.callerName,
       this.callerNumber,
-      this.callId, this.callerImage, this.contactUserFcm
-      })
+      this.callId,
+      this.callerImage,
+      this.contactUserFcm})
       : super(key: key);
   final int recipientUid;
   final String? callerName;
@@ -94,15 +95,15 @@ class _AgoraCallingState extends State<AgoraCalling> {
           setState(() {
             _remoteUid = remoteUid;
             if (_remoteUid != null && _timer == null) {
-              _callStartTime = DateTime.now(); // Start the timer when the remote user joins
-              _timer = Timer.periodic(Duration(seconds:  1), (Timer t) {
+              _callStartTime =
+                  DateTime.now(); // Start the timer when the remote user joins
+              _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
                 setState(() {
                   callDuration = DateTime.now().difference(_callStartTime!);
                 });
               });
             }
           });
-
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
@@ -135,7 +136,6 @@ class _AgoraCallingState extends State<AgoraCalling> {
   void dispose() {
     super.dispose();
     _timer?.cancel();
-
   }
 
   void _onToggleMute() {
@@ -152,16 +152,16 @@ class _AgoraCallingState extends State<AgoraCalling> {
     _engine.setEnableSpeakerphone(speaker);
   }
 
-    Future<void> _dispose() async {
-
-
-    Duration duration = DateTime.now().difference(_callStartTime ?? DateTime.now());
+  Future<void> _dispose() async {
+    Duration duration =
+        DateTime.now().difference(_callStartTime ?? DateTime.now());
     String formattedDuration =
         "${duration.inMinutes}:${duration.inSeconds % 60}";
-    await FirebaseUtils.updateCallsDuration(formattedDuration, false, widget.callId!, FirebaseUtils.getDateTimeNowAsId());
+    await FirebaseUtils.updateCallsDuration(formattedDuration, false,
+        widget.callId!, FirebaseUtils.getDateTimeNowAsId());
     Map<String, dynamic> data = {
       "messageType": "missed-call",
-      "callId":callId,
+      "callId": callId,
       "callerName": FirebaseUtils.user?.name,
       "callerNumber": FirebaseUtils.user?.phoneNumber,
     };
@@ -169,36 +169,38 @@ class _AgoraCallingState extends State<AgoraCalling> {
     if (mounted) {
       await _engine.leaveChannel();
       await _engine.release();
-      NavigationUtil.popAllAndPush(context,RouteConstants.homeScreen);
+      NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
     }
   }
 
   Future<void> _disposeEndCall() async {
-    Duration duration = DateTime.now().difference(_callStartTime ?? DateTime.now());
+    Duration duration =
+        DateTime.now().difference(_callStartTime ?? DateTime.now());
     String formattedDuration =
         "${duration.inMinutes}:${duration.inSeconds % 60}";
-    await FirebaseUtils.updateCallsDuration(formattedDuration, false, widget.callId!, FirebaseUtils.getDateTimeNowAsId());
+    await FirebaseUtils.updateCallsDuration(formattedDuration, false,
+        widget.callId!, FirebaseUtils.getDateTimeNowAsId());
     Map<String, dynamic> data = {
       "messageType": "missed-call",
-      "callId":callId,
+      "callId": callId,
       "callerName": FirebaseUtils.user?.name,
       "callerNumber": FirebaseUtils.user?.phoneNumber,
     };
-    if(_remoteUid == null){
-      FirebaseNotificationUtils.sendFCM(widget.contactUserFcm!, "Missed Call", "You have a call request", data);
+    if (_remoteUid == null) {
+      FirebaseNotificationUtils.sendFCM(widget.contactUserFcm!, "Missed Call",
+          "You have a call request", data);
     }
 
     if (mounted) {
       await _engine.leaveChannel();
       await _engine.release();
-      NavigationUtil.popAllAndPush(context,RouteConstants.homeScreen);
+      NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Padding(
         padding: const EdgeInsets.only(bottom: 30.0),
         child: Stack(
@@ -266,12 +268,14 @@ class _AgoraCallingState extends State<AgoraCalling> {
       ),
     );
   }
+
   String formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "$twoDigitMinutes:$twoDigitSeconds";
   }
+
   // Display remote user's video
   Widget _remoteVideo() {
     if (_remoteUid != null) {
@@ -279,21 +283,27 @@ class _AgoraCallingState extends State<AgoraCalling> {
         child: Column(
           children: [
             SizedBox(
-              height:70,
+              height: 70,
             ),
-            Text(widget.callerName ?? widget.callerNumber!,style: TextStyle(fontSize: 25),),
+            Text(
+              widget.callerName ?? widget.callerNumber!,
+              style: TextStyle(fontSize: 25),
+            ),
             SizedBox(
               height: 20,
             ),
             Text(
-               formatDuration(callDuration ?? Duration.zero),
+              formatDuration(callDuration ?? Duration.zero),
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54,fontSize: 16),
+              style: TextStyle(color: Colors.black54, fontSize: 16),
             ),
             SizedBox(
               height: 70,
             ),
-            ProfileImageComponent(url: widget.callerImage,size: 150,),
+            ProfileImageComponent(
+              url: widget.callerImage,
+              size: 150,
+            ),
           ],
         ),
       );
@@ -303,11 +313,17 @@ class _AgoraCallingState extends State<AgoraCalling> {
           SizedBox(
             height: 40,
           ),
-          ProfileImageComponent(url: widget.callerImage,size: 150,),
+          ProfileImageComponent(
+            url: widget.callerImage,
+            size: 150,
+          ),
           SizedBox(
             height: 40,
           ),
-          Text(widget.callerName ?? widget.callerNumber!,style: TextStyle(fontSize: 20),),
+          Text(
+            widget.callerName ?? widget.callerNumber!,
+            style: TextStyle(fontSize: 20),
+          ),
           SizedBox(
             height: 20,
           ),

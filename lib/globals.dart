@@ -12,7 +12,7 @@ import 'package:get_it/get_it.dart';
 
 const appId = "dd77f448b0004006b22181d772231fd0";
 const token =
-    "007eJxTYJCtf1Gx6c4Ns12hcg7XC/fmRfonu7351n8l89Hd/z0zVt1SYEhJMTdPMzGxSDIwMDAxMDBLMjIytDAEChoZGRumpRjs8L6e2hDIyCAUs4KBEQpBfBaGktTiEgYGABtnIcs=";
+    "007eJxTYNC2vlHDFNvGcuVWxfYfzG7S9kLGj1hUrcL899drNlS6SyowpKSYm6eZmFgkGRgYmBgYmCUZGRlaGAIFjYyMDdNSDJii7qQ2BDIySGlasTAyQCCIz8JQklpcwsAAAOhxGcE=";
 const channel = "test";
 String callType = '';
 String callId = "";
@@ -58,7 +58,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       platformChannelSpecifics,
       payload: jsonEncode(message.data),
     );
-  } else {
+  }
+  else {
     try {
       try {
         FirebaseNotificationUtils.callData =
@@ -84,22 +85,20 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         "callerNumber": FirebaseNotificationUtils.callData.callerNumber,
       };
       final payloadString = jsonEncode(data);
-
       if (message.data["messageType"] == "call") {
         String? phoneNumber = message.data["callerNumber"];
-        // callData.callerPhoneNumber = message.data["callerNumber"];
         callerName = message.data["callerName"];
         if (phoneNumber != null) {
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails(
+          AndroidNotificationDetails(
             'test',
             'Incoming Call',
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false,
             enableLights: true,
-            sound: UriAndroidNotificationSound(
-                'content://settings/system/ringtone'),
+            sound:
+            UriAndroidNotificationSound('content://settings/system/ringtone'),
             enableVibration: true,
             actions: <AndroidNotificationAction>[
               AndroidNotificationAction('accept_action', 'Accept',
@@ -112,7 +111,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
             ],
           );
           const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
+          NotificationDetails(android: androidPlatformChannelSpecifics);
           await flutterLocalNotificationsPlugin.show(
             0,
             'Incoming Call',
@@ -121,19 +120,22 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
             payload: payloadString,
           );
         }
-      } else if (message.data["messageType"] == "video_call") {
+      }
+      else if (message.data["messageType"] == "video_call") {
         String? phoneNumber = message.data["callerNumber"];
         callerPhoneNumber = message.data["callerNumber"];
         callerName = message.data["callerName"];
         if (phoneNumber != null) {
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails(
+          AndroidNotificationDetails(
             'test',
             'Incoming Video Call',
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false,
             enableLights: true,
+            sound:
+            UriAndroidNotificationSound('content://settings/system/ringtone'),
             enableVibration: true,
             actions: <AndroidNotificationAction>[
               AndroidNotificationAction('accept_action', 'Accept',
@@ -146,7 +148,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
             ],
           );
           const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
+          NotificationDetails(android: androidPlatformChannelSpecifics);
           await flutterLocalNotificationsPlugin.show(
             0,
             'Incoming Video Call',
@@ -155,22 +157,24 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
             payload: payloadString,
           );
         }
-      } else if (message.data["messageType"] == "group_call") {
+      }
+      else if (message.data["messageType"] == "group_call") {
         String? phoneNumber = message.data["callerNumber"];
         callerPhoneNumber = message.data["callerNumber"];
         callerName = message.data["callerName"];
 
         if (phoneNumber != null) {
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails(
+          AndroidNotificationDetails(
             'test',
             'Incoming Group Call',
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false,
             enableLights: true,
+            sound:
+            UriAndroidNotificationSound('content://settings/system/ringtone'),
             enableVibration: true,
-            // playSound: true,
             ongoing: true,
             audioAttributesUsage: AudioAttributesUsage.alarm,
             actions: <AndroidNotificationAction>[
@@ -185,7 +189,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
             ],
           );
           const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
+          NotificationDetails(android: androidPlatformChannelSpecifics);
           await flutterLocalNotificationsPlugin.show(
             1,
             'Incoming Group Call',
@@ -194,21 +198,23 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
             payload: payloadString,
           );
         }
-      } else if (message.data["messageType"] == "group_video_call") {
+      }
+      else if (message.data["messageType"] == "group_video_call") {
         String? phoneNumber = message.data["callerNumber"];
         callerPhoneNumber = message.data["callerNumber"];
         callerName = message.data["callerName"];
         if (phoneNumber != null) {
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails(
+          AndroidNotificationDetails(
             'test',
             'Incoming Group Video Call',
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false,
             enableLights: true,
+            sound:
+            UriAndroidNotificationSound('content://settings/system/ringtone'),
             enableVibration: true,
-            // playSound: true,
             ongoing: true,
             audioAttributesUsage: AudioAttributesUsage.alarm,
             actions: <AndroidNotificationAction>[
@@ -218,12 +224,11 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
                 'reject_action',
                 'Reject',
                 cancelNotification: true,
-                // showsUserInterface: true,
               ),
             ],
           );
           const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
+          NotificationDetails(android: androidPlatformChannelSpecifics);
           await flutterLocalNotificationsPlugin.show(
             0,
             'Incoming Group Video Call',
@@ -233,7 +238,58 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           );
         }
       }
-
+      else if (message.data["messageType"] == "missed-call") {
+        String? phoneNumber = message.data["callerNumber"];
+        callerPhoneNumber = message.data["callerNumber"];
+        callerName = message.data["callerName"];
+        if (phoneNumber != null) {
+          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+            'test',
+            'Missed Call',
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: false,
+            enableLights: true,
+            enableVibration: true,
+          );
+          const NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+          await flutterLocalNotificationsPlugin.show(
+            0,
+            'Missed Call',
+            'You have missed a call from $callerName',
+            platformChannelSpecifics,
+            payload: payloadString,
+          );
+        }
+      }
+      else if (message.data["messageType"] == "missed-video-call") {
+        String? phoneNumber = message.data["callerNumber"];
+        callerPhoneNumber = message.data["callerNumber"];
+        callerName = message.data["callerName"];
+        if (phoneNumber != null) {
+          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+            'test',
+            'Missed Call',
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: false,
+            enableLights: true,
+            enableVibration: true,
+          );
+          const NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+          await flutterLocalNotificationsPlugin.show(
+            0,
+            'Missed Video Call',
+            'You have missed a Video call from $callerName',
+            platformChannelSpecifics,
+            payload: payloadString,
+          );
+        }
+      }
       // Your background message handling logic here
       // Same as the logic in getNotificationsBackground method
     } catch (e) {
