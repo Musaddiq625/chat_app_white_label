@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/bottom_nav_componenet.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
@@ -22,44 +23,44 @@ import 'globals.dart';
 final getIt = GetIt.I;
 
 late Size mq;
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp();
-  FirebaseNotificationUtils.getNotificationSettings();
-  FirebaseNotificationUtils.initializeLocalNotifications();
-
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
-  print("USER ${FirebaseAuth.instance.currentUser?.uid}");
-  await _initRepos();
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: ColorConstants.greenMain,
-      statusBarIconBrightness: Brightness.light,
-    ),
-  );
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-  final InitializationSettings initializationSettings =
-      InitializationSettings(android: initializationSettingsAndroid);
-
-  runApp(const MyApp());
-}
-
-// void main() => runApp(const BottomNavigationBarExampleApp());
 //
-// class BottomNavigationBarExampleApp extends StatelessWidget {
-//   const BottomNavigationBarExampleApp({super.key});
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
 //
-//   @override
-//   Widget build(BuildContext context) {
-//     return const MaterialApp(
-//       home: BottomNavBar(),
-//     );
-//   }
+//   await Firebase.initializeApp();
+//   FirebaseNotificationUtils.getNotificationSettings();
+//   FirebaseNotificationUtils.initializeLocalNotifications();
+//
+//   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+//
+//   print("USER ${FirebaseAuth.instance.currentUser?.uid}");
+//   await _initRepos();
+//   SystemChrome.setSystemUIOverlayStyle(
+//     const SystemUiOverlayStyle(
+//       statusBarColor: ColorConstants.greenMain,
+//       statusBarIconBrightness: Brightness.light,
+//     ),
+//   );
+//   const AndroidInitializationSettings initializationSettingsAndroid =
+//       AndroidInitializationSettings('@mipmap/ic_launcher');
+//   final InitializationSettings initializationSettings =
+//       InitializationSettings(android: initializationSettingsAndroid);
+//
+//   runApp(const MyApp());
 // }
+
+void main() => runApp(const BottomNavigationBarExampleApp());
+
+class BottomNavigationBarExampleApp extends StatelessWidget {
+  const BottomNavigationBarExampleApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: BottomNavBar(),
+    );
+  }
+}
 
 Future<void> _initRepos() async {
   getIt.registerSingleton(FirebaseService());
