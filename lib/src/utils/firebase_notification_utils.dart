@@ -20,6 +20,7 @@ import '../models/call_data_model.dart';
 import '../screens/agora_calling.dart';
 import '../screens/agora_group_calling.dart';
 import '../screens/agora_group_video_calling.dart';
+import 'package:http/http.dart' as http;
 import 'firebase_utils.dart';
 import 'logger_util.dart';
 
@@ -32,9 +33,26 @@ class FirebaseNotificationUtils {
   static String _callId = "";
   static StreamSubscription<DocumentSnapshot>? _callStatusSubscription;
   static CallDataModel callData = CallDataModel();
-  static String? callerName;
-  static String? callerPhoneNumber;
-  static String? selectedNotificationPayload;
+
+  static Future<void> sendNotification(
+      String fcmToken, Map<String, dynamic> data) async {
+    Uri postUrl = Uri.parse('https://fcm.googleapis.com/fcm/send');
+    final headers = {
+      'content-type': 'application/json',
+      'Authorization':
+          'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
+    };
+
+    final payload = {"to": fcmToken, "data": data};
+
+    final response = await http.post(postUrl,
+        body: json.encode(payload),
+        encoding: Encoding.getByName('utf-8'),
+        headers: headers);
+
+    if (response.statusCode == 200) {
+    } else {}
+  }
 
   @pragma('vm:entry-point')
   static Future<void> initializeLocalNotifications() async {
@@ -52,13 +70,13 @@ class FirebaseNotificationUtils {
 
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    final InitializationSettings initializationSettings =
+    const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: incomingCall,
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+      // onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
   }
 
@@ -119,15 +137,10 @@ class FirebaseNotificationUtils {
             }
           } else if (payload.actionId == "reject_action") {
             FirebaseUtils.updateCallsOnReceiveOrReject(false, _callId);
-            print('Call rejected. Payload: $payload');
           }
         }
-      } else {
-        print("Payload is null. Cannot process the notification.");
-      }
-    } catch (e) {
-      print("incomingcall error $e");
-    }
+      } else {}
+    } catch (e) {}
   }
 
   @pragma('vm:entry-point')
@@ -143,6 +156,8 @@ class FirebaseNotificationUtils {
       if (callType == "background") {
         if (messageType == "call") {
           try {
+            FirebaseUtils.updateCallsOnReceiveOfUser(
+                [FirebaseUtils.phoneNumber!], callId);
             FirebaseUtils.updateCallsOnReceiveOfUser(
                 [FirebaseUtils.phoneNumber!], callId);
             FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
@@ -176,14 +191,10 @@ class FirebaseNotificationUtils {
             try {
               FirebaseUtils.updateCallsOnReceiveOfUser(
                   [FirebaseUtils.phoneNumber!], callId);
-            } catch (e) {
-              print("error 0 $e");
-            }
+            } catch (e) {}
             try {
               FirebaseUtils.updateCallsOnReceiveOrReject(true, callId);
-            } catch (e) {
-              print("error 1 $e");
-            }
+            } catch (e) {}
             try {
               navigatorKey.currentState!.push(MaterialPageRoute(
                   builder: (context) => AgoraGroupCalling(
@@ -215,18 +226,10 @@ class FirebaseNotificationUtils {
           } catch (e) {
             print("Error video group call $e");
           }
-        } else if (messageType == "missed-call") {
-          try {
-            navigatorKey.currentState!.push(
-                MaterialPageRoute(builder: (context) => ContactsScreen()));
-          } catch (e) {
-            print("Error video group call $e");
-          }
         }
       }
     } else if (payload.actionId == "reject_action") {
       FirebaseUtils.updateCallsOnReceiveOrReject(false, callId);
-      print('Call rejected. Payload: $payload');
       flutterLocalNotificationsPlugin.cancel(1);
       navigatorKey.currentState!.popAndPushNamed(RouteConstants.homeScreen);
     }
@@ -266,9 +269,7 @@ class FirebaseNotificationUtils {
         "callerNumber": callData.callerNumber,
       };
       final payloadString = jsonEncode(data);
-      print("payloadString ${payloadString.toString()}");
       _callType = message.data["messageType"];
-      print("_callType : " + _callType.toString());
       _callId = message.data["callId"];
 
       if (message.data["messageType"] == "call") {
@@ -308,12 +309,11 @@ class FirebaseNotificationUtils {
           );
         }
       } else if (message.data["messageType"] == "video_call") {
+      } else if (message.data["messageType"] == "video_call") {
         String? phoneNumber = message.data["callerNumber"];
         LoggerUtil.logs("phonenumber ${phoneNumber}");
         callerPhoneNumber = message.data["callerNumber"];
         callerName = message.data["callerName"];
-        print(
-            "phoneNumber ${phoneNumber}  callerPhoneNumber ${callerPhoneNumber} ${callerName}");
         if (phoneNumber != null) {
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
@@ -347,11 +347,11 @@ class FirebaseNotificationUtils {
           );
         }
       } else if (message.data["messageType"] == "group_call") {
+      } else if (message.data["messageType"] == "group_call") {
         String? phoneNumber = message.data["callerNumber"];
         callerPhoneNumber = message.data["callerNumber"];
         callerName = message.data["callerName"];
         if (phoneNumber != null) {
-          // await initializeLocalNotifications();
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
             'test',
@@ -389,7 +389,6 @@ class FirebaseNotificationUtils {
         callerPhoneNumber = message.data["callerNumber"];
         callerName = message.data["callerName"];
         if (phoneNumber != null) {
-          // await initializeLocalNotifications();
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
             'test',
@@ -422,70 +421,6 @@ class FirebaseNotificationUtils {
             payload: payloadString,
           );
         }
-      } else if (message.data["messageType"] == "missed-call") {
-        String? phoneNumber = message.data["callerNumber"];
-        callerPhoneNumber = message.data["callerNumber"];
-        callerName = message.data["callerName"];
-        if (phoneNumber != null) {
-          // await initializeLocalNotifications();
-          const AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails(
-            'test',
-            'Missed Call',
-            importance: Importance.max,
-            priority: Priority.high,
-            showWhen: false,
-            enableLights: true,
-            enableVibration: true,
-          );
-          const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
-          await flutterLocalNotificationsPlugin.show(
-            0,
-            'Missed Call',
-            'You have missed a call from $callerName',
-            platformChannelSpecifics,
-            payload: payloadString,
-          );
-        }
-      } else if (message.data["messageType"] == "missed-video-call") {
-        String? phoneNumber = message.data["callerNumber"];
-        callerPhoneNumber = message.data["callerNumber"];
-        callerName = message.data["callerName"];
-        if (phoneNumber != null) {
-          // await initializeLocalNotifications();
-          const AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails(
-            'test',
-            'Missed Call',
-            importance: Importance.max,
-            priority: Priority.high,
-            showWhen: false,
-            enableLights: true,
-            enableVibration: true,
-            // playSound: true,
-            // sound: UriAndroidNotificationSound(
-            //     'content://settings/system/ringtone'),
-            // actions: <AndroidNotificationAction>[
-            //   AndroidNotificationAction('accept_action', 'Accept',
-            //       showsUserInterface: true),
-            //   AndroidNotificationAction(
-            //     'reject_action',
-            //     'Reject',
-            //     showsUserInterface: true,
-            //   ),
-            // ],
-          );
-          const NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
-          await flutterLocalNotificationsPlugin.show(
-            0,
-            'Missed Video Call',
-            'You have missed a Video call from $callerName',
-            platformChannelSpecifics,
-            payload: payloadString,
-          );
-        }
       }
       print('Message also contained a notification: ${message.notification}');
     });
@@ -502,11 +437,10 @@ class FirebaseNotificationUtils {
         if (snapshot.exists && snapshot['is_call_active'] == false) {
           _callStatusSubscription
               ?.cancel(); // Check if the widget is still mounted
-          flutterLocalNotificationsPlugin.cancel(0);// Leave the channel if is_call_active is false
+          flutterLocalNotificationsPlugin
+              .cancel(0); // Leave the channel if is_call_active is false
         }
-      } catch (e) {
-        print("error _listenForCallStatusChanges $e");
-      }
+      } catch (e) {}
     });
   }
 

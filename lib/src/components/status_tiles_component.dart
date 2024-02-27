@@ -73,9 +73,9 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
 
       try {
         setState(() {
-        //    Map each document to a StoriesNewModel and add it to the list
+          //    Map each document to a StoriesNewModel and add it to the list
           _list = data
-              .map((e)  {
+              .map((e) {
                 Map<String, dynamic> storyData =
                     e.data() as Map<String, dynamic>;
                 DateTime storyTime = DateTime.fromMillisecondsSinceEpoch(
@@ -91,16 +91,16 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
                     return StoriesNewModel.fromJson(storyData);
                   } else {
                     print("Story is older then 24 hour ${e.id}");
-                    if(e.id.isNotEmpty){
-                      FirebaseUtils.deleteStory(storyData['story_id'],storyData['user_id']);
+                    if (e.id.isNotEmpty) {
+                      FirebaseUtils.deleteStory(
+                          storyData['story_id'], storyData['user_id']);
                     }
                     // return StoriesNewModel.fromJson(storyData);
 
                     // If the story is older than 24 hours, don't return anything
                     return null;
                   }
-                }
-                catch(e){
+                } catch (e) {
                   print('Error : ${e.toString()}');
                 }
               })
@@ -114,9 +114,6 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
       } catch (e) {
         print('An error occurred: $e');
       }
-
-
-
 
       // setState(() {
       //   // Map each document to a StoriesNewModel and add it to the list
@@ -145,7 +142,8 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
 
   Future<void> fetchStoryData() async {
     // Get the stream of matching contacts.
-    Future<List<Map<String, dynamic>>> matchingContactsStream = FirebaseUtils.getMatchingContactsOnce();
+    Future<List<Map<String, dynamic>>> matchingContactsStream =
+        FirebaseUtils.getMatchingContactsOnce();
 
     // Listen to the stream of document snapshots from the 'stories' collection.
     FirebaseUtils.getStoryUser().listen((QuerySnapshot storySnapshot) {
@@ -156,7 +154,7 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
       // Listen to the stream of matching contacts.
       matchingContactsStream
           .then((List<Map<String, dynamic>> matchingContacts) {
-            print("contacts ${matchingContacts}");
+        print("contacts ${matchingContacts}");
         // Use the 'where' method to filter out stories based on matching contacts.
         final filteredStories = storyData.where((story) {
           // Check if the story's user ID is in the list of matching contacts.
@@ -173,7 +171,8 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
           //     filteredStories.map((e) => StoryNewModel.fromJson(e)).toList();
           print("filterdstories ${filteredStories}");
           _storylist = filteredStories
-              .where((e) => (e['stories'] as List).isNotEmpty) // Check if stories array is not empty
+              .where((e) => (e['stories'] as List)
+                  .isNotEmpty) // Check if stories array is not empty
               .map((e) => StoryNewModel.fromJson(e))
               .toList();
 
@@ -262,19 +261,23 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
                                   story.userId == _storylist[index].userId)
                               .toList();
                           print("userStories ${userStories}");
-                          final List<StoryItem> storyItems = userStories.map((story) {
-                            if (story.storyImage != null && story.storyImage!.contains('mp4')) {
+                          final List<StoryItem> storyItems =
+                              userStories.map((story) {
+                            if (story.storyImage != null &&
+                                story.storyImage!.contains('mp4')) {
                               return StoryItem.pageVideo(
                                 story.storyImage ?? '',
-                                caption: story.storyMsg,
+                                caption: Text(story.storyMsg ?? ''),
                                 imageFit: BoxFit.fitHeight,
                                 controller: StoryController(),
                               );
                             } else {
                               return StoryItem.pageImage(
                                 url: story.storyImage ?? '',
-                                caption: story.storyMsg, // Replace with the correct property if different
-                                controller: StoryController(), // You need to use the same controller for all items
+                                caption: Text(story.storyMsg ??
+                                    ''), // Replace with the correct property if different
+                                controller:
+                                    StoryController(), // You need to use the same controller for all items
                               );
                             }
                           }).toList();
@@ -288,7 +291,7 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
                                   currentInnerIndex = 0;
                                   NavigationUtil.pop(context);
                                 },
-                                onStoryShow: (s) {
+                                onStoryShow: (s, index) {
                                   currentIndex = storyItems.indexOf(s);
 
                                   print("Stories Length ${userStories.length}");

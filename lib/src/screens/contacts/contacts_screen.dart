@@ -1,9 +1,9 @@
-
 import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
+import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -56,8 +56,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
           firebaseUser.id != FirebaseUtils.phoneNumber);
       if (contactExist) {
         contactToDisplay.add(ContactModel(
-            localName: localContacts[i].displayName,
-            phoneNumber: localNumber ?? '',
+          localName: localContacts[i].displayName,
+          phoneNumber: localNumber ?? '',
         ));
       }
     }
@@ -126,8 +126,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             future: FirebaseUtils.getChatUser(
                                 contactToDisplay[index].phoneNumber ?? ''),
                             builder: (context, asyncSnapshot) {
-                              UserModel firebaseContactUser = UserModel.fromJson(asyncSnapshot.data?.data() ?? {});
-                              contactToDisplay[index].firebaseData = firebaseContactUser;
+                              UserModel firebaseContactUser =
+                                  UserModel.fromJson(
+                                      asyncSnapshot.data?.data() ?? {});
+                              contactToDisplay[index].firebaseData =
+                                  firebaseContactUser;
                               return ContactTileComponent(
                                 localName:
                                     contactToDisplay[index].localName ?? '',
@@ -140,38 +143,50 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                       FirebaseUtils.user?.phoneNumber;
                                   print("recipientUid $recipientUid");
 
-                                  final callId = "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
+                                  final callId =
+                                      "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
                                   Map<String, dynamic> data = {
                                     "messageType": "call",
-                                    "callId":callId,
+                                    "callId": callId,
                                     "callerName": senderName,
                                     "callerNumber": senderContactNumber,
                                   };
-                                  firebaseContactUsers.add(firebaseContactUser.id!);
-                                  firebaseContactUsers.add(FirebaseUtils.user!.id!);
-                                  if( firebaseContactUser.fcmToken != null) {
-                                    await FirebaseNotificationUtils.sendFCM(
-                                        firebaseContactUser.fcmToken ?? "",
-                                        'New Call Request',
-                                        'You have a new call request',
-                                        data);
+                                  firebaseContactUsers
+                                      .add(firebaseContactUser.id!);
+                                  firebaseContactUsers
+                                      .add(FirebaseUtils.user!.id!);
+                                  if (firebaseContactUser.fcmToken != null) {
+                                    await FirebaseNotificationUtils
+                                        .sendNotification(
+                                            firebaseContactUser.fcmToken ?? "",
+                                            data);
                                   }
-                                  await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUsers,"call" );
-                                  await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
-                                  await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
+                                  await FirebaseUtils.createCalls(
+                                      callId,
+                                      senderContactNumber,
+                                      firebaseContactUsers,
+                                      "call");
+                                  await FirebaseUtils.updateUserCallList(
+                                      FirebaseUtils.user!.id!, callId);
+                                  await FirebaseUtils.updateUserCallList(
+                                      firebaseContactUser.phoneNumber!, callId);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => AgoraCalling(
-                                            recipientUid: int.parse(
-                                                firebaseContactUser
-                                                    .phoneNumber!),
-                                            callerName: firebaseContactUser.name,
-                                            callerNumber: firebaseContactUser.phoneNumber,
-                                          callId:callId,
-                                          callerImage : firebaseContactUser.image,
-                                          contactUserFcm: firebaseContactUser.fcmToken,
-                                        )),
+                                              recipientUid: int.parse(
+                                                  firebaseContactUser
+                                                      .phoneNumber!),
+                                              callerName:
+                                                  firebaseContactUser.name,
+                                              callerNumber: firebaseContactUser
+                                                  .phoneNumber,
+                                              callId: callId,
+                                              callerImage:
+                                                  firebaseContactUser.image,
+                                              contactUserFcm:
+                                                  firebaseContactUser.fcmToken,
+                                            )),
                                   );
                                 },
                                 onVideoCallTapped: () async {
@@ -180,41 +195,50 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   String? senderName = FirebaseUtils.user?.name;
                                   String? senderContactNumber =
                                       FirebaseUtils.user?.phoneNumber;
-                                  final callId = "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
+                                  final callId =
+                                      "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
                                   Map<String, dynamic> data = {
                                     "messageType": "video_call",
-                                    "callId":callId,
+                                    "callId": callId,
                                     "callerName": senderName,
                                     "callerNumber": senderContactNumber,
                                   };
 
-                                  firebaseContactUsers.add(firebaseContactUser.id!);
-                                  firebaseContactUsers.add(FirebaseUtils.user!.id!);
-                                  if( firebaseContactUser.fcmToken != null){
-                                    await FirebaseNotificationUtils.sendFCM(
-                                        firebaseContactUser.fcmToken ?? "",
-                                        'Video Call Request',
-                                        'You have a new Video call request',
-                                        data);
+                                  firebaseContactUsers
+                                      .add(firebaseContactUser.id!);
+                                  firebaseContactUsers
+                                      .add(FirebaseUtils.user!.id!);
+                                  if (firebaseContactUser.fcmToken != null) {
+                                    await FirebaseNotificationUtils
+                                        .sendNotification(
+                                            firebaseContactUser.fcmToken ?? "",
+                                            data);
                                   }
 
-                                  await FirebaseUtils.createCalls(callId,senderContactNumber,firebaseContactUsers,"video_call" );
-                                  await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
-                                  await FirebaseUtils.updateUserCallList(firebaseContactUser.phoneNumber!,callId);
+                                  await FirebaseUtils.createCalls(
+                                      callId,
+                                      senderContactNumber,
+                                      firebaseContactUsers,
+                                      "video_call");
+                                  await FirebaseUtils.updateUserCallList(
+                                      FirebaseUtils.user!.id!, callId);
+                                  await FirebaseUtils.updateUserCallList(
+                                      firebaseContactUser.phoneNumber!, callId);
                                   await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => AgoraVideoCalling(
-                                            recipientUid: int.parse(
-                                                firebaseContactUser
-                                                    .phoneNumber!),
-                                            callerName:
-                                                firebaseContactUser.name,
-                                            callerNumber: firebaseContactUser
-                                                .phoneNumber,
-                                        callId: callId,
-                                          contactUserFcm: firebaseContactUser.fcmToken,
-                                        )),
+                                              recipientUid: int.parse(
+                                                  firebaseContactUser
+                                                      .phoneNumber!),
+                                              callerName:
+                                                  firebaseContactUser.name,
+                                              callerNumber: firebaseContactUser
+                                                  .phoneNumber,
+                                              callId: callId,
+                                              contactUserFcm:
+                                                  firebaseContactUser.fcmToken,
+                                            )),
                                   );
                                 },
                               );

@@ -11,7 +11,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../main.dart';
 import 'globals.dart';
 
 // class AgoraCalling extends StatefulWidget with WidgetsBindingObserver {
@@ -21,7 +20,8 @@ class AgoraVideoCalling extends StatefulWidget {
       required this.recipientUid,
       this.callerName,
       this.callerNumber,
-      this.callId,this.contactUserFcm})
+      this.callId,
+      this.contactUserFcm})
       : super(key: key);
   final int recipientUid;
   final String? callerName;
@@ -32,7 +32,6 @@ class AgoraVideoCalling extends StatefulWidget {
   @override
   State<AgoraVideoCalling> createState() => _AgoraVideoCallingState();
 }
-
 
 class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
   int? _remoteUid;
@@ -70,7 +69,6 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
             _localUserJoined = true;
           });
         },
-
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           debugPrint("remote user $remoteUid joined");
           setState(() {
@@ -149,15 +147,14 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
       if (mounted) {
         await _engine.leaveChannel();
         await _engine.release();
-        NavigationUtil.popAllAndPush(context,RouteConstants.homeScreen);
+        NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
       }
     } catch (e) {
       print("Error on dispose $e");
     }
   }
 
-
-  Future<void>  _disposeEndCall() async {
+  Future<void> _disposeEndCall() async {
     try {
       Duration duration = DateTime.now().difference(_callStartTime!);
       String formattedDuration =
@@ -166,23 +163,23 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
           widget.callId!, FirebaseUtils.getDateTimeNowAsId());
       Map<String, dynamic> data = {
         "messageType": "missed-video-call",
-        "callId":callId,
+        "callId": callId,
         "callerName": FirebaseUtils.user?.name,
         "callerNumber": FirebaseUtils.user?.phoneNumber,
       };
-      if(_remoteUid == null){
-        FirebaseNotificationUtils.sendFCM(widget.contactUserFcm!, "Missed Video Call", "You have a Video call request", data);
+      if (_remoteUid == null) {
+        FirebaseNotificationUtils.sendFCM(widget.contactUserFcm!,
+            "Missed Video Call", "You have a Video call request", data);
       }
       if (mounted) {
         await _engine.leaveChannel();
         await _engine.release();
-        NavigationUtil.popAllAndPush(context,RouteConstants.homeScreen);
+        NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
       }
     } catch (e) {
       print("Error on dispose $e");
     }
   }
-
 
   // Create UI with local view and remote view
   @override
