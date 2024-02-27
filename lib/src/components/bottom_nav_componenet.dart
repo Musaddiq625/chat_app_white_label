@@ -1,6 +1,7 @@
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
+import 'package:chat_app_white_label/src/screens/locals_app_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'icon_component.dart';
@@ -17,11 +18,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
-    UIScaffold(
-        bgImage: AssetConstants.backgroundImage,
-        widget: Column(
-          children: [Text('data')],
-        )),
+    const LocalsAppScreen(),
     // CustomIconWidget(
     //   iconData: Icons.home, // Example icon
     //   iconSize: 48.0, // Larger icon size
@@ -79,12 +76,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
         child: GestureDetector(
             onTap: () => BottomSheetComponent.showBottomSheet(context,
                 body: Container(
-                  child: Icon(Icons.delete),
+                  child: const Icon(Icons.delete),
                 )),
             child: Container(child: _widgetOptions.elementAt(_selectedIndex))),
       ),
       bottomNavigationBar: ClipRRect(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(15.0)),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
