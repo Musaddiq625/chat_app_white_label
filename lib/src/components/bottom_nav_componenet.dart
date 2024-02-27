@@ -1,3 +1,6 @@
+import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:flutter/material.dart';
 
 import 'icon_component.dart';
@@ -13,48 +16,52 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static  final List<Widget> _widgetOptions = <Widget>[
-
-    CustomIconWidget(
-      iconData: Icons.home, // Example icon
-      iconSize:   48.0, // Larger icon size
-      iconColor: Colors.black87, // Blue color
-      borderSize:   4.0, // Larger border size
-      borderColor: Colors.black87, // Red border color
-      circleSize:   70.0, // Increased circle size
-    ),
+  static final List<Widget> _widgetOptions = <Widget>[
+    UIScaffold(
+        bgImage: AssetConstants.backgroundImage,
+        widget: Column(
+          children: [Text('data')],
+        )),
+    // CustomIconWidget(
+    //   iconData: Icons.home, // Example icon
+    //   iconSize: 48.0, // Larger icon size
+    //   iconColor: Colors.black87, // Blue color
+    //   borderSize: 4.0, // Larger border size
+    //   borderColor: Colors.black87, // Red border color
+    //   circleSize: 70.0, // Increased circle size
+    // ),
     CustomIconWidget(
       iconData: Icons.chat_bubble, // Example icon
-      iconSize:  48.0, // Larger size
+      iconSize: 48.0, // Larger size
       iconColor: Colors.black87, // Blue color
-      borderSize:   4.0, // Larger border size
+      borderSize: 4.0, // Larger border size
       borderColor: Colors.black87,
       backgroundColor: Colors.grey,
-      circleSize:   70.0,// Red border color
+      circleSize: 70.0, // Red border color
     ),
     CustomIconWidget(
       iconData: Icons.add, // Example icon
-      iconSize:  48.0, // Larger size
+      iconSize: 48.0, // Larger size
       iconColor: Colors.black87, // Blue color
-      borderSize:   4.0, // Larger border size
+      borderSize: 4.0, // Larger border size
       borderColor: Colors.black87,
-      circleSize:   70.0,// Red border color
+      circleSize: 70.0, // Red border color
     ),
     CustomIconWidget(
       iconData: Icons.people_alt, // Example icon
-      iconSize:  48.0, // Larger size
+      iconSize: 48.0, // Larger size
       iconColor: Colors.black87, // Blue color
-      borderSize:   4.0, // Larger border size
+      borderSize: 4.0, // Larger border size
       borderColor: Colors.black87,
-      circleSize:   70.0,// Red border color
+      circleSize: 70.0, // Red border color
     ),
     CustomIconWidget(
       iconData: Icons.person, // Example icon
-      iconSize:  48.0, // Larger size
+      iconSize: 48.0, // Larger size
       iconColor: Colors.black87, // Blue color
-      borderSize:   4.0, // Larger border size
+      borderSize: 4.0, // Larger border size
       borderColor: Colors.black87,
-      circleSize:   70.0,// Red border color
+      circleSize: 70.0, // Red border color
     ),
   ];
 
@@ -67,10 +74,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      // backgroundColor: Colors.blue,
       body: Center(
-        child: Container(
-            child: _widgetOptions.elementAt(_selectedIndex)),
+        child: GestureDetector(
+            onTap: () => BottomSheetComponent.showBottomSheet(context,
+                body: Container(
+                  child: Icon(Icons.delete),
+                )),
+            child: Container(child: _widgetOptions.elementAt(_selectedIndex))),
       ),
       bottomNavigationBar: ClipRRect(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
@@ -80,8 +91,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.home_rounded),
                 label: 'My Feed',
-                backgroundColor: Colors.white
-            ),
+                backgroundColor: Colors.white),
             BottomNavigationBarItem(
                 icon: Icon(Icons.chat_bubble),
                 label: 'Inbox',
