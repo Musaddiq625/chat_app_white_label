@@ -36,7 +36,7 @@ class BottomSheetComponent {
             },
             child: SingleChildScrollView(
               child: Container(
-                constraints: const BoxConstraints(maxHeight: 90),
+                // constraints: const BoxConstraints(maxHeight:100),
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),

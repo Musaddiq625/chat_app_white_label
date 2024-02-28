@@ -8,7 +8,12 @@ class IconComponent extends StatelessWidget {
   final Color backgroundColor;
   final double borderSize;
   final Color borderColor;
-  final double circleSize; // New parameter to control the circle size
+  final double circleSize;
+  final Function ()? onTap;// New parameter to control the circle size
+  final String? customText;
+  final Color customTextColor;
+  final double customTextSize;
+  final FontWeight customFontWeight;
 
   // Constructor to initialize the icon data, size, color, border size, border color, and circle size
   IconComponent({
@@ -18,26 +23,48 @@ class IconComponent extends StatelessWidget {
     this.borderSize =   2.0, // Default border size
     this.borderColor = Colors.black, // Default border color
     this.circleSize =   50.0,
-    this.backgroundColor= Colors.grey // Default circle size
+    this.backgroundColor= Colors.grey,
+    this.onTap,// Default circle size
+    this.customText,
+    this.customTextColor= Colors.black,
+    this.customTextSize = 12,
+    this.customFontWeight = FontWeight.bold,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: circleSize, // Set the width to the circle size
-      height: circleSize, // Set the height to the circle size
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: borderColor,
-          width: borderSize,
-        ),
-      ),
-      child: Icon(
-        iconData,
-        size: iconSize,
-        color: iconColor,
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: circleSize, // Set the width to the circle size
+            height: circleSize, // Set the height to the circle size
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: borderColor,
+                width: borderSize,
+              ),
+            ),
+            child: Icon(
+              iconData,
+              size: iconSize,
+              color: iconColor,
+            ),
+          ),
+          SizedBox(height: 10,),
+          if (customText != null) // Only show the text if customText is not null
+            Text(
+              customText!,
+              style: TextStyle(
+                fontSize: customTextSize, // Adjust the font size as needed
+                color: customTextColor,
+                fontWeight: customFontWeight// Adjust the text color as needed
+              ),
+            ),
+        ],
       ),
     );
   }

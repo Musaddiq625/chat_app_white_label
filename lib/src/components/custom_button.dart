@@ -20,6 +20,7 @@ class ButtonComponent extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             foregroundColor: textColor,
             backgroundColor: bgcolor,
+            shadowColor: Colors.transparent,
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
             textStyle:  TextStyle(
               fontSize: textSize,
