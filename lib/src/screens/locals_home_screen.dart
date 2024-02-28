@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/main_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 import '../components/bottom_nav_componenet.dart';
@@ -28,7 +29,6 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return MainScaffold(
       body: Stack(
         children: [
@@ -55,26 +55,26 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
               fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
         ),
         const Spacer(),
-        CustomIconWidget(
+        IconComponent(
           iconData: Icons.notifications,
           borderColor: Colors.transparent,
-          backgroundColor: Colors.black12,
+          backgroundColor: ColorConstants.iconBg,
           iconColor: Colors.white,
           circleSize: 40,
         ),
         SizedBox(width: 10),
-        CustomIconWidget(
+        IconComponent(
           iconData: Icons.sort,
           borderColor: Colors.transparent,
-          backgroundColor: Colors.black12,
+          backgroundColor: ColorConstants.iconBg,
           iconColor: Colors.white,
           circleSize: 40,
         ),
         SizedBox(width: 10),
-        CustomIconWidget(
+        IconComponent(
           iconData: Icons.search_rounded,
           borderColor: Colors.transparent,
-          backgroundColor: Colors.black12,
+          backgroundColor: ColorConstants.iconBg,
           iconColor: Colors.white,
           circleSize: 40,
         )
@@ -93,7 +93,8 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: 30,left: 20,right: 20,bottom: 100),
+        padding:
+            const EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 80),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,36 +152,39 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    CustomButton(
+                    ButtonComponent(
                         buttonText: "View Event", onPressedFunction: () {}),
                     const Spacer(),
-                    CustomIconWidget(
+                    IconComponent(
                       iconData: Icons.heart_broken,
                       borderColor: Colors.transparent,
-                      backgroundColor: Colors.grey,
+                      backgroundColor: ColorConstants.iconBg,
                       iconColor: Colors.white,
-                      circleSize: 40,
+                      circleSize: 35,
+                      iconSize: 20,
                     ),
                     SizedBox(width: 10),
-                    CustomIconWidget(
+                    IconComponent(
                       iconData: Icons.share,
                       borderColor: Colors.transparent,
-                      backgroundColor: Colors.grey,
+                      backgroundColor: ColorConstants.iconBg,
                       iconColor: Colors.white,
-                      circleSize: 40,
+                      circleSize: 35,
+                      iconSize: 20,
                     ),
                     SizedBox(width: 10),
-                    CustomIconWidget(
+                    IconComponent(
                       iconData: Icons.menu,
                       borderColor: Colors.transparent,
-                      backgroundColor: Colors.grey,
+                      backgroundColor: ColorConstants.iconBg,
                       iconColor: Colors.white,
-                      circleSize: 40,
+                      circleSize: 35,
+                      iconSize: 20,
                     )
                   ],
                 )

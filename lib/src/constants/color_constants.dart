@@ -5,6 +5,7 @@ class ColorConstants {
   static const Color greenMain = Color(0xff075e54);
   static const Color black = Color(0xff000000);
   static const Color white = Color(0xffFFFFFF);
+  static final Color iconBg= Colors.white.withOpacity(0.3);
 
   static const Color blackLight = Color.fromARGB(255, 73, 73, 73);
 

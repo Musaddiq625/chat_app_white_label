@@ -157,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                CustomButton(
+                ButtonComponent(
                     buttonText: widget.isEdit == true ? 'Update' : ' Complete',
                     onPressedFunction: () async {
                       if (nameController.text.isEmpty) {

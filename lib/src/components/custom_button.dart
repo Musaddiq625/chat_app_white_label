@@ -1,12 +1,15 @@
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
+class ButtonComponent extends StatelessWidget {
   final String buttonText;
   final Function onPressedFunction;
+  final Color bgcolor;
+  final double textSize;
+  final Color textColor;
 
-  const CustomButton(
-      {super.key, required this.buttonText, required this.onPressedFunction});
+   ButtonComponent(
+      {super.key, required this.buttonText, required this.onPressedFunction, this.bgcolor = Colors.indigo, this.textSize = 14,this.textColor = Colors.white,});
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +18,11 @@ class CustomButton extends StatelessWidget {
           await onPressedFunction();
         },
         style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: ColorConstants.greenMain,
+            foregroundColor: textColor,
+            backgroundColor: bgcolor,
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-            textStyle: const TextStyle(
-              fontSize: 16,
+            textStyle:  TextStyle(
+              fontSize: textSize,
             )),
         child: Text(buttonText));
   }
