@@ -4,7 +4,10 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 import '../components/bottom_nav_componenet.dart';
+import '../components/bottom_sheet_component.dart';
+import '../components/contacts_card_component.dart';
 import '../components/custom_button.dart';
+import '../models/contact.dart';
 
 class LocalsHomeScreen extends StatefulWidget {
   const LocalsHomeScreen({super.key});
@@ -24,6 +27,19 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
     // Replace with your asset path
     // Add more image providers as needed
+  ];
+
+
+  final List<ContactModel> contacts = [
+    ContactModel('Jesse Ebert', 'Graphic Designer',""),
+    ContactModel('Jesse Ebert', 'Graphic Designer',""),
+    ContactModel('Jesse Ebert', 'Graphic Designer',""),
+    ContactModel('Jesse Ebert', 'Graphic Designer',""),
+    ContactModel('Jesse Ebert', 'Graphic Designer',""),
+    ContactModel('Jesse Ebert', 'Graphic Designer',""),
+    ContactModel('Jesse Ebert', 'Graphic Designer',""),
+    ContactModel('Jesse Ebert', 'Graphic Designer',""),
+    // ... other contacts
   ];
   double radius = 30;
 
@@ -167,16 +183,213 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                       iconColor: Colors.white,
                       circleSize: 35,
                       iconSize: 20,
+                      onTap: () {
+                        BottomSheetComponent.showBottomSheet(context,
+                            takeFullHeightWhenPossible: false,
+                            isShowHeader: false,
+                            body: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 35, top: 12, bottom: 12),
+                                  child: Row(
+                                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      IconComponent(
+                                        iconData: Icons.share,
+                                        borderColor: Colors.transparent,
+                                        backgroundColor: ColorConstants.iconBg,
+                                        iconColor: Colors.indigo,
+                                        circleSize: 35,
+                                        iconSize: 20,
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text("Save Event",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14)),
+                                    ],
+                                  ),
+                                ),
+                                Divider(
+                                  thickness: 0.5,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 35, top: 12, bottom: 12),
+                                  child: Row(
+                                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      IconComponent(
+                                        iconData: Icons.thumb_down,
+                                        borderColor: Colors.transparent,
+                                        backgroundColor: ColorConstants.iconBg,
+                                        iconColor: Colors.indigo,
+                                        circleSize: 35,
+                                        iconSize: 20,
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text("Save Event",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14)),
+                                    ],
+                                  ),
+                                ),
+                                Divider(
+                                  thickness: 0.5,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 35, top: 12, bottom: 12),
+                                  child: Row(
+                                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      IconComponent(
+                                        iconData: Icons.remove_circle,
+                                        borderColor: Colors.transparent,
+                                        backgroundColor: ColorConstants.iconBg,
+                                        iconColor: Colors.red,
+                                        circleSize: 35,
+                                        iconSize: 20,
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text("Report event",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: Colors.red)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ));
+                      },
                     ),
                     SizedBox(width: 10),
                     IconComponent(
-                      iconData: Icons.share,
-                      borderColor: Colors.transparent,
-                      backgroundColor: ColorConstants.iconBg,
-                      iconColor: Colors.white,
-                      circleSize: 35,
-                      iconSize: 20,
-                    ),
+                        iconData: Icons.share,
+                        borderColor: Colors.transparent,
+                        backgroundColor: ColorConstants.iconBg,
+                        iconColor: Colors.white,
+                        circleSize: 35,
+                        iconSize: 20,
+                        onTap: () {
+                          BottomSheetComponent.showBottomSheet(context,
+                              takeFullHeightWhenPossible: false,
+                              isShowHeader: false,
+                              body: Container(
+                                constraints: const BoxConstraints(maxHeight:600),
+                                child: Column(
+
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 18.0,top: 18,bottom: 18),
+                                          child: Text(
+                                            "Share event",
+                                            style: TextStyle(
+                                                color: Colors.indigo,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap:()=>Navigator.pop(context),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: 20.0),
+                                            child: IconComponent(
+                                              iconData: Icons.cancel_outlined,
+                                              borderColor: Colors.transparent,
+                                              iconColor: Colors.black,
+                                              circleSize: 50,
+                                              backgroundColor: Colors.transparent,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconComponent(
+                                          iconData: Icons.link,
+                                          borderColor: Colors.transparent,
+                                          backgroundColor: ColorConstants.yellow,
+                                          iconColor: Colors.white,
+                                          circleSize: 60,
+                                          customText: "Copy Link",
+                                        ),
+
+                                        IconComponent(
+                                          iconData: Icons.facebook,
+                                          borderColor: Colors.transparent,
+                                          backgroundColor: ColorConstants.blue,
+                                          circleSize: 60,
+                                          customText: "Facebook",
+                                        ),
+
+                                        IconComponent(
+                                          iconData: Icons.install_desktop,
+                                          borderColor: Colors.transparent,
+                                          circleSize: 60,
+                                          customText: "Instagram",
+                                        ),
+
+                                        IconComponent(
+                                          iconData: Icons.share,
+                                          borderColor: Colors.transparent,
+                                          backgroundColor:  Color.fromARGB(
+                                              255, 87, 64, 208),
+                                          circleSize: 60,
+                                          customText: "Share",
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Divider(
+                                      thickness: 0.5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 18.0,top: 10,bottom: 16),
+                                      child: Text(
+                                        "Your Connections",
+                                        style: TextStyle(
+                                            color: Colors.indigo,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: contacts.length,
+                                        itemBuilder: (context, index) {
+                                          return ContactCard(contact: contacts[index]);
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ));
+                        }),
                     SizedBox(width: 10),
                     IconComponent(
                       iconData: Icons.menu,
