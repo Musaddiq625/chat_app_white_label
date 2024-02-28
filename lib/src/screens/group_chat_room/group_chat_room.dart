@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:chat_app_white_label/src/components/chat_input_component.dart';
 import 'package:chat_app_white_label/src/components/message_uploading_component.dart';
@@ -7,6 +6,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
+import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
@@ -20,8 +20,6 @@ import '../../models/message_model.dart';
 import '../../models/usert_model.dart';
 import '../../utils/firebase_notification_utils.dart';
 import '../../utils/firebase_utils.dart';
-import '../agora_calling.dart';
-import 'package:http/http.dart' as http;
 
 import '../agora_group_calling.dart';
 import '../agora_group_video_calling.dart';
@@ -296,7 +294,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                 ),
               ),
               IconButton(
-                onPressed: ()=>videoTap(),
+                onPressed: () => videoTap(),
                 icon: const Icon(
                   Icons.video_call,
                   size: 25,
@@ -315,52 +313,17 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   Future<void> callTap() async {
     userNumber = (widget.groupChat.users) ?? [];
-    String? senderName = FirebaseUtils.user?.name;
     String? senderContactNumber = FirebaseUtils.user?.phoneNumber;
 
-    //
-    // print("firebaseContactUser.fcmToken ${firebaseContactUser.fcmToken}");
-    // print("recipientUid $recipientUid");
-    // print("contactToDisplay[index].phoneNumber ${contactToDisplay[index].phoneNumber}");
-
-    //
-    //
-    // Uri postUrl = Uri.parse(
-    //     'https://fcm.googleapis.com/fcm/send');
-    // final data = {
-    //   "to": firebaseContactUser.fcmToken,
-    //   "notification": {
-    //     "title": 'New Call Request',
-    //     "body": 'You have a new call request',
-    //   },
-    //   "data": {
-    //     "messageType" : "call",
-    //     "callerName": senderName,
-    //     "callerNumber": senderContactNumber,
-    //   }
-    // };
-    //
-    // final headers = {
-    //   'content-type': 'application/json',
-    //   'Authorization':
-    //       'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
-    // };
-    //
-    // final response = await http.post(postUrl,
-    //     body: json.encode(data),
-    //     encoding: Encoding.getByName('utf-8'),
-    //     headers: headers);
-    //
-    // if (response.statusCode == 200) {
-    //   print("response ${response.body}");
-    //   print('Notification sent successfully');
-    // } else {
-    //   print(
-    //       'Failed to send notification ${response.statusCode}');
-    // }
-
-    final callId = "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
-    await FirebaseUtils.createGroupCalls(callId,widget.groupChat.groupData!.id!,senderContactNumber,userNumber,"group_call", widget.groupChat.groupData!.grougName! );
+    final callId =
+        "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
+    await FirebaseUtils.createGroupCalls(
+        callId,
+        widget.groupChat.groupData!.id!,
+        senderContactNumber,
+        userNumber,
+        "group_call",
+        widget.groupChat.groupData!.grougName!);
     Map<String, dynamic> data = {
       "messageType": "group_call",
       "callId": callId,
@@ -373,112 +336,72 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     for (String userNumbers in userNumber) {
       final getUserData = await FirebaseUtils.getChatUser(userNumbers);
       UserModel chatUser = UserModel.fromJson(getUserData.data() ?? {});
-      if(chatUser.fcmToken != null) {
-        await FirebaseNotificationUtils.sendFCM(chatUser.fcmToken ?? "", 'New Group Call Request',
-            'You have a new Group call request', data);
+      if (chatUser.fcmToken != null) {
+        await FirebaseNotificationUtils.sendNotification(
+            chatUser.fcmToken ?? "", data);
       }
       FirebaseUtils.updateUserCallList(chatUser.phoneNumber!, callId);
     }
 
-
-
-
-    await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
+    await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!, callId);
 
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => AgoraGroupCalling(
-            recipientUid: int.parse(FirebaseUtils.getDateTimeNowAsId()),
-            callerName: widget.groupChat.groupData?.grougName,
-            groupImage:widget.groupChat.groupData?.groupImage,
-            callId:callId,
-          )),
+                recipientUid: int.parse(FirebaseUtils.getDateTimeNowAsId()),
+                callerName: widget.groupChat.groupData?.grougName,
+                groupImage: widget.groupChat.groupData?.groupImage,
+                callId: callId,
+              )),
     );
   }
 
   Future<void> videoTap() async {
     userNumber = (widget.groupChat.users) ?? [];
-    String? senderName = FirebaseUtils.user?.name;
-    String? senderContactNumber =
-        FirebaseUtils.user?.phoneNumber;
+    String? senderContactNumber = FirebaseUtils.user?.phoneNumber;
 
-
-    //
-    // print("firebaseContactUser.fcmToken ${firebaseContactUser.fcmToken}");
-    // print("recipientUid $recipientUid");
-    // print("contactToDisplay[index].phoneNumber ${contactToDisplay[index].phoneNumber}");
-
-    //
-    //
-    // Uri postUrl = Uri.parse(
-    //     'https://fcm.googleapis.com/fcm/send');
-    // final data = {
-    //   "to": firebaseContactUser.fcmToken,
-    //   "notification": {
-    //     "title": 'New Call Request',
-    //     "body": 'You have a new call request',
-    //   },
-    //   "data": {
-    //     "messageType" : "call",
-    //     "callerName": senderName,
-    //     "callerNumber": senderContactNumber,
-    //   }
-    // };
-    //
-    // final headers = {
-    //   'content-type': 'application/json',
-    //   'Authorization':
-    //       'Bearer AAAAOIYrwGU:APA91bFOw0B8_2FY2USTdpTwg72djuxfiqf-vJ2ZcMts8g5TsXa5oeVEumc1-qZ-n7ei5pnPzVb7SKDFKo2mCF7XU4572rJJnH99Uge7PdORc6gGVDKHdA2vdZfzU10jlG7Hl5iIYCZK'
-    // };
-    //
-    // final response = await http.post(postUrl,
-    //     body: json.encode(data),
-    //     encoding: Encoding.getByName('utf-8'),
-    //     headers: headers);
-    //
-    // if (response.statusCode == 200) {
-    //   print("response ${response.body}");
-    //   print('Notification sent successfully');
-    // } else {
-    //   print(
-    //       'Failed to send notification ${response.statusCode}');
-    // }
-
-    final callId = "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
-    await FirebaseUtils.createGroupCalls(callId,widget.groupChat.groupData!.id!,senderContactNumber,userNumber,"group_call", widget.groupChat.groupData!.grougName! );
+    final callId =
+        "${senderContactNumber!.replaceAll('+', "")}_${FirebaseUtils.getDateTimeNowAsId()}";
+    await FirebaseUtils.createGroupCalls(
+        callId,
+        widget.groupChat.groupData!.id!,
+        senderContactNumber,
+        userNumber,
+        "group_call",
+        widget.groupChat.groupData!.grougName!);
     Map<String, dynamic> data = {
       "messageType": "group_video_call",
-      "callId":callId,
+      "callId": callId,
       "callerName": widget.groupChat.groupData?.grougName,
       "callerNumber": senderContactNumber,
     };
-    userNumber = userNumber.where((number) => number != FirebaseUtils.user!.id).toList();
+    userNumber =
+        userNumber.where((number) => number != FirebaseUtils.user!.id).toList();
 
     for (String userNumbers in userNumber) {
       final getUserData = await FirebaseUtils.getChatUser(userNumbers);
       UserModel chatUser = UserModel.fromJson(getUserData.data() ?? {});
-      if(chatUser.fcmToken != null) {
-        await FirebaseNotificationUtils.sendFCM(chatUser.fcmToken ?? "",
-            'New Group Call Request',
-            'You have a new Group call request',
-            data);
+      if (chatUser.fcmToken != null) {
+        await FirebaseNotificationUtils.sendNotification(
+            chatUser.fcmToken ?? "", data);
       }
       FirebaseUtils.updateUserCallList(chatUser.phoneNumber!, callId);
     }
 
+    await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!, callId);
 
-    await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!,callId);
+    await FirebaseUtils.updateUserCallList(FirebaseUtils.user!.id!, callId);
 
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => AgoraGroupVideoCalling(
-            recipientUid: int.parse(FirebaseUtils.getDateTimeNowAsId()),
-            callerName: widget.groupChat.groupData?.grougName,
-            groupImage:widget.groupChat.groupData?.groupImage,
-            callId:callId,
-          )),
+                recipientUid: int.parse(FirebaseUtils.getDateTimeNowAsId()),
+                callerName: widget.groupChat.groupData?.grougName,
+                groupImage: widget.groupChat.groupData?.groupImage,
+                callId: callId,
+              )),
     );
   }
 }

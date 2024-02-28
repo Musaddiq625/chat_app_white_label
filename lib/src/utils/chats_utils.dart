@@ -3,6 +3,7 @@ import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -160,16 +161,19 @@ class ChatUtils {
           .doc(sendingTimeAsId)
           .set(message.toJson())
           .then((value) async =>
-                  //adding last message
-                  await chatDoc.update({
-                    'last_message': message.toJson(),
-                    'updated_at': sendingTimeAsId
-                  })
-
-              // )
-              // .then((value) =>
-              // sendPushNotification(chatUser, type == Type.text ? msg : 'image')
-              );
+              //adding last message
+              await chatDoc.update({
+                'last_message': message.toJson(),
+                'updated_at': sendingTimeAsId
+              }))
+          .then((value) => FirebaseNotificationUtils.sendNotification(
+                  chatUser.fcmToken ?? '', {
+                "messageType": "message",
+                "chatId": chatId,
+                "chatType": type.name,
+                "chatMessage": sendingMessage,
+                "senderName": FirebaseUtils.user?.name ?? '',
+              }));
     } catch (e) {
       LoggerUtil.logs(e.toString());
     }

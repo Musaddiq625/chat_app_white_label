@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:chat_app_white_label/main.dart';
@@ -15,7 +14,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -84,8 +82,8 @@ class FirebaseUtils {
     LoggerUtil.logs('Created User');
   }
 
-  static Future<void> createCalls(String callId,String callerNumber , List<String> receiverNumber, String type) async {
-
+  static Future<void> createCalls(String callId, String callerNumber,
+      List<String> receiverNumber, String type) async {
     await callsCollection.doc(callId).set({
       'id': callId,
       'caller_number': callerNumber,
@@ -104,11 +102,16 @@ class FirebaseUtils {
     LoggerUtil.logs('Created Call');
   }
 
-  static Future<void> createGroupCalls(String callId,String groupId,String callerNumber , List<String> receiverNumber, String type, String name) async {
-
+  static Future<void> createGroupCalls(
+      String callId,
+      String groupId,
+      String callerNumber,
+      List<String> receiverNumber,
+      String type,
+      String name) async {
     await callsCollection.doc(callId).set({
       'id': callId,
-      "group_id" : groupId,
+      "group_id": groupId,
       'caller_number': callerNumber,
       'time': getDateTimeNowAsId(),
       'type': type,
@@ -117,7 +120,6 @@ class FirebaseUtils {
 
     // "name":name,
 
-
     // await callsCollection.doc(callId).set({
     //   'id': callId,
     //   'caller_number': callerNumber,
@@ -129,42 +131,48 @@ class FirebaseUtils {
     LoggerUtil.logs('Created Call');
   }
 
-  static Future<void> updateCallsOnReceiveOfUser(List<String> receiverNumbers, String callId)async{
+  static Future<void> updateCallsOnReceiveOfUser(
+      List<String> receiverNumbers, String callId) async {
     await firebaseService.firestore
-        .collection(FirebaseConstants.calls).doc(callId)
+        .collection(FirebaseConstants.calls)
+        .doc(callId)
         .set({
       'receiver_numbers': FieldValue.arrayUnion(receiverNumbers),
-    },SetOptions(merge: true));
+    }, SetOptions(merge: true));
     LoggerUtil.logs('Updated the CallsOnReceiveOrReject');
   }
 
-  static Future<void> updateCallsOnReceiveOrReject(bool isCallActive, String callId)async{
+  static Future<void> updateCallsOnReceiveOrReject(
+      bool isCallActive, String callId) async {
     await firebaseService.firestore
-        .collection(FirebaseConstants.calls).doc(callId)
+        .collection(FirebaseConstants.calls)
+        .doc(callId)
         .set({
       'is_call_active': isCallActive,
-    },SetOptions(merge: true));
+    }, SetOptions(merge: true));
     LoggerUtil.logs('Updated the CallsOnReceiveOrReject');
   }
 
-
-  static Future<void> updateCallsDuration(String duration, bool isCallActive , String callId, String endTime )async{
+  static Future<void> updateCallsDuration(
+      String duration, bool isCallActive, String callId, String endTime) async {
     await firebaseService.firestore
-        .collection(FirebaseConstants.calls).doc(callId)
+        .collection(FirebaseConstants.calls)
+        .doc(callId)
         .set({
       'is_call_active': isCallActive,
       'duration': duration,
-      'end_time':endTime
-    },SetOptions(merge: true));
+      'end_time': endTime
+    }, SetOptions(merge: true));
   }
 
-  static Future<void> updateUserCallList(String phoneNumber,String callId)async{
+  static Future<void> updateUserCallList(
+      String phoneNumber, String callId) async {
     await firebaseService.firestore
         .collection(FirebaseConstants.users)
         .doc(phoneNumber.replaceAll('+', ''))
         .set({
       'calls': FieldValue.arrayUnion([callId])
-    },SetOptions(merge: true));
+    }, SetOptions(merge: true));
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllCalls() {
@@ -173,7 +181,6 @@ class FirebaseUtils {
         .orderBy('end_time', descending: true)
         .snapshots();
   }
-
 
   static Future<void> updateUser(
       String name, String about, String? imageUrl, String phoneNumber) async {
@@ -237,7 +244,6 @@ class FirebaseUtils {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getCallsUser() {
     return storyCollection.snapshots();
   }
-
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getStories() {
     return storiesCollection.snapshots();
