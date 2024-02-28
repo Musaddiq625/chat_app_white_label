@@ -144,7 +144,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     const SizedBox(
                       height: 40,
                     ),
-                    CustomButton(
+                    ButtonComponent(
                         buttonText: "Create Group",
                         onPressedFunction: () async {
                           if (nameController.text.isEmpty) {
