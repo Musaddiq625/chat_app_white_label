@@ -7,9 +7,10 @@ class ButtonComponent extends StatelessWidget {
   final Color bgcolor;
   final double textSize;
   final Color textColor;
+  final double horizontalLength;
 
    ButtonComponent(
-      {super.key, required this.buttonText, required this.onPressedFunction, this.bgcolor = Colors.indigo, this.textSize = 14,this.textColor = Colors.white,});
+      {super.key, required this.buttonText, required this.onPressedFunction, this.bgcolor = Colors.indigo, this.textSize = 14,this.textColor = Colors.white,this.horizontalLength=25});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class ButtonComponent extends StatelessWidget {
             foregroundColor: textColor,
             backgroundColor: bgcolor,
             shadowColor: Colors.transparent,
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+            padding:  EdgeInsets.symmetric(horizontal: horizontalLength, vertical: 12),
             textStyle:  TextStyle(
               fontSize: textSize,
             )),

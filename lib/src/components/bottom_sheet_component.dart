@@ -20,7 +20,7 @@ class BottomSheetComponent {
       isScrollControlled: true,
       isDismissible: true,
       backgroundColor: ColorConstants.white,
-      barrierColor: ColorConstants.white.withOpacity(0.2),
+      // barrierColor: ColorConstants.white.withOpacity(0.2),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(24),

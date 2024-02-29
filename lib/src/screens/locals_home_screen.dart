@@ -1,4 +1,5 @@
 import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -447,25 +448,28 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
   _yesShareItBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         isShowHeader: false,
-        body: Column(
-          children: [
-            const SizedBox(
-              height: 70,
-              width: double.infinity,
-            ),
-            Image.asset(
-              AssetConstants.group,
-              width: 150,
-              height: 150,
-            ),
-            const Text(
-              "Event Shared !",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-          ],
-        ));
+        body:
+            InfoSheetComponent(heading: "Event Shared !",image: AssetConstants.group,),
+        );
+    // Column(
+    //   children: [
+    //     const SizedBox(
+    //       height: 70,
+    //       width: double.infinity,
+    //     ),
+    //     Image.asset(
+    //       AssetConstants.group,
+    //       width: 150,
+    //       height: 150,
+    //     ),
+    //     const Text(
+    //       "Event Shared !",
+    //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+    //     ),
+    //     const SizedBox(
+    //       height: 50,
+    //     ),
+    //   ],
+    // )
   }
 }

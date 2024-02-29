@@ -1,11 +1,14 @@
+import 'package:chat_app_white_label/src/components/custom_button.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:flutter/material.dart';
 
 import '../components/bottom_sheet_component.dart';
 import '../components/contacts_card_component.dart';
 import '../components/icon_component.dart';
+import '../components/info_sheet_component.dart';
 import '../components/profile_image_component.dart';
 import '../constants/color_constants.dart';
+import '../constants/image_constants.dart';
 import '../models/contact.dart';
 
 class LocalsEventScreen extends StatefulWidget {
@@ -19,6 +22,7 @@ final String _fullText =
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
 bool _showFullText = false;
 bool ticketRequired = true;
+final TextEditingController _controller = TextEditingController();
 
 class _LocalsEventScreenState extends State<LocalsEventScreen> {
   final List<ContactModel> contacts = [
@@ -57,7 +61,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
         backgroundColor: ColorConstants.bgcolorbutton,
         foregroundColor: ColorConstants.white,
         onPressed: () {
-          // Respond to button press
+          _showJoinBottomSheet();
         },
         label: const Row(
           children: [
@@ -310,7 +314,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
         color: ColorConstants.white,
         elevation: 0,
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(18.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Text(
@@ -320,41 +324,34 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   fontSize: 18,
                   color: ColorConstants.bgcolorbutton),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 18),
-              child:
-                  // Text(
-                  //   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                  //   style: TextStyle(
-                  //     fontSize: 12,
-                  //   ),
-                  // ),
-                  GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _showFullText = !_showFullText;
-                  });
-                },
-                child: RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
+            SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _showFullText = !_showFullText;
+                });
+              },
+              child: RichText(
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: _showFullText
+                          ? _fullText
+                          : (_fullText.length > 150
+                                  ? _fullText.substring(0, 150)
+                                  : _fullText) ??
+                              "No description available",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    if (_fullText.length > 150)
                       TextSpan(
-                        text: _showFullText
-                            ? _fullText
-                            : (_fullText.length > 150
-                                    ? _fullText.substring(0, 150)
-                                    : _fullText) ??
-                                "No description available",
-                        style: TextStyle(color: Colors.black),
+                        text: _showFullText ? ' Show less' : ' ...Read more',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
                       ),
-                      if (_fullText.length > 150)
-                        TextSpan(
-                          text: _showFullText ? ' Show less' : ' ...Read more',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.black),
-                        ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -362,7 +359,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               height: 20,
             ),
             Container(
-              padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
+              // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
               child: Column(
                 children: [
                   Row(
@@ -530,7 +527,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     children: <TextSpan>[
                       const TextSpan(text: "Members  "),
                       TextSpan(
-                        text: "8",
+                        text: contacts.length.toString(),
                         style: TextStyle(
                             color: ColorConstants.lightGray.withOpacity(0.5)),
                       ),
@@ -634,5 +631,171 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
             ),
           ],
         ));
+  }
+
+  _showJoinBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Padding(
+          padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Join",
+                    style: TextStyle(
+                        color: Colors.indigo,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: IconComponent(
+                      iconData: Icons.close,
+                      borderColor: Colors.transparent,
+                      iconColor: Colors.black,
+                      circleSize: 50,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Property \nnetworking event",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: ColorConstants.black),
+                  ),
+                  Image.asset(
+                    AssetConstants.group,
+                    width: 100,
+                    height: 80,
+                  ),
+                ],
+              ),
+              Text("Free to Join"),
+              SizedBox(height: 20,),
+              const Divider(
+                thickness: 0.5,
+              ),
+              _messageComponent(),
+              const Divider(
+                thickness: 0.5,
+              ),
+              Text(
+                "Something to know",
+                style: TextStyle(
+                    color: Colors.indigo,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+              SizedBox(height: 10,),
+              Row(
+                children: [
+                  ProfileImageComponent(url: "",size: 30,),
+                  SizedBox(width: 20,),
+                  Text(
+                    "When you join, you're in the game!\n Chat's open and ready for you ",
+                  ),
+                ],
+              ),
+              SizedBox(height: 10,),
+              const Divider(
+                thickness: 0.5,
+              ),
+              SizedBox(height: 10,),
+              Row(
+                children: [
+                  ProfileImageComponent(url: "",size: 30,),
+                  SizedBox(width: 20,),
+                  Text(
+                    "When you join, you're in the game!\n Chat's open and ready for you ",
+                  ),
+                ],
+              ),
+              SizedBox(height: 50,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ButtonComponent(buttonText: "Join", onPressedFunction: (){
+                    _sendMessage();
+                    Navigator.pop(context);
+                    BottomSheetComponent.showBottomSheet(context,
+                      isShowHeader: false,
+                      body:
+                      InfoSheetComponent(heading: "Request Sent!",body: "You will be notifiy when your request is accepted",image: AssetConstants.group,),
+                    );
+
+                    },horizontalLength: 120,bgcolor: ColorConstants.yellow,)
+                ],
+              )
+
+
+
+            ],
+          ),
+        ));
+  }
+
+
+  _messageComponent(){
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              ProfileImageComponent(url: "",size: 30,),
+              SizedBox(width: 20,),
+              Text(
+                "Message for Raul",
+                style: TextStyle(
+                    color: Colors.indigo,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+            ],
+          ),
+          SizedBox(height: 10,),
+          Text(
+            "Do you have questions or comments for the creator? Feel free to leave them here. This message is private.",
+          ),
+          TextField(
+            controller: _controller,
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: 'Type your message here...',
+              // suffixIcon: IconButton(
+              //   icon: Icon(Icons.send),
+              //   onPressed: _sendMessage,
+              // ),
+              hintStyle: TextStyle(color: ColorConstants.lightGray.withOpacity(0.5),fontSize: 14),
+              border: InputBorder.none,
+            ),
+          ),
+          SizedBox(height: 10,),
+
+        ],
+      ),
+    );
+
+  }
+
+
+  void _sendMessage() {
+    if (_controller.text.isNotEmpty) {
+      setState(() {
+        _controller.text;
+         _controller.clear();
+      });
+    }
   }
 }
