@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:chat_app_white_label/src/components/custom_button.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:chat_app_white_label/src/components/custom_button.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/custom_text_field.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
