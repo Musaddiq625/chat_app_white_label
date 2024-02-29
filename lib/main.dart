@@ -60,7 +60,8 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LocalsEventScreen(),
+      home: LocalsHomeScreen(),
+      onGenerateRoute: generateRoute,
     );
   }
 }

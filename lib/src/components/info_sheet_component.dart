@@ -37,7 +37,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
             height: 20,
           ),
           Text(
-            widget.body,
+            widget.body?? "",
             style: TextStyle( fontSize: 14),
           ),
           const SizedBox(

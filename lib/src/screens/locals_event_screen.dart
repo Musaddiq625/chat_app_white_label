@@ -103,6 +103,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                 iconColor: ColorConstants.white,
                 iconSize: 20,
                 circleSize: 40,
+                onTap: ()=>Navigator.pop(context),
               ),
             ),
             Padding(
@@ -173,7 +174,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     circleSize: 60,
                     circleHeight: 35,
                     iconSize: 20,
-                    onTap: _showMoreBottomSheet,
+
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
@@ -300,6 +301,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     iconColor: ColorConstants.white,
                     circleSize: 35,
                     iconSize: 20,
+                    onTap: _showMoreBottomSheet,
                   )
                 ],
               ),

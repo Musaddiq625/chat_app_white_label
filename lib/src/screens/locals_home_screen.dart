@@ -4,6 +4,8 @@ import 'package:chat_app_white_label/src/components/profile_image_component.dart
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 
 import '../components/bottom_nav_componenet.dart';
@@ -158,10 +160,10 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ButtonComponent(
-                      buttonText: "View Event", onPressedFunction: () {}),
+                      buttonText: "View Event", onPressedFunction: () {NavigationUtil.push(context, RouteConstants.localsEventScreen);}),
                   const Spacer(),
                   IconComponent(
-                    iconData: Icons.heart_broken,
+                    iconData: Icons.favorite,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
                     iconColor: Colors.white,
