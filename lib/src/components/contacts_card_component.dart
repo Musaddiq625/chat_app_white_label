@@ -90,6 +90,7 @@ class _ContactCardState extends State<ContactCard> {
                                     print("Hello 2 ${context} ");
                                     BuildContext currentContext = context;
                                     BottomSheetComponent.showBottomSheet(currentContext,
+                                        takeFullHeightWhenPossible: false,
                                         isShowHeader: false,
                                         body: Container(
                                           child: Column(
@@ -97,11 +98,16 @@ class _ContactCardState extends State<ContactCard> {
                                               SizedBox(height: 30),
                                               Image.network(
                                                 "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                                                fit: BoxFit.fill,
+                                                width: double.infinity,
+                                                height: 100,
                                               ),
+                                              SizedBox(height: 30),
                                               Text(
                                                 "Event Shared !",
-                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
                                               ),
+                                              SizedBox(height: 50),
                                             ],
                                           ),
                                         ));

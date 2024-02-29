@@ -11,6 +11,7 @@ class IconComponent extends StatelessWidget {
   final double circleSize;
   final Function ()? onTap;// New parameter to control the circle size
   final String? customText;
+  final String? customIconText;
   final Color customTextColor;
   final double customTextSize;
   final FontWeight customFontWeight;
@@ -26,6 +27,7 @@ class IconComponent extends StatelessWidget {
     this.backgroundColor= Colors.grey,
     this.onTap,// Default circle size
     this.customText,
+    this.customIconText,
     this.customTextColor= Colors.black,
     this.customTextSize = 12,
     this.customFontWeight = FontWeight.bold,
@@ -40,15 +42,37 @@ class IconComponent extends StatelessWidget {
           Container(
             width: circleSize, // Set the width to the circle size
             height: circleSize, // Set the height to the circle size
-            decoration: BoxDecoration(
+            decoration: customIconText == null
+        ?
+            BoxDecoration(
               color: backgroundColor,
               shape: BoxShape.circle,
               border: Border.all(
                 color: borderColor,
                 width: borderSize,
               ),
+            ) :
+            BoxDecoration(
+              borderRadius: BorderRadius.only(topLeft:Radius.circular(15),topRight: Radius.circular(15),bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+              color: backgroundColor,
+              // shape: BoxShape.circle,
+              border: Border.all(
+                color: borderColor,
+                width: borderSize,
+              ),
             ),
-            child: Icon(
+            child: customIconText != null
+                ? Row(
+              children: [
+                Icon(
+                  iconData,
+                  size: iconSize,
+                  color: iconColor,
+                ),
+                Text(customIconText!,style: TextStyle(color: Colors.white),),
+              ],
+            )
+                : Icon(
               iconData,
               size: iconSize,
               color: iconColor,
