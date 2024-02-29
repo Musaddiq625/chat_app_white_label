@@ -17,6 +17,11 @@ class LocalsEventScreen extends StatefulWidget {
   State<LocalsEventScreen> createState() => _LocalsEventScreenState();
 }
 
+final String _fullText =
+    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+bool _showFullText = false;
+bool ticketRequired = true;
+
 class _LocalsEventScreenState extends State<LocalsEventScreen> {
   final List<ContactModel> contacts = [
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
@@ -35,6 +40,8 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
     const NetworkImage(
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
+    // Replace with your asset path
+    // Add more image providers as needed
   ];
   double radius = 30;
 
@@ -303,13 +310,12 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
 
   Widget _aboutTheEvent() {
     return Card(
-      color: ColorConstants.white,
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        color: ColorConstants.white,
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Text(
               "About the event",
               style: TextStyle(
@@ -317,130 +323,193 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   fontSize: 18,
                   color: ColorConstants.bgcolorbutton),
             ),
-            const SizedBox(
+            Padding(
+              padding: const EdgeInsets.only(top: 10, left: 18),
+              child:
+                  // Text(
+                  //   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                  //   style: TextStyle(
+                  //     fontSize: 12,
+                  //   ),
+                  // ),
+                  GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _showFullText = !_showFullText;
+                  });
+                },
+                child: RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: _showFullText
+                            ? _fullText
+                            : (_fullText.length > 150
+                                    ? _fullText.substring(0, 150)
+                                    : _fullText) ??
+                                "No description available",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      if (_fullText.length > 150)
+                        TextSpan(
+                          text: _showFullText ? ' Show less' : ' ...Read more',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
               height: 20,
             ),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const ProfileImageComponent(url: ""),
-                    const SizedBox(width: 10),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "1456 Participants",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "Elena, Ilsa and more",
-                          style: TextStyle(
-                              fontSize: 14, color: ColorConstants.lightGray),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                      width: radius * images.length.toDouble(),
-                      // Calculate the total width of images
-                      height: radius,
-                      // Set the height to match the image size
-                      child: Stack(
+            Container(
+              padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const ProfileImageComponent(url: ""),
+                      const SizedBox(width: 10),
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          for (int i = 0; i < images.length; i++)
-                            Positioned(
-                              left: i * radius / 1.5,
-                              // Adjust the left offset
-                              child: ClipOval(
-                                child: Image(
-                                  // color: Colors.red,
-                                  image: images[i],
-                                  width: radius,
-                                  height: radius,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
+                          Text(
+                            "1456 Participants",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "Elena, Ilsa and more",
+                            style: TextStyle(
+                                fontSize: 14, color: ColorConstants.lightGray),
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                const Divider(thickness: 0.2),
-                const Row(
-                  children: [
-                    ProfileImageComponent(url: ""),
-                    SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Flexible Date",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                      const Spacer(),
+                      SizedBox(
+                        width: radius * images.length.toDouble(),
+                        // Calculate the total width of images
+                        height: radius,
+                        // Set the height to match the image size
+                        child: Stack(
+                          children: [
+                            for (int i = 0; i < images.length; i++)
+                              Positioned(
+                                left: i * radius / 1.5,
+                                // Adjust the left offset
+                                child: ClipOval(
+                                  child: Image(
+                                    // color: Colors.red,
+                                    image: images[i],
+                                    width: radius,
+                                    height: radius,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                        Text(
-                          "Date will be decide later",
-                          style: TextStyle(
-                              fontSize: 14, color: ColorConstants.lightGray),
+                      ),
+                    ],
+                  ),
+                  const Divider(thickness: 0.2),
+                  const Row(
+                    children: [
+                      ProfileImageComponent(url: ""),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Flexible Date",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "Date will be decide later",
+                            style: TextStyle(
+                                fontSize: 14, color: ColorConstants.lightGray),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const Divider(thickness: 0.2),
+                  const Row(
+                    children: [
+                      ProfileImageComponent(url: ""),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Manchester",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "Exact location after joining",
+                            style: TextStyle(
+                                fontSize: 14, color: ColorConstants.lightGray),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  if (ticketRequired == true) Divider(thickness: 0.2),
+                  if (ticketRequired == true)
+                    Row(
+                      children: [
+                        ProfileImageComponent(url: ""),
+                        SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "SR 150",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "Ticket required to attend event",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: ColorConstants.lightGray),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-                const Divider(thickness: 0.2),
-                const Row(
-                  children: [
-                    ProfileImageComponent(url: ""),
-                    SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Manchester",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "Exact location after joining",
-                          style: TextStyle(
-                              fontSize: 14, color: ColorConstants.lightGray),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const Divider(thickness: 0.2),
-                const Row(
-                  children: [
-                    ProfileImageComponent(url: ""),
-                    SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Free to join",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "No charity support required",
-                          style: TextStyle(
-                              fontSize: 14, color: ColorConstants.lightGray),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                  Divider(thickness: 0.2),
+                  Row(
+                    children: [
+                      ProfileImageComponent(url: ""),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Free to join",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "No charity support required",
+                            style: TextStyle(
+                                fontSize: 14, color: ColorConstants.lightGray),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
+          ]),
+        ));
   }
 
   Widget _members() {
