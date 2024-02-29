@@ -580,16 +580,9 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   ],
                 ),
               )),
-          // ListView.builder(
-          //   shrinkWrap: true,
-          //   physics: const BouncingScrollPhysics(),
-          //   itemCount: contacts.length,
-          //   itemBuilder: (context, index) {
-          //     return ContactCard(contact: contacts[index]);
-          //   },
-          // ),
-          SizedBox(height: 20,),
-          ...List.generate(contacts.length, (index) => ContactCard(contact: contacts[index])),
+
+          SizedBox(height: 30,),
+          ...List.generate(contacts.length, (index) => ContactCard(contact: contacts[index],showShareIcon: false)),
         ],
       ),
     );
