@@ -54,6 +54,27 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: ColorConstants.bgcolorbutton,
+        foregroundColor: ColorConstants.white,
+        onPressed: () {
+          // Respond to button press
+        },
+        label: Row(
+          children: [
+            Text('Join'),
+            // Text displayed before the icon
+            SizedBox(width: 30),
+            Icon(Icons.add_circle),
+            // Adjust the space between text and icon as needed
+          ],
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(30), // Adjust the border radius as needed
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -68,407 +89,509 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
         ),
       ),
       Padding(
-        padding:
-            const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 80),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IconComponent(
-              iconData: Icons.arrow_back_ios_new,
-              borderColor: Colors.transparent,
-              backgroundColor: ColorConstants.iconBg,
-              iconColor: Colors.white,
-              iconSize: 20,
-              circleSize: 40,
-            ),
-            SizedBox(
-              height: 100,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              // Align children vertically
-              children: [
-                SizedBox(
-                  width: radius * images.length.toDouble(),
-                  // Calculate the total width of images
-                  height: radius,
-                  // Set the height to match the image size
-                  child: Stack(
-                    children: [
-                      for (int i = 0; i < images.length; i++)
-                        Positioned(
-                          left: i * radius / 1.5,
-                          // Adjust the left offset
-                          child: ClipOval(
-                            child: Image(
-                              // color: Colors.red,
-                              image: images[i],
-                              width: radius,
-                              height: radius,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                Text(
-                  "+1456 Joined",
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ],
-            ),
-            Text(
-              "Property \nnetworking event",
-              style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "17 Feb . 11AM - 2PM . Manchester",
-              style: TextStyle(fontSize: 16, color: Colors.white),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconComponent(
-                  iconData: Icons.heart_broken,
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15, left: 10, bottom: 80),
+                child: IconComponent(
+                  iconData: Icons.arrow_back_ios_new,
                   borderColor: Colors.transparent,
                   backgroundColor: ColorConstants.iconBg,
-                  iconColor: Colors.red,
-                  customIconText: " 22",
-                  circleSize: 48,
+                  iconColor: ColorConstants.white,
                   iconSize: 20,
-                  onTap: () {
-                    BottomSheetComponent.showBottomSheet(context,
-                        takeFullHeightWhenPossible: false,
-                        isShowHeader: false,
-                        body: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 35, top: 12, bottom: 12),
-                              child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  IconComponent(
-                                    iconData: Icons.share,
-                                    borderColor: Colors.transparent,
-                                    backgroundColor: ColorConstants.iconBg,
-                                    iconColor: Colors.indigo,
-                                    circleSize: 35,
-                                    iconSize: 20,
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Text("Save Event",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14)),
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              thickness: 0.5,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 35, top: 12, bottom: 12),
-                              child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  IconComponent(
-                                    iconData: Icons.thumb_down,
-                                    borderColor: Colors.transparent,
-                                    backgroundColor: ColorConstants.iconBg,
-                                    iconColor: Colors.indigo,
-                                    circleSize: 35,
-                                    iconSize: 20,
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Text("Save Event",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14)),
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              thickness: 0.5,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 35, top: 12, bottom: 12),
-                              child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  IconComponent(
-                                    iconData: Icons.remove_circle,
-                                    borderColor: Colors.transparent,
-                                    backgroundColor: ColorConstants.iconBg,
-                                    iconColor: Colors.red,
-                                    circleSize: 35,
-                                    iconSize: 20,
-                                  ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Text("Report event",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: Colors.red)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ));
-                  },
+                  circleSize: 40,
                 ),
-                SizedBox(width: 10),
-                IconComponent(
-                    iconData: Icons.share,
-                    borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.iconBg,
-                    iconColor: Colors.white,
-                    circleSize: 35,
-                    iconSize: 20,
-                    onTap: () {
-                      BottomSheetComponent.showBottomSheet(context,
-                          takeFullHeightWhenPossible: false,
-                          isShowHeader: false,
-                          body: Container(
-                            constraints: const BoxConstraints(maxHeight: 600),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  // Align children vertically
+                  children: [
+                    SizedBox(
+                      width: radius * images.length.toDouble(),
+                      // Calculate the total width of images
+                      height: radius,
+                      // Set the height to match the image size
+                      child: Stack(
+                        children: [
+                          for (int i = 0; i < images.length; i++)
+                            Positioned(
+                              left: i * radius / 1.5,
+                              // Adjust the left offset
+                              child: ClipOval(
+                                child: Image(
+                                  // color: Colors.red,
+                                  image: images[i],
+                                  width: radius,
+                                  height: radius,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      "+1456 Joined",
+                      style:
+                          TextStyle(fontSize: 16, color: ColorConstants.white),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  "Property \nnetworking event",
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: ColorConstants.white),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  "17 Feb . 11AM - 2PM . Manchester",
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(
+                  children: [
+                    IconComponent(
+                      iconData: Icons.heart_broken,
+                      borderColor: Colors.transparent,
+                      backgroundColor: ColorConstants.iconBg,
+                      iconColor: Colors.red,
+                      customIconText: " 22",
+                      circleSize: 48,
+                      iconSize: 20,
+                      onTap: () {
+                        BottomSheetComponent.showBottomSheet(context,
+                            takeFullHeightWhenPossible: false,
+                            isShowHeader: false,
+                            body: Column(
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 18.0, top: 18, bottom: 18),
-                                      child: Text(
-                                        "Share event",
-                                        style: TextStyle(
-                                            color: Colors.indigo,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 35, top: 12, bottom: 12),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      IconComponent(
+                                        iconData: Icons.share,
+                                        borderColor: Colors.transparent,
+                                        backgroundColor: ColorConstants.iconBg,
+                                        iconColor: Colors.indigo,
+                                        circleSize: 35,
+                                        iconSize: 20,
                                       ),
-                                    ),
-                                    InkWell(
-                                      onTap: () => Navigator.pop(context),
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 20.0),
-                                        child: IconComponent(
-                                          iconData: Icons.cancel_outlined,
-                                          borderColor: Colors.transparent,
-                                          iconColor: Colors.black,
-                                          circleSize: 50,
-                                          backgroundColor: Colors.transparent,
-                                        ),
+                                      SizedBox(
+                                        width: 20,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    IconComponent(
-                                      iconData: Icons.link,
-                                      borderColor: Colors.transparent,
-                                      backgroundColor: ColorConstants.yellow,
-                                      iconColor: Colors.white,
-                                      circleSize: 60,
-                                      customText: "Copy Link",
-                                    ),
-                                    IconComponent(
-                                      iconData: Icons.facebook,
-                                      borderColor: Colors.transparent,
-                                      backgroundColor: ColorConstants.blue,
-                                      circleSize: 60,
-                                      customText: "Facebook",
-                                    ),
-                                    IconComponent(
-                                      iconData: Icons.install_desktop,
-                                      borderColor: Colors.transparent,
-                                      circleSize: 60,
-                                      customText: "Instagram",
-                                    ),
-                                    IconComponent(
-                                      iconData: Icons.share,
-                                      borderColor: Colors.transparent,
-                                      backgroundColor:
-                                          Color.fromARGB(255, 87, 64, 208),
-                                      circleSize: 60,
-                                      customText: "Share",
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
+                                      Text("Save Event",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14)),
+                                    ],
+                                  ),
                                 ),
                                 Divider(
                                   thickness: 0.5,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 18.0, top: 10, bottom: 16),
-                                  child: Text(
-                                    "Your Connections",
-                                    style: TextStyle(
-                                        color: Colors.indigo,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
+                                      left: 35, top: 12, bottom: 12),
+                                  child: Row(
+                                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      IconComponent(
+                                        iconData: Icons.thumb_down,
+                                        borderColor: Colors.transparent,
+                                        backgroundColor: ColorConstants.iconBg,
+                                        iconColor: Colors.indigo,
+                                        circleSize: 35,
+                                        iconSize: 20,
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text("Save Event",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14)),
+                                    ],
                                   ),
                                 ),
-                                Expanded(
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    itemCount: contacts.length,
-                                    itemBuilder: (context, index) {
-                                      return ContactCard(
-                                          contact: contacts[index]);
-                                    },
+                                Divider(
+                                  thickness: 0.5,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 35, top: 12, bottom: 12),
+                                  child: Row(
+                                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      IconComponent(
+                                        iconData: Icons.remove_circle,
+                                        borderColor: Colors.transparent,
+                                        backgroundColor: ColorConstants.iconBg,
+                                        iconColor: Colors.red,
+                                        circleSize: 35,
+                                        iconSize: 20,
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text("Report event",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              color: Colors.red)),
+                                    ],
                                   ),
                                 ),
                               ],
-                            ),
-                          ));
-                    }),
-                SizedBox(width: 10),
-                IconComponent(
-                  iconData: Icons.menu,
-                  borderColor: Colors.transparent,
-                  backgroundColor: ColorConstants.iconBg,
-                  iconColor: Colors.white,
-                  circleSize: 35,
-                  iconSize: 20,
-                )
-              ],
-            ),
-            Card(
-              color: Colors.white,
-              child:
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, left: 18),
-                    child: Text(
-                      "About the event",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            ));
+                      },
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.only(left: 16, bottom: 8, right: 20),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ProfileImageComponent(url: ""),
-                            SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "1456 Participants",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "Elena, Ilsa and more",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: ColorConstants.lightGray),
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                            SizedBox(
-                              width: radius * images.length.toDouble(),
-                              // Calculate the total width of images
-                              height: radius,
-                              // Set the height to match the image size
-                              child: Stack(
-                                children: [
-                                  for (int i = 0; i < images.length; i++)
-                                    Positioned(
-                                      left: i * radius / 1.5,
-                                      // Adjust the left offset
-                                      child: ClipOval(
-                                        child: Image(
-                                          // color: Colors.red,
-                                          image: images[i],
-                                          width: radius,
-                                          height: radius,
-                                          fit: BoxFit.cover,
+                    SizedBox(width: 10),
+                    IconComponent(
+                        iconData: Icons.share,
+                        borderColor: ColorConstants.transparent,
+                        backgroundColor: ColorConstants.iconBg,
+                        iconColor: ColorConstants.white,
+                        circleSize: 35,
+                        iconSize: 20,
+                        onTap: () {
+                          BottomSheetComponent.showBottomSheet(context,
+                              takeFullHeightWhenPossible: false,
+                              isShowHeader: false,
+                              body: Container(
+                                constraints:
+                                    const BoxConstraints(maxHeight: 600),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 18.0, top: 18, bottom: 18),
+                                          child: Text(
+                                            "Share event",
+                                            style: TextStyle(
+                                                color: Colors.indigo,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18),
+                                          ),
                                         ),
+                                        InkWell(
+                                          onTap: () => Navigator.pop(context),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 20.0),
+                                            child: IconComponent(
+                                              iconData: Icons.cancel_outlined,
+                                              borderColor: Colors.transparent,
+                                              iconColor: Colors.black,
+                                              circleSize: 50,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconComponent(
+                                          iconData: Icons.link,
+                                          borderColor: Colors.transparent,
+                                          backgroundColor:
+                                              ColorConstants.yellow,
+                                          iconColor: Colors.white,
+                                          circleSize: 60,
+                                          customText: "Copy Link",
+                                        ),
+                                        IconComponent(
+                                          iconData: Icons.facebook,
+                                          borderColor: Colors.transparent,
+                                          backgroundColor: ColorConstants.blue,
+                                          circleSize: 60,
+                                          customText: "Facebook",
+                                        ),
+                                        IconComponent(
+                                          iconData: Icons.install_desktop,
+                                          borderColor: Colors.transparent,
+                                          circleSize: 60,
+                                          customText: "Instagram",
+                                        ),
+                                        IconComponent(
+                                          iconData: Icons.share,
+                                          borderColor: Colors.transparent,
+                                          backgroundColor:
+                                              Color.fromARGB(255, 87, 64, 208),
+                                          circleSize: 60,
+                                          customText: "Share",
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Divider(
+                                      thickness: 0.5,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 18.0, top: 10, bottom: 16),
+                                      child: Text(
+                                        "Your Connections",
+                                        style: TextStyle(
+                                            color: Colors.indigo,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
                                       ),
                                     ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Divider(thickness: 0.2),
-                        Row(
-                          children: [
-                            ProfileImageComponent(url: ""),
-                            SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Flexible Date",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: contacts.length,
+                                        itemBuilder: (context, index) {
+                                          return ContactCard(
+                                              contact: contacts[index]);
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  "Date will be decide later",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: ColorConstants.lightGray),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-
-                      ],
-                    ),
-                  ),
-                ],
+                              ));
+                        }),
+                    SizedBox(width: 10),
+                    IconComponent(
+                      iconData: Icons.menu,
+                      borderColor: ColorConstants.transparent,
+                      backgroundColor: ColorConstants.iconBg,
+                      iconColor: ColorConstants.white,
+                      circleSize: 35,
+                      iconSize: 20,
+                    )
+                  ],
+                ),
               ),
-            )
-          ],
+              _aboutTheEvent(),
+              _members(),
+            ],
+          ),
         ),
       ),
     ]);
+  }
+
+  Widget _aboutTheEvent() {
+    return Card(
+      color: ColorConstants.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 18),
+            child: Text(
+              "About the event",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: ColorConstants.bgcolorbutton),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ProfileImageComponent(url: ""),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "1456 Participants",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "Elena, Ilsa and more",
+                          style: TextStyle(
+                              fontSize: 14, color: ColorConstants.lightGray),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    SizedBox(
+                      width: radius * images.length.toDouble(),
+                      // Calculate the total width of images
+                      height: radius,
+                      // Set the height to match the image size
+                      child: Stack(
+                        children: [
+                          for (int i = 0; i < images.length; i++)
+                            Positioned(
+                              left: i * radius / 1.5,
+                              // Adjust the left offset
+                              child: ClipOval(
+                                child: Image(
+                                  // color: Colors.red,
+                                  image: images[i],
+                                  width: radius,
+                                  height: radius,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Divider(thickness: 0.2),
+                Row(
+                  children: [
+                    ProfileImageComponent(url: ""),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Flexible Date",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "Date will be decide later",
+                          style: TextStyle(
+                              fontSize: 14, color: ColorConstants.lightGray),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(thickness: 0.2),
+                Row(
+                  children: [
+                    ProfileImageComponent(url: ""),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Manchester",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "Exact location after joining",
+                          style: TextStyle(
+                              fontSize: 14, color: ColorConstants.lightGray),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(thickness: 0.2),
+                Row(
+                  children: [
+                    ProfileImageComponent(url: ""),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Free to join",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "No charity support required",
+                          style: TextStyle(
+                              fontSize: 14, color: ColorConstants.lightGray),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _members() {
+    return Card(
+      color: ColorConstants.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+              padding: const EdgeInsets.only(top: 10, left: 18),
+              child: RichText(
+                textAlign: TextAlign.start,
+                text: TextSpan(
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: ColorConstants.bgcolorbutton),
+                  children: <TextSpan>[
+                    TextSpan(text: "Members  "),
+                    TextSpan(
+                      text: "8",
+                      style: TextStyle(
+                          color: ColorConstants.lightGray.withOpacity(0.5)),
+                    ),
+                  ],
+                ),
+              )),
+          // ListView.builder(
+          //   shrinkWrap: true,
+          //   physics: const BouncingScrollPhysics(),
+          //   itemCount: contacts.length,
+          //   itemBuilder: (context, index) {
+          //     return ContactCard(contact: contacts[index]);
+          //   },
+          // ),
+          SizedBox(height: 20,),
+          ...List.generate(contacts.length, (index) => ContactCard(contact: contacts[index])),
+        ],
+      ),
+    );
   }
 }
