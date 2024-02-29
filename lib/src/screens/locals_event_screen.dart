@@ -2,8 +2,10 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:flutter/material.dart';
 
 import '../components/bottom_sheet_component.dart';
+import '../components/button_component.dart';
 import '../components/contacts_card_component.dart';
 import '../components/icon_component.dart';
+import '../components/icons_button_component.dart';
 import '../components/info_sheet_component.dart';
 import '../components/profile_image_component.dart';
 import '../constants/color_constants.dart';
@@ -73,10 +75,6 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               onPressed: () {_showJoinBottomSheet();},
             ),
           ],
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(30), // Adjust the border radius as needed
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

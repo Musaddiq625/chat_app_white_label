@@ -267,15 +267,15 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
                                 story.storyImage!.contains('mp4')) {
                               return StoryItem.pageVideo(
                                 story.storyImage ?? '',
-                                caption: Text(story.storyMsg ?? ''),
+                                caption: story.storyMsg ?? '',
                                 imageFit: BoxFit.fitHeight,
                                 controller: StoryController(),
                               );
                             } else {
                               return StoryItem.pageImage(
                                 url: story.storyImage ?? '',
-                                caption: Text(story.storyMsg ??
-                                    ''), // Replace with the correct property if different
+                                caption: story.storyMsg ??
+                                    '', // Replace with the correct property if different
                                 controller:
                                     StoryController(), // You need to use the same controller for all items
                               );
@@ -291,7 +291,7 @@ class _StatusTileComponentState extends State<StatusTileComponent> {
                                   currentInnerIndex = 0;
                                   NavigationUtil.pop(context);
                                 },
-                                onStoryShow: (s, index) {
+                                onStoryShow: (s) {
                                   currentIndex = storyItems.indexOf(s);
 
                                   print("Stories Length ${userStories.length}");
