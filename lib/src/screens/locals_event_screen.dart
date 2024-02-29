@@ -162,12 +162,13 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               child: Row(
                 children: [
                   IconComponent(
-                    iconData: Icons.heart_broken,
+                    iconData: Icons.favorite,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
                     iconColor: Colors.red,
                     customIconText: " 22",
-                    circleSize: 48,
+                    circleSize: 60,
+                    circleHeight: 35,
                     iconSize: 20,
                     onTap: _showMoreBottomSheet,
                   ),
