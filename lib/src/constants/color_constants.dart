@@ -4,6 +4,7 @@ class ColorConstants {
   static const Color transparent = Colors.transparent;
   static const Color greenMain = Color(0xff075e54);
   static const Color black = Color(0xff000000);
+  static const Color bgcolorbutton = Colors.indigo;
   static const Color white = Color(0xffFFFFFF);
   static final Color iconBg= Colors.white.withOpacity(0.3);
   static final Color yellow = Color.fromARGB(255, 245, 179, 8);
