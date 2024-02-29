@@ -1,4 +1,3 @@
-import 'package:chat_app_white_label/src/components/custom_button.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:flutter/material.dart';
 
@@ -57,17 +56,22 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
           children: [_eventWidget(), _members()],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: ColorConstants.bgcolorbutton,
-        foregroundColor: ColorConstants.white,
-        onPressed: () {
-          _showJoinBottomSheet();
-        },
-        label: const Row(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Join'),
-            SizedBox(width: 30),
-            Icon(Icons.add_circle),
+            ButtonComponent(
+              buttonText: 'Get Ticket',
+              onPressedFunction: () {},
+              bgcolor: ColorConstants.yellow,
+            ),
+            ButtonWithIconComponent(
+              btnText: '  Join',
+              icon: Icons.add_circle,
+              width: 120,
+              onPressed: () {_showJoinBottomSheet();},
+            ),
           ],
         ),
         shape: RoundedRectangleBorder(
@@ -75,7 +79,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               BorderRadius.circular(30), // Adjust the border radius as needed
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

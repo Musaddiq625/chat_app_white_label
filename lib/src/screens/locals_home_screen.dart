@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import '../components/bottom_nav_componenet.dart';
 import '../components/bottom_sheet_component.dart';
 import '../components/contacts_card_component.dart';
-import '../components/custom_button.dart';
+import '../components/button_component.dart';
 import '../models/contact.dart';
 
 class LocalsHomeScreen extends StatefulWidget {
