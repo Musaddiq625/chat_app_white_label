@@ -14,7 +14,9 @@ class LocalsEventScreen extends StatefulWidget {
   @override
   State<LocalsEventScreen> createState() => _LocalsEventScreenState();
 }
-
+final String _fullText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+bool _showFullText = false;
+bool ticketRequired= true;
 class _LocalsEventScreenState extends State<LocalsEventScreen> {
   final List<ContactModel> contacts = [
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
@@ -427,6 +429,38 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   color: ColorConstants.bgcolorbutton),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, left: 18),
+            child:
+            // Text(
+            //   "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+            //   style: TextStyle(
+            //     fontSize: 12,
+            //   ),
+            // ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _showFullText = !_showFullText;
+                });
+              },
+              child: RichText(
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: _showFullText ? _fullText : (_fullText.length > 150 ? _fullText.substring(0, 150) : _fullText) ?? "No description available",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    if (_fullText.length > 150)
+                      TextSpan(
+                        text: _showFullText ? ' Show less' : ' ...Read more',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
           SizedBox(
             height: 20,
           ),
@@ -525,6 +559,30 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     ),
                   ],
                 ),
+                if(ticketRequired == true)
+                Divider(thickness: 0.2),
+                if(ticketRequired == true)
+                Row(
+                  children: [
+                    ProfileImageComponent(url: ""),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "SR 150",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "Ticket required to attend event",
+                          style: TextStyle(
+                              fontSize: 14, color: ColorConstants.lightGray),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 Divider(thickness: 0.2),
                 Row(
                   children: [
@@ -580,9 +638,13 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   ],
                 ),
               )),
-
-          SizedBox(height: 30,),
-          ...List.generate(contacts.length, (index) => ContactCard(contact: contacts[index],showShareIcon: false)),
+          SizedBox(
+            height: 30,
+          ),
+          ...List.generate(
+              contacts.length,
+              (index) =>
+                  ContactCard(contact: contacts[index], showShareIcon: false)),
         ],
       ),
     );
