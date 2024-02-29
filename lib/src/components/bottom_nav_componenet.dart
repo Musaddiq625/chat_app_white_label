@@ -21,7 +21,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(18.0)),
       child: BottomNavigationBar(
-
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
