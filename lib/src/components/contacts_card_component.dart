@@ -7,13 +7,13 @@ import '../constants/color_constants.dart';
 
 class ContactCard extends StatelessWidget {
   final ContactModel contact;
-  final Function() onShareTap;
+  final Function()? onShareTap;
   final bool showShareIcon;
 
   const ContactCard(
       {Key? key,
       required this.contact,
-      required this.onShareTap,
+      this.onShareTap,
       this.showShareIcon = true})
       : super(key: key);
 
@@ -42,16 +42,6 @@ class ContactCard extends StatelessWidget {
                         fontSize: 14, color: ColorConstants.lightGray),
                   ),
                 ],
-              ),
-              const Spacer(),
-              IconComponent(
-                iconData: Icons.share,
-                borderColor: Colors.transparent,
-                backgroundColor: ColorConstants.yellow,
-                iconColor: Colors.white70,
-                circleSize: 40,
-                iconSize: 25,
-                onTap: onShareTap,
               ),
               const Spacer(),
               if (showShareIcon)
