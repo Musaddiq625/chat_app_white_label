@@ -28,11 +28,8 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const HomeScreen());
 
     case RouteConstants.chatRoomScreen:
-      final arg = settings.arguments as List;
-      return materialRoute(ChatRoomScreen(
-        chatUser: arg[0],
-        unreadCount: arg[1],
-      ));
+      final arg = settings.arguments as UserModel;
+      return materialRoute(ChatRoomScreen(chatUser: arg));
 
     case RouteConstants.profileScreen:
       final arg = settings.arguments! as String;

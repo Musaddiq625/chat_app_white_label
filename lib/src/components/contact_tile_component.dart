@@ -28,7 +28,7 @@ class ContactTileComponent extends StatelessWidget {
     return ListTile(
         onTap: () => onContactTap == null
             ? NavigationUtil.push(context, RouteConstants.chatRoomScreen,
-                args: [chatUser, '0'])
+                args: chatUser)
             : onContactTap!(),
         leading: Padding(
           padding: const EdgeInsets.only(right: 10),
@@ -77,9 +77,11 @@ class ContactTileComponent extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: 5,),
+                      SizedBox(
+                        width: 5,
+                      ),
                       CircleAvatar(
-                        backgroundColor:  ColorConstants.greenMain,
+                        backgroundColor: ColorConstants.greenMain,
                         child: IconButton(
                           onPressed: () => onVideoCallTapped!(),
                           icon: const Icon(

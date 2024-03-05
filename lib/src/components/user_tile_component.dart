@@ -25,7 +25,7 @@ class UserTileComponent extends StatelessWidget {
     return ListTile(
         onTap: () => onTap == null
             ? NavigationUtil.push(context, RouteConstants.chatRoomScreen,
-                args: [chatUser, '0'])
+                args: chatUser)
             : onTap!(),
         leading: Padding(
           padding: const EdgeInsets.only(right: 10),

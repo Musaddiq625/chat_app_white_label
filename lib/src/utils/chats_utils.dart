@@ -51,20 +51,20 @@ class ChatUtils {
   }
 
   // for creating one to one chat
-  static Future<void> createChat(UserModel chatUser) async {
-    final chatId = getConversationID(chatUser.id ?? '');
+  static Future<void> createChat(String chatUserId) async {
+    final chatId = getConversationID(chatUserId);
 
     await chatsCollection.doc(chatId).set(ChatModel(
-        id: '${FirebaseUtils.user?.id}_${chatUser.id ?? ''}',
+        id: '${FirebaseUtils.user?.id}_$chatUserId',
         isGroup: false,
         updatedAt: FirebaseUtils.getDateTimeNowAsId(),
-        users: [FirebaseUtils.user?.id ?? '', chatUser.id ?? '']).toJson());
+        users: [FirebaseUtils.user?.id ?? '', chatUserId]).toJson());
 
     await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
       'chats': FieldValue.arrayUnion([chatId])
     }, SetOptions(merge: true));
 
-    await FirebaseUtils.usersCollection.doc(chatUser.id ?? '').set({
+    await FirebaseUtils.usersCollection.doc(chatUserId).set({
       'chats': FieldValue.arrayUnion([chatId])
     }, SetOptions(merge: true));
   }
@@ -119,7 +119,7 @@ class ChatUtils {
       String? sendingMessage = msg;
       String? thumbnail;
       if (isFirstMessage) {
-        await createChat(chatUser);
+        await createChat(chatUser.id ?? '');
       }
       if (type == MessageType.image) {
         sendingMessage = await FirebaseUtils.uploadMedia(filePath!,
@@ -168,9 +168,10 @@ class ChatUtils {
               }))
           .then((value) => FirebaseNotificationUtils.sendNotification(
                   chatUser.fcmToken ?? '', {
-                "messageType": "message",
+                "notificationType": "message",
+                "chatType": "single",
                 "chatId": chatId,
-                "chatType": type.name,
+                "messageType": type.name,
                 "chatMessage": sendingMessage,
                 "senderName": FirebaseUtils.user?.name ?? '',
               }));

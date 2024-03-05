@@ -25,7 +25,7 @@ class ChatTileComponent extends StatelessWidget {
       onTap: () {
         chat.isGroup == false
             ? NavigationUtil.push(context, RouteConstants.chatRoomScreen,
-                args: [chatUser, chat.unreadCount])
+                args: chatUser)
             : NavigationUtil.push(context, RouteConstants.groupChatRoomScreen,
                 args: chat);
       },
