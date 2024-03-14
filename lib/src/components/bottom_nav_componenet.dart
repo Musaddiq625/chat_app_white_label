@@ -20,7 +20,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(18.0)),
+
       child: BottomNavigationBar(
+        elevation: 10,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -28,17 +30,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
             label: 'My Feed',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Inbox',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.add_circle),
             label: 'Create',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.groups),
-            label: 'Community',
+            icon: Icon(Icons.message),
+            label: 'Inbox',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.groups),
+          //   label: 'Community',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Me',

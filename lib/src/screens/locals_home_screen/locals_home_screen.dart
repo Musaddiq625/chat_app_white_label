@@ -5,14 +5,16 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/image_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../components/bottom_nav_componenet.dart';
-import '../components/bottom_sheet_component.dart';
-import '../components/contacts_card_component.dart';
-import '../components/button_component.dart';
-import '../models/contact.dart';
+import '../../components/bottom_nav_componenet.dart';
+import '../../components/bottom_sheet_component.dart';
+import '../../components/button_component.dart';
+import '../../components/contacts_card_component.dart';
+import '../../models/contact.dart';
 
 class LocalsHomeScreen extends StatefulWidget {
   const LocalsHomeScreen({super.key});
@@ -54,7 +56,18 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
       bgImage:
           "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
       widget: _eventWidget(),
-      bottomNavigationBar: const BottomNavBar(),
+      bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 10,
+                blurRadius: 20,
+                offset: Offset(0, -3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: const BottomNavBar()),
     );
   }
 
@@ -63,9 +76,9 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         const Text(
-          "Locals",
+          StringConstants.locals,
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+              fontWeight: FontWeight.bold, fontSize: 47, color: Colors.white,fontFamily: "Protest Strike"),
         ),
         const Spacer(),
         IconComponent(
@@ -133,25 +146,27 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                       ],
                     ),
                   ),
-                  const Text(
-                    "+1456 Joined",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                   Text(
+                    "+1456 ${StringConstants.joined}",
+                    style: GoogleFonts.nunitoSans(fontSize: 15, color: Colors.white),
                   ),
                 ],
               ),
               const Text(
                 "Property \nnetworking event",
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 38,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                    color: Colors.white,
+                  fontFamily: "Protest Strike"
+                ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              const Text(
+               Text(
                 "17 Feb . 11AM - 2PM . Manchester",
-                style: TextStyle(fontSize: 16, color: Colors.white),
+                style: GoogleFonts.nunitoSans(fontSize: 15, color: Colors.white),
               ),
               const SizedBox(
                 height: 20,
@@ -160,7 +175,11 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ButtonComponent(
-                      buttonText: "View Event", onPressedFunction: () {NavigationUtil.push(context, RouteConstants.localsEventScreen);}),
+                      buttonText: StringConstants.viewEvent,
+                      onPressedFunction: () {
+                        NavigationUtil.push(
+                            context, RouteConstants.localsEventScreen);
+                      }),
                   const Spacer(),
                   IconComponent(
                     iconData: Icons.favorite,
@@ -222,7 +241,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    const Text("Save Event",
+                    const Text(StringConstants.saveEvent,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 14)),
                   ],
@@ -247,7 +266,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    const Text("Save Event",
+                    const Text(StringConstants.showLessLikeThis,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 14)),
                   ],
@@ -272,7 +291,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    const Text("Report event",
+                    const Text(StringConstants.reportEvent,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -300,7 +319,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                   const Padding(
                     padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
                     child: Text(
-                      "Share event",
+                      StringConstants.shareEvent,
                       style: TextStyle(
                           color: Colors.indigo,
                           fontWeight: FontWeight.bold,
@@ -331,27 +350,27 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                     backgroundColor: ColorConstants.yellow,
                     iconColor: Colors.white,
                     circleSize: 60,
-                    customText: "Copy Link",
+                    customText: StringConstants.copyLink,
                   ),
                   IconComponent(
                     iconData: Icons.facebook,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.blue,
                     circleSize: 60,
-                    customText: "Facebook",
+                    customText: StringConstants.facebook,
                   ),
                   IconComponent(
                     iconData: Icons.install_desktop,
                     borderColor: Colors.transparent,
                     circleSize: 60,
-                    customText: "Instagram",
+                    customText: StringConstants.instagram,
                   ),
                   IconComponent(
                     iconData: Icons.share,
                     borderColor: Colors.transparent,
                     backgroundColor: const Color.fromARGB(255, 87, 64, 208),
                     circleSize: 60,
-                    customText: "Share",
+                    customText: StringConstants.share,
                   )
                 ],
               ),
@@ -364,7 +383,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
               const Padding(
                 padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
                 child: Text(
-                  "Your Connections",
+                  StringConstants.yourConnections,
                   style: TextStyle(
                       color: Colors.indigo,
                       fontWeight: FontWeight.bold,
@@ -381,7 +400,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                       onShareTap: () {
                         Navigator.pop(context);
                         _shareWithConnectionBottomSheet(
-                            'FireWorks', contacts[index].name);
+                            StringConstants.fireWorks, contacts[index].name);
                       },
                     );
                   },
@@ -411,7 +430,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                     height: 1.5),
                 children: <TextSpan>[
                   const TextSpan(
-                      text: "Are you sure you want to share \nEvent "),
+                      text: StringConstants.areYouSureYouwantToShare),
                   TextSpan(
                     text: eventName,
                     style: const TextStyle(color: Colors.indigo),
@@ -430,7 +449,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
               children: [
                 InkWell(
                     onTap: () => Navigator.pop(context),
-                    child: const Text("Go back")),
+                    child: const Text(StringConstants.goBack)),
                 const SizedBox(width: 30),
                 ButtonComponent(
                   buttonText: "Yes, share it",
@@ -448,30 +467,13 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
   }
 
   _yesShareItBottomSheet() {
-    BottomSheetComponent.showBottomSheet(context,
-        isShowHeader: false,
-        body:
-            InfoSheetComponent(heading: "Event Shared !",image: AssetConstants.group,),
-        );
-    // Column(
-    //   children: [
-    //     const SizedBox(
-    //       height: 70,
-    //       width: double.infinity,
-    //     ),
-    //     Image.asset(
-    //       AssetConstants.group,
-    //       width: 150,
-    //       height: 150,
-    //     ),
-    //     const Text(
-    //       "Event Shared !",
-    //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-    //     ),
-    //     const SizedBox(
-    //       height: 50,
-    //     ),
-    //   ],
-    // )
+    BottomSheetComponent.showBottomSheet(
+      context,
+      isShowHeader: false,
+      body: InfoSheetComponent(
+        heading: StringConstants.eventShared,
+        image: AssetConstants.group,
+      ),
+    );
   }
 }

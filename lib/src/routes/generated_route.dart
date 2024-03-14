@@ -7,7 +7,7 @@ import 'package:chat_app_white_label/src/screens/home_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/group_chat_room.dart';
-import 'package:chat_app_white_label/src/screens/locals_event_screen.dart';
+import 'package:chat_app_white_label/src/screens/locals_event_screen/locals_event_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
 import 'package:chat_app_white_label/src/screens/profile/profile_screen.dart';

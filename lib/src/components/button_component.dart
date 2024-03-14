@@ -10,7 +10,7 @@ class ButtonComponent extends StatelessWidget {
   final double horizontalLength;
 
    ButtonComponent(
-      {super.key, required this.buttonText, required this.onPressedFunction, this.bgcolor = ColorConstants.bgcolorbutton,this.textSize = 14,this.textColor = Colors.white,this.horizontalLength=25});
+      {super.key, required this.buttonText, required this.onPressedFunction, this.bgcolor = ColorConstants.bgcolorbutton,this.textSize = 15,this.textColor = Colors.white,this.horizontalLength=25});
 
   @override
   Widget build(BuildContext context) {
