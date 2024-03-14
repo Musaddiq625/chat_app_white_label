@@ -8,8 +8,6 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../components/bottom_nav_componenet.dart';
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -148,7 +146,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                   ),
                    Text(
                     "+1456 ${StringConstants.joined}",
-                    style: GoogleFonts.nunitoSans(fontSize: 15, color: Colors.white),
+                    style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
                 ],
               ),
@@ -166,7 +164,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
               ),
                Text(
                 "17 Feb . 11AM - 2PM . Manchester",
-                style: GoogleFonts.nunitoSans(fontSize: 15, color: Colors.white),
+                style: TextStyle(fontSize: 15, color: Colors.white),
               ),
               const SizedBox(
                 height: 20,
