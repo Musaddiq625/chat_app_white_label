@@ -12,6 +12,7 @@ import '../../components/bottom_nav_componenet.dart';
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
 import '../../components/contacts_card_component.dart';
+import '../../constants/font_constants.dart';
 import '../../models/contact.dart';
 
 class LocalsHomeScreen extends StatefulWidget {
@@ -76,7 +77,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
         const Text(
           StringConstants.locals,
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 47, color: Colors.white,fontFamily: "Protest Strike"),
+              fontWeight: FontWeight.bold, fontSize: 47, color: Colors.white,fontFamily: FontConstants.fontProtestStrike),
         ),
         const Spacer(),
         IconComponent(
@@ -156,7 +157,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                  fontFamily: "Protest Strike"
+                  fontFamily: FontConstants.fontProtestStrike
                 ),
               ),
               const SizedBox(
