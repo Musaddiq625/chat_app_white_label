@@ -9,6 +9,7 @@ class ColorConstants {
   static final Color iconBg = Colors.white.withOpacity(0.3);
   static final Color yellow = Color.fromARGB(255, 245, 179, 8);
   static const Color backgroundColor = Color.fromARGB(255, 230, 228, 228);
+  static const Color tagBgColor= Color.fromRGBO(248, 248, 248, 1);
 
   static const Color blackLight = Color.fromARGB(255, 73, 73, 73);
   static const Color lightGray = Color.fromARGB(255, 126, 122, 122);

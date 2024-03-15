@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 
 
 import '../constants/color_constants.dart';
+import '../constants/image_constants.dart';
 
 class MainScaffold extends StatelessWidget {
   final Widget body;
   final bool extendBody;
   final Widget? appBar;
+  final bool bgImage;
   final double? overrideTopPadding;
   final String? overrideBackgroundImage;
   final double? overrideBottomPadding;
@@ -31,6 +33,7 @@ class MainScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.bottomSheet,
     this.removeSafeAreaPadding = false,
+    this.bgImage= false,
     this.resizeToAvoidBottomInset = true,
     this.bgColor,
     this.removeBgImage = false,
@@ -73,7 +76,19 @@ class MainScaffold extends StatelessWidget {
               bottom: overrideBottomPadding ??
                   MediaQuery.of(context).viewPadding.bottom,
             ),
-            decoration: const BoxDecoration(
+            decoration: bgImage ?
+            BoxDecoration(
+              image: removeBgImage
+                  ? null
+                  : DecorationImage(
+                image: overrideBackgroundImage != null
+                    ? NetworkImage(overrideBackgroundImage!)
+                    : const AssetImage(AssetConstants.backgroundImage)
+                as ImageProvider,
+                fit: BoxFit.cover,
+              ),
+            ):
+             BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomCenter,
@@ -106,17 +121,6 @@ class MainScaffold extends StatelessWidget {
                 // ),
                 ),
 
-            // BoxDecoration(
-            //   image: removeBgImage
-            //       ? null
-            //       : DecorationImage(
-            //           image: overrideBackgroundImage != null
-            //               ? NetworkImage(overrideBackgroundImage!)
-            //               : const AssetImage(AssetConstants.starsSky)
-            //                   as ImageProvider,
-            //           fit: BoxFit.cover,
-            //         ),
-            // ),
             child: Scaffold(
               extendBody: extendBody,
               key: key,
