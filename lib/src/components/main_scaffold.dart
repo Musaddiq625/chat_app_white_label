@@ -2,7 +2,6 @@ import 'package:chat_app_white_label/src/components/ui_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 import '../constants/color_constants.dart';
 
 class MainScaffold extends StatelessWidget {
@@ -73,54 +72,11 @@ class MainScaffold extends StatelessWidget {
               bottom: overrideBottomPadding ??
                   MediaQuery.of(context).viewPadding.bottom,
             ),
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomCenter,
-                    stops: [
-                  0.1,
-                  0.9,
-                  0.7,
-                  0.1,
-                ],
-
-                    //     stops: [
-                    //   0.18,
-                    //   0.4
-                    // ],
-                    colors: [
-                  ColorConstants.blue,
-                  ColorConstants.blue,
-                  ColorConstants.blue,
-                  ColorConstants.blue,
-                ]
-                )
-                // gradient: LinearGradient(
-                //   begin: Alignment.topRight,
-                //   end: Alignment.bottomLeft,
-                //   colors: [
-                //     //   ColorConstants.backgroundGradientTop,
-                //     Colors.brown,
-                //     ColorConstants.backgroundGradientBottom,
-                //   ],
-                // ),
-                ),
-
-            // BoxDecoration(
-            //   image: removeBgImage
-            //       ? null
-            //       : DecorationImage(
-            //           image: overrideBackgroundImage != null
-            //               ? NetworkImage(overrideBackgroundImage!)
-            //               : const AssetImage(AssetConstants.starsSky)
-            //                   as ImageProvider,
-            //           fit: BoxFit.cover,
-            //         ),
-            // ),
+            decoration:
+                const BoxDecoration(color: ColorConstants.backgroundColor),
             child: Scaffold(
               extendBody: extendBody,
               key: key,
-              // extendBody: extendBody,
               backgroundColor: ColorConstants.transparent,
               resizeToAvoidBottomInset: resizeToAvoidBottomInset,
               drawer: drawerWidget,

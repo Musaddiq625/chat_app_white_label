@@ -1,22 +1,13 @@
-import 'package:chat_app_white_label/src/components/bottom_nav_componenet.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/models/call_data_model.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
-import 'package:chat_app_white_label/src/screens/locals_event_screen/locals_event_screen.dart';
 import 'package:chat_app_white_label/src/screens/locals_home_screen/locals_home_screen.dart';
-import 'package:chat_app_white_label/src/screens/locals_profile_screen/locals_profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
-import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,10 +51,10 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      theme: ThemeData(fontFamily: FontConstants.fontNunitoSans),
+    return MaterialApp(
+      theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
       debugShowCheckedModeBanner: false,
-      home: LocalsProfileScreen(),
+      home: ChatListingScreen(),
       onGenerateRoute: generateRoute,
     );
   }

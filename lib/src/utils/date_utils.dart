@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DateUtil {
   // for getting formatted time from milliSecondsSinceEpochs String
@@ -114,5 +115,24 @@ class DateUtil {
         return 'Dec';
     }
     return 'NA';
+  }
+
+  static String formatedMessageTime(String timestampString) {
+    // Convert timestampString to milliseconds since epoch
+    int timestamp = int.tryParse(timestampString) ?? 0;
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+
+    // Get current time
+    DateTime now = DateTime.now();
+
+    // Check if the timestamp is less than a day ago
+    if (now.difference(dateTime).inHours < 24) {
+      // Less than a day ago, format as hours
+      int hours = now.difference(dateTime).inHours;
+      return '$hours h';
+    } else {
+      // More than a day ago, format as month and day
+      return DateFormat.MMMd().format(dateTime);
+    }
   }
 }
