@@ -33,7 +33,6 @@ class MainScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.bottomSheet,
     this.removeSafeAreaPadding = false,
-    this.bgImage= false,
     this.resizeToAvoidBottomInset = true,
     this.bgColor,
     this.removeBgImage = false,
@@ -88,43 +87,11 @@ class MainScaffold extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ):
-             BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomCenter,
-                    stops: [
-                  0.1,
-                  0.9,
-                  0.7,
-                  0.1,
-                ],
-
-                    //     stops: [
-                    //   0.18,
-                    //   0.4
-                    // ],
-                    colors: [
-                  ColorConstants.blue,
-                  ColorConstants.blue,
-                  ColorConstants.blue,
-                  ColorConstants.blue,
-                ]
-                )
-                // gradient: LinearGradient(
-                //   begin: Alignment.topRight,
-                //   end: Alignment.bottomLeft,
-                //   colors: [
-                //     //   ColorConstants.backgroundGradientTop,
-                //     Colors.brown,
-                //     ColorConstants.backgroundGradientBottom,
-                //   ],
-                // ),
-                ),
+            BoxDecoration(color: ColorConstants.backgroundColor),
 
             child: Scaffold(
               extendBody: extendBody,
               key: key,
-              // extendBody: extendBody,
               backgroundColor: ColorConstants.transparent,
               resizeToAvoidBottomInset: resizeToAvoidBottomInset,
               drawer: drawerWidget,

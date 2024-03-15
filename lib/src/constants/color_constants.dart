@@ -17,8 +17,12 @@ class ColorConstants {
   static const Color green = Color(0xff25d366);
   static const Color greenLight = Color.fromARGB(255, 218, 255, 176);
   static const Color greenLighticon = Color.fromARGB(255, 184, 241, 118);
+  static const Color blueLight = Color.fromARGB(255, 221, 245, 255);
 
   static const Color blue = Color.fromARGB(255, 10, 73, 225);
-  static const Color blueLight = Color.fromARGB(255, 221, 245, 255);
+  static const Color grey = Color(0xFFB2B2B2);
+  static const Color purple = Color(0xFFD0CDFA);
+  static const Color lightPurple = Color(0xFFF1F0FF);
+  static const Color red = Color(0xFFFA484F);
+  static const Color lightGrey = Color(0xFFB2B2B2);
 }
-// ColorConstants.green;
