@@ -35,6 +35,7 @@ class MainScaffold extends StatelessWidget {
     this.removeSafeAreaPadding = false,
     this.resizeToAvoidBottomInset = true,
     this.bgColor,
+    this.bgImage =false,
     this.removeBgImage = false,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
