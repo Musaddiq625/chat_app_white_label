@@ -21,5 +21,5 @@ class RouteConstants {
   static const String viewUserProfile = 'viewUserProfile';
   static const String viewGroupProfile = 'viewGroupProfile';
 
-  static const String localsEventScreen = 'eventScreen';
+  static const String eventScreen = 'eventScreen';
 }

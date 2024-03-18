@@ -15,14 +15,14 @@ import '../../components/contacts_card_component.dart';
 import '../../constants/font_constants.dart';
 import '../../models/contact.dart';
 
-class LocalsHomeScreen extends StatefulWidget {
-  const LocalsHomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<LocalsHomeScreen> createState() => _LocalsHomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final List<ImageProvider> images = [
     const NetworkImage(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
@@ -62,7 +62,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 10,
                 blurRadius: 20,
-                offset: Offset(0, -3), // changes position of shadow
+                offset: const Offset(0, -3), // changes position of shadow
               ),
             ],
           ),
@@ -77,7 +77,10 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
         const Text(
           StringConstants.locals,
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 47, color: Colors.white,fontFamily: FontConstants.fontProtestStrike),
+              fontWeight: FontWeight.bold,
+              fontSize: 47,
+              color: Colors.white,
+              fontFamily: FontConstants.fontProtestStrike),
         ),
         const Spacer(),
         IconComponent(
@@ -145,7 +148,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                       ],
                     ),
                   ),
-                   Text(
+                  const Text(
                     "+1456 ${StringConstants.joined}",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
@@ -157,13 +160,12 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                  fontFamily: FontConstants.fontProtestStrike
-                ),
+                    fontFamily: FontConstants.fontProtestStrike),
               ),
               const SizedBox(
                 height: 10,
               ),
-               Text(
+              const Text(
                 "17 Feb . 11AM - 2PM . Manchester",
                 style: TextStyle(fontSize: 15, color: Colors.white),
               ),
@@ -177,7 +179,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
                       buttonText: StringConstants.viewEvent,
                       onPressedFunction: () {
                         NavigationUtil.push(
-                            context, RouteConstants.localsEventScreen);
+                            context, RouteConstants.eventScreen);
                       }),
                   const Spacer(),
                   IconComponent(
@@ -469,7 +471,7 @@ class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,
-      body: InfoSheetComponent(
+      body: const InfoSheetComponent(
         heading: StringConstants.eventShared,
         image: AssetConstants.group,
       ),

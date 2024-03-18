@@ -13,11 +13,11 @@ import '../../constants/color_constants.dart';
 import '../../constants/image_constants.dart';
 import '../../models/contact.dart';
 
-class LocalsEventScreen extends StatefulWidget {
-  const LocalsEventScreen({super.key});
+class EventScreen extends StatefulWidget {
+  const EventScreen({super.key});
 
   @override
-  State<LocalsEventScreen> createState() => _LocalsEventScreenState();
+  State<EventScreen> createState() => _EventScreenState();
 }
 
 final String _fullText =
@@ -26,7 +26,7 @@ bool _showFullText = false;
 bool ticketRequired = true;
 final TextEditingController _controller = TextEditingController();
 
-class _LocalsEventScreenState extends State<LocalsEventScreen> {
+class _EventScreenState extends State<EventScreen> {
   final List<ContactModel> contacts = [
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
@@ -331,7 +331,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   fontSize: 18,
                   color: ColorConstants.bgcolorbutton),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             GestureDetector(
@@ -350,21 +350,21 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                                   ? _fullText.substring(0, 150)
                                   : _fullText) ??
                               "No description available",
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     if (_fullText.length > 150)
                       TextSpan(
                         text: _showFullText
                             ? ' ${StringConstants.showLess}'
                             : ' ...${StringConstants.readMore}',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                   ],
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Container(
@@ -462,9 +462,9 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                       ),
                     ],
                   ),
-                  if (ticketRequired == true) Divider(thickness: 0.2),
+                  if (ticketRequired == true) const Divider(thickness: 0.2),
                   if (ticketRequired == true)
-                    Row(
+                    const Row(
                       children: [
                         ProfileImageComponent(url: ""),
                         SizedBox(width: 10),
@@ -486,8 +486,8 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                         ),
                       ],
                     ),
-                  Divider(thickness: 0.2),
-                  Row(
+                  const Divider(thickness: 0.2),
+                  const Row(
                     children: [
                       ProfileImageComponent(url: ""),
                       SizedBox(width: 10),
@@ -654,7 +654,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     StringConstants.join,
                     style: TextStyle(
                         color: Colors.indigo,
@@ -676,7 +676,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Property \nnetworking event",
                     style: TextStyle(
                         fontSize: 20,
@@ -690,8 +690,8 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   ),
                 ],
               ),
-              Text(StringConstants.freeToJoin),
-              SizedBox(
+              const Text(StringConstants.freeToJoin),
+              const SizedBox(
                 height: 20,
               ),
               const Divider(
@@ -701,17 +701,17 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               const Divider(
                 thickness: 0.5,
               ),
-              Text(
+              const Text(
                 StringConstants.somethingToKnow,
                 style: TextStyle(
                     color: Colors.indigo,
                     fontWeight: FontWeight.bold,
                     fontSize: 18),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Row(
+              const Row(
                 children: [
                   ProfileImageComponent(
                     url: "",
@@ -725,16 +725,16 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               const Divider(
                 thickness: 0.5,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Row(
+              const Row(
                 children: [
                   ProfileImageComponent(
                     url: "",
@@ -748,7 +748,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
               Row(
@@ -762,7 +762,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                       BottomSheetComponent.showBottomSheet(
                         context,
                         isShowHeader: false,
-                        body: InfoSheetComponent(
+                        body: const InfoSheetComponent(
                           heading: StringConstants.requestSent,
                           body: StringConstants.requestStatus,
                           image: AssetConstants.group,
@@ -783,7 +783,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
     return Container(
       child: Column(
         children: [
-          Row(
+          const Row(
             children: [
               ProfileImageComponent(
                 url: "",
@@ -801,10 +801,10 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Text(
+          const Text(
             StringConstants.doYouHaveQuestion,
           ),
           TextField(
@@ -822,7 +822,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               border: InputBorder.none,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
         ],
