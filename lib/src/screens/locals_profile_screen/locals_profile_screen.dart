@@ -2,9 +2,12 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:flutter/material.dart';
 
+import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
+import '../../components/info_sheet_component.dart';
 import '../../constants/color_constants.dart';
+import '../../constants/image_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
@@ -17,6 +20,10 @@ class LocalsProfileScreen extends StatefulWidget {
 }
 
 class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
+
+  bool connectSend = false;
+  int _currentPage = 0;
+  late PageController _pageController;
   final List<ImageProvider> images = [
     const NetworkImage(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
@@ -120,6 +127,33 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0)
+      ..addListener(() {
+        setState(() {
+          _currentPage = _pageController.page!.round();
+        });
+      });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  _yesShareItBottomSheet() {
+    BottomSheetComponent.showBottomSheet(
+      context,
+      isShowHeader: false,
+      body: InfoSheetComponent(
+        heading: StringConstants.requestSend+" XyZ",
+        body:StringConstants.connectSendBody,
+      ),
+    );
+  }
+  @override
   Widget build(BuildContext context) {
     // return MainScaffold(
     //   // bgImage: "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
@@ -162,11 +196,22 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
       )),
       floatingActionButton: SizedBox(
         width: 350,
-        child: ButtonComponent(
+        child: connectSend?ButtonComponent(
+          bgcolor:ColorConstants.yellow ,
+          buttonText: StringConstants.connectSent,
+          onPressedFunction: () {
+            _yesShareItBottomSheet();
+            // NavigationUtil.push(
+            //     context, RouteConstants.localsEventScreen);
+          },
+        ):ButtonComponent(
           buttonText: StringConstants.connect,
           onPressedFunction: () {
-            NavigationUtil.push(
-                context, RouteConstants.localsEventScreen);
+            setState(() {
+              connectSend=true;
+            });
+            // NavigationUtil.push(
+            //     context, RouteConstants.localsEventScreen);
           },
         ),
       ),
@@ -183,22 +228,30 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
           height: 750, // Adjust this value as needed
           child: Stack(
             children: [
-              PageView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: imgList.length,
-                itemBuilder: (context, index) {
-                  final file = imgList[index];
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: Image.network(
-                          file,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ],
-                  );
-                },
+              Column(
+                children: [
+
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: imgList.length,
+                      itemBuilder: (context, index) {
+                        final file = imgList[index];
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: Image.network(
+                                file,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
               _infoWidget(),
             ],
@@ -215,15 +268,24 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          // Carousel indicator
           Row(
-            children: [
-              Icon(
-                Icons.minimize_rounded,
-                color: ColorConstants.white,
-                size: 30,
-              ),
-            ],
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: List.generate(imgList.length, (index) {
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 3),
+                  height: 4,
+                width: 15,
+                decoration: BoxDecoration(
+                    color: _currentPage == index
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              );
+            }),
           ),
+          SizedBox(height: 10,),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

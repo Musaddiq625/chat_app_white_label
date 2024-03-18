@@ -4,6 +4,7 @@ class StringConstants{
   static const String joined = "Joined";
   static const String viewEvent = "View Event";
   static const String connect = "Connect";
+  static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
   static const String showLessLikeThis = "Show less like this";
   static const String reportEvent = "Report event";
@@ -17,6 +18,8 @@ class StringConstants{
   static const String areYouSureYouwantToShare = "Are you sure you want to share \nEvent";
   static const String goBack= "Go back";
   static const String eventShared= "Event Shared !";
+  static const String requestSend= "Your request has already been sent to ";
+  static const String connectSendBody = "Once your request is accepted, you can view it in your connections";
   static const String getTicket= "Get Ticket";
   static const String join= "Join";
   static const String abouttheEvent= "About the event";
