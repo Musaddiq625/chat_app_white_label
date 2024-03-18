@@ -165,8 +165,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
         child: ButtonComponent(
           buttonText: StringConstants.connect,
           onPressedFunction: () {
-            NavigationUtil.push(
-                context, RouteConstants.localsEventScreen);
+            NavigationUtil.push(context, RouteConstants.eventScreen);
           },
         ),
       ),
@@ -609,7 +608,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                                         ],
                                       ),
                                     ),
-                                     Text(
+                                    Text(
                                       "${event['joined']}${StringConstants.joined}",
                                       style: TextStyle(
                                           fontSize: 13,
@@ -618,10 +617,10 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                                   ],
                                 ),
                               ),
-                               Padding(
+                              Padding(
                                 padding: EdgeInsets.only(left: 10),
                                 child: Text(
-                                  event['eventName'] ,
+                                  event['eventName'],
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontFamily:
@@ -632,7 +631,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                               const SizedBox(
                                 height: 10,
                               ),
-                               Padding(
+                              Padding(
                                 padding: EdgeInsets.only(left: 10),
                                 child: Text(
                                   event['dateTime'],
