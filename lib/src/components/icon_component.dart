@@ -24,7 +24,7 @@ class IconComponent extends StatelessWidget {
     this.iconColor = Colors.black, // Default icon color
     this.borderSize = 2.0, // Default border size
     this.borderColor = Colors.black, // Default border color
-    this.circleSize = 50.0,
+    this.circleSize = 50,
     this.circleHeight,
     this.backgroundColor = Colors.grey,
     this.onTap, // Default circle size
@@ -42,7 +42,9 @@ class IconComponent extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: circleSize, // Set the width to the circle size
+
+            width: customIconText == null? circleSize: null,
+            // width:  MediaQuery.of(context).size.width/4, // Set the width to the circle size
             height:
                 circleHeight ?? circleSize, // Set the height to the circle size
             decoration: customIconText == null
@@ -65,16 +67,20 @@ class IconComponent extends StatelessWidget {
                   ),
             child: customIconText != null
                 ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      SizedBox(width: 5,),
                       Icon(
                         iconData,
                         size: iconSize,
                         color: iconColor,
                       ),
-                      Text(
-                        customIconText!,
-                        style: TextStyle(color: Colors.white),
+                      SizedBox(width: 5,),
+                      Padding(
+                        padding: const EdgeInsets.only(right:5.0),
+                        child: Text(
+                          customIconText!,
+                          style: TextStyle(color: customTextColor),
+                        ),
                       ),
                     ],
                   )

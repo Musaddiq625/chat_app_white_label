@@ -53,7 +53,7 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
       debugShowCheckedModeBanner: false,
-      home: const ChatListingScreen(),
+      home: ChatListingScreen(),
       onGenerateRoute: generateRoute,
     );
   }

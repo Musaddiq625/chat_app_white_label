@@ -2,12 +2,15 @@ import 'package:chat_app_white_label/src/components/ui_direction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+
 import '../constants/color_constants.dart';
+import '../constants/image_constants.dart';
 
 class MainScaffold extends StatelessWidget {
   final Widget body;
   final bool extendBody;
   final Widget? appBar;
+  final bool bgImage;
   final double? overrideTopPadding;
   final String? overrideBackgroundImage;
   final double? overrideBottomPadding;
@@ -32,6 +35,7 @@ class MainScaffold extends StatelessWidget {
     this.removeSafeAreaPadding = false,
     this.resizeToAvoidBottomInset = true,
     this.bgColor,
+    this.bgImage =false,
     this.removeBgImage = false,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
@@ -72,8 +76,20 @@ class MainScaffold extends StatelessWidget {
               bottom: overrideBottomPadding ??
                   MediaQuery.of(context).viewPadding.bottom,
             ),
-            decoration:
-                const BoxDecoration(color: ColorConstants.backgroundColor),
+            decoration: bgImage ?
+            BoxDecoration(
+              image: removeBgImage
+                  ? null
+                  : DecorationImage(
+                image: overrideBackgroundImage != null
+                    ? NetworkImage(overrideBackgroundImage!)
+                    : const AssetImage(AssetConstants.backgroundImage)
+                as ImageProvider,
+                fit: BoxFit.cover,
+              ),
+            ):
+            BoxDecoration(color: ColorConstants.backgroundColor),
+
             child: Scaffold(
               extendBody: extendBody,
               key: key,
