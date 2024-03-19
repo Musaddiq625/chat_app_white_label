@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_c
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/screens/locals_app_screen.dart';
+import 'package:chat_app_white_label/src/screens/locals_create_event_screen/locals_create_event_screen.dart';
 import 'package:chat_app_white_label/src/screens/locals_home_screen/locals_home_screen.dart';
 import 'package:chat_app_white_label/src/screens/locals_profile_screen/locals_profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
@@ -56,7 +57,7 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
       debugShowCheckedModeBanner: false,
-      home: LocalsProfileScreen(),
+      home: LocalsCreateEventScreen(),
       onGenerateRoute: generateRoute,
     );
   }
