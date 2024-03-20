@@ -40,10 +40,10 @@ class IconComponent extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-
-            width: customIconText == null? circleSize: null,
+            width: customIconText == null ? circleSize : null,
             // width:  MediaQuery.of(context).size.width/4, // Set the width to the circle size
             height:
                 circleHeight ?? circleSize, // Set the height to the circle size
@@ -68,15 +68,19 @@ class IconComponent extends StatelessWidget {
             child: customIconText != null
                 ? Row(
                     children: [
-                      SizedBox(width: 5,),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Icon(
                         iconData,
                         size: iconSize,
                         color: iconColor,
                       ),
-                      SizedBox(width: 5,),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Padding(
-                        padding: const EdgeInsets.only(right:5.0),
+                        padding: const EdgeInsets.only(right: 5.0),
                         child: Text(
                           customIconText!,
                           style: TextStyle(color: customTextColor),
@@ -90,9 +94,10 @@ class IconComponent extends StatelessWidget {
                     color: iconColor,
                   ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          if (customText != null)
+            const SizedBox(
+              height: 10,
+            ),
           if (customText != null)
             Text(
               customText!,

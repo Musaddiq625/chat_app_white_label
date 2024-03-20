@@ -29,8 +29,8 @@ class _FilterComponentState extends State<FilterComponent> {
               itemBuilder: (context, index) {
                 final isSelected = index == widget.groupValue;
                 final backgroundColor = isSelected
-                    ? ColorConstants.blue
-                    : ColorConstants.lightPurple;
+                    ? ColorConstants.purple
+                    : ColorConstants.lightPurplish;
                 final textColor = isSelected ? Colors.white : Colors.black;
                 return InkWell(
                   onTap: () => widget.onValueChanged(index),
@@ -54,7 +54,7 @@ class _FilterComponentState extends State<FilterComponent> {
                             height: 30,
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(
-                              color: ColorConstants.purple,
+                              color: ColorConstants.lightPurple,
                               borderRadius: BorderRadius.circular(17.0),
                             ),
                             child: Center(
@@ -72,47 +72,7 @@ class _FilterComponentState extends State<FilterComponent> {
                 );
               }),
         )
-      ]
-          // children: List.generate(widget.options.length, (index) {
-          //   final isSelected = index == widget.groupValue;
-          //   final backgroundColor =
-          //       isSelected ? ColorConstants.blue : ColorConstants.lightPurple;
-          //   final textColor = isSelected ? Colors.white : Colors.black;
-          //   return InkWell(
-          //     onTap: () => widget.onValueChanged(index),
-          //     child: Container(
-          //       height: 35,
-          //       padding: const EdgeInsets.symmetric(horizontal: 10),
-          //       decoration: BoxDecoration(
-          //         color: backgroundColor,
-          //         borderRadius: BorderRadius.circular(17.0),
-          //       ),
-          //       child: Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //         children: [
-          //           Center(
-          //             child: Text(
-          //               widget.options[index],
-          //               style: TextStyle(color: textColor),
-          //             ),
-          //           ),
-          //           Container(
-          //             margin: const EdgeInsets.symmetric(horizontal: 5),
-          //             decoration: BoxDecoration(
-          //               color: ColorConstants.purple,
-          //               borderRadius: BorderRadius.circular(17.0),
-          //             ),
-          //             child: Text(
-          //               '+99',
-          //               style: TextStyle(color: textColor),
-          //             ),
-          //           )
-          //         ],
-          //       ),
-          //     ),
-          //   );
-          // }),
-          ),
+      ]),
     );
   }
 }

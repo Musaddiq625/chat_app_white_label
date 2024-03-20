@@ -1,4 +1,5 @@
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
@@ -45,15 +46,23 @@ late Size mq;
 
 void main() => runApp(const BottomNavigationBarExampleApp());
 
-class BottomNavigationBarExampleApp extends StatelessWidget {
+class BottomNavigationBarExampleApp extends StatefulWidget {
   const BottomNavigationBarExampleApp({super.key});
 
   @override
+  State<BottomNavigationBarExampleApp> createState() =>
+      _BottomNavigationBarExampleAppState();
+}
+
+class _BottomNavigationBarExampleAppState
+    extends State<BottomNavigationBarExampleApp> {
+  @override
   Widget build(BuildContext context) {
+    mq = MediaQuery.of(context).size;
     return MaterialApp(
       theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
       debugShowCheckedModeBanner: false,
-      home: ChatListingScreen(),
+      home: const ChatListingScreen(),
       onGenerateRoute: generateRoute,
     );
   }

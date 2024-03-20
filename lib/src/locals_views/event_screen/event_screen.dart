@@ -52,7 +52,6 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-      removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
         child: Column(
@@ -241,7 +240,7 @@ class _EventScreenState extends State<EventScreen> {
                                       IconComponent(
                                         iconData: Icons.facebook,
                                         borderColor: Colors.transparent,
-                                        backgroundColor: ColorConstants.blue,
+                                        backgroundColor: ColorConstants.purple,
                                         circleSize: 60,
                                         customText: StringConstants.facebook,
                                       ),

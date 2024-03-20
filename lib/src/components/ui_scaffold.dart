@@ -26,7 +26,7 @@ class UIScaffold extends StatefulWidget {
       {Key? key,
       required this.widget,
       this.bottomNavigationBar,
-      this.removeSafeAreaPadding = true,
+      this.removeSafeAreaPadding = false,
       this.appBarHeight = 60,
       this.bgColor,
       this.resizeToAvoidBottomInset = true,

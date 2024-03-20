@@ -9,14 +9,14 @@ import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
 
-class LocalsProfileScreen extends StatefulWidget {
-  const LocalsProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<LocalsProfileScreen> createState() => _LocalsProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   final List<ImageProvider> images = [
     const NetworkImage(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
@@ -130,7 +130,6 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
     //   body: _profileWidget(),
     // );
     return UIScaffold(
-      removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
           child: Column(
@@ -399,7 +398,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                   IconComponent(
                     iconData: Icons.facebook,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.blue,
+                    backgroundColor: ColorConstants.purple,
                     circleSize: 30,
                   ),
                   const SizedBox(
@@ -408,7 +407,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                   IconComponent(
                     iconData: Icons.facebook,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.blue,
+                    backgroundColor: ColorConstants.purple,
                     circleSize: 30,
                     circleHeight: 30,
                   ),
@@ -427,7 +426,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                               // circleSize: (tag['name'].length * 14.0) + 25,
                               iconSize: 20,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             )
                           ]))

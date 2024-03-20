@@ -51,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-      removeSafeAreaPadding: false,
       bgImage:
           "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
       widget: _eventWidget(),
@@ -356,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   IconComponent(
                     iconData: Icons.facebook,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.blue,
+                    backgroundColor: ColorConstants.purple,
                     circleSize: 60,
                     customText: StringConstants.facebook,
                   ),
