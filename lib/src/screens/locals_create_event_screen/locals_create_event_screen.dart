@@ -1,14 +1,25 @@
 import 'package:chat_app_white_label/src/components/create_event_tile_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
+import '../../components/contacts_card_component.dart';
+import '../../components/icons_button_component.dart';
+import '../../components/info_sheet_component.dart';
+import '../../components/profile_image_component.dart';
 import '../../components/search_text_field_component.dart';
+import '../../constants/image_constants.dart';
+import '../../models/contact.dart';
+import '../../utils/theme_cubit/theme_bloc.dart';
 
 class LocalsCreateEventScreen extends StatefulWidget {
   const LocalsCreateEventScreen({super.key});
@@ -21,14 +32,30 @@ class LocalsCreateEventScreen extends StatefulWidget {
 class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
   final TextEditingController _controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
+  TextEditingController searchControllerConnections = TextEditingController();
   bool requireGuest = true;
-  bool askQuestion = true;
+  bool askQuestion = false;
   bool editQuestion = false;
   bool locationVisible = true;
+  late final themeCubit= BlocProvider.of<ThemeCubit>(context);
+
+  final List<ContactModel> contacts = [
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    // ... other contacts
+  ];
 
   @override
   Widget build(BuildContext context) {
+
     return UIScaffold(
+      bgColor: themeCubit.backgroundColor,
         removeSafeAreaPadding: false,
         // appBar:_appBar(),
         widget: _createEvent());
@@ -41,6 +68,11 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
   //   );
   // }
 
+  toggleTaped(){
+    print("Tapped ${themeCubit.isDarkMode}");
+    themeCubit.toggleTheme();
+  }
+
   Widget _createEvent() {
     return Container(
       child: SingleChildScrollView(
@@ -52,19 +84,24 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
               child: Row(
                 children: [
                   SizedBox(
-                      height: 20,
-                      child: IconComponent(
-                        iconData: Icons.arrow_back_ios_new,
-                        iconSize: 20,
-                        circleHeight: 0,
-                        iconColor: ColorConstants.lightGray,
+                      child: GestureDetector(
+                        onTap: toggleTaped,
+                        child: IconComponent(
+                          iconData: Icons.arrow_back_ios_new,
+                          iconSize: 20,
+                          circleHeight: 30,
+                          backgroundColor: ColorConstants.transparent,
+                          borderColor: ColorConstants.transparent,
+                          iconColor: ColorConstants.lightGray,
+                        ),
                       )),
+                  SizedBox(width: 20,),
                   Text(
                     StringConstants.createEvent,
                     style: TextStyle(
                         fontFamily: FontConstants.fontProtestStrike,
                         fontSize: 20,
-                        color: ColorConstants.bgcolorbutton),
+                        color: themeCubit.primaryColor),
                   )
                 ],
               ),
@@ -142,7 +179,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                       style: TextStyle(
                           fontFamily: FontConstants.fontProtestStrike,
                           fontSize: 20,
-                          color: ColorConstants.bgcolorbutton),
+                          color: themeCubit.primaryColor),
                     ),
                   ),
                   SizedBox(
@@ -152,7 +189,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      color: ColorConstants.white,
+                      color: themeCubit.darkBackgroundColor,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
@@ -163,22 +200,23 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             children: [
                               IconComponent(
                                 iconData: Icons.calendar_month,
-                                circleSize: 0,
-                                borderSize: 0,
-                                circleHeight: 0,
+                                circleSize: 25,
+                                iconSize: 25,
+                                backgroundColor: ColorConstants.transparent,
+                                borderColor: ColorConstants.transparent,
                               ),
                               SizedBox(
-                                width: 60,
+                                width: 20,
                               ),
-                              Text(
+                              TextComponent(
                                 StringConstants.start,
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 15,color: themeCubit.textColor),
                               ),
                               Spacer(),
                               Text(
                                 "17 Feb at 11 am",
                                 style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
+                                    fontSize: 15, fontWeight: FontWeight.bold,color: themeCubit.textColor),
                               ),
                             ],
                           ),
@@ -190,16 +228,17 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             children: [
                               IconComponent(
                                 iconData: Icons.straight,
-                                circleSize: 0,
-                                borderSize: 0,
-                                circleHeight: 0,
+                                circleSize: 25,
+                                iconSize: 25,
+                                backgroundColor: ColorConstants.transparent,
+                                borderColor: ColorConstants.transparent,
                               ),
                               Spacer(),
                               SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width / 1.5,
                                   child: Divider(
-                                    thickness: 1,
+                                    thickness: 0.1,
                                   ))
                             ],
                           ),
@@ -211,22 +250,23 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             children: [
                               IconComponent(
                                 iconData: Icons.circle_rounded,
-                                circleSize: 0,
-                                borderSize: 0,
-                                circleHeight: 0,
+                                circleSize: 25,
+                                iconSize: 25,
+                                backgroundColor: ColorConstants.transparent,
+                                borderColor: ColorConstants.transparent,
                               ),
                               SizedBox(
-                                width: 60,
+                                width: 20,
                               ),
                               Text(
                                 StringConstants.end,
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 15,color: themeCubit.textColor),
                               ),
                               Spacer(),
                               Text(
                                 "2 pm",
                                 style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
+                                    fontSize: 15, fontWeight: FontWeight.bold,color: themeCubit.textColor),
                               ),
                             ],
                           ),
@@ -269,7 +309,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                       style: TextStyle(
                           fontFamily: FontConstants.fontProtestStrike,
                           fontSize: 20,
-                          color: ColorConstants.bgcolorbutton),
+                          color: themeCubit.primaryColor),
                     ),
                   ),
                   SizedBox(
@@ -281,14 +321,14 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                     decoration: InputDecoration(
                       hintText: StringConstants.typeYourMessage,
                       filled: true,
-                      fillColor: ColorConstants.white,
+                      fillColor: themeCubit.darkBackgroundColor,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
                           borderSide: BorderSide(
                             color: ColorConstants.transparent,
                           )),
                       hintStyle: TextStyle(
-                          color: ColorConstants.lightGray.withOpacity(0.5),
+                          color: ColorConstants.lightGray,
                           fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(23.0),
@@ -314,7 +354,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                       style: TextStyle(
                           fontFamily: FontConstants.fontProtestStrike,
                           fontSize: 20,
-                          color: ColorConstants.bgcolorbutton),
+                          color: themeCubit.primaryColor),
                     ),
                   ),
                   SizedBox(
@@ -332,7 +372,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      color: ColorConstants.white,
+                      color: themeCubit.darkBackgroundColor,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
@@ -356,9 +396,9 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      StringConstants.requireGuestsApproval,
-                                      style: TextStyle(fontSize: 15),
+                                    TextComponent(
+                                        StringConstants.requireGuestsApproval,
+                                        style: TextStyle(fontSize: 15,color: themeCubit.textColor)
                                     ),
                                     Container(
                                       child: Text(
@@ -367,7 +407,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                           style: TextStyle(
                                               fontSize: 13,
                                               color: ColorConstants.lightGray
-                                                  .withOpacity(0.6)),
+                                          ),
                                           textAlign: TextAlign.start),
                                     ),
                                   ],
@@ -378,7 +418,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                 // This bool value toggles the switch.
                                 value: requireGuest,
                                 activeColor: ColorConstants.white,
-                                activeTrackColor: ColorConstants.green,
+                                activeTrackColor: themeCubit.primaryColor,
                                 onChanged: (bool value) {
                                   // This is called when the user toggles the switch.
                                   setState(() {
@@ -399,7 +439,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      color: ColorConstants.white,
+                      color:themeCubit.darkBackgroundColor,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
@@ -426,7 +466,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                   children: [
                                     Text(
                                       StringConstants.askQuestionWhenPeopleJoin,
-                                      style: TextStyle(fontSize: 15),
+                                      style: TextStyle(fontSize: 15,color: themeCubit.textColor),
                                     ),
                                     Container(
                                       child: Text(
@@ -434,8 +474,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                               .askQuestionWhenPeopleJoinBody,
                                           style: TextStyle(
                                               fontSize: 13,
-                                              color: ColorConstants.lightGray
-                                                  .withOpacity(0.6)),
+                                              color: ColorConstants.lightGray),
                                           textAlign: TextAlign.start),
                                     ),
                                     if (editQuestion != false)
@@ -443,7 +482,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                         children: [
                                           Text(
                                             StringConstants.editQuestions,
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(fontSize: 15,color: themeCubit.textColor),
                                           ),
                                           SizedBox(
                                             width: 5,
@@ -469,12 +508,15 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                 // This bool value toggles the switch.
                                 value: askQuestion,
                                 activeColor: ColorConstants.white,
-                                activeTrackColor: ColorConstants.green,
+                                activeTrackColor: themeCubit.primaryColor,
                                 onChanged: (bool value) {
                                   // This is called when the user toggles the switch.
                                   setState(() {
                                     askQuestion = value;
                                   });
+                                  if(askQuestion == true){
+                                    _selectQuestion();
+                                  }
                                 },
                               ),
                             ],
@@ -489,10 +531,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ButtonComponent(
-                      bgcolor: ColorConstants.yellow,
+                      bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.createEvent,
                       onPressedFunction: () {
-                        // _yesShareItBottomSheet();
+                        _createBottomSheet();
                         // NavigationUtil.push(
                         //     context, RouteConstants.localsEventScreen);
                       },
@@ -507,12 +549,30 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
     );
   }
 
+  _createBottomSheet() {
+    BottomSheetComponent.showBottomSheet(
+      context,
+      isShowHeader: false,
+      body: InfoSheetComponent(
+        heading: StringConstants.eventCreatedSuccessfully,
+        image: AssetConstants.group,
+      ),
+    );
+    Future.delayed(const Duration(milliseconds: 1000), () async {
+   NavigationUtil.pop(context);
+   _createEventBottomSheet();
+    });
+  }
+
   _selectLocation() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Container(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
+            color: themeCubit.darkBackgroundColor,
+          ),
             child: Padding(
               padding: const EdgeInsets.all(18.0),
               child: Column(
@@ -520,10 +580,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      TextComponent(
                         StringConstants.selectLocation,
                         style: TextStyle(
-                            color: Colors.indigo,
+                            color: themeCubit.primaryColor,
                             fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 18),
                       ),
@@ -532,7 +592,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                         child: IconComponent(
                           iconData: Icons.close,
                           borderColor: Colors.transparent,
-                          iconColor: Colors.black,
+                          iconColor: themeCubit.textColor,
                           circleSize: 20,
                           backgroundColor: Colors.transparent,
                         ),
@@ -589,12 +649,232 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
             )));
   }
 
+  _createEventBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),topRight:Radius.circular(20.0)),
+            color: themeCubit.darkBackgroundColor,
+          ),
+          constraints: const BoxConstraints(maxHeight: 700),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 40.0,top: 10),
+                      child: IconComponent(
+                        iconData: Icons.close,
+                        borderColor: Colors.transparent,
+                        iconColor: themeCubit.textColor,
+                        circleSize: 10,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  const SizedBox(
+                    width: double.infinity,
+                  ),
+                    Image.asset(
+                      // AssetConstants.group,
+                      AssetConstants.group,
+                      width: 150,
+                      height: 150,
+                    ),
+                  Container(
+                    width:300,
+                    child: Text(
+                      StringConstants.eventCreatedSuccessfully,
+                      style: TextStyle(fontSize: 20,fontFamily: FontConstants.fontProtestStrike,color: themeCubit.textColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    width: 300,
+                    child: Text(
+                       StringConstants.inviteYourFriend,
+                      style: TextStyle( fontSize: 15,color: themeCubit.textColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: 20,)
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconComponent(
+                    customTextColor: themeCubit.textColor,
+                    iconData: Icons.link,
+                    borderColor: Colors.transparent,
+                    backgroundColor: ColorConstants.yellow,
+                    iconColor: Colors.white,
+                    circleSize: 60,
+                    customText: StringConstants.copyLink,
+                  ),
+                  IconComponent(
+                    customTextColor: themeCubit.textColor,
+                    iconData: Icons.facebook,
+                    borderColor: Colors.transparent,
+                    backgroundColor: ColorConstants.blue,
+                    circleSize: 60,
+                    customText: StringConstants.facebook,
+                  ),
+                  IconComponent(
+                    customTextColor: themeCubit.textColor,
+                    iconData: Icons.install_desktop,
+                    borderColor: Colors.transparent,
+                    circleSize: 60,
+                    customText: StringConstants.instagram,
+                  ),
+                  IconComponent(
+                    customTextColor: themeCubit.textColor,
+                    iconData: Icons.share,
+                    borderColor: Colors.transparent,
+                    backgroundColor: const Color.fromARGB(255, 87, 64, 208),
+                    circleSize: 60,
+                    customText: StringConstants.share,
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+               Divider(thickness: 0.1,),
+              const SizedBox(
+                height: 5,
+              ),
+               Padding(
+                padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 5),
+                child: Text(
+                  StringConstants.yourConnections,
+                  style: TextStyle(
+                      color: themeCubit.primaryColor,
+                      fontFamily: FontConstants.fontProtestStrike,
+                      fontSize: 18),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16,right: 18),
+                child: SearchTextField(
+                  title: "Search",
+                  hintText: "Search name, postcode..",
+                  onSearch: (text) {
+                    // widget.viewModel.onSearchStories(text);
+                  },
+                  textEditingController: searchControllerConnections,
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: contacts.length,
+                  itemBuilder: (ctx, index) {
+                    return ContactCard(
+                      contact: contacts[index],
+                      onShareTap: () {
+                        Navigator.pop(context);
+                        _shareWithConnectionBottomSheet(
+                            StringConstants.fireWorks, contacts[index].name);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+
+  _shareWithConnectionBottomSheet(String eventName, String userName) {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            const SizedBox(height: 25),
+            const ProfileImageComponent(url: ''),
+            const SizedBox(height: 20),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: ColorConstants.black,
+                    height: 1.5),
+                children: <TextSpan>[
+                  const TextSpan(
+                      text: StringConstants.areYouSureYouwantToShare),
+                  TextSpan(
+                    text: eventName,
+                    style: const TextStyle(color: Colors.indigo),
+                  ),
+                  const TextSpan(text: "with \n"),
+                  TextSpan(
+                    text: "$userName?",
+                    style: const TextStyle(color: Colors.indigo),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: const Text(StringConstants.goBack)),
+                const SizedBox(width: 30),
+                ButtonComponent(
+                  buttonText: "Yes, share it",
+                  onPressedFunction: () {
+                    Navigator.pop(context);
+                    _yesShareItBottomSheet();
+                  },
+                  bgcolor: ColorConstants.yellow,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ));
+  }
+
+  _yesShareItBottomSheet() {
+    BottomSheetComponent.showBottomSheet(
+      context,
+      isShowHeader: false,
+      body: InfoSheetComponent(
+        heading: StringConstants.eventShared,
+        image: AssetConstants.group,
+      ),
+    );
+  }
+
   _selectPrice() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Container(
-            color: Colors.white,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
+              color: themeCubit.darkBackgroundColor,
+            ),
             child: Padding(
               padding: const EdgeInsets.all(18.0),
               child: Column(
@@ -602,10 +882,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      TextComponent(
                         StringConstants.pricing,
                         style: TextStyle(
-                            color: Colors.indigo,
+                            color:themeCubit.primaryColor,
                             fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 18),
                       ),
@@ -614,7 +894,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                         child: IconComponent(
                           iconData: Icons.close,
                           borderColor: Colors.transparent,
-                          iconColor: Colors.black,
+                          iconColor: themeCubit.textColor,
                           circleSize: 20,
                           backgroundColor: Colors.transparent,
                         ),
@@ -639,7 +919,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
                               child:
-                                  Text("Free", style: TextStyle(fontSize: 15)),
+                                  TextComponent("Free", style: TextStyle(fontSize: 15,color: themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -657,7 +937,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
-                              child: Text("£5", style: TextStyle(fontSize: 15)),
+                              child: TextComponent("£5", style: TextStyle(fontSize: 15,color: themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -676,7 +956,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
                               child:
-                                  Text("£10", style: TextStyle(fontSize: 15)),
+                                  TextComponent("£10", style: TextStyle(fontSize: 15,color: themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -701,7 +981,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
                               child:
-                                  Text("£25", style: TextStyle(fontSize: 15)),
+                                  TextComponent("£25", style: TextStyle(fontSize: 15,color:themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -719,7 +999,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
-                              child: Text("£50"),
+                              child: TextComponent("£50",style: TextStyle(fontSize: 15,color:themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -737,9 +1017,9 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
-                              child: Text(
+                              child: TextComponent(
                                 "£100",
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 15,color:themeCubit.textColor),
                               ),
                             ),
                           ),
@@ -753,7 +1033,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   Divider(
                     thickness: 0.5,
                   ),
-                  Text(StringConstants.setOtherAmount),
+                  Text(StringConstants.setOtherAmount,style: TextStyle(fontSize: 15,color:themeCubit.textColor)),
                   SizedBox(
                     height: 10,
                   ),
@@ -770,7 +1050,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             color: ColorConstants.transparent,
                           )),
                       hintStyle: TextStyle(
-                          color: ColorConstants.lightGray.withOpacity(0.5),
+                          color: ColorConstants.lightGray,
                           fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
@@ -792,8 +1072,8 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ButtonComponent(
-                      bgcolor: ColorConstants.yellow,
-                      buttonText: StringConstants.createEvent,
+                      bgcolor: themeCubit.primaryColor,
+                      buttonText: StringConstants.done,
                       onPressedFunction: () {
                         // _yesShareItBottomSheet();
                         // NavigationUtil.push(
@@ -812,20 +1092,22 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Container(
-            color: Colors.white,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
+              color: themeCubit.darkBackgroundColor,
+            ),
             child: Padding(
               padding: const EdgeInsets.all(18.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      TextComponent(
                         StringConstants.capacity,
                         style: TextStyle(
-                            color: Colors.indigo,
+                            color: themeCubit.primaryColor,
                             fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 18),
                       ),
@@ -834,7 +1116,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                         child: IconComponent(
                           iconData: Icons.close,
                           borderColor: Colors.transparent,
-                          iconColor: Colors.black,
+                          iconColor: themeCubit.textColor,
                           circleSize: 20,
                           backgroundColor: Colors.transparent,
                         ),
@@ -844,11 +1126,11 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text(StringConstants.limitNumberOfParticipants),
+                  Text(StringConstants.limitNumberOfParticipants,style:TextStyle(color: themeCubit.textColor),),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(StringConstants.participants),
+                  Text(StringConstants.participants,style:TextStyle(color: themeCubit.textColor),),
                   SizedBox(
                     height: 10,
                   ),
@@ -865,7 +1147,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             color: ColorConstants.transparent,
                           )),
                       hintStyle: TextStyle(
-                          color: ColorConstants.lightGray.withOpacity(0.5),
+                          color: ColorConstants.lightGray,
                           fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
@@ -887,7 +1169,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     child: ButtonComponent(
-                      bgcolor: ColorConstants.yellow,
+                      bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.done,
                       onPressedFunction: () {
                         // _yesShareItBottomSheet();
@@ -895,6 +1177,176 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                         //     context, RouteConstants.localsEventScreen);
                       },
                     ),
+                  ),
+
+                ],
+              ),
+            )));
+  }
+
+  _selectQuestion(){
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
+            gradient: LinearGradient(
+              colors: [ColorConstants.black.withOpacity(0.8), Color.fromARGB(255, 210, 200, 180)],
+              begin: Alignment.topCenter,
+                end: Alignment.bottomCenter
+            ),
+
+            color: ColorConstants.black.withOpacity(0.6)
+          ),
+            // color: Colors.black,
+            child: Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        StringConstants.questions,
+                        style: TextStyle(
+                            color: ColorConstants.primaryColor,
+                            fontFamily: FontConstants.fontProtestStrike,
+                            fontSize: 18),
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: IconComponent(
+                          iconData: Icons.close,
+                          borderColor: Colors.transparent,
+                          iconColor: Colors.white,
+                          circleSize: 20,
+                          backgroundColor: Colors.transparent,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextComponent(StringConstants.choseToAskQuestion,style: TextStyle(color: themeCubit.textColor),),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(children: [
+                    TextComponent("Question 1",style: TextStyle(color: themeCubit.textColor),),
+                    SizedBox(width: 10,),
+                    IconComponent(
+                      iconData: Icons.delete,
+                      borderColor:
+                      ColorConstants.red,
+                      backgroundColor:
+                      ColorConstants.red,
+                      iconColor: ColorConstants.white,
+                      iconSize: 15,
+                      circleSize: 20,
+
+                    ),
+                  ],),
+
+                  SizedBox(
+                    height: 10,
+                  ),
+
+                  TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+                      hintText: StringConstants.typeYourQuestion,
+                      filled: true,
+                      fillColor: ColorConstants.lightGray.withOpacity(0.3),
+                      suffixIcon: GestureDetector(
+                        child: Padding(
+                            padding: EdgeInsets.only(right: 20,top: 8),
+                            child:    IconComponent(
+                              iconData: Icons.menu,
+                              borderColor:
+                              ColorConstants.transparent,
+                              backgroundColor:
+                              ColorConstants.transparent,
+                              iconColor: ColorConstants.lightGray
+                                  .withOpacity(0.4),
+                              iconSize: 25,
+                              circleSize: 25,
+                            )),
+                      ),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide: BorderSide(
+                            color: ColorConstants.transparent,
+                          )),
+                      hintStyle: TextStyle(
+                          color: ColorConstants.lightGray,
+                          fontSize: 14),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide:
+                          BorderSide(color: ColorConstants.transparent)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          borderSide:
+                          BorderSide(color: ColorConstants.transparent)),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                    IconComponent(
+                    iconData: Icons.arrow_downward_outlined,
+                    borderColor:
+                    ColorConstants.transparent,
+                    backgroundColor:
+                    ColorConstants.transparent,
+                    iconColor: ColorConstants.lightGray,
+                    iconSize: 25,
+                    circleSize: 25,
+                  ),
+                    Text("Required",style: TextStyle(color: ColorConstants.lightGray),),
+                    SizedBox(width: 10,),
+                    IconComponent(
+                      iconData: Icons.arrow_downward_outlined,
+                      borderColor:
+                      ColorConstants.transparent,
+                      backgroundColor:
+                      ColorConstants.transparent,
+                      iconColor: ColorConstants.lightGray,
+                      iconSize: 25,
+                      circleSize: 25,
+                    ),
+                    Text("Private",style: TextStyle(color: ColorConstants.lightGray),),
+                  ],),
+
+                  SizedBox(
+                    height: 100,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ButtonWithIconComponent(
+                        btnText: '  ${StringConstants.addQuestion}',
+                        icon: Icons.add_circle,
+                        btnTextStyle: TextStyle(color: ColorConstants.black,fontWeight: FontWeight.bold),
+                        onPressed: () {
+                        },
+                      ),
+                      ButtonComponent(
+                        bgcolor: ColorConstants.primaryColor,
+                        textColor: ColorConstants.black,
+                        buttonText: StringConstants.done,
+                        onPressedFunction: () {
+                          // _yesShareItBottomSheet();
+                          // NavigationUtil.push(
+                          //     context, RouteConstants.localsEventScreen);
+                        },
+                      ),
+                    ],
                   ),
 
                 ],

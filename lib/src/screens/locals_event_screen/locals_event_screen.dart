@@ -72,7 +72,6 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
             ButtonWithIconComponent(
               btnText: '  ${StringConstants.join}',
               icon: Icons.add_circle,
-              width: 120,
               onPressed: () {
                 _showJoinBottomSheet();
               },

@@ -8,6 +8,9 @@ class ColorConstants {
   static const Color white = Color(0xffFFFFFF);
   static final Color iconBg = Colors.white.withOpacity(0.3);
   static final Color yellow = Color.fromARGB(255, 245, 179, 8);
+  static final Color primaryColor = Color(0xffC9E300);
+  static final Color darkBackgrounddColor = Color(0xff1A1A1A);
+  static final Color btnGradientColor = Color(0xffF5FFA5);
   static const Color backgroundColor = Color.fromARGB(255, 230, 228, 228);
   static const Color tagBgColor= Color.fromRGBO(248, 248, 248, 1);
 

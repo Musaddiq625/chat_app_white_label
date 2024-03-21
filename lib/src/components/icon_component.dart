@@ -90,9 +90,9 @@ class IconComponent extends StatelessWidget {
                     color: iconColor,
                   ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          // const SizedBox(
+          //   height: 10,
+          // ),
           if (customText != null)
             Text(
               customText!,
