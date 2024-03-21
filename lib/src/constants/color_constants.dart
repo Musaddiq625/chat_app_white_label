@@ -29,5 +29,6 @@ class ColorConstants {
   static const Color lightPurplish = Color(0xFFF1F0FF);
   static const Color red = Color(0xFFFA484F);
   static const Color lightGrey = Color(0xFFB2B2B2);
-  static const Color backgroundColor = Color(0xFFF7F7F7);
+  static const Color blue = Color.fromARGB(255, 10, 73,
+      225); // static const Color backgroundColor = Color(0xFFF7F7F7);
 }

@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
+import 'package:chat_app_white_label/src/screens/locals_create_event_screen/locals_create_event_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -51,7 +52,7 @@ late Size mq;
 
 void main() => runApp(const BottomNavigationBarExampleApp());
 
-class BottomNavigationBarExampleApp extends StatefulWidget {
+class BottomNavigationBarExampleApp extends StatelessWidget {
   const BottomNavigationBarExampleApp({super.key});
 
   @override
