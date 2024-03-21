@@ -1,9 +1,15 @@
+import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/textfield_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +22,8 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
+  TextEditingController controller = TextEditingController();
+  List selectedContacts = [];
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
@@ -24,13 +32,29 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       widget: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-                itemCount: messageList.length,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return MessageCard(message: messageList[index], isRead: true);
-                }),
-          )
+              child:
+                  // ListView.builder(
+                  //     itemCount: messageList.length,
+                  //     itemBuilder: (context, index) {
+                  //       return MessageCard(message: messageList[index], isRead: true);
+                  //     }),
+                  Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const TextComponent(
+                StringConstants.noMessagesYet,
+                style: TextStyle(
+                    fontFamily: FontConstants.fontProtestStrike, fontSize: 30),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                child: TextComponent(
+                  StringConstants.startConversation,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ))
         ],
       ),
       bottomNavigationBar: Container(
@@ -54,7 +78,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             Expanded(
               child: Container(
                 height: 40,
-                padding: EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 10),
                 child: TextField(
                   decoration: InputDecoration(
                       suffixIcon: Padding(
@@ -91,6 +115,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       ),
       child: Container(
         color: ColorConstants.white,
+        padding: const EdgeInsets.only(right: 15),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -111,7 +136,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //user name
-                Text('Live Music and Karaok...',
+                TextComponent('Faizan, Jesse & more',
                     style: TextStyle(
                         fontSize: 20,
                         fontFamily: FontConstants.fontProtestStrike,
@@ -119,28 +144,312 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
                 SizedBox(height: 2),
                 // last seen time of user
-                Text('134 Members',
+                TextComponent('134 Members',
                     style: TextStyle(
                       fontSize: 12,
                     )),
               ],
             ),
-            const SizedBox(width: 10),
-            IconComponent(
-              iconData: Icons.more_horiz,
-              iconSize: 12,
-              borderColor: ColorConstants.transparent,
+            const Spacer(),
+            CircleAvatar(
+              radius: 15,
               backgroundColor: Colors.grey.withOpacity(0.2),
-              circleSize: 28,
-            )
+              child: PopupMenuButton<String>(
+                color: ColorConstants.white,
+                icon: const Icon(
+                  Icons.more_horiz,
+                  size: 15,
+                ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                onSelected: (String value) => _selectedOption(value),
+                itemBuilder: (BuildContext context) => _buildPopupItems(),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+
+  List<PopupMenuEntry<String>> _buildPopupItems() {
+    return [
+      const PopupMenuItem<String>(
+        value: 'Add People',
+        child: ListTile(
+          leading: Icon(Icons.groups_outlined),
+          title: TextComponent('Add People to Group'),
+        ),
+      ),
+      const PopupMenuItem<String>(
+        value: 'Rename Group',
+        child: ListTile(
+          leading: Icon(Icons.edit_outlined),
+          title: TextComponent('Rename Group'),
+        ),
+      ),
+      const PopupMenuItem<String>(
+        value: 'Media',
+        child: ListTile(
+          leading: Icon(Icons.photo_outlined),
+          title: TextComponent('Media'),
+        ),
+      ),
+      const PopupMenuItem<String>(
+        value: 'Leave Conversation',
+        child: ListTile(
+          leading: Icon(
+            Icons.exit_to_app,
+            color: ColorConstants.red,
+          ),
+          title: TextComponent(
+            'Leave Conversation',
+            style: TextStyle(color: ColorConstants.red),
+          ),
+        ),
+      ),
+      const PopupMenuItem<String>(
+        value: 'Delete Group',
+        child: ListTile(
+          leading: Icon(
+            Icons.delete_outline_sharp,
+            color: ColorConstants.red,
+          ),
+          title: TextComponent(
+            'Delete Group',
+            style: TextStyle(color: ColorConstants.red),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  void _selectedOption(String value) {
+    switch (value) {
+      case 'Add People':
+        _showCreateChatBottomSheet();
+        break;
+      case 'Rename Group':
+        _renameGroup();
+        break;
+      case 'Media':
+        // Show media options
+        break;
+      case 'Leave Conversation':
+        _showLeaveBottomSheet();
+        break;
+      case 'Delete Group':
+        _showDeleteBottomSheet();
+        break;
+    }
+  }
+
+  _showCreateChatBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            StringConstants.addPeople,
+                            style: TextStyle(
+                                color: ColorConstants.purple,
+                                fontSize: 20,
+                                fontFamily: FontConstants.fontProtestStrike),
+                          ),
+                          InkWell(
+                              onTap: () => NavigationUtil.pop(context),
+                              child: const Icon(Icons.close))
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: dummyContactList.length,
+                      itemBuilder: (context, index) {
+                        return ContactTileComponent(
+                          title: dummyContactList[index].name,
+                          subtitle: dummyContactList[index].designation,
+                          isSelected: selectedContacts.contains(index),
+                          onTap: () {
+                            if (selectedContacts.contains(index)) {
+                              selectedContacts.remove(index);
+                            } else {
+                              selectedContacts.add(index);
+                            }
+                            setState(() {});
+                          },
+                        );
+                      }),
+                ),
+                const SizedBox(
+                  height: 50,
+                )
+              ],
+            ),
+            Column(
+              children: [
+                Expanded(child: Container()),
+                Container(
+                  height: 45,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  width: double.infinity,
+                  child: ButtonComponent(
+                      buttonText: StringConstants.addPeopleToGroup,
+                      bgcolor: ColorConstants.yellow,
+                      onPressedFunction: () {}),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+    }));
+  }
+
+  _showLeaveBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            const SizedBox(height: 25),
+            const ProfileImageComponent(url: ''),
+            const SizedBox(height: 20),
+            const Column(
+              children: [
+                TextComponent(
+                  StringConstants.areYouSureYouWanttoLeave,
+                  style: TextStyle(
+                      fontFamily: FontConstants.fontProtestStrike,
+                      fontSize: 20),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50),
+                  child: TextComponent(
+                    StringConstants.youWillNotBeAbleToAccessAnyMessage,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: const TextComponent(StringConstants.goBack)),
+                const SizedBox(width: 30),
+                ButtonComponent(
+                  buttonText: StringConstants.yesPleaseLeave,
+                  onPressedFunction: () {
+                    Navigator.pop(context);
+                  },
+                  bgcolor: ColorConstants.red,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ));
+  }
+
+  _showDeleteBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            const SizedBox(height: 25),
+            const ProfileImageComponent(url: ''),
+            const SizedBox(height: 20),
+            const Column(
+              children: [
+                TextComponent(
+                  StringConstants.areYouSureYouWanttoLeave,
+                  style: TextStyle(
+                      fontFamily: FontConstants.fontProtestStrike,
+                      fontSize: 20),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: const TextComponent(StringConstants.goBack)),
+                const SizedBox(width: 30),
+                ButtonComponent(
+                  buttonText: StringConstants.yesDeleteIt,
+                  onPressedFunction: () {
+                    Navigator.pop(context);
+                  },
+                  bgcolor: ColorConstants.red,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ));
+  }
+
+  _renameGroup() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 25),
+              const TextComponent(
+                StringConstants.renameGroup,
+                style: TextStyle(
+                    fontFamily: FontConstants.fontProtestStrike, fontSize: 25),
+              ),
+              const SizedBox(height: 20),
+              TextFieldComponent(controller),
+              const SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                height: 50,
+                child: ButtonComponent(
+                  buttonText: StringConstants.save,
+                  onPressedFunction: () {
+                    Navigator.pop(context);
+                  },
+                  bgcolor: ColorConstants.yellow,
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ));
+  }
 }
 
-List messageList = [
+List dummyMessageList = [
   MessageModel(
       fromId: '921122334455',
       toId: '923083306918',

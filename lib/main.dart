@@ -62,7 +62,7 @@ class _BottomNavigationBarExampleAppState
     return MaterialApp(
       theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
       debugShowCheckedModeBanner: false,
-      home: const ChatListingScreen(),
+      home: const ChatRoomScreen(),
       onGenerateRoute: generateRoute,
     );
   }
