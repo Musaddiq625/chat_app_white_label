@@ -45,7 +45,7 @@ class SearchTextField extends StatelessWidget {
                           backgroundColor:
                           ColorConstants.transparent,
                           iconColor: ColorConstants.lightGray
-                              .withOpacity(0.4),
+                              .withOpacity(0.5),
                           iconSize: 25,
                           circleSize: 25,
                         )),

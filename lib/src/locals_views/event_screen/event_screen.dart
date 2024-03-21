@@ -72,7 +72,6 @@ class _EventScreenState extends State<EventScreen> {
             ButtonWithIconComponent(
               btnText: '  ${StringConstants.join}',
               icon: Icons.add_circle,
-              width: 120,
               onPressed: () {
                 _showJoinBottomSheet();
               },

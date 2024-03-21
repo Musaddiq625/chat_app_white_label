@@ -1,7 +1,9 @@
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../constants/image_constants.dart';
+import '../utils/theme_cubit/theme_cubit.dart';
 
 class InfoSheetComponent extends StatefulWidget {
   final heading;
@@ -17,7 +19,12 @@ class InfoSheetComponent extends StatefulWidget {
 class _InfoSheetComponentState extends State<InfoSheetComponent> {
   @override
   Widget build(BuildContext context) {
+    late final themeCubit= BlocProvider.of<ThemeCubit>(context);
     return  Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),topRight:Radius.circular(20.0)),
+        color: themeCubit.darkBackgroundColor,
+      ),
       child: Column(
         children: [
           const SizedBox(
@@ -35,7 +42,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
              width:300,
              child: Text(
               widget.heading,
-              style: TextStyle(fontSize: 20,fontFamily: FontConstants.fontProtestStrike,),
+              style: TextStyle(fontSize: 20,fontFamily: FontConstants.fontProtestStrike,color: themeCubit.textColor),
                textAlign: TextAlign.center,
                        ),
            ),
@@ -46,7 +53,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
             width: 300,
             child: Text(
               widget.body?? "",
-              style: TextStyle( fontSize: 15),
+              style: TextStyle( fontSize: 15,color: themeCubit.textColor),
               textAlign: TextAlign.center,
             ),
           ),

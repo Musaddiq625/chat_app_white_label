@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 class ButtonWithIconComponent extends StatelessWidget {
@@ -8,7 +9,6 @@ class ButtonWithIconComponent extends StatelessWidget {
   final Color bgcolor;
   final double iconSize;
   final Color iconColor;
-  final double width;
 
   const ButtonWithIconComponent({
     super.key,
@@ -18,8 +18,8 @@ class ButtonWithIconComponent extends StatelessWidget {
     this.btnTextStyle = const TextStyle(color: Colors.white),
     this.bgcolor = Colors.indigo,
     this.iconSize = 24,
-    this.iconColor = Colors.white,
-    this.width = 110,
+    this.iconColor = Colors.black,
+
   });
 
   @override
@@ -27,10 +27,11 @@ class ButtonWithIconComponent extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: width,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9.5),
         decoration: BoxDecoration(
-            color: bgcolor, borderRadius: BorderRadius.circular(25)),
+          gradient: LinearGradient(
+            colors: [ColorConstants.btnGradientColor, Color.fromARGB(255, 220, 210, 210)],
+          ), borderRadius: BorderRadius.circular(25)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -38,6 +39,7 @@ class ButtonWithIconComponent extends StatelessWidget {
               btnText,
               style: btnTextStyle,
             ),
+            SizedBox(width: 10),
             Icon(
               icon,
               size: iconSize,

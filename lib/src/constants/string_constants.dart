@@ -18,10 +18,20 @@ class StringConstants {
   static const String instagram = "Instagram";
   static const String location = "Location";
   static const String capacity = "Capacity";
+  static const String questions = "Questions";
   static const String visibility = "Visibility";
   static const String editQuestions = "Edit Questions";
   static const String participants = "Participants";
   static const String requireGuestsApproval = "Require guests approval";
+  static const String typeYourQuestion = "Type your question here";
+  static const String inviteYourFriend = "You can invite your friend or share it with them.";
+  static const String setOtherAmount = "You can also set other amount. If ticket is above £1000, please send contact our support at hello@locals.com";
+  static const String choseToAskQuestion = "You can choose to ask questions when people join.";
+  static const String limitNumberOfParticipants = "Limit the number of participants and auto close the registration when the capacity is reached.";
+  static const String exactLocationApproval = "Exact location to be visible only to approved users";
+  static const String requireGuestsApprovalBody = "Guest request to join you. Only guests you approve can see event details and chat. This cannot be changed later.";
+  static const String askQuestionWhenPeopleJoin = "Ask question when people join?";
+  static const String askQuestionWhenPeopleJoinBody = "You could collect information here and ask questions.";
   static const String setOtherAmount =
       "You can also set other amount. If ticket is above £1000, please send contact our support at hello@locals.com";
   static const String limitNumberOfParticipants =
@@ -43,6 +53,40 @@ class StringConstants {
   static const String pricing = "Pricing";
   static const String yourConnections = "Your Connections";
   static const String fireWorks = "FireWorks";
+  static const String areYouSureYouwantToShare = "Are you sure you want to share \nEvent";
+  static const String goBack= "Go back";
+  static const String eventShared= "Event Shared !";
+  static const String eventCreatedSuccessfully= "Yay! Your event has been  created successfully!";
+  static const String requestSend= "Your request has already been sent to ";
+  static const String connectSendBody = "Once your request is accepted, you can view it in your connections";
+  static const String getTicket= "Get Ticket";
+  static const String join= "Join";
+  static const String addQuestion= "Add Question";
+  static const String abouttheEvent= "About the event";
+  static const String aboutMe= "About me";
+  static const String myInterests= "My Interests";
+  static const String showLess= "Show less";
+  static const String readMore= "Read more";
+  static const String done= "Done";
+  static const String flexibleDate= "Flexible Date";
+  static const String dateWillbeDecidelater= "Date will be decide later";
+  static const String exactLocationAfterJoining= "Exact location after joining";
+  static const String ticketrequired= "Ticket required to attend event";
+  static const String freeToJoin= "Free to join";
+  static const String noCharityRequired= "No charity support required";
+  static const String members= "Members";
+  static const String events= "Events";
+  static const String clubs= "Clubs";
+  static const String somethingToKnow= "Something to know";
+  static const String requestSent= "Request Sent!";
+  static const String requestStatus= "You will be notifiy when your request is accepted";
+  static const String typeYourMessage= "Type your message here...";
+  static const String doYouHaveQuestion= "Do you have questions or comments for the creator? Feel free to leave them here. This message is private.";
+
+
+
+
+}
   static const String areYouSureYouwantToShare =
       "Are you sure you want to share \nEvent";
   static const String goBack = "Go back";
