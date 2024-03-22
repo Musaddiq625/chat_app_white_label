@@ -1,6 +1,9 @@
+import 'package:chat_app_white_label/src/components/tag_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -11,6 +14,7 @@ import '../../constants/image_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
+import '../../utils/theme_cubit/theme_cubit.dart';
 
 class LocalsProfileScreen extends StatefulWidget {
   const LocalsProfileScreen({super.key});
@@ -21,6 +25,7 @@ class LocalsProfileScreen extends StatefulWidget {
 
 class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
 
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   bool connectSend = false;
   int _currentPage = 0;
   late PageController _pageController;
@@ -167,37 +172,40 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
       removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
-          child: Column(
-        children: [
-          _profileWidget(),
-          const SizedBox(
-            height: 10,
-          ),
-          _aboutMe(),
-          const SizedBox(
-            height: 10,
-          ),
-          _myInterest(),
-          const SizedBox(
-            height: 10,
-          ),
-          _event(),
-          const SizedBox(
-            height: 10,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          _clubs(),
-          const SizedBox(
-            height: 100,
-          ),
-        ],
-      )),
+          child: Container(
+            color: themeCubit.backgroundColor,
+            child: Column(
+                    children: [
+            _profileWidget(),
+            const SizedBox(
+              height: 10,
+            ),
+            _aboutMe(),
+            const SizedBox(
+              height: 10,
+            ),
+            _myInterest(),
+            const SizedBox(
+              height: 10,
+            ),
+            _event(),
+            const SizedBox(
+              height: 10,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            _clubs(),
+            const SizedBox(
+              height: 100,
+            ),
+                    ],
+                  ),
+          )),
       floatingActionButton: SizedBox(
         width: 350,
         child: connectSend?ButtonComponent(
-          bgcolor:ColorConstants.yellow ,
+          bgcolor:themeCubit.primaryColor,
           buttonText: StringConstants.connectSent,
           onPressedFunction: () {
             _yesShareItBottomSheet();
@@ -205,6 +213,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
             //     context, RouteConstants.localsEventScreen);
           },
         ):ButtonComponent(
+          bgcolor:themeCubit.primaryColor,
           buttonText: StringConstants.connect,
           onPressedFunction: () {
             setState(() {
@@ -225,7 +234,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
         // Use a Container with a specific height or Flexible with FlexFit.loose
         // Here, I'm using a Container with a specific height as an example
         Container(
-          height: 750, // Adjust this value as needed
+          height: MediaQuery.sizeOf(context).height*1, // Adjust this value as needed
           child: Stack(
             children: [
               Column(
@@ -427,31 +436,30 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-        color: ColorConstants.white,
+        color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(18.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
+               Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: Text(
+                  child: TextComponent(
                     StringConstants.aboutMe,
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: ColorConstants.bgcolorbutton,
+                        color: themeCubit.primaryColor,
                         fontFamily: FontConstants.fontProtestStrike),
                   )),
               const SizedBox(
                 height: 10,
               ),
-              const Text(
+               Text(
                 "New to the city, keen to explore with new minded people and build my own network",
                 style: TextStyle(
                   fontSize: 15,
-                  color: ColorConstants.black,
+                  color: themeCubit.textColor,
                 ),
               ),
               const SizedBox(
@@ -481,13 +489,13 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                   ...tagList
                       .map((tag) =>
                           Row(mainAxisSize: MainAxisSize.min, children: [
-                            IconComponent(
+                            TagComponent(
                               iconData: tag['iconData'],
-                              borderColor: ColorConstants.tagBgColor,
-                              backgroundColor: ColorConstants.tagBgColor,
+                              customTextColor: themeCubit.textColor,
+                              backgroundColor: ColorConstants.lightGray.withOpacity(0.3),
+                              iconColor: themeCubit.primaryColor,
                               customIconText: tag['name'],
                               circleHeight: 35,
-                              // circleSize: (tag['name'].length * 14.0) + 25,
                               iconSize: 20,
                             ),
                             SizedBox(
@@ -508,7 +516,7 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-        color: ColorConstants.white,
+        color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(18.0),
@@ -517,14 +525,13 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
+                 Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Text(
+                    child: TextComponent(
                       StringConstants.myInterests,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
                           fontSize: 18,
-                          color: ColorConstants.bgcolorbutton,
+                          color: themeCubit.primaryColor,
                           fontFamily: FontConstants.fontProtestStrike),
                     )),
                 SizedBox(
@@ -535,13 +542,13 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                     ...interestTagList
                         .map((tag) =>
                             Row(mainAxisSize: MainAxisSize.min, children: [
-                              IconComponent(
+                              TagComponent(
                                 iconData: tag['iconData'],
-                                borderColor: ColorConstants.tagBgColor,
-                                backgroundColor: ColorConstants.tagBgColor,
+                                customTextColor: themeCubit.textColor,
+                                backgroundColor: ColorConstants.lightGray.withOpacity(0.3),
+                                iconColor: themeCubit.primaryColor,
                                 customIconText: tag['name'],
                                 circleHeight: 35,
-                                // circleSize: (tag['name'].length * 13.0) + 20,
                                 iconSize: 20,
                               ),
                               SizedBox(
@@ -575,26 +582,27 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                     style: const TextStyle(
                         fontSize: 20, color: ColorConstants.bgcolorbutton),
                     children: <TextSpan>[
-                      const TextSpan(
+                       TextSpan(
                         text: "${StringConstants.events}  ",
                         style: TextStyle(
                             fontSize: 20,
-                            color: ColorConstants.bgcolorbutton,
+                            color: themeCubit.primaryColor,
                             fontFamily: FontConstants.fontProtestStrike),
                       ),
                       TextSpan(
                         text: "387",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 20,
-                            color: ColorConstants.lightGray.withOpacity(0.5)),
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
                       ),
                     ],
                   ),
                 )),
             Padding(
-                padding: const EdgeInsets.only(top: 10, right: 30),
+                padding: const EdgeInsets.only(top: 10, right: 10),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "See all",
@@ -606,8 +614,9 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                       iconData: Icons.arrow_forward_ios,
                       backgroundColor: ColorConstants.transparent,
                       borderColor: ColorConstants.transparent,
-                      circleSize: 10,
                       iconSize: 18,
+                      borderSize: 0,
+                      circleSize: 20,
                       iconColor: ColorConstants.lightGray,
                     )
                   ],
@@ -735,25 +744,25 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                     style: const TextStyle(
                         fontSize: 20, color: ColorConstants.bgcolorbutton),
                     children: <TextSpan>[
-                      const TextSpan(
+                       TextSpan(
                         text: "${StringConstants.clubs}  ",
                         style: TextStyle(
                             fontSize: 20,
-                            color: ColorConstants.bgcolorbutton,
+                            color: themeCubit.primaryColor,
                             fontFamily: FontConstants.fontProtestStrike),
                       ),
                       TextSpan(
                         text: "387",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 20,
-                            color: ColorConstants.lightGray.withOpacity(0.5)),
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
                       ),
                     ],
                   ),
                 )),
             Padding(
-                padding: const EdgeInsets.only(top: 10, right: 30),
+                padding: const EdgeInsets.only(top: 10, right: 10),
                 child: Row(
                   children: [
                     Text(
@@ -766,8 +775,9 @@ class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
                       iconData: Icons.arrow_forward_ios,
                       backgroundColor: ColorConstants.transparent,
                       borderColor: ColorConstants.transparent,
-                      circleSize: 10,
                       iconSize: 18,
+                      borderSize: 0,
+                      circleSize: 20,
                       iconColor: ColorConstants.lightGray,
                     )
                   ],

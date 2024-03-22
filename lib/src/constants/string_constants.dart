@@ -40,7 +40,7 @@ class StringConstants{
   static const String pricing = "Pricing";
   static const String yourConnections = "Your Connections";
   static const String fireWorks = "FireWorks";
-  static const String areYouSureYouwantToShare = "Are you sure you want to share \nEvent";
+  static const String areYouSureYouwantToShare = "Are you sure you want to share \nEvent ";
   static const String goBack= "Go back";
   static const String eventShared= "Event Shared !";
   static const String eventCreatedSuccessfully= "Yay! Your event has been  created successfully!";
@@ -69,8 +69,4 @@ class StringConstants{
   static const String requestStatus= "You will be notifiy when your request is accepted";
   static const String typeYourMessage= "Type your message here...";
   static const String doYouHaveQuestion= "Do you have questions or comments for the creator? Feel free to leave them here. This message is private.";
-
-
-
-
 }

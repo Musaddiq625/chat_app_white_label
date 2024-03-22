@@ -6,7 +6,8 @@ class ButtonWithIconComponent extends StatelessWidget {
   final IconData? icon;
   final Function() onPressed;
   final TextStyle btnTextStyle;
-  final Color bgcolor;
+  final Color? btnTextColor;
+  final Color? bgcolor;
   final double iconSize;
   final Color iconColor;
 
@@ -15,8 +16,9 @@ class ButtonWithIconComponent extends StatelessWidget {
     required this.btnText,
     this.icon,
     required this.onPressed,
-    this.btnTextStyle = const TextStyle(color: Colors.white),
-    this.bgcolor = Colors.indigo,
+    this.btnTextStyle = const TextStyle(color: ColorConstants.white),
+    this.bgcolor ,
+    this.btnTextColor = Colors.black,
     this.iconSize = 24,
     this.iconColor = Colors.black,
 
@@ -29,15 +31,18 @@ class ButtonWithIconComponent extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9.5),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient:bgcolor == null? LinearGradient(
             colors: [ColorConstants.btnGradientColor, Color.fromARGB(255, 220, 210, 210)],
-          ), borderRadius: BorderRadius.circular(25)),
+          ):null,
+            borderRadius: BorderRadius.circular(25),
+        color: bgcolor
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               btnText,
-              style: btnTextStyle,
+              style: TextStyle(color: btnTextColor,fontWeight: FontWeight.bold),
             ),
             SizedBox(width: 10),
             Icon(

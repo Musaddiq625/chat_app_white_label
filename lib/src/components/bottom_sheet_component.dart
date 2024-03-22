@@ -13,13 +13,14 @@ class BottomSheetComponent {
     required Widget body,
     Widget? header,
     bool isShowHeader = true,
+       Color? bgColor = Colors.white,
     bool takeFullHeightWhenPossible = false,
     Function()? whenComplete,
   }) async {
     await showModalBottomSheet(
       isScrollControlled: true,
       isDismissible: true,
-      backgroundColor: ColorConstants.white,
+      backgroundColor:bgColor,
       // barrierColor: ColorConstants.white.withOpacity(0.2),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(

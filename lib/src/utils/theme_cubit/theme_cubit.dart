@@ -11,7 +11,7 @@ import '../../constants/light_theme_color_constants.dart';
 class ThemeCubit extends Cubit<ThemeState> {
 
   ThemeCubit() : super(ThemeInitial());
-  bool _isDarkMode= false;
+  bool _isDarkMode= true;
 
 
   bool get isDarkMode => _isDarkMode;

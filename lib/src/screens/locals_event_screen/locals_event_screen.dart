@@ -1,6 +1,11 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -27,6 +32,9 @@ bool ticketRequired = true;
 final TextEditingController _controller = TextEditingController();
 
 class _LocalsEventScreenState extends State<LocalsEventScreen> {
+
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+
   final List<ContactModel> contacts = [
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
@@ -55,8 +63,11 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
       removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
-        child: Column(
-          children: [_eventWidget(), _members()],
+        child: Container(
+          color: themeCubit.backgroundColor,
+          child: Column(
+            children: [_eventWidget(), _members()],
+          ),
         ),
       ),
       floatingActionButton: Padding(
@@ -67,11 +78,14 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
             ButtonComponent(
               buttonText: StringConstants.getTicket,
               onPressedFunction: () {},
-              bgcolor: ColorConstants.yellow,
+              textColor: ColorConstants.black,
+              bgcolor: ColorConstants.btnGradientColor,
             ),
             ButtonWithIconComponent(
               btnText: '  ${StringConstants.join}',
               icon: Icons.add_circle,
+              bgcolor: themeCubit.primaryColor,
+              // btnTextColor: themeCubit.textColor,
               onPressed: () {
                 _showJoinBottomSheet();
               },
@@ -317,18 +331,18 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
 
   Widget _aboutTheEvent() {
     return Card(
-        color: ColorConstants.white,
+        color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(18.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text(
+             Text(
               StringConstants.abouttheEvent,
               style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                fontFamily: FontConstants.fontProtestStrike,
                   fontSize: 18,
-                  color: ColorConstants.bgcolorbutton),
+                  color: themeCubit.primaryColor),
             ),
             SizedBox(
               height: 10,
@@ -349,7 +363,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                                   ? _fullText.substring(0, 150)
                                   : _fullText) ??
                               "No description available",
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: themeCubit.textColor),
                     ),
                     if (_fullText.length > 150)
                       TextSpan(
@@ -357,7 +371,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                             ? ' ${StringConstants.showLess}'
                             : ' ...${StringConstants.readMore}',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                            fontWeight: FontWeight.bold, color: themeCubit.textColor),
                       ),
                   ],
                 ),
@@ -375,15 +389,15 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     children: [
                       const ProfileImageComponent(url: ""),
                       const SizedBox(width: 10),
-                      const Column(
+                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TextComponent(
                             "1456 ${StringConstants.participants}",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
                           ),
-                          Text(
+                          TextComponent(
                             "Elena, Ilsa and more",
                             style: TextStyle(
                                 fontSize: 14, color: ColorConstants.lightGray),
@@ -418,7 +432,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     ],
                   ),
                   const Divider(thickness: 0.2),
-                  const Row(
+                   Row(
                     children: [
                       ProfileImageComponent(url: ""),
                       SizedBox(width: 10),
@@ -428,7 +442,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                           Text(
                             StringConstants.flexibleDate,
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
                           ),
                           Text(
                             StringConstants.dateWillbeDecidelater,
@@ -440,7 +454,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     ],
                   ),
                   const Divider(thickness: 0.2),
-                  const Row(
+                  Row(
                     children: [
                       ProfileImageComponent(url: ""),
                       SizedBox(width: 10),
@@ -450,7 +464,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                           Text(
                             "Manchester",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
                           ),
                           Text(
                             StringConstants.exactLocationAfterJoining,
@@ -473,7 +487,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                             Text(
                               "SR 150",
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
                             ),
                             Text(
                               StringConstants.ticketrequired,
@@ -496,7 +510,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                           Text(
                             StringConstants.freeToJoin,
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
                           ),
                           Text(
                             StringConstants.noCharityRequired,
@@ -518,7 +532,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-        color: ColorConstants.white,
+        color:themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -528,10 +542,11 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                 child: RichText(
                   textAlign: TextAlign.start,
                   text: TextSpan(
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                    style:  TextStyle(
+
+                        fontFamily: FontConstants.fontProtestStrike,
                         fontSize: 18,
-                        color: ColorConstants.bgcolorbutton),
+                        color: themeCubit.primaryColor),
                     children: <TextSpan>[
                       const TextSpan(text: "${StringConstants.members}  "),
                       TextSpan(
@@ -645,7 +660,12 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: Padding(
+        body: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(topLeft:Radius.circular(20) ,topRight:Radius.circular(20) ),
+            color: themeCubit.darkBackgroundColor,
+          ),
+
           padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -656,8 +676,8 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   Text(
                     StringConstants.join,
                     style: TextStyle(
-                        color: Colors.indigo,
-                        fontWeight: FontWeight.bold,
+                      fontFamily: FontConstants.fontProtestStrike,
+                        color: themeCubit.primaryColor,
                         fontSize: 18),
                   ),
                   InkWell(
@@ -665,7 +685,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     child: IconComponent(
                       iconData: Icons.close,
                       borderColor: Colors.transparent,
-                      iconColor: Colors.black,
+                      iconColor: themeCubit.textColor,
                       circleSize: 50,
                       backgroundColor: Colors.transparent,
                     ),
@@ -679,8 +699,8 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                     "Property \nnetworking event",
                     style: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: ColorConstants.black),
+                        fontFamily: FontConstants.fontProtestStrike,
+                        color: themeCubit.textColor),
                   ),
                   Image.asset(
                     AssetConstants.group,
@@ -689,7 +709,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   ),
                 ],
               ),
-              Text(StringConstants.freeToJoin),
+              Text(StringConstants.freeToJoin,style: TextStyle(color: themeCubit.textColor),),
               SizedBox(
                 height: 20,
               ),
@@ -703,8 +723,8 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               Text(
                 StringConstants.somethingToKnow,
                 style: TextStyle(
-                    color: Colors.indigo,
-                    fontWeight: FontWeight.bold,
+                    color: themeCubit.primaryColor,
+                    fontFamily: FontConstants.fontProtestStrike,
                     fontSize: 18),
               ),
               SizedBox(
@@ -721,6 +741,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   ),
                   Text(
                     "When you join, you're in the game!\n Chat's open and ready for you ",
+                    style: TextStyle(color: themeCubit.textColor),
                   ),
                 ],
               ),
@@ -744,6 +765,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
                   ),
                   Text(
                     "When you join, you're in the game!\n Chat's open and ready for you ",
+                    style: TextStyle(color: themeCubit.textColor),
                   ),
                 ],
               ),
@@ -753,23 +775,26 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ButtonComponent(
-                    buttonText: StringConstants.join,
-                    onPressedFunction: () {
-                      _sendMessage();
-                      Navigator.pop(context);
-                      BottomSheetComponent.showBottomSheet(
-                        context,
-                        isShowHeader: false,
-                        body: InfoSheetComponent(
-                          heading: StringConstants.requestSent,
-                          body: StringConstants.requestStatus,
-                          image: AssetConstants.group,
-                        ),
-                      );
-                    },
-                    horizontalLength: 120,
-                    bgcolor: ColorConstants.yellow,
+                  SizedBox(
+                    width: MediaQuery.sizeOf(context).width*0.8,
+                    child: ButtonComponent(
+                      buttonText: StringConstants.join,
+                      textColor: themeCubit.backgroundColor,
+                      onPressedFunction: () {
+                        _sendMessage();
+                        Navigator.pop(context);
+                        BottomSheetComponent.showBottomSheet(
+                          context,
+                          isShowHeader: false,
+                          body: InfoSheetComponent(
+                            heading: StringConstants.requestSent,
+                            body: StringConstants.requestStatus,
+                            image: AssetConstants.group,
+                          ),
+                        );
+                      },
+                      bgcolor: themeCubit.primaryColor,
+                    ),
                   )
                 ],
               )
@@ -794,7 +819,7 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
               Text(
                 "Message for Raul",
                 style: TextStyle(
-                    color: Colors.indigo,
+                    color: themeCubit.primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 18),
               ),
@@ -804,23 +829,26 @@ class _LocalsEventScreenState extends State<LocalsEventScreen> {
             height: 10,
           ),
           Text(
-            StringConstants.doYouHaveQuestion,
+            StringConstants.doYouHaveQuestion,style: TextStyle(color: themeCubit.textColor),
           ),
-          TextField(
-            controller: _controller,
-            maxLines: 4,
-            decoration: InputDecoration(
-              hintText: StringConstants.typeYourMessage,
-              // suffixIcon: IconButton(
-              //   icon: Icon(Icons.send),
-              //   onPressed: _sendMessage,
-              // ),
-              hintStyle: TextStyle(
-                  color: ColorConstants.lightGray.withOpacity(0.5),
-                  fontSize: 14),
-              border: InputBorder.none,
-            ),
-          ),
+          TextFieldComponent(_controller,hintText: StringConstants.typeYourMessage,fieldColor: ColorConstants.lightGray.withOpacity(0.5),maxLines: 4,),
+          // TextField(
+          //   controller: _controller,
+          //   maxLines: 4,
+          //   decoration: InputDecoration(
+          //     filled: true,
+          //     fillColor: themeCubit.darkBackgroundColor.withOpacity(0.5),
+          //     hintText: StringConstants.typeYourMessage,
+          //     // suffixIcon: IconButton(
+          //     //   icon: Icon(Icons.send),
+          //     //   onPressed: _sendMessage,
+          //     // ),
+          //     hintStyle: TextStyle(
+          //         color: ColorConstants.lightGray.withOpacity(0.5),
+          //         fontSize: 14),
+          //     border: InputBorder.none,
+          //   ),
+          // ),
           SizedBox(
             height: 10,
           ),

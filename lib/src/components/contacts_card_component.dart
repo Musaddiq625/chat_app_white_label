@@ -1,7 +1,9 @@
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../constants/color_constants.dart';
 
@@ -19,6 +21,7 @@ class ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late final themeCubit = BlocProvider.of<ThemeCubit>(context);
     return Container(
       padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
       child: Column(
@@ -27,14 +30,14 @@ class ContactCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ProfileImageComponent(url: contact.url),
-              const SizedBox(width: 10),
+               SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     contact.name,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                    style:  TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
                   ),
                   Text(
                     contact.title,
