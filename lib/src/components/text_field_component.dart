@@ -30,6 +30,7 @@ class TextFieldComponent extends StatefulWidget {
   final FocusNode? focusNode;
   final bool capitalizeText;
   final bool digitsOnly;
+  final Color textColor;
   final Widget? prefixWidget;
   final dart_ui.TextDirection? textDirection;
   final bool? changeDirection;
@@ -61,7 +62,7 @@ class TextFieldComponent extends StatefulWidget {
         this.digitsOnly = false,
         this.prefixWidget,
         this.changeDirection = false,
-        this.textDirection,
+        this.textDirection,  this.textColor=ColorConstants.black,
       }) : super(key: key);
   @override
   State<TextFieldComponent> createState() => _TextFieldComponentState();
@@ -124,8 +125,8 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
           onFieldSubmitted: widget.onFieldSubmitted,
           onChanged: (_) =>
           widget.onChanged == null ? () {} : widget.onChanged!(_),
-          style: const TextStyle(
-            color: ColorConstants.black,
+          style:  TextStyle(
+            color: widget.textColor,
           ),
           inputFormatters: inputFormatters,
           decoration: InputDecoration(
@@ -156,7 +157,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
                 : null,
             prefixIconConstraints: _boxConstraints(),
             suffixIconConstraints: _boxConstraints(),
-            contentPadding: const EdgeInsets.fromLTRB(16, 21, 16, 16),
+            contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             suffixIcon: hidePassword != null
                 ? GestureDetector(
               child: _iconWidget(),

@@ -10,6 +10,10 @@ import 'package:chat_app_white_label/src/screens/locals_create_event_screen/loca
 import 'package:chat_app_white_label/src/screens/locals_event_screen/locals_event_screen.dart';
 import 'package:chat_app_white_label/src/screens/locals_home_screen/locals_home_screen.dart';
 import 'package:chat_app_white_label/src/screens/locals_profile_screen/locals_profile_screen.dart';
+import 'package:chat_app_white_label/src/screens/locals_signup/locals_signup_with_email.dart';
+import 'package:chat_app_white_label/src/screens/locals_signup/locals_signup_with_number.dart';
+import 'package:chat_app_white_label/src/screens/locals_signup/passwordScreen.dart';
+import 'package:chat_app_white_label/src/screens/locals_splash_screen/dart/locals_splash_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -76,7 +80,7 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
       if (state is ThemeInitial) {
         return MaterialApp(
           theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
-          home: LocalsHomeScreen(),
+          home: PasswordScreen(),
         );
       }
       else if(state is ThemeUpdate){

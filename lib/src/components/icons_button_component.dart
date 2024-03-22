@@ -2,7 +2,7 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 class ButtonWithIconComponent extends StatelessWidget {
-  final String btnText;
+  final String? btnText;
   final IconData? icon;
   final Function() onPressed;
   final TextStyle btnTextStyle;
@@ -13,7 +13,7 @@ class ButtonWithIconComponent extends StatelessWidget {
 
   const ButtonWithIconComponent({
     super.key,
-    required this.btnText,
+    this.btnText,
     this.icon,
     required this.onPressed,
     this.btnTextStyle = const TextStyle(color: ColorConstants.white),
@@ -40,8 +40,9 @@ class ButtonWithIconComponent extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            if(btnText!=null)
             Text(
-              btnText,
+              btnText!,
               style: TextStyle(color: btnTextColor,fontWeight: FontWeight.bold),
             ),
             SizedBox(width: 10),

@@ -4,6 +4,15 @@ class StringConstants{
   static const String joined = "Joined";
   static const String createEvent = "Create Event";
   static const String viewEvent = "View Event";
+  static const String getStarted = "Get Started";
+  static const String continueWithEmail = "Continue with Email";
+  static const String continueWithPhone = "Continue with Phone";
+  static const String continues = "Continue";
+  static const String resendCode = "Resend Code";
+  static const String registerCreateManageEvents = "Register,create and manage events.";
+  static const String agreeToOur = "By continuing,you agree to our ";
+  static const String termsAndConditions = "Terms & Conditions";
+  static const String connectWithPeople = "Connect with people";
   static const String eventDetail = "Event Details";
   static const String eventDescription = "Event Description";
   static const String otherOptions = "Other Options";
@@ -34,6 +43,9 @@ class StringConstants{
   static const String askQuestionWhenPeopleJoinBody = "You could collect information here and ask questions.";
   static const String end = "End";
   static const String start = "Start";
+  static const String verificationCodeSent = "Verification code will be sent on this number.";
+  static const String verificationCodeSentToEmail = "Verification code will be sent on this email.";
+  static const String passwordValidation = "Should be 8 character long with 1 number and special character";
   static const String price = "Price";
   static const String share = "Share";
   static const String selectLocation = "Select Location";

@@ -1,0 +1,147 @@
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../components/button_component.dart';
+import '../../components/icon_component.dart';
+import '../../constants/font_constants.dart';
+import '../../constants/string_constants.dart';
+import '../../utils/theme_cubit/theme_cubit.dart';
+
+class LocalsSignUpWithNumber extends StatefulWidget {
+  const LocalsSignUpWithNumber({super.key});
+
+  @override
+  State<LocalsSignUpWithNumber> createState() => _LocalsSignUpWithNumberState();
+}
+
+class _LocalsSignUpWithNumberState extends State<LocalsSignUpWithNumber> {
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  final TextEditingController _phoneNumbercontroller = TextEditingController();
+  final TextEditingController _countryCodeController =
+      TextEditingController(text: '+92');
+
+  @override
+  Widget build(BuildContext context) {
+    return UIScaffold(
+        removeSafeAreaPadding: false,
+        bgColor: themeCubit.backgroundColor,
+        widget: continueWithNumber());
+  }
+
+  Widget continueWithNumber() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconComponent(
+                iconData: Icons.arrow_back_ios,
+                borderColor: Colors.transparent,
+                backgroundColor: ColorConstants.iconBg,
+                iconColor: Colors.white,
+                circleSize: 30,
+                iconSize: 20,
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Text(
+                "What's your",
+                style: TextStyle(
+                    fontSize: 22,
+                    color: themeCubit.textColor,
+                    fontFamily: FontConstants.fontProtestStrike),
+              ),
+              Text(
+                "phone number?",
+                style: TextStyle(
+                    fontSize: 22,
+                    color: themeCubit.textColor,
+                    fontFamily: FontConstants.fontProtestStrike),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: <Widget>[
+                  CountryCodePicker(
+                    textStyle: TextStyle(
+                        color: themeCubit.textColor,
+                        fontFamily: FontConstants.fontProtestStrike,
+                        fontSize: 30),
+                    onChanged: (CountryCode countryCode) {
+                      _countryCodeController.text = '+${countryCode.dialCode!}';
+                      print("country code ${countryCode.dialCode}");
+                    },
+                    initialSelection: 'pk',
+                    showCountryOnly: false,
+                    showOnlyCountryWhenClosed: false,
+                    alignLeft: false,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _phoneNumbercontroller,
+                      keyboardType: TextInputType.phone,
+                      style: TextStyle(
+                          color: ColorConstants.white,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 30),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "1234 123456",
+                        hintStyle: TextStyle(
+                            color: ColorConstants.lightGray,
+                            fontFamily: FontConstants.fontProtestStrike,
+                            fontSize: 30),
+                      ),
+                      onChanged: (value) {
+                        print(value);
+                      },
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(10),
+                        // Limit to 12 characters
+                        FilteringTextInputFormatter.digitsOnly,
+                        // Accept only digits
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                StringConstants.verificationCodeSent,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: themeCubit.textColor,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              // Spacer(),
+            ],
+          ),
+          SizedBox(
+            width: MediaQuery.sizeOf(context).width * 0.9,
+            child: ButtonComponent(
+                bgcolor: ColorConstants.lightGray.withOpacity(0.2),
+                textColor: ColorConstants.lightGray,
+                buttonText: StringConstants.continues,
+                onPressedFunction: () {}),
+          )
+        ],
+      ),
+    );
+  }
+}

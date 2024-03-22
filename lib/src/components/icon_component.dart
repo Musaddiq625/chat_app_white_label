@@ -23,7 +23,7 @@ class IconComponent extends StatelessWidget {
     this.iconSize = 24.0, // Default icon size
     this.iconColor = Colors.black, // Default icon color
     this.borderSize = 2.0, // Default border size
-    this.borderColor = Colors.black, // Default border color
+    this.borderColor = Colors.transparent, // Default border color
     this.circleSize = 50,
     this.circleHeight,
     this.backgroundColor = Colors.grey,
@@ -42,7 +42,7 @@ class IconComponent extends StatelessWidget {
       child: Column(
         children: [
           Container(
-
+            alignment: Alignment.center,
             width: customIconText == null? circleSize: null,
             // width:  MediaQuery.of(context).size.width/4, // Set the width to the circle size
             height:
@@ -84,11 +84,14 @@ class IconComponent extends StatelessWidget {
                       ),
                     ],
                   )
-                : Icon(
-                    iconData,
-                    size: iconSize,
-                    color: iconColor,
-                  ),
+                : Padding(
+                  padding: const EdgeInsets.only(left: 3.0),
+                  child: Icon(
+                      iconData,
+                      size: iconSize,
+                      color: iconColor,
+                    ),
+                ),
           ),
           // const SizedBox(
           //   height: 10,
