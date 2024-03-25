@@ -1,18 +1,13 @@
+part of 'home_screen_cubit.dart';
 
-
-
-import '../../../models/chat_model.dart';
-
+@immutable
 sealed class HomeScreenState {}
 
 class HomeScreenInitial extends HomeScreenState {}
 
 class HomeScreenLoadingState extends HomeScreenState {}
 
-class HomeScreenSuccessState extends HomeScreenState {
-  final ChatModel groupData;
-  HomeScreenSuccessState(this.groupData);
-}
+class HomeScreenSuccessState extends HomeScreenState {}
 
 class HomeScreenFailureState extends HomeScreenState {
   final String error;

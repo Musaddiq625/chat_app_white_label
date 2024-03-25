@@ -2,11 +2,9 @@ import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/image_constants.dart';
-import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
-import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<ImageProvider> images = [
     const NetworkImage(
@@ -82,7 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
         const Text(
           StringConstants.locals,
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 47, color: Colors.white,fontFamily: FontConstants.fontProtestStrike),
+              fontWeight: FontWeight.bold,
+              fontSize: 47,
+              color: Colors.white,
+              fontFamily: FontConstants.fontProtestStrike),
         ),
         const Spacer(),
         IconComponent(
@@ -179,12 +179,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ButtonComponent(
-                    bgcolor: themeCubit.primaryColor,
+                      bgcolor: themeCubit.primaryColor,
                       textColor: themeCubit.backgroundColor,
                       buttonText: StringConstants.viewEvent,
                       onPressedFunction: () {
-                        NavigationUtil.push(
-                            context, RouteConstants.localsEventScreen);
+                        // NavigationUtil.push(
+                        //     context, RouteConstants.localsEventScreen);
                       }),
                   const Spacer(),
                   IconComponent(
@@ -248,9 +248,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                     Text(StringConstants.saveEvent,
+                    Text(StringConstants.saveEvent,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14,color: themeCubit.textColor)),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: themeCubit.textColor)),
                   ],
                 ),
               ),

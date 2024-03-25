@@ -1,6 +1,7 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -15,7 +16,6 @@ import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../constants/color_constants.dart';
-import '../../constants/image_constants.dart';
 import '../../models/contact.dart';
 
 class EventScreen extends StatefulWidget {
@@ -32,7 +32,6 @@ bool ticketRequired = true;
 final TextEditingController _controller = TextEditingController();
 
 class _EventScreenState extends State<EventScreen> {
-
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
   final List<ContactModel> contacts = [

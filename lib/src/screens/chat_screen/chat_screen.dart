@@ -1,4 +1,3 @@
-import 'package:chat_app_white_label/src/components/chat_tile_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
@@ -100,18 +99,20 @@ class _ChatScreenState extends State<ChatScreen>
                               chatUser.name =
                                   FirebaseUtils.getNameFromLocalContact(
                                       chatUser.id ?? '', context);
-                              return ChatTileComponent(
-                                chat: chat,
-                                chatUser: chatUser,
-                              );
+                              return Container();
+                              //  ChatTileComponent(
+                              //   chat: chat,
+                              //   chatUser: chatUser,
+                              // );
                             } else {
                               return const SizedBox();
                             }
                           } else {
-                            return ChatTileComponent(
-                              chat: chat,
-                              chatUser: null,
-                            );
+                            return Container();
+                            //  ChatTileComponent(
+                            //   chat: chat,
+                            //   chatUser: null,
+                            // );
                           }
                         },
                       );

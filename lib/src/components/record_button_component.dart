@@ -120,7 +120,7 @@ class _RecordButtonComponentState extends State<RecordButtonComponent> {
       onTap: _isRecording ? stopAudioRecord : startAudioRecord,
       child: Icon(
         _isRecording ? Icons.stop : Icons.mic,
-        color: _isRecording ? Colors.red : ColorConstants.blue,
+        color: _isRecording ? Colors.red : ColorConstants.purple,
       ),
     );
   }

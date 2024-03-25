@@ -1,21 +1,16 @@
+part of 'event_screen_cubit.dart';
 
-
-import '../../../models/chat_model.dart';
-
-
+@immutable
 sealed class EventScreenState {}
 
 class EventScreenInitial extends EventScreenState {}
 
 class EventScreenLoadingState extends EventScreenState {}
 
-class EventScreenSuccessState extends EventScreenState {
-  final ChatModel groupData;
-  EventScreenSuccessState(this.groupData);
-}
+class EventScreenSuccessState extends EventScreenState {}
 
 class EventScreenFailureState extends EventScreenState {
   final String error;
 
-EventScreenFailureState(this.error);
+  EventScreenFailureState(this.error);
 }

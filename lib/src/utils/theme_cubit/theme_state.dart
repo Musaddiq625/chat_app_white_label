@@ -7,10 +7,8 @@ class ThemeInitial extends ThemeState {
   ThemeInitial();
 }
 
-
-class ThemeUpdate extends ThemeState{
+class ThemeUpdate extends ThemeState {
   late bool isDarkMode;
-
 
   ThemeUpdate(isDarkMode);
 }

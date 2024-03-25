@@ -1,10 +1,20 @@
+import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/chat_tile_component.dart';
+import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/components/filter_component.dart';
-import 'package:chat_app_white_label/src/components/main_scaffold.dart';
-import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/textfield_component.dart';
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
-import 'package:chat_app_white_label/src/utils/date_utils.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatListingScreen extends StatefulWidget {
   const ChatListingScreen({super.key});
@@ -15,148 +25,243 @@ class ChatListingScreen extends StatefulWidget {
 
 class _ChatListingScreenState extends State<ChatListingScreen> {
   int _selectedIndex = 0;
+  List selectedContacts = [];
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
-        body: SingleChildScrollView(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return UIScaffold(
+        bgColor: themeCubit.backgroundColor,
+        widget: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
             children: [
-              const Text(
-                'Chats',
-                style: TextStyle(
-                    color: ColorConstants.blue,
-                    fontSize: 30,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: ColorConstants.yellow,
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
+              Container(
+                color: themeCubit.backgroundColor,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(
+                          StringConstants.chat,
+                          style: TextStyle(
+                              color: themeCubit.primaryColor,
+                              fontSize: 30,
+                              fontFamily: FontConstants.fontProtestStrike),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _showCreateChatBottomSheet();
+                          },
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    ColorConstants.btnGradientColor,
+                                    ColorConstants.white
+                                  ],
+                                )),
+                            child: Icon(
+                              Icons.add,
+                              color: themeCubit.backgroundColor,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    TextFieldComponent(
+                      TextEditingController(),
+                      suffixIcon: const Padding(
+                        padding: EdgeInsets.only(right: 15),
+                        child: Icon(Icons.search),
+                      ),
+                      hintText: 'Search for People',
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    FilterComponent(
+                      options: [
+                        FilterComponentArg(title: 'All'),
+                        FilterComponentArg(title: "Unread"),
+                        FilterComponentArg(title: "DMS", count: 111),
+                        FilterComponentArg(title: "DMS", count: 23),
+                        FilterComponentArg(title: "Event", count: 104)
+                      ],
+                      groupValue:
+                          _selectedIndex, // Your state variable for selected index
+                      onValueChanged: (int value) =>
+                          setState(() => _selectedIndex = value),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
                 ),
+              ),
+              Expanded(
+                child: dummyContactList.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: 16,
+                        itemBuilder: (context, index) =>
+                            const ChatTileComponent())
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            AssetConstants.sad,
+                            height: 65,
+                            width: 65,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextComponent(
+                            StringConstants.itsReallyQuiet,
+                            style: TextStyle(
+                                fontFamily: FontConstants.fontProtestStrike,
+                                color: themeCubit.textColor,
+                                fontSize: 30),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 30),
+                            child: TextComponent(
+                              StringConstants.startChatwithYourFriends,
+                              maxLines: 3,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: themeCubit.textColor),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          ButtonComponent(
+                              buttonText: StringConstants.startChat,
+                              bgcolor: themeCubit.primaryColor,
+                              textColor: themeCubit.backgroundColor,
+                              onPressedFunction: () {})
+                        ],
+                      ),
               )
             ],
           ),
-          Container(
-            height: 55,
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: TextField(
-              controller: TextEditingController(),
-              decoration: InputDecoration(
-                hintText: 'Search for people, conversations..',
-                hintStyle: const TextStyle(
-                  color: ColorConstants.grey,
+        ));
+  }
+
+  _showCreateChatBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextComponent(
+                            StringConstants.createChat,
+                            style: TextStyle(
+                                color: themeCubit.primaryColor,
+                                fontSize: 20,
+                                fontFamily: FontConstants.fontProtestStrike),
+                          ),
+                          InkWell(
+                              onTap: () => NavigationUtil.pop(context),
+                              child: const Icon(Icons.close))
+                        ],
+                      ),
+                      TextComponent(
+                        StringConstants.startDirectChat,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: FontConstants.fontNunitoSans,
+                            color: themeCubit.textColor),
+                      ),
+                    ],
+                  ),
                 ),
-                fillColor: Colors.white,
-                filled: true,
-                suffixIcon: const Icon(
-                  Icons.search,
-                  color: ColorConstants.grey,
+                Expanded(
+                  child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: dummyContactList.length,
+                      itemBuilder: (context, index) {
+                        return ContactTileComponent(
+                          title: dummyContactList[index].name,
+                          subtitle: dummyContactList[index].designation,
+                          isSelected: selectedContacts.contains(index),
+                          onTap: () {
+                            if (selectedContacts.contains(index)) {
+                              selectedContacts.remove(index);
+                            } else {
+                              selectedContacts.add(index);
+                            }
+                            setState(() {});
+                            LoggerUtil.logs(selectedContacts);
+                          },
+                        );
+                      }),
                 ),
-                border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(5)),
-              ),
+                const SizedBox(
+                  height: 50,
+                )
+              ],
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FilterComponent(
-            options: [
-              FilterComponentArg(title: 'All'),
-              FilterComponentArg(title: "Unread"),
-              FilterComponentArg(title: "DMS", count: 111),
-              FilterComponentArg(title: "DMS", count: 23),
-              FilterComponentArg(title: "Event", count: 104)
-            ],
-            groupValue:
-                _selectedIndex, // Your state variable for selected index
-            onValueChanged: (int value) =>
-                setState(() => _selectedIndex = value),
-          ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          ListView.builder(
-              shrinkWrap: true,
-              itemCount: 4,
-              itemBuilder: (context, index) => const ChatTileComponent())
-        ],
-      ),
-    ));
+            Column(
+              children: [
+                Expanded(child: Container()),
+                Container(
+                  margin:
+                      const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                  width: double.infinity,
+                  height: 45,
+                  child: ButtonComponent(
+                      buttonText: StringConstants.startChatting,
+                      bgcolor: themeCubit.primaryColor,
+                      onPressedFunction: () {}),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+    }));
   }
 }
 
-class ChatTileComponent extends StatefulWidget {
-  const ChatTileComponent({super.key});
-
-  @override
-  State<ChatTileComponent> createState() => _ChatTileComponentState();
+class DummyContacts {
+  String name;
+  String designation;
+  DummyContacts({required this.name, required this.designation});
 }
 
-class _ChatTileComponentState extends State<ChatTileComponent> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        tileColor: Colors.white,
-        onTap: () {},
-        leading: const ProfileImageComponent(
-          url: null,
-        ),
-        minVerticalPadding: 0,
-        horizontalTitleGap: 10,
-        title: const Text(
-          'Live Music and Karaoke at The..',
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 7),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Text(
-                  'Davia: Looking forward to it!!!',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-                ),
-              ),
-            ],
-          ),
-        ),
-        trailing: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              const CircleAvatar(
-                radius: 8,
-                backgroundColor: ColorConstants.red,
-                child: Text(
-                  '6',
-                  style: TextStyle(fontSize: 10, color: Colors.white),
-                ),
-              ),
-              Text(
-                DateUtil.formatedMessageTime('1708524795128'),
-                style: const TextStyle(color: ColorConstants.lightGrey),
-              ),
-              // if (chat.unreadCount != null && chat.unreadCount != '0')
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+List<DummyContacts> dummyContactList = [
+  DummyContacts(name: 'Jesse Ebert', designation: 'Graphic Designer'),
+  DummyContacts(
+      name: 'Ann Chovey', designation: 'Infrastructure Project Manager'),
+  DummyContacts(name: 'Luz Stamm', designation: 'Accountant'),
+  DummyContacts(name: 'Accountant', designation: 'Digital Marketing'),
+  DummyContacts(name: 'Digital Marketing', designation: 'Graphic Designer'),
+  DummyContacts(name: 'Graphic Designer', designation: 'Graphic Designer'),
+  DummyContacts(name: 'Jesse Ebert', designation: 'Graphic Designer'),
+  DummyContacts(
+      name: 'Ann Chovey', designation: 'Infrastructure Project Manager'),
+  DummyContacts(name: 'Luz Stamm', designation: 'Accountant'),
+  DummyContacts(name: 'Accountant', designation: 'Digital Marketing'),
+  DummyContacts(name: 'Digital Marketing', designation: 'Graphic Designer'),
+  DummyContacts(name: 'Graphic Designer', designation: 'Graphic Designer')
+];

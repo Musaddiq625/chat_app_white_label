@@ -2,6 +2,7 @@ import 'package:chat_app_white_label/src/components/create_event_tile_component.
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
@@ -17,7 +18,6 @@ import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../components/search_text_field_component.dart';
-import '../../constants/image_constants.dart';
 import '../../models/contact.dart';
 
 class CreateEventScreen extends StatefulWidget {
@@ -62,7 +62,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       questions.add('Question ${questions.length + 1}'); // Add a new question
     });
   }
-
 
   void _onReorder(int oldIndex, int newIndex) {
     setState(() {
@@ -1673,18 +1672,19 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             ),
             Container(
               decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20),
                 color: ColorConstants.lightGray.withOpacity(0.3),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width:MediaQuery.sizeOf(context).width*0.7,
+                    width: MediaQuery.sizeOf(context).width * 0.7,
                     child: TextField(
                       controller: _controller,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 15.0),
                         hintText: StringConstants.typeYourQuestion,
                         filled: true,
                         fillColor: ColorConstants.transparent,
@@ -1694,13 +1694,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             borderSide: BorderSide(
                               color: ColorConstants.transparent,
                             )),
-                        hintStyle: TextStyle(color: ColorConstants.lightGray, fontSize: 14),
+                        hintStyle: TextStyle(
+                            color: ColorConstants.lightGray, fontSize: 14),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
-                            borderSide: BorderSide(color: ColorConstants.transparent)),
+                            borderSide:
+                                BorderSide(color: ColorConstants.transparent)),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
-                            borderSide: BorderSide(color: ColorConstants.transparent)),
+                            borderSide:
+                                BorderSide(color: ColorConstants.transparent)),
                       ),
                     ),
                   ),
@@ -1724,7 +1727,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ],
               ),
             ),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -1798,7 +1800,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           ],
                         ),
                       ],
-                      builder: (BuildContext context, MenuController controller, Widget? child) {
+                      builder: (BuildContext context, MenuController controller,
+                          Widget? child) {
                         return TextButton(
                           focusNode: _buttonFocusNode,
                           onPressed: () {
@@ -1910,7 +1913,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           ],
                         )
                       ],
-                      builder: (BuildContext context, MenuController controller, Widget? child) {
+                      builder: (BuildContext context, MenuController controller,
+                          Widget? child) {
                         return TextButton(
                           focusNode: _buttonFocusNode,
                           onPressed: () {
@@ -1924,7 +1928,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             children: [
                               TextComponent(
                                 _selectedQuestionPublic,
-                                style: TextStyle(color: ColorConstants.lightGray),
+                                style:
+                                    TextStyle(color: ColorConstants.lightGray),
                               ),
                             ],
                           ),

@@ -4,7 +4,7 @@ import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/custom_text_field.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/image_constants.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/cubit/create_group_chat_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';

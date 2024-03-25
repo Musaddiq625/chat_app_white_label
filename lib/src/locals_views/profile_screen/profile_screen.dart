@@ -10,10 +10,7 @@ import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../constants/color_constants.dart';
-import '../../constants/image_constants.dart';
-import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
-import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -153,11 +150,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context,
       isShowHeader: false,
       body: InfoSheetComponent(
-        heading: StringConstants.requestSend+" XyZ",
-        body:StringConstants.connectSendBody,
+        heading: StringConstants.requestSend + " XyZ",
+        body: StringConstants.connectSendBody,
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     // return MainScaffold(
@@ -173,9 +171,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
           child: Container(
-            color: themeCubit.backgroundColor,
-            child: Column(
-                    children: [
+        color: themeCubit.backgroundColor,
+        child: Column(
+          children: [
             _profileWidget(),
             const SizedBox(
               height: 10,
@@ -199,30 +197,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(
               height: 100,
             ),
-                    ],
-                  ),
-          )),
+          ],
+        ),
+      )),
       floatingActionButton: SizedBox(
         width: 350,
-        child: connectSend?ButtonComponent(
-          bgcolor:themeCubit.primaryColor,
-          buttonText: StringConstants.connectSent,
-          onPressedFunction: () {
-            _yesShareItBottomSheet();
-            // NavigationUtil.push(
-            //     context, RouteConstants.localsEventScreen);
-          },
-        ):ButtonComponent(
-          bgcolor:themeCubit.primaryColor,
-          buttonText: StringConstants.connect,
-          onPressedFunction: () {
-            setState(() {
-              connectSend=true;
-            });
-            // NavigationUtil.push(
-            //     context, RouteConstants.localsEventScreen);
-          },
-        ),
+        child: connectSend
+            ? ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                buttonText: StringConstants.connectSent,
+                onPressedFunction: () {
+                  _yesShareItBottomSheet();
+                  // NavigationUtil.push(
+                  //     context, RouteConstants.localsEventScreen);
+                },
+              )
+            : ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                buttonText: StringConstants.connect,
+                onPressedFunction: () {
+                  setState(() {
+                    connectSend = true;
+                  });
+                  // NavigationUtil.push(
+                  //     context, RouteConstants.localsEventScreen);
+                },
+              ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -234,7 +234,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         // Use a Container with a specific height or Flexible with FlexFit.loose
         // Here, I'm using a Container with a specific height as an example
         Container(
-          height: MediaQuery.sizeOf(context).height*1, // Adjust this value as needed
+          height: MediaQuery.sizeOf(context).height *
+              1, // Adjust this value as needed
           child: Stack(
             children: [
               Column(
@@ -283,18 +284,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: List.generate(imgList.length, (index) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 3),
-                  height: 4,
+                height: 4,
                 width: 15,
                 decoration: BoxDecoration(
-                    color: _currentPage == index
-                            ? Colors.white
-                            : Colors.white.withOpacity(0.5),
+                  color: _currentPage == index
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(15),
                 ),
               );
             }),
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

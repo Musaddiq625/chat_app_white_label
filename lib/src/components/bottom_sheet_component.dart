@@ -1,6 +1,8 @@
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 //Used for Custom bottom data
 
@@ -13,14 +15,15 @@ class BottomSheetComponent {
     required Widget body,
     Widget? header,
     bool isShowHeader = true,
-       Color? bgColor = Colors.white,
+    Color? bgColor = Colors.white,
     bool takeFullHeightWhenPossible = false,
     Function()? whenComplete,
   }) async {
+    late final themeCubit = BlocProvider.of<ThemeCubit>(context);
     await showModalBottomSheet(
       isScrollControlled: true,
       isDismissible: true,
-      backgroundColor:bgColor,
+      backgroundColor: themeCubit.darkBackgroundColor,
       // barrierColor: ColorConstants.white.withOpacity(0.2),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(

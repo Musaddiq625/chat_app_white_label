@@ -1,4 +1,4 @@
-import 'package:chat_app_white_label/src/constants/image_constants.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:flutter/material.dart';
 import '../constants/route_constants.dart';
 import '../utils/navigation_util.dart';
