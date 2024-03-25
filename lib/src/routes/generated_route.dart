@@ -1,20 +1,18 @@
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
+
 import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
-import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/home_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_screen.dart';
-import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/group_chat_room.dart';
 import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
 import 'package:chat_app_white_label/src/screens/profile/profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/splash/splash_screen.dart';
-import 'package:chat_app_white_label/src/screens/view_profile_screen/view_group_profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/view_profile_screen/view_user_profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +104,7 @@ Route generateRoute(RouteSettings settings) {
     //   final arg = settings.arguments as ChatModel;
     //   return materialRoute(ViewGroupProfileScreen(group: arg));
 
-    case RouteConstants.chatListing:
+    case RouteConstants.chatListingScreen:
       return materialRoute(const ChatListingScreen());
 
     case RouteConstants.doneScreen:
@@ -114,6 +112,9 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.chatRoomScreen:
       return materialRoute(const ChatRoomScreen());
+
+    case RouteConstants.createEventScreen:
+      return materialRoute(const LocalsCreateEventScreen());
 
     default:
       return materialRoute(const SplashScreen());
