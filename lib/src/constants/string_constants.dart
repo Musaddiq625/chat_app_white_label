@@ -8,6 +8,9 @@ class StringConstants{
   static const String continueWithEmail = "Continue with Email";
   static const String continueWithPhone = "Continue with Phone";
   static const String continues = "Continue";
+  static const String confirmProfilePicture = "Confirm profile picture";
+  static const String addPhotoFromGallery = "Add photo from gallery";
+  static const String takeASelfie = "Take a selfie";
   static const String resendCode = "Resend Code";
   static const String registerCreateManageEvents = "Register,create and manage events.";
   static const String agreeToOur = "By continuing,you agree to our ";
@@ -44,6 +47,9 @@ class StringConstants{
   static const String end = "End";
   static const String start = "Start";
   static const String verificationCodeSent = "Verification code will be sent on this number.";
+  static const String requiredPictures = "At least 2 pictures are required";
+  static const String scrollLeft = "Scroll left to set other image.";
+  static const String chooseAnyOfTheUplodedImages = "You can choose any of the uploaded images to be your profile picture. Make sure your face is visible";
   static const String verificationCodeSentToEmail = "Verification code will be sent on this email.";
   static const String passwordValidation = "Should be 8 character long with 1 number and special character";
   static const String price = "Price";

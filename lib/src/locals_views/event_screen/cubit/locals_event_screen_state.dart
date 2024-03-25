@@ -1,6 +1,8 @@
-part of 'locals_event_screen_cubit.dart';
 
-@immutable
+
+import '../../../models/chat_model.dart';
+
+
 sealed class LocalsEventScreenState {}
 
 class LocalsEventScreenInitial extends LocalsEventScreenState {}

@@ -1,24 +1,18 @@
-import 'package:chat_app_white_label/src/constants/dark_theme_color_constants.dart';
-import 'package:chat_app_white_label/src/constants/light_theme_color_constants.dart';
+
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/dob_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/name_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/select_profile_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/upload_picture_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/profile_screen/locals_profile_screen.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
-import 'package:chat_app_white_label/src/screens/locals_app_screen.dart';
-import 'package:chat_app_white_label/src/screens/locals_create_event_screen/locals_create_event_screen.dart';
-import 'package:chat_app_white_label/src/screens/locals_event_screen/locals_event_screen.dart';
-import 'package:chat_app_white_label/src/screens/locals_home_screen/locals_home_screen.dart';
-import 'package:chat_app_white_label/src/screens/locals_profile_screen/locals_profile_screen.dart';
-import 'package:chat_app_white_label/src/screens/locals_signup/locals_signup_with_email.dart';
-import 'package:chat_app_white_label/src/screens/locals_signup/locals_signup_with_number.dart';
-import 'package:chat_app_white_label/src/screens/locals_signup/passwordScreen.dart';
-import 'package:chat_app_white_label/src/screens/locals_splash_screen/dart/locals_splash_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/locals_signup/passwordScreen.dart';
 import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
-import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
-import 'package:chat_app_white_label/src/utils/theme_cubit/theme_bloc.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_state.dart';
 import 'package:flutter/material.dart';
@@ -80,13 +74,13 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
       if (state is ThemeInitial) {
         return MaterialApp(
           theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
-          home: PasswordScreen(),
+          home: DOBScreen(),
         );
       }
       else if(state is ThemeUpdate){
         return MaterialApp(
           theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
-          home: LocalsProfileScreen(),
+          home: OnBoardingScreen(),
         );
       }
       return Container();

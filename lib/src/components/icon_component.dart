@@ -84,7 +84,8 @@ class IconComponent extends StatelessWidget {
                       ),
                     ],
                   )
-                : Padding(
+                :
+            Padding(
                   padding: const EdgeInsets.only(left: 3.0),
                   child: Icon(
                       iconData,

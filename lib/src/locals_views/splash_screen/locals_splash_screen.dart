@@ -3,11 +3,11 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../components/bottom_sheet_component.dart';
-import '../../../components/button_component.dart';
-import '../../../constants/font_constants.dart';
-import '../../../constants/string_constants.dart';
-import '../../../utils/theme_cubit/theme_cubit.dart';
+import '../../components/bottom_sheet_component.dart';
+import '../../components/button_component.dart';
+import '../../constants/font_constants.dart';
+import '../../constants/string_constants.dart';
+import '../../utils/theme_cubit/theme_cubit.dart';
 
 class LocalsSplashScreen extends StatefulWidget {
   const LocalsSplashScreen({super.key});

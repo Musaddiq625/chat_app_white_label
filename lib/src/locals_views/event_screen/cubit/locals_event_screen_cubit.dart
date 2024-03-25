@@ -1,13 +1,14 @@
 import 'dart:core';
 
 import 'package:bloc/bloc.dart';
-import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
-import 'package:meta/meta.dart';
 
-part 'locals_event_screen_state.dart';
+
+import 'locals_event_screen_state.dart';
+
+
 
 class LocalsEventScreenCubit extends Cubit<LocalsEventScreenState> {
   LocalsEventScreenCubit() : super(LocalsEventScreenInitial());

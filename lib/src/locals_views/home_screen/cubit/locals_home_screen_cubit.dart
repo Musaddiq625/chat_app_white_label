@@ -6,8 +6,8 @@ import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:meta/meta.dart';
+import 'locals_home_screen_state.dart';
 
-part 'locals_home_screen_state.dart';
 
 class LocalsHomeScreenCubit extends Cubit<LocalsHomeScreenState> {
   LocalsHomeScreenCubit() : super(LocalsHomeScreenInitial());
