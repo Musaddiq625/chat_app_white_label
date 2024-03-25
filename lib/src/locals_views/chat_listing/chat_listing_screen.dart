@@ -3,15 +3,18 @@ import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/chat_tile_component.dart';
 import 'package:chat_app_white_label/src/components/filter_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
-import 'package:chat_app_white_label/src/components/search_textfield_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/textfield_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatListingScreen extends StatefulWidget {
   const ChatListingScreen({super.key});
@@ -23,107 +26,138 @@ class ChatListingScreen extends StatefulWidget {
 class _ChatListingScreenState extends State<ChatListingScreen> {
   int _selectedIndex = 0;
   List selectedContacts = [];
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-        bgColor: ColorConstants.backgroundColor,
+        bgColor: themeCubit.backgroundColor,
         widget: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const TextComponent(
-                    StringConstants.chat,
-                    style: TextStyle(
-                        color: ColorConstants.purple,
-                        fontSize: 30,
-                        fontFamily: FontConstants.fontProtestStrike),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showCreateChatBottomSheet();
-                    },
-                    child: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: ColorConstants.yellow,
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
+              Container(
+                color: themeCubit.backgroundColor,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(
+                          StringConstants.chat,
+                          style: TextStyle(
+                              color: themeCubit.primaryColor,
+                              fontSize: 30,
+                              fontFamily: FontConstants.fontProtestStrike),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _showCreateChatBottomSheet();
+                          },
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    ColorConstants.btnGradientColor,
+                                    ColorConstants.white
+                                  ],
+                                )),
+                            child: Icon(
+                              Icons.add,
+                              color: themeCubit.backgroundColor,
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-              SearchTextFieldComponent(
-                controller: TextEditingController(),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              FilterComponent(
-                options: [
-                  FilterComponentArg(title: 'All'),
-                  FilterComponentArg(title: "Unread"),
-                  FilterComponentArg(title: "DMS", count: 111),
-                  FilterComponentArg(title: "DMS", count: 23),
-                  FilterComponentArg(title: "Event", count: 104)
-                ],
-                groupValue:
-                    _selectedIndex, // Your state variable for selected index
-                onValueChanged: (int value) =>
-                    setState(() => _selectedIndex = value),
-              ),
-              const SizedBox(
-                height: 20,
+                    TextFieldComponent(
+                      TextEditingController(),
+                      suffixIcon: const Padding(
+                        padding: EdgeInsets.only(right: 15),
+                        child: Icon(Icons.search),
+                      ),
+                      hintText: 'Search for People',
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    FilterComponent(
+                      options: [
+                        FilterComponentArg(title: 'All'),
+                        FilterComponentArg(title: "Unread"),
+                        FilterComponentArg(title: "DMS", count: 111),
+                        FilterComponentArg(title: "DMS", count: 23),
+                        FilterComponentArg(title: "Event", count: 104)
+                      ],
+                      groupValue:
+                          _selectedIndex, // Your state variable for selected index
+                      onValueChanged: (int value) =>
+                          setState(() => _selectedIndex = value),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
               ),
               Expanded(
-                child: ListView.builder(
-                    itemCount: 16,
-                    itemBuilder: (context, index) => const ChatTileComponent()),
-                //  Column(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     const TextComponent(
-                //       '🙁',
-                //       style: TextStyle(fontSize: 30),
-                //     ),
-                //     const SizedBox(
-                //       height: 20,
-                //     ),
-                //     const TextComponent(
-                //       StringConstants.itsReallyQuiet,
-                //       style: TextStyle(
-                //           fontFamily: FontConstants.fontProtestStrike,
-                //           fontSize: 30),
-                //     ),
-                //     const Padding(
-                //       padding: EdgeInsets.symmetric(horizontal: 30),
-                //       child: TextComponent(
-                //         StringConstants.startChatwithYourFriends,
-                //         textAlign: TextAlign.center,
-                //       ),
-                //     ),
-                //     const SizedBox(
-                //       height: 20,
-                //     ),
-                //     ButtonComponent(
-                //         buttonText: StringConstants.startChat,
-                //         onPressedFunction: () {})
-                //   ],
-                // ),
+                child: dummyContactList.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: 16,
+                        itemBuilder: (context, index) =>
+                            const ChatTileComponent())
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            AssetConstants.sad,
+                            height: 65,
+                            width: 65,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextComponent(
+                            StringConstants.itsReallyQuiet,
+                            style: TextStyle(
+                                fontFamily: FontConstants.fontProtestStrike,
+                                color: themeCubit.textColor,
+                                fontSize: 30),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 30),
+                            child: TextComponent(
+                              StringConstants.startChatwithYourFriends,
+                              maxLines: 3,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: themeCubit.textColor),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          ButtonComponent(
+                              buttonText: StringConstants.startChat,
+                              bgcolor: themeCubit.primaryColor,
+                              textColor: themeCubit.backgroundColor,
+                              onPressedFunction: () {})
+                        ],
+                      ),
               )
             ],
           ),
         ));
   }
 
-  showCreateChatBottomSheet() {
+  _showCreateChatBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false, isShowHeader: false,
         body: StatefulBuilder(builder: (context, setState) {
-      return SizedBox(
+      return Container(
         height: MediaQuery.of(context).size.height * 0.9,
         child: Stack(
           children: [
@@ -138,10 +172,10 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const TextComponent(
+                          TextComponent(
                             StringConstants.createChat,
                             style: TextStyle(
-                                color: ColorConstants.purple,
+                                color: themeCubit.primaryColor,
                                 fontSize: 20,
                                 fontFamily: FontConstants.fontProtestStrike),
                           ),
@@ -150,11 +184,12 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                               child: const Icon(Icons.close))
                         ],
                       ),
-                      const TextComponent(
+                      TextComponent(
                         StringConstants.startDirectChat,
                         style: TextStyle(
                             fontSize: 15,
-                            fontFamily: FontConstants.fontNunitoSans),
+                            fontFamily: FontConstants.fontNunitoSans,
+                            color: themeCubit.textColor),
                       ),
                     ],
                   ),
@@ -189,11 +224,14 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
             Column(
               children: [
                 Expanded(child: Container()),
-                SizedBox(
-                  width: 300,
+                Container(
+                  margin:
+                      const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                  width: double.infinity,
+                  height: 45,
                   child: ButtonComponent(
                       buttonText: StringConstants.startChatting,
-                      bgcolor: ColorConstants.yellow,
+                      bgcolor: themeCubit.primaryColor,
                       onPressedFunction: () {}),
                 ),
               ],
@@ -205,7 +243,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
   }
 }
 
-class ContactTileComponent extends StatelessWidget {
+class ContactTileComponent extends StatefulWidget {
   final String title;
   final String subtitle;
   final bool isSelected;
@@ -218,64 +256,61 @@ class ContactTileComponent extends StatelessWidget {
       required this.onTap});
 
   @override
+  State<ContactTileComponent> createState() => _ContactTileComponentState();
+}
+
+class _ContactTileComponentState extends State<ContactTileComponent> {
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Row(
+    return InkWell(
+      onTap: widget.onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const ProfileImageComponent(
+              url: null,
+              size: 40,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const ProfileImageComponent(
-                  url: null,
-                  size: 40,
+                TextComponent(
+                  widget.title,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: themeCubit.textColor),
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextComponent(
-                      title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextComponent(
-                      subtitle,
-                      style: const TextStyle(color: ColorConstants.lightGrey),
-                    )
-                  ],
-                ),
-                const Spacer(),
-                Checkbox(
-                  shape: const CircleBorder(),
-                  fillColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.selected)) {
-                      return Colors.green;
-                    }
-                    return null;
-                  }),
-                  value: isSelected,
-                  onChanged: (bool? newValue) {
-                    // setState(() {
-                    //   checkBoxValue = newValue!;
-                    // });
-                  },
+                TextComponent(
+                  widget.subtitle,
+                  style: const TextStyle(color: ColorConstants.lightGrey),
                 )
               ],
             ),
-          ),
+            const Spacer(),
+            Checkbox(
+              shape: const CircleBorder(),
+              fillColor: MaterialStateProperty.resolveWith((states) {
+                if (states.contains(MaterialState.selected)) {
+                  return Colors.green;
+                }
+                return null;
+              }),
+              value: widget.isSelected,
+              onChanged: (bool? newValue) {
+                // setState(() {
+                //   checkBoxValue = newValue!;
+                // });
+              },
+            )
+          ],
         ),
-        const Divider(
-          height: 0,
-        )
-      ],
+      ),
     );
   }
 }

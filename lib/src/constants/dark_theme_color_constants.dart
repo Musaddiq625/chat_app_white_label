@@ -4,9 +4,10 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 class DarkTheme {
-  static  Color primaryColor = ColorConstants.primaryColor;
+  static Color primaryColor = ColorConstants.primaryColor;
   static const Color secondaryColor = Colors.cyan;
-  static const Color backgroundColor = Colors.black;
-  static  Color darkBackgroundColor = ColorConstants.darkBackgrounddColor;
+  static const Color backgroundColor = Color(0xFF080808);
+  static const Color darkBackgroundColor = Color(0xFF1A1A1A);
   static const Color textColor = Colors.white;
+  static const Color textSecondaryColor = Color(0xFF818181);
 }

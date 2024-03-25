@@ -1,8 +1,10 @@
 import 'dart:ui' as dart_ui;
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TextFieldComponent extends StatefulWidget {
   final Function()? onTap;
@@ -13,7 +15,7 @@ class TextFieldComponent extends StatefulWidget {
   final bool hideAsterisk;
   final bool? hidePassword;
   final Widget? suffixIcon;
-  final Color fieldColor;
+  Color? fieldColor;
   final bool disableField;
   final String? Function(String?)? validator;
   final int? maxLength;
@@ -33,7 +35,7 @@ class TextFieldComponent extends StatefulWidget {
   final dart_ui.TextDirection? textDirection;
   final bool? changeDirection;
 
-  const TextFieldComponent(
+  TextFieldComponent(
     this.textEditingController, {
     Key? key,
     this.onTap,
@@ -43,7 +45,7 @@ class TextFieldComponent extends StatefulWidget {
     this.hideAsterisk = false,
     this.hidePassword,
     this.suffixIcon,
-    this.fieldColor = ColorConstants.lightGrey,
+    this.fieldColor,
     this.disableField = false,
     this.validator,
     this.maxLength,
@@ -71,9 +73,11 @@ class TextFieldComponent extends StatefulWidget {
 class _TextFieldComponentState extends State<TextFieldComponent> {
   bool? hidePassword;
   List<TextInputFormatter> inputFormatters = [];
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   void initState() {
     hidePassword = widget.hidePassword;
+
     if (widget.capitalizeText) {
       inputFormatters.add(_UpperCaseTextFormatter());
     }
@@ -85,6 +89,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
 
   @override
   Widget build(BuildContext context) {
+    widget.fieldColor ??= themeCubit.darkBackgroundColor;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -125,10 +130,11 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
           onFieldSubmitted: widget.onFieldSubmitted,
           onChanged: (_) =>
               widget.onChanged == null ? () {} : widget.onChanged!(_),
-          style: const TextStyle(
-            color: ColorConstants.black,
+          style: TextStyle(
+            color: themeCubit.textColor,
           ),
           inputFormatters: inputFormatters,
+          cursorColor: themeCubit.primaryColor,
           decoration: InputDecoration(
             counterText: '',
             filled: true,
@@ -175,7 +181,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
   OutlineInputBorder _outLineBorder() => OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(
-          color: widget.fieldColor,
+          color: widget.fieldColor ?? ColorConstants.transparent,
         ),
       );
 

@@ -8,11 +8,14 @@ import 'package:chat_app_white_label/src/components/textfield_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({super.key});
@@ -22,57 +25,78 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
+  late final ThemeCubit themeCubit = BlocProvider.of<ThemeCubit>(context);
   TextEditingController controller = TextEditingController();
   List selectedContacts = [];
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-      bgColor: ColorConstants.backgroundColor,
+      bgColor: themeCubit.backgroundColor,
       appBar: _appBar(),
       widget: Column(
         children: [
           Expanded(
-              child:
-                  // ListView.builder(
-                  //     itemCount: messageList.length,
-                  //     itemBuilder: (context, index) {
-                  //       return MessageCard(message: messageList[index], isRead: true);
-                  //     }),
-                  Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const TextComponent(
-                StringConstants.noMessagesYet,
-                style: TextStyle(
-                    fontFamily: FontConstants.fontProtestStrike, fontSize: 30),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                child: TextComponent(
-                  StringConstants.startConversation,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ))
+            child: dummyMessageList.isNotEmpty
+                ? ListView.builder(
+                    itemCount: dummyMessageList.length,
+                    itemBuilder: (context, index) {
+                      return MessageCard(
+                          message: dummyMessageList[index], isRead: true);
+                    })
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AssetConstants.chat,
+                        height: 75,
+                        width: 75,
+                      ),
+                      TextComponent(
+                        StringConstants.noMessagesYet,
+                        style: TextStyle(
+                            fontFamily: FontConstants.fontProtestStrike,
+                            fontSize: 30,
+                            color: themeCubit.textColor),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: TextComponent(
+                          StringConstants.startConversationWithHello,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          style: TextStyle(color: themeCubit.textColor),
+                        ),
+                      ),
+                    ],
+                  ),
+          )
         ],
       ),
       bottomNavigationBar: Container(
         height: 70,
-        decoration: const BoxDecoration(
-            color: ColorConstants.white,
-            borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+            color: themeCubit.backgroundColor,
+            borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15), topRight: Radius.circular(15))),
         child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: IconComponent(
-                circleSize: 30,
-                borderColor: Colors.transparent,
-                backgroundColor: ColorConstants.yellow,
-                iconData: Icons.add,
-                iconColor: Colors.white,
+            Container(
+              width: 32,
+              height: 32,
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      ColorConstants.btnGradientColor,
+                      ColorConstants.white
+                    ],
+                  )),
+              child: Icon(
+                Icons.add,
+                color: themeCubit.backgroundColor,
               ),
             ),
             Expanded(
@@ -85,13 +109,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         padding: const EdgeInsets.all(5.0),
                         child: IconComponent(
                           circleSize: 30,
-                          borderColor: Colors.transparent,
-                          backgroundColor: Colors.indigo,
+                          backgroundColor: themeCubit.primaryColor,
                           iconData: Icons.send,
-                          iconColor: Colors.white,
+                          iconColor: themeCubit.backgroundColor,
+                          iconSize: 18,
                         ),
                       ),
-                      fillColor: ColorConstants.backgroundColor,
+                      fillColor:
+                          themeCubit.darkBackgroundColor.withOpacity(0.9),
                       filled: true,
                       border: OutlineInputBorder(
                           borderSide: BorderSide.none,
@@ -114,7 +139,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         context,
       ),
       child: Container(
-        color: ColorConstants.white,
+        color: themeCubit.darkBackgroundColor,
         padding: const EdgeInsets.only(right: 15),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -131,7 +156,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               size: 40,
             ),
             const SizedBox(width: 10),
-            const Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -139,14 +164,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 TextComponent('Faizan, Jesse & more',
                     style: TextStyle(
                         fontSize: 20,
+                        color: themeCubit.textColor,
                         fontFamily: FontConstants.fontProtestStrike,
                         fontWeight: FontWeight.w600)),
 
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 // last seen time of user
                 TextComponent('134 Members',
                     style: TextStyle(
                       fontSize: 12,
+                      color: themeCubit.textColor,
                     )),
               ],
             ),
@@ -155,10 +182,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               radius: 15,
               backgroundColor: Colors.grey.withOpacity(0.2),
               child: PopupMenuButton<String>(
-                color: ColorConstants.white,
-                icon: const Icon(
+                color: themeCubit.darkBackgroundColor,
+                icon: Icon(
                   Icons.more_horiz,
                   size: 15,
+                  color: themeCubit.textColor,
                 ),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
@@ -174,25 +202,34 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   List<PopupMenuEntry<String>> _buildPopupItems() {
     return [
-      const PopupMenuItem<String>(
+      PopupMenuItem<String>(
         value: 'Add People',
         child: ListTile(
-          leading: Icon(Icons.groups_outlined),
-          title: TextComponent('Add People to Group'),
+          leading: const Icon(Icons.groups_outlined),
+          title: TextComponent(
+            'Add People to Group',
+            style: TextStyle(color: themeCubit.textColor),
+          ),
         ),
       ),
-      const PopupMenuItem<String>(
+      PopupMenuItem<String>(
         value: 'Rename Group',
         child: ListTile(
-          leading: Icon(Icons.edit_outlined),
-          title: TextComponent('Rename Group'),
+          leading: const Icon(Icons.edit_outlined),
+          title: TextComponent(
+            'Rename Group',
+            style: TextStyle(color: themeCubit.textColor),
+          ),
         ),
       ),
-      const PopupMenuItem<String>(
+      PopupMenuItem<String>(
         value: 'Media',
         child: ListTile(
-          leading: Icon(Icons.photo_outlined),
-          title: TextComponent('Media'),
+          leading: const Icon(Icons.photo_outlined),
+          title: TextComponent(
+            'Media',
+            style: TextStyle(color: themeCubit.textColor),
+          ),
         ),
       ),
       const PopupMenuItem<String>(
@@ -224,7 +261,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     ];
   }
 
-  void _selectedOption(String value) {
+  _selectedOption(String value) {
     switch (value) {
       case 'Add People':
         _showCreateChatBottomSheet();
@@ -263,10 +300,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             StringConstants.addPeople,
                             style: TextStyle(
-                                color: ColorConstants.purple,
+                                color: themeCubit.primaryColor,
                                 fontSize: 20,
                                 fontFamily: FontConstants.fontProtestStrike),
                           ),
@@ -300,7 +337,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       }),
                 ),
                 const SizedBox(
-                  height: 50,
+                  height: 60,
                 )
               ],
             ),
@@ -308,12 +345,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               children: [
                 Expanded(child: Container()),
                 Container(
-                  height: 45,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  height: 65,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   width: double.infinity,
                   child: ButtonComponent(
                       buttonText: StringConstants.addPeopleToGroup,
-                      bgcolor: ColorConstants.yellow,
+                      bgcolor: themeCubit.primaryColor,
+                      textColor: themeCubit.backgroundColor,
                       onPressedFunction: () {}),
                 ),
               ],
@@ -331,21 +370,28 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         body: Column(
           children: [
             const SizedBox(height: 25),
-            const ProfileImageComponent(url: ''),
+            Image.asset(
+              AssetConstants.warning,
+              height: 60,
+              width: 60,
+            ),
             const SizedBox(height: 20),
-            const Column(
+            Column(
               children: [
                 TextComponent(
                   StringConstants.areYouSureYouWanttoLeave,
                   style: TextStyle(
                       fontFamily: FontConstants.fontProtestStrike,
+                      color: themeCubit.textColor,
                       fontSize: 20),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50),
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: TextComponent(
                     StringConstants.youWillNotBeAbleToAccessAnyMessage,
                     textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: TextStyle(color: themeCubit.textColor),
                   ),
                 ),
               ],
@@ -356,10 +402,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               children: [
                 InkWell(
                     onTap: () => Navigator.pop(context),
-                    child: const TextComponent(StringConstants.goBack)),
+                    child: TextComponent(
+                      StringConstants.goBack,
+                      style: TextStyle(
+                        color: themeCubit.textColor,
+                      ),
+                    )),
                 const SizedBox(width: 30),
                 ButtonComponent(
                   buttonText: StringConstants.yesPleaseLeave,
+                  textColor: themeCubit.textColor,
                   onPressedFunction: () {
                     Navigator.pop(context);
                   },
@@ -379,15 +431,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         body: Column(
           children: [
             const SizedBox(height: 25),
-            const ProfileImageComponent(url: ''),
+            Image.asset(
+              AssetConstants.warning,
+              height: 60,
+              width: 60,
+            ),
             const SizedBox(height: 20),
-            const Column(
+            Column(
               children: [
                 TextComponent(
                   StringConstants.areYouSureYouWanttoLeave,
                   style: TextStyle(
-                      fontFamily: FontConstants.fontProtestStrike,
-                      fontSize: 20),
+                    fontFamily: FontConstants.fontProtestStrike,
+                    fontSize: 20,
+                    color: themeCubit.textColor,
+                  ),
                 ),
               ],
             ),
@@ -397,10 +455,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               children: [
                 InkWell(
                     onTap: () => Navigator.pop(context),
-                    child: const TextComponent(StringConstants.goBack)),
+                    child: TextComponent(
+                      StringConstants.goBack,
+                      style: TextStyle(
+                        color: themeCubit.textColor,
+                      ),
+                    )),
                 const SizedBox(width: 30),
                 ButtonComponent(
                   buttonText: StringConstants.yesDeleteIt,
+                  textColor: themeCubit.textColor,
                   onPressedFunction: () {
                     Navigator.pop(context);
                   },
@@ -423,23 +487,26 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 25),
-              const TextComponent(
+              TextComponent(
                 StringConstants.renameGroup,
-                style: TextStyle(
-                    fontFamily: FontConstants.fontProtestStrike, fontSize: 25),
+                style: TextStyle(fontSize: 20, color: themeCubit.primaryColor),
               ),
               const SizedBox(height: 20),
-              TextFieldComponent(controller),
+              TextFieldComponent(
+                controller,
+                fieldColor: ColorConstants.lightGrey.withOpacity(0.2),
+              ),
               const SizedBox(height: 20),
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ButtonComponent(
                   buttonText: StringConstants.save,
+                  textColor: themeCubit.backgroundColor,
                   onPressedFunction: () {
                     Navigator.pop(context);
                   },
-                  bgcolor: ColorConstants.yellow,
+                  bgcolor: themeCubit.primaryColor,
                 ),
               ),
               const SizedBox(height: 20),

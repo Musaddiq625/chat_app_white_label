@@ -1,7 +1,9 @@
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatTileComponent extends StatefulWidget {
   const ChatTileComponent({super.key});
@@ -11,6 +13,7 @@ class ChatTileComponent extends StatefulWidget {
 }
 
 class _ChatTileComponentState extends State<ChatTileComponent> {
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,18 +21,21 @@ class _ChatTileComponentState extends State<ChatTileComponent> {
       child: ListTile(
         horizontalTitleGap: 10,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-        tileColor: Colors.white,
+        tileColor: themeCubit.darkBackgroundColor,
         onTap: () {},
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
         leading: const ProfileImageComponent(
           url: null,
         ),
-        title: const Text(
+        title: Text(
           'Manchester Locals',
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: themeCubit.textColor),
         ),
-        subtitle: const Padding(
+        subtitle: Padding(
           padding: EdgeInsets.only(top: 3),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -40,9 +46,7 @@ class _ChatTileComponentState extends State<ChatTileComponent> {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   softWrap: false,
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(fontSize: 14, color: themeCubit.textColor),
                 ),
               ),
             ],

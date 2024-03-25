@@ -23,7 +23,7 @@ class IconComponent extends StatelessWidget {
     this.iconSize = 24.0, // Default icon size
     this.iconColor = Colors.black, // Default icon color
     this.borderSize = 2.0, // Default border size
-    this.borderColor = Colors.black, // Default border color
+    this.borderColor = Colors.transparent, // Default border color
     this.circleSize = 50,
     this.circleHeight,
     this.backgroundColor = Colors.grey,

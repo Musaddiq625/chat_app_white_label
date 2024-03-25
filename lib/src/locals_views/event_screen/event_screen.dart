@@ -11,7 +11,7 @@ import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../constants/color_constants.dart';
-import '../../constants/image_constants.dart';
+import '../../constants/asset_constants.dart';
 import '../../models/contact.dart';
 
 class EventScreen extends StatefulWidget {

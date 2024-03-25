@@ -17,9 +17,8 @@ import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../components/search_text_field_component.dart';
-import '../../constants/image_constants.dart';
+import '../../constants/asset_constants.dart';
 import '../../models/contact.dart';
-import '../../utils/theme_cubit/theme_bloc.dart';
 
 class LocalsCreateEventScreen extends StatefulWidget {
   const LocalsCreateEventScreen({super.key});
@@ -37,7 +36,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
   bool askQuestion = false;
   bool editQuestion = false;
   bool locationVisible = true;
-  late final themeCubit= BlocProvider.of<ThemeCubit>(context);
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
   final List<ContactModel> contacts = [
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
@@ -53,9 +52,8 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return UIScaffold(
-      bgColor: themeCubit.backgroundColor,
+        bgColor: themeCubit.backgroundColor,
         removeSafeAreaPadding: false,
         // appBar:_appBar(),
         widget: _createEvent());
@@ -68,7 +66,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
   //   );
   // }
 
-  toggleTaped(){
+  toggleTaped() {
     print("Tapped ${themeCubit.isDarkMode}");
     themeCubit.toggleTheme();
   }
@@ -85,17 +83,19 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                 children: [
                   SizedBox(
                       child: GestureDetector(
-                        onTap: toggleTaped,
-                        child: IconComponent(
-                          iconData: Icons.arrow_back_ios_new,
-                          iconSize: 20,
-                          circleHeight: 30,
-                          backgroundColor: ColorConstants.transparent,
-                          borderColor: ColorConstants.transparent,
-                          iconColor: ColorConstants.lightGray,
-                        ),
-                      )),
-                  SizedBox(width: 20,),
+                    onTap: toggleTaped,
+                    child: IconComponent(
+                      iconData: Icons.arrow_back_ios_new,
+                      iconSize: 20,
+                      circleHeight: 30,
+                      backgroundColor: ColorConstants.transparent,
+                      borderColor: ColorConstants.transparent,
+                      iconColor: ColorConstants.lightGray,
+                    ),
+                  )),
+                  SizedBox(
+                    width: 20,
+                  ),
                   Text(
                     StringConstants.createEvent,
                     style: TextStyle(
@@ -210,13 +210,16 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                               ),
                               TextComponent(
                                 StringConstants.start,
-                                style: TextStyle(fontSize: 15,color: themeCubit.textColor),
+                                style: TextStyle(
+                                    fontSize: 15, color: themeCubit.textColor),
                               ),
                               Spacer(),
                               Text(
                                 "17 Feb at 11 am",
                                 style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold,color: themeCubit.textColor),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: themeCubit.textColor),
                               ),
                             ],
                           ),
@@ -260,13 +263,16 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                               ),
                               Text(
                                 StringConstants.end,
-                                style: TextStyle(fontSize: 15,color: themeCubit.textColor),
+                                style: TextStyle(
+                                    fontSize: 15, color: themeCubit.textColor),
                               ),
                               Spacer(),
                               Text(
                                 "2 pm",
                                 style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold,color: themeCubit.textColor),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: themeCubit.textColor),
                               ),
                             ],
                           ),
@@ -328,8 +334,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             color: ColorConstants.transparent,
                           )),
                       hintStyle: TextStyle(
-                          color: ColorConstants.lightGray,
-                          fontSize: 14),
+                          color: ColorConstants.lightGray, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(23.0),
                           borderSide:
@@ -398,16 +403,16 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                   children: [
                                     TextComponent(
                                         StringConstants.requireGuestsApproval,
-                                        style: TextStyle(fontSize: 15,color: themeCubit.textColor)
-                                    ),
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: themeCubit.textColor)),
                                     Container(
                                       child: Text(
                                           StringConstants
                                               .requireGuestsApprovalBody,
                                           style: TextStyle(
                                               fontSize: 13,
-                                              color: ColorConstants.lightGray
-                                          ),
+                                              color: ColorConstants.lightGray),
                                           textAlign: TextAlign.start),
                                     ),
                                   ],
@@ -439,7 +444,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      color:themeCubit.darkBackgroundColor,
+                      color: themeCubit.darkBackgroundColor,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
@@ -466,7 +471,9 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                   children: [
                                     Text(
                                       StringConstants.askQuestionWhenPeopleJoin,
-                                      style: TextStyle(fontSize: 15,color: themeCubit.textColor),
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: themeCubit.textColor),
                                     ),
                                     Container(
                                       child: Text(
@@ -482,7 +489,9 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                         children: [
                                           Text(
                                             StringConstants.editQuestions,
-                                            style: TextStyle(fontSize: 15,color: themeCubit.textColor),
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: themeCubit.textColor),
                                           ),
                                           SizedBox(
                                             width: 5,
@@ -514,7 +523,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                   setState(() {
                                     askQuestion = value;
                                   });
-                                  if(askQuestion == true){
+                                  if (askQuestion == true) {
                                     _selectQuestion();
                                   }
                                 },
@@ -559,8 +568,8 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
       ),
     );
     Future.delayed(const Duration(milliseconds: 1000), () async {
-   NavigationUtil.pop(context);
-   _createEventBottomSheet();
+      NavigationUtil.pop(context);
+      _createEventBottomSheet();
     });
   }
 
@@ -569,10 +578,11 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
-            color: themeCubit.darkBackgroundColor,
-          ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+              color: themeCubit.darkBackgroundColor,
+            ),
             child: Padding(
               padding: const EdgeInsets.all(18.0),
               child: Column(
@@ -655,7 +665,9 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
         isShowHeader: false,
         body: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(topLeft:Radius.circular(20.0),topRight:Radius.circular(20.0)),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.0),
+                topRight: Radius.circular(20.0)),
             color: themeCubit.darkBackgroundColor,
           ),
           constraints: const BoxConstraints(maxHeight: 700),
@@ -665,11 +677,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-
                   InkWell(
                     onTap: () => Navigator.pop(context),
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 40.0,top: 10),
+                      padding: const EdgeInsets.only(right: 40.0, top: 10),
                       child: IconComponent(
                         iconData: Icons.close,
                         borderColor: Colors.transparent,
@@ -686,17 +697,20 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   const SizedBox(
                     width: double.infinity,
                   ),
-                    Image.asset(
-                      // AssetConstants.group,
-                      AssetConstants.group,
-                      width: 150,
-                      height: 150,
-                    ),
+                  Image.asset(
+                    // AssetConstants.group,
+                    AssetConstants.group,
+                    width: 150,
+                    height: 150,
+                  ),
                   Container(
-                    width:300,
+                    width: 300,
                     child: Text(
                       StringConstants.eventCreatedSuccessfully,
-                      style: TextStyle(fontSize: 20,fontFamily: FontConstants.fontProtestStrike,color: themeCubit.textColor),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          color: themeCubit.textColor),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -706,12 +720,15 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   Container(
                     width: 300,
                     child: Text(
-                       StringConstants.inviteYourFriend,
-                      style: TextStyle( fontSize: 15,color: themeCubit.textColor),
+                      StringConstants.inviteYourFriend,
+                      style:
+                          TextStyle(fontSize: 15, color: themeCubit.textColor),
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(height: 20,)
+                  SizedBox(
+                    height: 20,
+                  )
                 ],
               ),
               Row(
@@ -754,11 +771,13 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
               const SizedBox(
                 height: 5,
               ),
-               Divider(thickness: 0.1,),
+              Divider(
+                thickness: 0.1,
+              ),
               const SizedBox(
                 height: 5,
               ),
-               Padding(
+              Padding(
                 padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 5),
                 child: Text(
                   StringConstants.yourConnections,
@@ -769,7 +788,8 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16,right: 18),
+                padding:
+                    EdgeInsets.only(left: 18.0, top: 10, bottom: 16, right: 18),
                 child: SearchTextField(
                   title: "Search",
                   hintText: "Search name, postcode..",
@@ -872,7 +892,8 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
         isShowHeader: false,
         body: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
               color: themeCubit.darkBackgroundColor,
             ),
             child: Padding(
@@ -885,7 +906,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                       TextComponent(
                         StringConstants.pricing,
                         style: TextStyle(
-                            color:themeCubit.primaryColor,
+                            color: themeCubit.primaryColor,
                             fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 18),
                       ),
@@ -918,8 +939,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
-                              child:
-                                  TextComponent("Free", style: TextStyle(fontSize: 15,color: themeCubit.textColor)),
+                              child: TextComponent("Free",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -937,7 +960,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
-                              child: TextComponent("£5", style: TextStyle(fontSize: 15,color: themeCubit.textColor)),
+                              child: TextComponent("£5",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -955,8 +981,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
-                              child:
-                                  TextComponent("£10", style: TextStyle(fontSize: 15,color: themeCubit.textColor)),
+                              child: TextComponent("£10",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -980,8 +1008,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
-                              child:
-                                  TextComponent("£25", style: TextStyle(fontSize: 15,color:themeCubit.textColor)),
+                              child: TextComponent("£25",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -999,7 +1029,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 25, bottom: 25, left: 30, right: 30),
-                              child: TextComponent("£50",style: TextStyle(fontSize: 15,color:themeCubit.textColor)),
+                              child: TextComponent("£50",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: themeCubit.textColor)),
                             ),
                           ),
                         ),
@@ -1019,7 +1052,8 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                                   top: 25, bottom: 25, left: 30, right: 30),
                               child: TextComponent(
                                 "£100",
-                                style: TextStyle(fontSize: 15,color:themeCubit.textColor),
+                                style: TextStyle(
+                                    fontSize: 15, color: themeCubit.textColor),
                               ),
                             ),
                           ),
@@ -1033,33 +1067,36 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   Divider(
                     thickness: 0.5,
                   ),
-                  Text(StringConstants.setOtherAmount,style: TextStyle(fontSize: 15,color:themeCubit.textColor)),
+                  Text(StringConstants.setOtherAmount,
+                      style:
+                          TextStyle(fontSize: 15, color: themeCubit.textColor)),
                   SizedBox(
                     height: 10,
                   ),
                   TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
                       hintText: "£",
                       filled: true,
-                      fillColor: ColorConstants.backgroundColor.withOpacity(0.3),
+                      fillColor:
+                          ColorConstants.backgroundColor.withOpacity(0.3),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide: BorderSide(
                             color: ColorConstants.transparent,
                           )),
                       hintStyle: TextStyle(
-                          color: ColorConstants.lightGray,
-                          fontSize: 14),
+                          color: ColorConstants.lightGray, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide:
-                          BorderSide(color: ColorConstants.transparent)),
+                              BorderSide(color: ColorConstants.transparent)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide:
-                          BorderSide(color: ColorConstants.transparent)),
+                              BorderSide(color: ColorConstants.transparent)),
                       // suffixIcon: IconButton(
                       //   icon: Icon(Icons.send),
                       //   onPressed: _sendMessage,
@@ -1081,7 +1118,6 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                       },
                     ),
                   ),
-
                 ],
               ),
             )));
@@ -1093,7 +1129,8 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
         isShowHeader: false,
         body: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
               color: themeCubit.darkBackgroundColor,
             ),
             child: Padding(
@@ -1126,37 +1163,44 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text(StringConstants.limitNumberOfParticipants,style:TextStyle(color: themeCubit.textColor),),
+                  Text(
+                    StringConstants.limitNumberOfParticipants,
+                    style: TextStyle(color: themeCubit.textColor),
+                  ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(StringConstants.participants,style:TextStyle(color: themeCubit.textColor),),
+                  Text(
+                    StringConstants.participants,
+                    style: TextStyle(color: themeCubit.textColor),
+                  ),
                   SizedBox(
                     height: 10,
                   ),
                   TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
                       hintText: "Unlimited",
                       filled: true,
-                      fillColor: ColorConstants.backgroundColor.withOpacity(0.3),
+                      fillColor:
+                          ColorConstants.backgroundColor.withOpacity(0.3),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide: BorderSide(
                             color: ColorConstants.transparent,
                           )),
                       hintStyle: TextStyle(
-                          color: ColorConstants.lightGray,
-                          fontSize: 14),
+                          color: ColorConstants.lightGray, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide:
-                          BorderSide(color: ColorConstants.transparent)),
+                              BorderSide(color: ColorConstants.transparent)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide:
-                          BorderSide(color: ColorConstants.transparent)),
+                              BorderSide(color: ColorConstants.transparent)),
                       // suffixIcon: IconButton(
                       //   icon: Icon(Icons.send),
                       //   onPressed: _sendMessage,
@@ -1178,27 +1222,25 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                       },
                     ),
                   ),
-
                 ],
               ),
             )));
   }
 
-  _selectQuestion(){
+  _selectQuestion() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
-            gradient: LinearGradient(
-              colors: [ColorConstants.black.withOpacity(0.8), Color.fromARGB(255, 210, 200, 180)],
-              begin: Alignment.topCenter,
-                end: Alignment.bottomCenter
-            ),
-
-            color: ColorConstants.black.withOpacity(0.6)
-          ),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+                gradient: LinearGradient(colors: [
+                  ColorConstants.black.withOpacity(0.8),
+                  Color.fromARGB(255, 210, 200, 180)
+                ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+                color: ColorConstants.black.withOpacity(0.6)),
             // color: Colors.black,
             child: Padding(
               padding: const EdgeInsets.all(18.0),
@@ -1206,7 +1248,6 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -1231,48 +1272,52 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  TextComponent(StringConstants.choseToAskQuestion,style: TextStyle(color: themeCubit.textColor),),
+                  TextComponent(
+                    StringConstants.choseToAskQuestion,
+                    style: TextStyle(color: themeCubit.textColor),
+                  ),
                   SizedBox(
                     height: 15,
                   ),
-                  Row(children: [
-                    TextComponent("Question 1",style: TextStyle(color: themeCubit.textColor),),
-                    SizedBox(width: 10,),
-                    IconComponent(
-                      iconData: Icons.delete,
-                      borderColor:
-                      ColorConstants.red,
-                      backgroundColor:
-                      ColorConstants.red,
-                      iconColor: ColorConstants.white,
-                      iconSize: 15,
-                      circleSize: 20,
-
-                    ),
-                  ],),
-
+                  Row(
+                    children: [
+                      TextComponent(
+                        "Question 1",
+                        style: TextStyle(color: themeCubit.textColor),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      IconComponent(
+                        iconData: Icons.delete,
+                        borderColor: ColorConstants.red,
+                        backgroundColor: ColorConstants.red,
+                        iconColor: ColorConstants.white,
+                        iconSize: 15,
+                        circleSize: 20,
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     height: 10,
                   ),
-
                   TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
                       hintText: StringConstants.typeYourQuestion,
                       filled: true,
                       fillColor: ColorConstants.lightGray.withOpacity(0.3),
                       suffixIcon: GestureDetector(
                         child: Padding(
-                            padding: EdgeInsets.only(right: 20,top: 8),
-                            child:    IconComponent(
+                            padding: EdgeInsets.only(right: 20, top: 8),
+                            child: IconComponent(
                               iconData: Icons.menu,
-                              borderColor:
-                              ColorConstants.transparent,
-                              backgroundColor:
-                              ColorConstants.transparent,
-                              iconColor: ColorConstants.lightGray
-                                  .withOpacity(0.4),
+                              borderColor: ColorConstants.transparent,
+                              backgroundColor: ColorConstants.transparent,
+                              iconColor:
+                                  ColorConstants.lightGray.withOpacity(0.4),
                               iconSize: 25,
                               circleSize: 25,
                             )),
@@ -1283,46 +1328,49 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                             color: ColorConstants.transparent,
                           )),
                       hintStyle: TextStyle(
-                          color: ColorConstants.lightGray,
-                          fontSize: 14),
+                          color: ColorConstants.lightGray, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide:
-                          BorderSide(color: ColorConstants.transparent)),
+                              BorderSide(color: ColorConstants.transparent)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide:
-                          BorderSide(color: ColorConstants.transparent)),
+                              BorderSide(color: ColorConstants.transparent)),
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                    IconComponent(
-                    iconData: Icons.arrow_downward_outlined,
-                    borderColor:
-                    ColorConstants.transparent,
-                    backgroundColor:
-                    ColorConstants.transparent,
-                    iconColor: ColorConstants.lightGray,
-                    iconSize: 25,
-                    circleSize: 25,
+                      IconComponent(
+                        iconData: Icons.arrow_downward_outlined,
+                        borderColor: ColorConstants.transparent,
+                        backgroundColor: ColorConstants.transparent,
+                        iconColor: ColorConstants.lightGray,
+                        iconSize: 25,
+                        circleSize: 25,
+                      ),
+                      Text(
+                        "Required",
+                        style: TextStyle(color: ColorConstants.lightGray),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      IconComponent(
+                        iconData: Icons.arrow_downward_outlined,
+                        borderColor: ColorConstants.transparent,
+                        backgroundColor: ColorConstants.transparent,
+                        iconColor: ColorConstants.lightGray,
+                        iconSize: 25,
+                        circleSize: 25,
+                      ),
+                      Text(
+                        "Private",
+                        style: TextStyle(color: ColorConstants.lightGray),
+                      ),
+                    ],
                   ),
-                    Text("Required",style: TextStyle(color: ColorConstants.lightGray),),
-                    SizedBox(width: 10,),
-                    IconComponent(
-                      iconData: Icons.arrow_downward_outlined,
-                      borderColor:
-                      ColorConstants.transparent,
-                      backgroundColor:
-                      ColorConstants.transparent,
-                      iconColor: ColorConstants.lightGray,
-                      iconSize: 25,
-                      circleSize: 25,
-                    ),
-                    Text("Private",style: TextStyle(color: ColorConstants.lightGray),),
-                  ],),
-
                   SizedBox(
                     height: 100,
                   ),
@@ -1332,9 +1380,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                       ButtonWithIconComponent(
                         btnText: '  ${StringConstants.addQuestion}',
                         icon: Icons.add_circle,
-                        btnTextStyle: TextStyle(color: ColorConstants.black,fontWeight: FontWeight.bold),
-                        onPressed: () {
-                        },
+                        btnTextStyle: TextStyle(
+                            color: ColorConstants.black,
+                            fontWeight: FontWeight.bold),
+                        onPressed: () {},
                       ),
                       ButtonComponent(
                         bgcolor: ColorConstants.primaryColor,
@@ -1348,7 +1397,6 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                       ),
                     ],
                   ),
-
                 ],
               ),
             )));

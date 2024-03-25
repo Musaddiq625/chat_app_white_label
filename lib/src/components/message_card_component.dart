@@ -7,13 +7,14 @@ import 'package:chat_app_white_label/src/components/profile_image_component.dart
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/preview_screen.dart';
 import 'package:chat_app_white_label/src/utils/api_utlils.dart';
-import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/dialogs.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:voice_message_package/voice_message_package.dart';
 import 'package:path_provider/path_provider.dart';
@@ -40,6 +41,7 @@ class MessageCard extends StatefulWidget {
 }
 
 class _MessageCardState extends State<MessageCard> {
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   Widget build(BuildContext context) {
     bool isMe = '921122334455' == widget.message.fromId;
@@ -124,8 +126,8 @@ class _MessageCardState extends State<MessageCard> {
                   margin: EdgeInsets.symmetric(
                       horizontal: mq.width * .04, vertical: mq.height * .01),
                   decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: ColorConstants.white),
+                      color: themeCubit.darkBackgroundColor,
+                      // border: Border.all(color: ColorConstants.white),
                       //making borders curved
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(15),
@@ -149,8 +151,8 @@ class _MessageCardState extends State<MessageCard> {
                       else
                         Text(
                           widget.message.msg ?? '',
-                          style: const TextStyle(
-                              fontSize: 15, color: Colors.black87),
+                          style: TextStyle(
+                              fontSize: 15, color: themeCubit.textColor),
                         ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -161,8 +163,9 @@ class _MessageCardState extends State<MessageCard> {
                           Text(
                             DateUtil.getFormattedTime(
                                 context, widget.message.sentAt ?? ''),
-                            style: const TextStyle(
-                                fontSize: 10, color: Colors.black54),
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: themeCubit.textSecondaryColor),
                           ),
                         ],
                       )
@@ -208,8 +211,8 @@ class _MessageCardState extends State<MessageCard> {
                   margin: EdgeInsets.symmetric(
                       horizontal: mq.width * .04, vertical: mq.height * .01),
                   decoration: BoxDecoration(
-                      color: ColorConstants.purple,
-                      border: Border.all(color: ColorConstants.purple),
+                      color: themeCubit.primaryColor,
+                      // border: Border.all(color: ColorConstants.purple),
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(15),
                           topRight: Radius.circular(15),
@@ -232,24 +235,25 @@ class _MessageCardState extends State<MessageCard> {
                       else
                         Text(
                           widget.message.msg ?? '',
-                          style: const TextStyle(
-                              fontSize: 15, color: Colors.white),
+                          style: TextStyle(
+                              fontSize: 15, color: themeCubit.backgroundColor),
                         ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.done_all_rounded,
-                              color: widget.isRead == true
-                                  ? Colors.blue
-                                  : Colors.grey,
-                              size: 15),
+                          // Icon(Icons.done_all_rounded,
+                          //     color: widget.isRead == true
+                          //         ? Colors.blue
+                          //         : Colors.grey,
+                          //     size: 15),
                           const SizedBox(width: 2),
                           Text(
                             DateUtil.getFormattedTime(
                                 context, widget.message.sentAt ?? ''),
-                            style: const TextStyle(
-                                fontSize: 10, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: themeCubit.textSecondaryColor),
                           ),
                           if (widget.message.type == MessageType.audio)
                             const SizedBox(width: 10),

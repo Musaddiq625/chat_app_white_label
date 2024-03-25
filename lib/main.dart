@@ -66,6 +66,7 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
   // }
   @override
   Widget build(BuildContext context) {
+    mq = MediaQuery.of(context).size;
     return BlocProvider(
       create: (context) => ThemeCubit(),
       child: BlocBuilder<ThemeCubit, ThemeState>(
@@ -73,15 +74,11 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
           if (state is ThemeInitial) {
             return MaterialApp(
               theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
-              home: LocalsCreateEventScreen(),
+              home: ChatRoomScreen(),
             );
-          } else if (state is ThemeUpdate) {
-            return MaterialApp(
-              theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
-              home: LocalsCreateEventScreen(),
-            );
+          } else {
+            return Container();
           }
-          return Container();
         },
       ),
     );

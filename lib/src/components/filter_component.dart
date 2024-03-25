@@ -1,5 +1,7 @@
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FilterComponent extends StatefulWidget {
   final List<FilterComponentArg> options;
@@ -17,6 +19,7 @@ class FilterComponent extends StatefulWidget {
 }
 
 class _FilterComponentState extends State<FilterComponent> {
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -29,10 +32,12 @@ class _FilterComponentState extends State<FilterComponent> {
               itemBuilder: (context, index) {
                 final isSelected = index == widget.groupValue;
                 final backgroundColor = isSelected
-                    ? ColorConstants.purple
-                    : ColorConstants.lightPurplish;
-                final textColor = isSelected ? Colors.white : Colors.black;
-                return InkWell(
+                    ? themeCubit.primaryColor
+                    : themeCubit.darkBackgroundColor;
+                final textColor = isSelected
+                    ? themeCubit.backgroundColor
+                    : themeCubit.textColor;
+                return GestureDetector(
                   onTap: () => widget.onValueChanged(index),
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 3),
@@ -54,7 +59,14 @@ class _FilterComponentState extends State<FilterComponent> {
                             height: 30,
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(
-                              color: ColorConstants.lightPurple,
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  ColorConstants.btnGradientColor,
+                                  Colors.white
+                                ],
+                              ),
                               borderRadius: BorderRadius.circular(17.0),
                             ),
                             child: Center(
@@ -62,7 +74,8 @@ class _FilterComponentState extends State<FilterComponent> {
                                 widget.options[index].count! > 99
                                     ? '99+'
                                     : widget.options[index].count.toString(),
-                                style: TextStyle(color: textColor),
+                                style: TextStyle(
+                                    color: themeCubit.backgroundColor),
                               ),
                             ),
                           )

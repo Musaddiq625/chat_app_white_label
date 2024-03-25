@@ -6,4 +6,7 @@ class AssetConstants {
   static const String group = "$images/group.jpg";
   static const String backgroundImage = "$images/backgroundImage.jpg";
   static const String searchImage = "$images/search.png";
+  static const String chat = "$images/chat.png";
+  static const String sad = "$images/sad.png";
+  static const String warning = "$images/warning.png";
 }

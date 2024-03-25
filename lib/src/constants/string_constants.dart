@@ -95,7 +95,7 @@ class StringConstants {
   static const String startChat = 'Start a Chat';
   static const String startChatting = 'Start Chatting';
   static const String noMessagesYet = 'No messages yet.';
-  static const String startConversation =
+  static const String startConversationWithHello =
       'Start a conversation by saying hello to everyone!';
   static const String areYouSureYouWanttoLeave =
       'Are you sure you want to leave?';
