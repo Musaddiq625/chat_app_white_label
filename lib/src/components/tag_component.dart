@@ -1,7 +1,11 @@
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class IconComponent extends StatelessWidget {
+import '../utils/theme_cubit/theme_cubit.dart';
+
+class TagComponent extends StatelessWidget {
   final IconData iconData;
   final double iconSize;
   final Color iconColor;
@@ -9,7 +13,6 @@ class IconComponent extends StatelessWidget {
   final double borderSize;
   final Color borderColor;
   final double? circleHeight;
-  final double circleSize;
   final Function()? onTap; // New parameter to control the circle size
   final String? customText;
   final String? customIconText;
@@ -18,16 +21,14 @@ class IconComponent extends StatelessWidget {
   final FontWeight customFontWeight;
 
   // Constructor to initialize the icon data, size, color, border size, border color, and circle size
-  IconComponent({
+  TagComponent({
     required this.iconData,
     this.iconSize = 24.0, // Default icon size
     this.iconColor = Colors.black, // Default icon color
     this.borderSize = 2.0, // Default border size
     this.borderColor = Colors.transparent, // Default border color
-    this.borderColor = Colors.transparent, // Default border color
-    this.circleSize = 50,
     this.circleHeight,
-    this.backgroundColor = Colors.grey,
+    this.backgroundColor =ColorConstants.lightGray,
     this.onTap, // Default circle size
     this.customText,
     this.customIconText,
@@ -38,28 +39,15 @@ class IconComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late final themeCubit = BlocProvider.of<ThemeCubit>(context);
     return GestureDetector(
       onTap: onTap,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            alignment: Alignment.center,
-            width: customIconText == null ? circleSize : null,
-            width: customIconText == null ? circleSize : null,
-            // width:  MediaQuery.of(context).size.width/4, // Set the width to the circle size
             height:
-                circleHeight ?? circleSize, // Set the height to the circle size
-            decoration: customIconText == null
-                ? BoxDecoration(
-                    color: backgroundColor,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: borderColor,
-                      width: borderSize,
-                    ),
-                  )
-                : BoxDecoration(
+                circleHeight ,
+            decoration:  BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: backgroundColor,
                     // shape: BoxShape.circle,
@@ -68,22 +56,17 @@ class IconComponent extends StatelessWidget {
                       width: borderSize,
                     ),
                   ),
-            child: customIconText != null
-                ? Row(
+            child:  Row(
                     children: [
-                      SizedBox(
-                        width: 5,
-                      ),
+                      SizedBox(width: 5,),
                       Icon(
                         iconData,
                         size: iconSize,
                         color: iconColor,
                       ),
-                      SizedBox(
-                        width: 5,
-                      ),
+                      SizedBox(width: 5,),
                       Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
+                        padding: const EdgeInsets.only(right:5.0),
                         child: Text(
                           customIconText!,
                           style: TextStyle(color: customTextColor),
@@ -91,24 +74,9 @@ class IconComponent extends StatelessWidget {
                       ),
                     ],
                   )
-                : Icon(
-                    iconData,
-                    size: iconSize,
-                    color: iconColor,
-                  ),
+
           ),
-          if (customText != null)
-            const SizedBox(
-              height: 10,
-            ),
-          if (customText != null)
-            Text(
-              customText!,
-              style: TextStyle(
-                  fontSize: customTextSize,
-                  color: customTextColor,
-                  fontWeight: customFontWeight),
-            ),
+          SizedBox(height: 5),
         ],
       ),
     );

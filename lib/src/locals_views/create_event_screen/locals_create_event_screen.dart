@@ -17,7 +17,7 @@ import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../components/search_text_field_component.dart';
-import '../../constants/asset_constants.dart';
+import '../../constants/image_constants.dart';
 import '../../models/contact.dart';
 
 class LocalsCreateEventScreen extends StatefulWidget {
@@ -36,6 +36,10 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
   bool askQuestion = false;
   bool editQuestion = false;
   bool locationVisible = true;
+  final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
+  String _selectedQuestionRequired = 'Required';
+  String _selectedQuestionPublic = 'Public';
+  int? _draggingIndex;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
   final List<ContactModel> contacts = [
@@ -49,6 +53,25 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     // ... other contacts
   ];
+
+  List<String> questions = ['Question 1']; // Initialize with one question
+  final TextEditingController _controllerQuestions = TextEditingController();
+
+  void _addQuestion() {
+    setState(() {
+      questions.add('Question ${questions.length + 1}'); // Add a new question
+    });
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      final String item = questions.removeAt(oldIndex);
+      questions.insert(newIndex, item);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +147,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                           ),
                         ),
                         width: MediaQuery.of(context).size.width,
-                        height: 671,
+                        height: MediaQuery.of(context).size.height * 0.85,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Column(
@@ -322,7 +345,7 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
                     height: 10,
                   ),
                   TextField(
-                    controller: _controller,
+                    controller: _controllerQuestions,
                     maxLines: 4,
                     decoration: InputDecoration(
                       hintText: StringConstants.typeYourMessage,
@@ -1229,176 +1252,697 @@ class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
 
   _selectQuestion() {
     BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false,
-        isShowHeader: false,
-        body: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    topLeft: Radius.circular(20)),
-                gradient: LinearGradient(colors: [
-                  ColorConstants.black.withOpacity(0.8),
-                  Color.fromARGB(255, 210, 200, 180)
-                ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-                color: ColorConstants.black.withOpacity(0.6)),
-            // color: Colors.black,
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        StringConstants.questions,
-                        style: TextStyle(
-                            color: ColorConstants.primaryColor,
-                            fontFamily: FontConstants.fontProtestStrike,
-                            fontSize: 18),
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: IconComponent(
-                          iconData: Icons.close,
-                          borderColor: Colors.transparent,
-                          iconColor: Colors.white,
-                          circleSize: 20,
-                          backgroundColor: Colors.transparent,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextComponent(
-                    StringConstants.choseToAskQuestion,
-                    style: TextStyle(color: themeCubit.textColor),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    children: [
-                      TextComponent(
-                        "Question 1",
-                        style: TextStyle(color: themeCubit.textColor),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      IconComponent(
-                        iconData: Icons.delete,
-                        borderColor: ColorConstants.red,
-                        backgroundColor: ColorConstants.red,
-                        iconColor: ColorConstants.white,
-                        iconSize: 15,
+        takeFullHeightWhenPossible: false, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+              color: ColorConstants.black.withOpacity(0.8)),
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      StringConstants.questions,
+                      style: TextStyle(
+                          color: ColorConstants.primaryColor,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 18),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: IconComponent(
+                        iconData: Icons.close,
+                        borderColor: Colors.transparent,
+                        iconColor: Colors.white,
                         circleSize: 20,
+                        backgroundColor: Colors.transparent,
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextComponent(
+                  StringConstants.choseToAskQuestion,
+                  style: TextStyle(color: themeCubit.textColor),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                question(setState),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ButtonWithIconComponent(
+                      btnText: '  ${StringConstants.addQuestion}',
+                      icon: Icons.add_circle,
+                      btnTextStyle: TextStyle(
+                          color: ColorConstants.black,
+                          fontWeight: FontWeight.bold),
+                      onPressed: () {
+                        setState(() =>
+                            questions.add('Question ${questions.length + 1}'));
+                      },
+                    ),
+                    ButtonComponent(
+                      bgcolor: ColorConstants.primaryColor,
+                      textColor: ColorConstants.black,
+                      buttonText: StringConstants.done,
+                      onPressedFunction: () {},
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ));
+    }));
+  }
+
+  question(StateSetter setStateBottomSheet) {
+    // return ListView.builder(
+    //     shrinkWrap: true,
+    //     itemCount: questions.length,
+    //     itemBuilder: (context, index) {
+    //       return Container(
+    //         child: Column(children: [
+    //           Row(
+    //             children: [
+    //               TextComponent(
+    //                 questions[index],
+    //                 style: TextStyle(color: themeCubit.textColor),
+    //               ),
+    //               SizedBox(
+    //                 width: 10,
+    //               ),
+    //               GestureDetector(
+    //                 onTap: () => {
+    //                   setStateBottomSheet(() {
+    //                     questions.removeAt(index); // Remove the question
+    //                   })
+    //                 },
+    //                 child: IconComponent(
+    //                   iconData: Icons.delete,
+    //                   borderColor: ColorConstants.red,
+    //                   backgroundColor: ColorConstants.red,
+    //                   iconColor: ColorConstants.white,
+    //                   iconSize: 15,
+    //                   circleSize: 20,
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //           SizedBox(
+    //             height: 10,
+    //           ),
+    //           TextField(
+    //             controller: _controller,
+    //             decoration: InputDecoration(
+    //               contentPadding:
+    //                   EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+    //               hintText: StringConstants.typeYourQuestion,
+    //               filled: true,
+    //               fillColor: ColorConstants.lightGray.withOpacity(0.3),
+    //               suffixIcon: GestureDetector(
+    //                 child: Padding(
+    //                     padding: EdgeInsets.only(right: 20, top: 8),
+    //                     child: IconComponent(
+    //                       iconData: Icons.menu,
+    //                       borderColor: ColorConstants.transparent,
+    //                       backgroundColor: ColorConstants.transparent,
+    //                       iconColor: ColorConstants.lightGray.withOpacity(0.4),
+    //                       iconSize: 25,
+    //                       circleSize: 25,
+    //                     )),
+    //               ),
+    //               border: OutlineInputBorder(
+    //                   borderRadius: BorderRadius.circular(15.0),
+    //                   borderSide: BorderSide(
+    //                     color: ColorConstants.transparent,
+    //                   )),
+    //               hintStyle:
+    //                   TextStyle(color: ColorConstants.lightGray, fontSize: 14),
+    //               enabledBorder: OutlineInputBorder(
+    //                   borderRadius: BorderRadius.circular(15.0),
+    //                   borderSide:
+    //                       BorderSide(color: ColorConstants.transparent)),
+    //               focusedBorder: OutlineInputBorder(
+    //                   borderRadius: BorderRadius.circular(15.0),
+    //                   borderSide:
+    //                       BorderSide(color: ColorConstants.transparent)),
+    //             ),
+    //           ),
+    //           Row(
+    //             mainAxisAlignment: MainAxisAlignment.end,
+    //             children: [
+    //               IconComponent(
+    //                 iconData: Icons.arrow_downward_outlined,
+    //                 borderColor: ColorConstants.transparent,
+    //                 backgroundColor: ColorConstants.transparent,
+    //                 iconColor: ColorConstants.lightGray,
+    //                 iconSize: 25,
+    //                 circleSize: 25,
+    //               ),
+    //               Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: <Widget>[
+    //                   MenuAnchor(
+    //                     style: MenuStyle(
+    //                       backgroundColor: MaterialStatePropertyAll<Color>(
+    //                           themeCubit.backgroundColor),
+    //                     ),
+    //                     childFocusNode: _buttonFocusNode,
+    //                     menuChildren: <Widget>[
+    //                       Row(
+    //                         children: [
+    //                           Checkbox(
+    //                             value: _selectedQuestionRequired == 'Required',
+    //                             onChanged: (bool? value) {
+    //                               if (value != null) {
+    //                                 setState(() {
+    //                                   _selectedQuestionRequired = 'Required';
+    //                                 });
+    //                               }
+    //                             },
+    //                             shape: CircleBorder(),
+    //                             // Makes the checkbox circular
+    //                             activeColor: ColorConstants.primaryColor,
+    //                             // Sets the color of the checkbox when selected
+    //                             checkColor: Colors.black,
+    //                           ),
+    //                           TextComponent(
+    //                             "Required",
+    //                             style: TextStyle(color: themeCubit.textColor),
+    //                           ),
+    //                           SizedBox(
+    //                             width: 10,
+    //                           )
+    //                         ],
+    //                       ),
+    //                       Divider(
+    //                         thickness: 0.1,
+    //                       ),
+    //                       Row(
+    //                         children: [
+    //                           Checkbox(
+    //                             value: _selectedQuestionRequired == 'Optional',
+    //                             onChanged: (bool? value) {
+    //                               if (value != null) {
+    //                                 setState(() {
+    //                                   _selectedQuestionRequired = 'Optional';
+    //                                 });
+    //                               }
+    //                             },
+    //                             shape: CircleBorder(),
+    //                             // Makes the checkbox circular
+    //                             activeColor: ColorConstants.primaryColor,
+    //                             // Sets the color of the checkbox when selected
+    //                             checkColor: Colors.black,
+    //                           ),
+    //                           TextComponent(
+    //                             "Optional",
+    //                             style: TextStyle(color: themeCubit.textColor),
+    //                           ),
+    //                           SizedBox(
+    //                             width: 10,
+    //                           )
+    //                         ],
+    //                       ),
+    //                     ],
+    //                     builder: (BuildContext context,
+    //                         MenuController controller, Widget? child) {
+    //                       return TextButton(
+    //                         focusNode: _buttonFocusNode,
+    //                         onPressed: () {
+    //                           if (controller.isOpen) {
+    //                             controller.close();
+    //                           } else {
+    //                             controller.open();
+    //                           }
+    //                         },
+    //                         child: TextComponent(
+    //                           _selectedQuestionRequired,
+    //                           style: TextStyle(color: ColorConstants.lightGray),
+    //                         ), // Use the selected option as the label
+    //                       );
+    //                     },
+    //                   ),
+    //                 ],
+    //               ),
+    //               SizedBox(
+    //                 width: 10,
+    //               ),
+    //               IconComponent(
+    //                 iconData: Icons.arrow_downward_outlined,
+    //                 borderColor: ColorConstants.transparent,
+    //                 backgroundColor: ColorConstants.transparent,
+    //                 iconColor: ColorConstants.lightGray,
+    //                 iconSize: 25,
+    //                 circleSize: 25,
+    //               ),
+    //               Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: <Widget>[
+    //                   MenuAnchor(
+    //                     alignmentOffset: Offset(-250, 0),
+    //                     style: MenuStyle(
+    //                       backgroundColor: MaterialStatePropertyAll<Color>(
+    //                           themeCubit.backgroundColor),
+    //                     ),
+    //                     childFocusNode: _buttonFocusNode,
+    //                     menuChildren: <Widget>[
+    //                       Row(
+    //                         children: [
+    //                           Checkbox(
+    //                             value: _selectedQuestionPublic == 'Public',
+    //                             onChanged: (bool? value) {
+    //                               if (value != null) {
+    //                                 setState(() {
+    //                                   _selectedQuestionPublic = 'Public';
+    //                                 });
+    //                               }
+    //                             },
+    //                             shape: CircleBorder(),
+    //                             // Makes the checkbox circular
+    //                             activeColor: ColorConstants.primaryColor,
+    //                             // Sets the color of the checkbox when selected
+    //                             checkColor: Colors.black,
+    //                           ),
+    //                           Column(
+    //                             mainAxisSize: MainAxisSize.min,
+    //                             crossAxisAlignment: CrossAxisAlignment.start,
+    //                             children: [
+    //                               TextComponent(
+    //                                 'Public',
+    //                                 style:
+    //                                     TextStyle(color: themeCubit.textColor),
+    //                               ),
+    //                               Text(
+    //                                 'Responses can be seen by everyone',
+    //                                 style:
+    //                                     TextStyle(color: themeCubit.textColor),
+    //                               ),
+    //                             ],
+    //                           ),
+    //                           SizedBox(
+    //                             width: 20,
+    //                           )
+    //                         ],
+    //                       ),
+    //                       Divider(
+    //                         thickness: 0.1,
+    //                       ),
+    //                       Row(
+    //                         children: [
+    //                           Checkbox(
+    //                             value: _selectedQuestionPublic == 'Private',
+    //                             onChanged: (bool? value) {
+    //                               if (value != null) {
+    //                                 setState(() {
+    //                                   _selectedQuestionPublic = 'Private';
+    //                                 });
+    //                               }
+    //                             },
+    //                             shape: CircleBorder(),
+    //                             // Makes the checkbox circular
+    //                             activeColor: ColorConstants.primaryColor,
+    //                             // Sets the color of the checkbox when selected
+    //                             checkColor: Colors.black,
+    //                           ),
+    //                           Column(
+    //                             crossAxisAlignment: CrossAxisAlignment.start,
+    //                             children: [
+    //                               TextComponent(
+    //                                 'Private',
+    //                                 style:
+    //                                     TextStyle(color: themeCubit.textColor),
+    //                               ),
+    //                               TextComponent(
+    //                                 'Only host can see the responses',
+    //                                 style:
+    //                                     TextStyle(color: themeCubit.textColor),
+    //                               ),
+    //                             ],
+    //                           ),
+    //                           SizedBox(
+    //                             width: 20,
+    //                           )
+    //                         ],
+    //                       )
+    //                     ],
+    //                     builder: (BuildContext context,
+    //                         MenuController controller, Widget? child) {
+    //                       return TextButton(
+    //                         focusNode: _buttonFocusNode,
+    //                         onPressed: () {
+    //                           if (controller.isOpen) {
+    //                             controller.close();
+    //                           } else {
+    //                             controller.open();
+    //                           }
+    //                         },
+    //                         child: Column(
+    //                           children: [
+    //                             TextComponent(
+    //                               _selectedQuestionPublic,
+    //                               style: TextStyle(
+    //                                   color: ColorConstants.lightGray),
+    //                             ),
+    //                           ],
+    //                         ), // Use the selected option as the label
+    //                       );
+    //                     },
+    //                   ),
+    //                 ],
+    //               ),
+    //             ],
+    //           ),
+    //         ]),
+    //       );
+    //     });
+    return ReorderableListView(
+      shrinkWrap: true,
+      onReorder: (int oldIndex, int newIndex) {
+        setState(() {
+          if (newIndex > oldIndex) {
+            newIndex -= 1;
+          }
+          final String item = questions.removeAt(oldIndex);
+          questions.insert(newIndex, item);
+        });
+      },
+      children: List<Widget>.generate(questions.length, (int index) {
+        return Container(
+          key: ValueKey(questions[index]), // Assign a unique key to each child
+          child: Column(children: [
+            Row(
+              children: [
+                TextComponent(
+                  questions[index],
+                  style: TextStyle(color: themeCubit.textColor),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                GestureDetector(
+                  onTap: () => {
+                    setStateBottomSheet(() {
+                      questions.removeAt(index); // Remove the question
+                    })
+                  },
+                  child: IconComponent(
+                    iconData: Icons.delete,
+                    borderColor: ColorConstants.red,
+                    backgroundColor: ColorConstants.red,
+                    iconColor: ColorConstants.white,
+                    iconSize: 15,
+                    circleSize: 20,
                   ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: ColorConstants.lightGray.withOpacity(0.3),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-                      hintText: StringConstants.typeYourQuestion,
-                      filled: true,
-                      fillColor: ColorConstants.lightGray.withOpacity(0.3),
-                      suffixIcon: GestureDetector(
-                        child: Padding(
-                            padding: EdgeInsets.only(right: 20, top: 8),
-                            child: IconComponent(
-                              iconData: Icons.menu,
-                              borderColor: ColorConstants.transparent,
-                              backgroundColor: ColorConstants.transparent,
-                              iconColor:
-                                  ColorConstants.lightGray.withOpacity(0.4),
-                              iconSize: 25,
-                              circleSize: 25,
+                    width: MediaQuery.sizeOf(context).width * 0.7,
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 15.0),
+                        hintText: StringConstants.typeYourQuestion,
+                        filled: true,
+                        fillColor: ColorConstants.transparent,
+                        // suffixIcon:
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: BorderSide(
+                              color: ColorConstants.transparent,
                             )),
+                        hintStyle: TextStyle(
+                            color: ColorConstants.lightGray, fontSize: 14),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide:
+                                BorderSide(color: ColorConstants.transparent)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide:
+                                BorderSide(color: ColorConstants.transparent)),
                       ),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide: BorderSide(
-                            color: ColorConstants.transparent,
-                          )),
-                      hintStyle: TextStyle(
-                          color: ColorConstants.lightGray, fontSize: 14),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                              BorderSide(color: ColorConstants.transparent)),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                              BorderSide(color: ColorConstants.transparent)),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconComponent(
-                        iconData: Icons.arrow_downward_outlined,
-                        borderColor: ColorConstants.transparent,
-                        backgroundColor: ColorConstants.transparent,
-                        iconColor: ColorConstants.lightGray,
-                        iconSize: 25,
-                        circleSize: 25,
-                      ),
-                      Text(
-                        "Required",
-                        style: TextStyle(color: ColorConstants.lightGray),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      IconComponent(
-                        iconData: Icons.arrow_downward_outlined,
-                        borderColor: ColorConstants.transparent,
-                        backgroundColor: ColorConstants.transparent,
-                        iconColor: ColorConstants.lightGray,
-                        iconSize: 25,
-                        circleSize: 25,
-                      ),
-                      Text(
-                        "Private",
-                        style: TextStyle(color: ColorConstants.lightGray),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 100,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ButtonWithIconComponent(
-                        btnText: '  ${StringConstants.addQuestion}',
-                        icon: Icons.add_circle,
-                        btnTextStyle: TextStyle(
-                            color: ColorConstants.black,
-                            fontWeight: FontWeight.bold),
-                        onPressed: () {},
-                      ),
-                      ButtonComponent(
-                        bgcolor: ColorConstants.primaryColor,
-                        textColor: ColorConstants.black,
-                        buttonText: StringConstants.done,
-                        onPressedFunction: () {
-                          // _yesShareItBottomSheet();
-                          // NavigationUtil.push(
-                          //     context, RouteConstants.localsEventScreen);
-                        },
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      setStateBottomSheet(() {
+                        _draggingIndex = index;
+                      });
+                    },
+                    child: Padding(
+                        padding: EdgeInsets.only(right: 20),
+                        child: IconComponent(
+                          iconData: Icons.menu,
+                          borderColor: ColorConstants.transparent,
+                          backgroundColor: ColorConstants.transparent,
+                          iconColor: ColorConstants.lightGray.withOpacity(0.4),
+                          iconSize: 25,
+                          circleSize: 25,
+                        )),
                   ),
                 ],
               ),
-            )));
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconComponent(
+                  iconData: Icons.arrow_downward_outlined,
+                  borderColor: ColorConstants.transparent,
+                  backgroundColor: ColorConstants.transparent,
+                  iconColor: ColorConstants.lightGray,
+                  iconSize: 25,
+                  circleSize: 25,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    MenuAnchor(
+                      style: MenuStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(
+                            themeCubit.backgroundColor),
+                      ),
+                      childFocusNode: _buttonFocusNode,
+                      menuChildren: <Widget>[
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _selectedQuestionRequired == 'Required',
+                              onChanged: (bool? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _selectedQuestionRequired = 'Required';
+                                  });
+                                }
+                              },
+                              shape: CircleBorder(),
+                              activeColor: ColorConstants.primaryColor,
+                              checkColor: Colors.black,
+                            ),
+                            TextComponent(
+                              "Required",
+                              style: TextStyle(color: themeCubit.textColor),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            )
+                          ],
+                        ),
+                        Divider(
+                          thickness: 0.1,
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _selectedQuestionRequired == 'Optional',
+                              onChanged: (bool? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _selectedQuestionRequired = 'Optional';
+                                  });
+                                }
+                              },
+                              shape: CircleBorder(),
+                              activeColor: ColorConstants.primaryColor,
+                              checkColor: Colors.black,
+                            ),
+                            TextComponent(
+                              "Optional",
+                              style: TextStyle(color: themeCubit.textColor),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            )
+                          ],
+                        ),
+                      ],
+                      builder: (BuildContext context, MenuController controller,
+                          Widget? child) {
+                        return TextButton(
+                          focusNode: _buttonFocusNode,
+                          onPressed: () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                          child: TextComponent(
+                            _selectedQuestionRequired,
+                            style: TextStyle(color: ColorConstants.lightGray),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                IconComponent(
+                  iconData: Icons.arrow_downward_outlined,
+                  borderColor: ColorConstants.transparent,
+                  backgroundColor: ColorConstants.transparent,
+                  iconColor: ColorConstants.lightGray,
+                  iconSize: 25,
+                  circleSize: 25,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    MenuAnchor(
+                      alignmentOffset: Offset(-250, 0),
+                      style: MenuStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(
+                            themeCubit.backgroundColor),
+                      ),
+                      childFocusNode: _buttonFocusNode,
+                      menuChildren: <Widget>[
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _selectedQuestionPublic == 'Public',
+                              onChanged: (bool? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _selectedQuestionPublic = 'Public';
+                                  });
+                                }
+                              },
+                              shape: CircleBorder(),
+                              activeColor: ColorConstants.primaryColor,
+                              checkColor: Colors.black,
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextComponent(
+                                  'Public',
+                                  style: TextStyle(color: themeCubit.textColor),
+                                ),
+                                Text(
+                                  'Responses can be seen by everyone',
+                                  style: TextStyle(color: themeCubit.textColor),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 20,
+                            )
+                          ],
+                        ),
+                        Divider(
+                          thickness: 0.1,
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _selectedQuestionPublic == 'Private',
+                              onChanged: (bool? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _selectedQuestionPublic = 'Private';
+                                  });
+                                }
+                              },
+                              shape: CircleBorder(),
+                              activeColor: ColorConstants.primaryColor,
+                              checkColor: Colors.black,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextComponent(
+                                  'Private',
+                                  style: TextStyle(color: themeCubit.textColor),
+                                ),
+                                TextComponent(
+                                  'Only host can see the responses',
+                                  style: TextStyle(color: themeCubit.textColor),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 20,
+                            )
+                          ],
+                        )
+                      ],
+                      builder: (BuildContext context, MenuController controller,
+                          Widget? child) {
+                        return TextButton(
+                          focusNode: _buttonFocusNode,
+                          onPressed: () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                          child: Column(
+                            children: [
+                              TextComponent(
+                                _selectedQuestionPublic,
+                                style:
+                                    TextStyle(color: ColorConstants.lightGray),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ]),
+        );
+      }),
+    );
   }
 }

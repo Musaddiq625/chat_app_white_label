@@ -1,5 +1,3 @@
-import 'package:chat_app_white_label/src/constants/dark_theme_color_constants.dart';
-import 'package:chat_app_white_label/src/constants/light_theme_color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
@@ -10,8 +8,6 @@ import 'package:chat_app_white_label/src/screens/locals_create_event_screen/loca
 import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
-import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
-import 'package:chat_app_white_label/src/utils/theme_cubit/theme_bloc.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_state.dart';
 import 'package:flutter/material.dart';

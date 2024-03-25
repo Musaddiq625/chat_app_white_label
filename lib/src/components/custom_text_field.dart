@@ -9,6 +9,8 @@ class CustomTextField extends StatefulWidget {
   final List<TextInputFormatter> inputFormatters;
   final ValueChanged<String>? onChanged;
   final TextAlign textAlign;
+  final TextStyle? hintStyle;
+  final TextStyle? style;
   final TextEditingController? controller;
 
   const CustomTextField({
@@ -20,6 +22,8 @@ class CustomTextField extends StatefulWidget {
     this.inputFormatters = const [],
     this.onChanged,
     this.controller,
+    this.hintStyle,
+    this.style,
   }) : super(key: key);
 
   @override
@@ -45,20 +49,20 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+        style: widget.style,
         textAlign: widget.textAlign,
         controller: _controller,
         keyboardType: widget.keyboardType,
         cursorColor: ColorConstants.greenMain,
         decoration: InputDecoration(
           hintText: widget.hintText,
-          border: const UnderlineInputBorder(
-            borderSide: BorderSide(color: ColorConstants.greenMain, width: 2),
-          ),
+          hintStyle: widget.hintStyle,
+          border: InputBorder.none,
           focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: ColorConstants.greenMain, width: 2),
+            borderSide: BorderSide(color: ColorConstants.transparent, width: 2),
           ),
           enabledBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: ColorConstants.greenMain, width: 2),
+            borderSide: BorderSide(color: ColorConstants.transparent, width: 2),
           ),
         ),
         onChanged: (value) {

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../utils/theme_cubit/theme_cubit.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -8,6 +11,9 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
+
+
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -22,6 +28,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       borderRadius: const BorderRadius.vertical(top: Radius.circular(18.0)),
 
       child: BottomNavigationBar(
+        backgroundColor:themeCubit.darkBackgroundColor ,
         elevation: 10,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
@@ -47,7 +54,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.indigo,
+        selectedItemColor: themeCubit.primaryColor,
         onTap: _onItemTapped,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,

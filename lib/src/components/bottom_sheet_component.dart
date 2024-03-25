@@ -15,6 +15,7 @@ class BottomSheetComponent {
     required Widget body,
     Widget? header,
     bool isShowHeader = true,
+    Color? bgColor = Colors.white,
     bool takeFullHeightWhenPossible = false,
     Function()? whenComplete,
   }) async {
