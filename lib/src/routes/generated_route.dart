@@ -7,7 +7,6 @@ import 'package:chat_app_white_label/src/screens/home_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/select_contacts_screen.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/group_chat_room.dart';
-import 'package:chat_app_white_label/src/screens/locals_event_screen/locals_event_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
 import 'package:chat_app_white_label/src/screens/profile/profile_screen.dart';
@@ -18,6 +17,7 @@ import 'package:chat_app_white_label/src/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/route_constants.dart';
+import '../locals_views/event_screen/event_screen.dart';
 import '../screens/calls_screen.dart';
 import '../screens/status_screen.dart';
 
@@ -43,7 +43,7 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.localsEventScreen:
       // final arg = settings.arguments! as String;
-      return materialRoute(LocalsEventScreen());
+      return materialRoute(EventScreen());
     case RouteConstants.editProfileScreen:
       final arg = settings.arguments! as bool;
       return materialRoute(ProfileScreen(
