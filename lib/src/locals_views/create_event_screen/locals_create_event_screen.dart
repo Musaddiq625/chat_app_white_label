@@ -2,6 +2,7 @@ import 'package:chat_app_white_label/src/components/create_event_tile_component.
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
@@ -17,7 +18,6 @@ import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../components/search_text_field_component.dart';
-import '../../constants/image_constants.dart';
 import '../../models/contact.dart';
 
 class LocalsCreateEventScreen extends StatefulWidget {

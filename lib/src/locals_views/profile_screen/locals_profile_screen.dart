@@ -10,7 +10,6 @@ import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../constants/color_constants.dart';
-import '../../constants/image_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';

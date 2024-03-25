@@ -2,12 +2,12 @@ import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
-import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
-import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../components/bottom_nav_componenet.dart';
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -23,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<ImageProvider> images = [
     const NetworkImage(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
@@ -51,20 +52,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+      removeSafeAreaPadding: false,
       bgImage:
           "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
       widget: _eventWidget(),
       bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 10,
-                blurRadius: 20,
-                offset: const Offset(0, -3), // changes position of shadow
-              ),
-            ],
-          ),
+          // decoration: BoxDecoration(
+          //   boxShadow: [
+          //     BoxShadow(
+          //       color: Colors.grey.withOpacity(1.5),
+          //       spreadRadius: 05,
+          //       blurRadius: 10,
+          //       offset: Offset(0, -3), // changes position of shadow
+          //     ),
+          //   ],
+          // ),
           child: const BottomNavBar()),
     );
   }
@@ -147,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  const Text(
+                  Text(
                     "+1456 ${StringConstants.joined}",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
@@ -164,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 10,
               ),
-              const Text(
+              Text(
                 "17 Feb . 11AM - 2PM . Manchester",
                 style: TextStyle(fontSize: 15, color: Colors.white),
               ),
@@ -175,10 +177,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ButtonComponent(
+                      bgcolor: themeCubit.primaryColor,
+                      textColor: themeCubit.backgroundColor,
                       buttonText: StringConstants.viewEvent,
                       onPressedFunction: () {
-                        NavigationUtil.push(
-                            context, RouteConstants.eventScreen);
+                        // NavigationUtil.push(
+                        //     context, RouteConstants.localsEventScreen);
                       }),
                   const Spacer(),
                   IconComponent(
@@ -220,6 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
   _showMoreBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
+        bgColor: themeCubit.darkBackgroundColor,
         isShowHeader: false,
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
@@ -234,16 +239,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       iconData: Icons.share,
                       borderColor: Colors.transparent,
                       backgroundColor: ColorConstants.iconBg,
-                      iconColor: Colors.indigo,
+                      iconColor: themeCubit.primaryColor,
                       circleSize: 35,
                       iconSize: 20,
                     ),
                     const SizedBox(
                       width: 20,
                     ),
-                    const Text(StringConstants.saveEvent,
+                    Text(StringConstants.saveEvent,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14)),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: themeCubit.textColor)),
                   ],
                 ),
               ),
@@ -259,16 +266,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       iconData: Icons.thumb_down,
                       borderColor: Colors.transparent,
                       backgroundColor: ColorConstants.iconBg,
-                      iconColor: Colors.indigo,
+                      iconColor: themeCubit.primaryColor,
                       circleSize: 35,
                       iconSize: 20,
                     ),
                     const SizedBox(
                       width: 20,
                     ),
-                    const Text(StringConstants.showLessLikeThis,
+                    Text(StringConstants.showLessLikeThis,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14)),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: themeCubit.textColor)),
                   ],
                 ),
               ),
@@ -306,6 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _shareEventBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Container(
@@ -316,13 +326,13 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
                     child: Text(
                       StringConstants.shareEvent,
                       style: TextStyle(
-                          color: Colors.indigo,
-                          fontWeight: FontWeight.bold,
+                          color: themeCubit.primaryColor,
+                          fontFamily: FontConstants.fontProtestStrike,
                           fontSize: 18),
                     ),
                   ),
@@ -333,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: IconComponent(
                         iconData: Icons.close,
                         borderColor: Colors.transparent,
-                        iconColor: Colors.black,
+                        iconColor: themeCubit.textColor,
                         circleSize: 50,
                         backgroundColor: Colors.transparent,
                       ),
@@ -351,19 +361,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     iconColor: Colors.white,
                     circleSize: 60,
                     customText: StringConstants.copyLink,
+                    customTextColor: themeCubit.textColor,
                   ),
                   IconComponent(
                     iconData: Icons.facebook,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.purple,
+                    backgroundColor: ColorConstants.blue,
                     circleSize: 60,
                     customText: StringConstants.facebook,
+                    customTextColor: themeCubit.textColor,
                   ),
                   IconComponent(
                     iconData: Icons.install_desktop,
                     borderColor: Colors.transparent,
                     circleSize: 60,
                     customText: StringConstants.instagram,
+                    customTextColor: themeCubit.textColor,
                   ),
                   IconComponent(
                     iconData: Icons.share,
@@ -371,6 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundColor: const Color.fromARGB(255, 87, 64, 208),
                     circleSize: 60,
                     customText: StringConstants.share,
+                    customTextColor: themeCubit.textColor,
                   )
                 ],
               ),
@@ -380,13 +394,13 @@ class _HomeScreenState extends State<HomeScreen> {
               const Divider(
                 thickness: 0.5,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
                 child: Text(
                   StringConstants.yourConnections,
                   style: TextStyle(
-                      color: Colors.indigo,
-                      fontWeight: FontWeight.bold,
+                      color: themeCubit.primaryColor,
+                      fontFamily: FontConstants.fontProtestStrike,
                       fontSize: 18),
                 ),
               ),
@@ -413,6 +427,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _shareWithConnectionBottomSheet(String eventName, String userName) {
     BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Column(
@@ -423,22 +438,20 @@ class _HomeScreenState extends State<HomeScreen> {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                style: TextStyle(
                     fontSize: 20,
-                    color: ColorConstants.black,
+                    fontFamily: FontConstants.fontProtestStrike,
                     height: 1.5),
                 children: <TextSpan>[
-                  const TextSpan(
-                      text: StringConstants.areYouSureYouwantToShare),
+                  TextSpan(text: StringConstants.areYouSureYouwantToShare),
                   TextSpan(
                     text: eventName,
-                    style: const TextStyle(color: Colors.indigo),
+                    style: TextStyle(color: themeCubit.primaryColor),
                   ),
-                  const TextSpan(text: "with \n"),
+                  TextSpan(text: " with \n"),
                   TextSpan(
                     text: "$userName?",
-                    style: const TextStyle(color: Colors.indigo),
+                    style: TextStyle(color: themeCubit.primaryColor),
                   ),
                 ],
               ),
@@ -449,15 +462,19 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 InkWell(
                     onTap: () => Navigator.pop(context),
-                    child: const Text(StringConstants.goBack)),
+                    child: Text(
+                      StringConstants.goBack,
+                      style: TextStyle(color: themeCubit.textColor),
+                    )),
                 const SizedBox(width: 30),
                 ButtonComponent(
+                  bgcolor: themeCubit.primaryColor,
+                  textColor: themeCubit.backgroundColor,
                   buttonText: "Yes, share it",
                   onPressedFunction: () {
                     Navigator.pop(context);
                     _yesShareItBottomSheet();
                   },
-                  bgcolor: ColorConstants.yellow,
                 ),
               ],
             ),
@@ -470,7 +487,7 @@ class _HomeScreenState extends State<HomeScreen> {
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,
-      body: const InfoSheetComponent(
+      body: InfoSheetComponent(
         heading: StringConstants.eventShared,
         image: AssetConstants.group,
       ),

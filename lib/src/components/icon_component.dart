@@ -24,7 +24,6 @@ class IconComponent extends StatelessWidget {
     this.iconColor = Colors.black, // Default icon color
     this.borderSize = 2.0, // Default border size
     this.borderColor = Colors.transparent, // Default border color
-    this.borderColor = Colors.transparent, // Default border color
     this.circleSize = 50,
     this.circleHeight,
     this.backgroundColor = Colors.grey,
@@ -45,7 +44,7 @@ class IconComponent extends StatelessWidget {
         children: [
           Container(
             alignment: Alignment.center,
-            width: customIconText == null ? circleSize : null,
+
             width: customIconText == null ? circleSize : null,
             // width:  MediaQuery.of(context).size.width/4, // Set the width to the circle size
             height:

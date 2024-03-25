@@ -4,8 +4,7 @@ import 'package:flutter/cupertino.dart';
 sealed class ThemeState {}
 
 class ThemeInitial extends ThemeState {
-  late bool isDarkMode;
-  ThemeInitial(isDarkMode);
+  ThemeInitial();
 }
 
 class ThemeUpdate extends ThemeState {
