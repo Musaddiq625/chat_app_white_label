@@ -22,4 +22,5 @@ class RouteConstants {
   static const String viewGroupProfile = 'viewGroupProfile';
 
   static const String eventScreen = 'eventScreen';
+  static const String chatListing = 'chatListing';
 }

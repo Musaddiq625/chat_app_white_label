@@ -1,8 +1,8 @@
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/chat_tile_component.dart';
+import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/components/filter_component.dart';
-import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/textfield_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
@@ -240,78 +240,6 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
         ),
       );
     }));
-  }
-}
-
-class ContactTileComponent extends StatefulWidget {
-  final String title;
-  final String subtitle;
-  final bool isSelected;
-  final Function() onTap;
-  const ContactTileComponent(
-      {super.key,
-      required this.title,
-      required this.subtitle,
-      required this.isSelected,
-      required this.onTap});
-
-  @override
-  State<ContactTileComponent> createState() => _ContactTileComponentState();
-}
-
-class _ContactTileComponentState extends State<ContactTileComponent> {
-  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const ProfileImageComponent(
-              url: null,
-              size: 40,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextComponent(
-                  widget.title,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: themeCubit.textColor),
-                ),
-                TextComponent(
-                  widget.subtitle,
-                  style: const TextStyle(color: ColorConstants.lightGrey),
-                )
-              ],
-            ),
-            const Spacer(),
-            Checkbox(
-              shape: const CircleBorder(),
-              fillColor: MaterialStateProperty.resolveWith((states) {
-                if (states.contains(MaterialState.selected)) {
-                  return Colors.green;
-                }
-                return null;
-              }),
-              value: widget.isSelected,
-              onChanged: (bool? newValue) {
-                // setState(() {
-                //   checkBoxValue = newValue!;
-                // });
-              },
-            )
-          ],
-        ),
-      ),
-    );
   }
 }
 

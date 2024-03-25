@@ -1,6 +1,8 @@
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +24,8 @@ class _ChatTileComponentState extends State<ChatTileComponent> {
         horizontalTitleGap: 10,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
         tileColor: themeCubit.darkBackgroundColor,
-        onTap: () {},
+        onTap: () =>
+            NavigationUtil.push(context, RouteConstants.chatRoomScreen),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
         leading: const ProfileImageComponent(
           url: null,

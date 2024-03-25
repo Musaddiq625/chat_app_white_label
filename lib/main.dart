@@ -1,4 +1,6 @@
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
@@ -19,7 +21,7 @@ import 'globals.dart';
 final getIt = GetIt.I;
 
 late Size mq;
-//
+
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
 //
@@ -45,40 +47,7 @@ late Size mq;
 //   runApp(const MyApp());
 // }
 
-void main() => runApp(const BottomNavigationBarExampleApp());
-
-class BottomNavigationBarExampleApp extends StatelessWidget {
-  const BottomNavigationBarExampleApp({super.key});
-
-  @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
-  //     debugShowCheckedModeBanner: false,
-  //     home: LocalsCreateEventScreen(),
-  //     onGenerateRoute: generateRoute,
-  //   );
-  // }
-  @override
-  Widget build(BuildContext context) {
-    mq = MediaQuery.of(context).size;
-    return BlocProvider(
-      create: (context) => ThemeCubit(),
-      child: BlocBuilder<ThemeCubit, ThemeState>(
-        builder: (context, state) {
-          if (state is ThemeInitial) {
-            return MaterialApp(
-              theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
-              home: ChatRoomScreen(),
-            );
-          } else {
-            return Container();
-          }
-        },
-      ),
-    );
-  }
-}
+void main() => runApp(const MyApp());
 
 Future<void> _initRepos() async {
   getIt.registerSingleton(FirebaseService());
@@ -89,35 +58,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    mq = MediaQuery.of(context).size;
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) => AppSettingCubit(),
         ),
-        BlocProvider<LoginCubit>(
-          create: (BuildContext context) => LoginCubit(),
-        ),
-        BlocProvider<OTPCubit>(
-          create: (BuildContext context) => OTPCubit(),
-        ),
-        BlocProvider<ChatRoomCubit>(
-          create: (BuildContext context) => ChatRoomCubit(),
-        ),
-        BlocProvider<GroupChatRoomCubit>(
-          create: (BuildContext context) => GroupChatRoomCubit(),
-        ),
+        BlocProvider(
+          create: (context) => ThemeCubit(),
+        )
       ],
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        title: 'WeUno Chat',
-        theme: ThemeData(
-          fontFamily: 'Helvetica',
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        initialRoute: RouteConstants.splashScreen,
-        onGenerateRoute: generateRoute,
-        debugShowCheckedModeBanner: false,
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          return MaterialApp(
+            navigatorKey: navigatorKey,
+            title: 'Locals App',
+            theme: ThemeData(
+              fontFamily: FontConstants.fontNunitoSans,
+              useMaterial3: true,
+            ),
+            initialRoute: RouteConstants.chatListing,
+            onGenerateRoute: generateRoute,
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
   }

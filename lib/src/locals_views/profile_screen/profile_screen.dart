@@ -1,13 +1,17 @@
+import 'package:chat_app_white_label/src/components/tag_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
+import '../../components/info_sheet_component.dart';
 import '../../constants/color_constants.dart';
-import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
-import '../../utils/navigation_util.dart';
+import '../../utils/theme_cubit/theme_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,6 +21,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  bool connectSend = false;
+  int _currentPage = 0;
+  late PageController _pageController;
   final List<ImageProvider> images = [
     const NetworkImage(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
@@ -120,6 +128,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0)
+      ..addListener(() {
+        setState(() {
+          _currentPage = _pageController.page!.round();
+        });
+      });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  _yesShareItBottomSheet() {
+    BottomSheetComponent.showBottomSheet(
+      context,
+      isShowHeader: false,
+      body: InfoSheetComponent(
+        heading: StringConstants.requestSend + " XyZ",
+        body: StringConstants.connectSendBody,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     // return MainScaffold(
     //   // bgImage: "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
@@ -130,43 +166,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //   body: _profileWidget(),
     // );
     return UIScaffold(
+      removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
-          child: Column(
-        children: [
-          _profileWidget(),
-          const SizedBox(
-            height: 10,
-          ),
-          _aboutMe(),
-          const SizedBox(
-            height: 10,
-          ),
-          _myInterest(),
-          const SizedBox(
-            height: 10,
-          ),
-          _event(),
-          const SizedBox(
-            height: 10,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          _clubs(),
-          const SizedBox(
-            height: 100,
-          ),
-        ],
+          child: Container(
+        color: themeCubit.backgroundColor,
+        child: Column(
+          children: [
+            _profileWidget(),
+            const SizedBox(
+              height: 10,
+            ),
+            _aboutMe(),
+            const SizedBox(
+              height: 10,
+            ),
+            _myInterest(),
+            const SizedBox(
+              height: 10,
+            ),
+            _event(),
+            const SizedBox(
+              height: 10,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            _clubs(),
+            const SizedBox(
+              height: 100,
+            ),
+          ],
+        ),
       )),
       floatingActionButton: SizedBox(
         width: 350,
-        child: ButtonComponent(
-          buttonText: StringConstants.connect,
-          onPressedFunction: () {
-            NavigationUtil.push(context, RouteConstants.eventScreen);
-          },
-        ),
+        child: connectSend
+            ? ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                buttonText: StringConstants.connectSent,
+                onPressedFunction: () {
+                  _yesShareItBottomSheet();
+                  // NavigationUtil.push(
+                  //     context, RouteConstants.localsEventScreen);
+                },
+              )
+            : ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                buttonText: StringConstants.connect,
+                onPressedFunction: () {
+                  setState(() {
+                    connectSend = true;
+                  });
+                  // NavigationUtil.push(
+                  //     context, RouteConstants.localsEventScreen);
+                },
+              ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -178,25 +233,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
         // Use a Container with a specific height or Flexible with FlexFit.loose
         // Here, I'm using a Container with a specific height as an example
         Container(
-          height: 750, // Adjust this value as needed
+          height: MediaQuery.sizeOf(context).height *
+              1, // Adjust this value as needed
           child: Stack(
             children: [
-              PageView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: imgList.length,
-                itemBuilder: (context, index) {
-                  final file = imgList[index];
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: Image.network(
-                          file,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ],
-                  );
-                },
+              Column(
+                children: [
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: imgList.length,
+                      itemBuilder: (context, index) {
+                        final file = imgList[index];
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: Image.network(
+                                file,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
               _infoWidget(),
             ],
@@ -213,14 +276,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          // Carousel indicator
           Row(
-            children: [
-              Icon(
-                Icons.minimize_rounded,
-                color: ColorConstants.white,
-                size: 30,
-              ),
-            ],
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: List.generate(imgList.length, (index) {
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 3),
+                height: 4,
+                width: 15,
+                decoration: BoxDecoration(
+                  color: _currentPage == index
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              );
+            }),
+          ),
+          SizedBox(
+            height: 10,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,31 +437,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-        color: ColorConstants.white,
+        color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(18.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
+              Padding(
                   padding: const EdgeInsets.only(top: 10),
-                  child: Text(
+                  child: TextComponent(
                     StringConstants.aboutMe,
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: ColorConstants.bgcolorbutton,
+                        color: themeCubit.primaryColor,
                         fontFamily: FontConstants.fontProtestStrike),
                   )),
               const SizedBox(
                 height: 10,
               ),
-              const Text(
+              Text(
                 "New to the city, keen to explore with new minded people and build my own network",
                 style: TextStyle(
                   fontSize: 15,
-                  color: ColorConstants.black,
+                  color: themeCubit.textColor,
                 ),
               ),
               const SizedBox(
@@ -398,7 +471,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   IconComponent(
                     iconData: Icons.facebook,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.purple,
+                    backgroundColor: ColorConstants.blue,
                     circleSize: 30,
                   ),
                   const SizedBox(
@@ -407,7 +480,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   IconComponent(
                     iconData: Icons.facebook,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.purple,
+                    backgroundColor: ColorConstants.blue,
                     circleSize: 30,
                     circleHeight: 30,
                   ),
@@ -417,16 +490,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ...tagList
                       .map((tag) =>
                           Row(mainAxisSize: MainAxisSize.min, children: [
-                            IconComponent(
+                            TagComponent(
                               iconData: tag['iconData'],
-                              borderColor: ColorConstants.tagBgColor,
-                              backgroundColor: ColorConstants.tagBgColor,
+                              customTextColor: themeCubit.textColor,
+                              backgroundColor:
+                                  ColorConstants.lightGray.withOpacity(0.3),
+                              iconColor: themeCubit.primaryColor,
                               customIconText: tag['name'],
                               circleHeight: 35,
-                              // circleSize: (tag['name'].length * 14.0) + 25,
                               iconSize: 20,
                             ),
-                            const SizedBox(
+                            SizedBox(
                               width: 5,
                             )
                           ]))
@@ -444,7 +518,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-        color: ColorConstants.white,
+        color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(18.0),
@@ -453,14 +527,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
+                Padding(
                     padding: const EdgeInsets.only(top: 10),
-                    child: Text(
+                    child: TextComponent(
                       StringConstants.myInterests,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
                           fontSize: 18,
-                          color: ColorConstants.bgcolorbutton,
+                          color: themeCubit.primaryColor,
                           fontFamily: FontConstants.fontProtestStrike),
                     )),
                 SizedBox(
@@ -471,13 +544,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ...interestTagList
                         .map((tag) =>
                             Row(mainAxisSize: MainAxisSize.min, children: [
-                              IconComponent(
+                              TagComponent(
                                 iconData: tag['iconData'],
-                                borderColor: ColorConstants.tagBgColor,
-                                backgroundColor: ColorConstants.tagBgColor,
+                                customTextColor: themeCubit.textColor,
+                                backgroundColor:
+                                    ColorConstants.lightGray.withOpacity(0.3),
+                                iconColor: themeCubit.primaryColor,
                                 customIconText: tag['name'],
                                 circleHeight: 35,
-                                // circleSize: (tag['name'].length * 13.0) + 20,
                                 iconSize: 20,
                               ),
                               SizedBox(
@@ -511,26 +585,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: const TextStyle(
                         fontSize: 20, color: ColorConstants.bgcolorbutton),
                     children: <TextSpan>[
-                      const TextSpan(
+                      TextSpan(
                         text: "${StringConstants.events}  ",
                         style: TextStyle(
                             fontSize: 20,
-                            color: ColorConstants.bgcolorbutton,
+                            color: themeCubit.primaryColor,
                             fontFamily: FontConstants.fontProtestStrike),
                       ),
                       TextSpan(
                         text: "387",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 20,
-                            color: ColorConstants.lightGray.withOpacity(0.5)),
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
                       ),
                     ],
                   ),
                 )),
             Padding(
-                padding: const EdgeInsets.only(top: 10, right: 30),
+                padding: const EdgeInsets.only(top: 10, right: 10),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "See all",
@@ -542,8 +617,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       iconData: Icons.arrow_forward_ios,
                       backgroundColor: ColorConstants.transparent,
                       borderColor: ColorConstants.transparent,
-                      circleSize: 10,
                       iconSize: 18,
+                      borderSize: 0,
+                      circleSize: 20,
                       iconColor: ColorConstants.lightGray,
                     )
                   ],
@@ -671,25 +747,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: const TextStyle(
                         fontSize: 20, color: ColorConstants.bgcolorbutton),
                     children: <TextSpan>[
-                      const TextSpan(
+                      TextSpan(
                         text: "${StringConstants.clubs}  ",
                         style: TextStyle(
                             fontSize: 20,
-                            color: ColorConstants.bgcolorbutton,
+                            color: themeCubit.primaryColor,
                             fontFamily: FontConstants.fontProtestStrike),
                       ),
                       TextSpan(
                         text: "387",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 20,
-                            color: ColorConstants.lightGray.withOpacity(0.5)),
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
                       ),
                     ],
                   ),
                 )),
             Padding(
-                padding: const EdgeInsets.only(top: 10, right: 30),
+                padding: const EdgeInsets.only(top: 10, right: 10),
                 child: Row(
                   children: [
                     Text(
@@ -702,8 +778,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       iconData: Icons.arrow_forward_ios,
                       backgroundColor: ColorConstants.transparent,
                       borderColor: ColorConstants.transparent,
-                      circleSize: 10,
                       iconSize: 18,
+                      borderSize: 0,
+                      circleSize: 20,
                       iconColor: ColorConstants.lightGray,
                     )
                   ],
