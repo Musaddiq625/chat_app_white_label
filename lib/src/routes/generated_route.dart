@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
@@ -107,6 +108,9 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.chatListing:
       return materialRoute(const ChatListingScreen());
+
+    case RouteConstants.doneScreen:
+      return materialRoute(const DoneScreen());
 
     case RouteConstants.chatRoomScreen:
       return materialRoute(const ChatRoomScreen());

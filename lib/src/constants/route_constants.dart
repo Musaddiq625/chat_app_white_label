@@ -23,4 +23,5 @@ class RouteConstants {
 
   static const String eventScreen = 'eventScreen';
   static const String chatListing = 'chatListing';
+  static const String doneScreen = 'doneScreen';
 }

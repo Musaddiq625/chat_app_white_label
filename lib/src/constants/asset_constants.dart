@@ -9,4 +9,5 @@ class AssetConstants {
   static const String chat = "$images/chat.png";
   static const String sad = "$images/sad.png";
   static const String warning = "$images/warning.png";
+  static const String done = "$images/done.png";
 }

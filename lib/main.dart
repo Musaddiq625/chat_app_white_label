@@ -1,17 +1,8 @@
 
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/locals_views/on_boarding/dob_screen.dart';
-import 'package:chat_app_white_label/src/locals_views/on_boarding/name_screen.dart';
-import 'package:chat_app_white_label/src/locals_views/on_boarding/select_profile_screen.dart';
-import 'package:chat_app_white_label/src/locals_views/on_boarding/upload_picture_screen.dart';
-import 'package:chat_app_white_label/src/locals_views/profile_screen/locals_profile_screen.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
-import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
-import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
-import 'package:chat_app_white_label/src/locals_views/locals_signup/passwordScreen.dart';
-import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
-import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_state.dart';
@@ -81,7 +72,7 @@ class MyApp extends StatelessWidget {
               fontFamily: FontConstants.fontNunitoSans,
               useMaterial3: true,
             ),
-            initialRoute: RouteConstants.chatListing,
+            initialRoute: RouteConstants.doneScreen,
             onGenerateRoute: generateRoute,
             debugShowCheckedModeBanner: false,
           );
