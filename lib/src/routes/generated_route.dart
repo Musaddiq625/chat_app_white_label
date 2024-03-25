@@ -18,6 +18,7 @@ import 'package:chat_app_white_label/src/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/route_constants.dart';
+import '../locals_views/create_event_screen/create_event_screen.dart';
 import '../locals_views/event_screen/event_screen.dart';
 import '../screens/calls_screen.dart';
 import '../screens/status_screen.dart';
@@ -114,7 +115,7 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const ChatRoomScreen());
 
     case RouteConstants.createEventScreen:
-      return materialRoute(const LocalsCreateEventScreen());
+      return materialRoute(const CreateEventScreen());
 
     default:
       return materialRoute(const SplashScreen());
