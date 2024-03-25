@@ -9,7 +9,7 @@ class RouteConstants {
   static const String statusScreen = 'statusScreen';
   // static const String chatScreen = 'chatScreen';
   static const String homeScreen = 'homeScreen';
-  static const String chatRoomScreen = 'chatRoomScreen';
+  // static const String chatRoomScreen = 'chatRoomScreen';
   static const String callScreen = 'callScreen';
   static const String profileScreen = 'profileScreen';
 
@@ -22,5 +22,7 @@ class RouteConstants {
   static const String viewGroupProfile = 'viewGroupProfile';
 
   static const String eventScreen = 'eventScreen';
-  static const String chatListing = 'chatListing';
+  static const String chatListingScreen = 'chatListingScreen';
+  static const String chatRoomScreen = 'chatRoomScreen';
+  static const String createEventScreen = 'createEventScreen';
 }

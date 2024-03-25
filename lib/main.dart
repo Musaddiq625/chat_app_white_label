@@ -1,13 +1,8 @@
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
-import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
-import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
-import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
-import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
-import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_state.dart';
@@ -17,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import 'globals.dart';
+import 'src/locals_views/create_event_screen/locals_create_event_screen.dart';
 
 final getIt = GetIt.I;
 
@@ -77,7 +73,8 @@ class MyApp extends StatelessWidget {
               fontFamily: FontConstants.fontNunitoSans,
               useMaterial3: true,
             ),
-            initialRoute: RouteConstants.chatListing,
+            home: HomeScreen(),
+            // initialRoute: RouteConstants.chatListing,
             onGenerateRoute: generateRoute,
             debugShowCheckedModeBanner: false,
           );
