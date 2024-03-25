@@ -1,15 +1,19 @@
 
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/dob_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/gender_selection.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/interest_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/name_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/select_profile_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/upload_picture_screen.dart';
-import 'package:chat_app_white_label/src/locals_views/profile_screen/locals_profile_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/what_do_you_do_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/profile_screen/profile_screen.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/cubit/chat_room_cubit.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/cubit/group_chat_room_cubit.dart';
-import 'package:chat_app_white_label/src/locals_views/locals_signup/passwordScreen.dart';
+import 'package:chat_app_white_label/src/locals_views/locals_signup/password_screen.dart';
 import 'package:chat_app_white_label/src/screens/login/cubit/login_cubit.dart';
 import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
@@ -74,7 +78,7 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
       if (state is ThemeInitial) {
         return MaterialApp(
           theme: ThemeData(fontFamily: "Nunito Sans 10pt"),
-          home: DOBScreen(),
+          home: InterestScreen(),
         );
       }
       else if(state is ThemeUpdate){

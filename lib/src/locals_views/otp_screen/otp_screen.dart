@@ -12,14 +12,14 @@ import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
-class LocalsOtpScreen extends StatefulWidget {
-  const LocalsOtpScreen({super.key});
+class OtpScreen extends StatefulWidget {
+  const OtpScreen({super.key});
 
   @override
-  State<LocalsOtpScreen> createState() => _LocalsOtpScreenState();
+  State<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _LocalsOtpScreenState extends State<LocalsOtpScreen> {
+class _OtpScreenState extends State<OtpScreen> {
   final otpController = TextEditingController();
   bool _isOtpValid = false;
   Timer? _timer;

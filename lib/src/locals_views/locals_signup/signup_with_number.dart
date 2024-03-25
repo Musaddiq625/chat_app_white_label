@@ -1,7 +1,8 @@
-import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/button_component.dart';
@@ -10,16 +11,16 @@ import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
-class LocalsSignUpWithEmail extends StatefulWidget {
-  const LocalsSignUpWithEmail({super.key});
+class SignUpWithNumber extends StatefulWidget {
+  const SignUpWithNumber({super.key});
 
   @override
-  State<LocalsSignUpWithEmail> createState() => _LocalsSignUpWithEmailState();
+  State<SignUpWithNumber> createState() => _SignUpWithNumberState();
 }
 
-class _LocalsSignUpWithEmailState extends State<LocalsSignUpWithEmail> {
+class _SignUpWithNumberState extends State<SignUpWithNumber> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
 
@@ -28,10 +29,10 @@ class _LocalsSignUpWithEmailState extends State<LocalsSignUpWithEmail> {
     return UIScaffold(
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
-        widget: continueWithEmail());
+        widget: continueWithNumber());
   }
 
-  Widget continueWithEmail() {
+  Widget continueWithNumber() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: Column(
@@ -61,7 +62,7 @@ class _LocalsSignUpWithEmailState extends State<LocalsSignUpWithEmail> {
                     fontFamily: FontConstants.fontProtestStrike),
               ),
               Text(
-                "email address?",
+                "phone number?",
                 style: TextStyle(
                     fontSize: 22,
                     color: themeCubit.textColor,
@@ -70,17 +71,56 @@ class _LocalsSignUpWithEmailState extends State<LocalsSignUpWithEmail> {
               const SizedBox(
                 height: 20,
               ),
-              TextFieldComponent(
-                _emailcontroller,
-                hintText: "abc@gmail.com",
-                fieldColor: ColorConstants.lightGray.withOpacity(0.5),
-                textColor: themeCubit.textColor,
+              Row(
+                children: <Widget>[
+                  CountryCodePicker(
+                    textStyle: TextStyle(
+                        color: themeCubit.textColor,
+                        fontFamily: FontConstants.fontProtestStrike,
+                        fontSize: 30),
+                    onChanged: (CountryCode countryCode) {
+                      _countryCodeController.text = '+${countryCode.dialCode!}';
+                      print("country code ${countryCode.dialCode}");
+                    },
+                    initialSelection: 'pk',
+                    showCountryOnly: false,
+                    showOnlyCountryWhenClosed: false,
+                    alignLeft: false,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _phoneNumbercontroller,
+                      keyboardType: TextInputType.phone,
+                      style: TextStyle(
+                          color: ColorConstants.white,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 30),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "1234 123456",
+                        hintStyle: TextStyle(
+                            color: ColorConstants.lightGray,
+                            fontFamily: FontConstants.fontProtestStrike,
+                            fontSize: 30),
+                      ),
+                      onChanged: (value) {
+                        print(value);
+                      },
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(10),
+                        // Limit to 12 characters
+                        FilteringTextInputFormatter.digitsOnly,
+                        // Accept only digits
+                      ],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 20,
               ),
               Text(
-                StringConstants.verificationCodeSentToEmail,
+                StringConstants.verificationCodeSent,
                 style: TextStyle(
                   fontSize: 12,
                   color: themeCubit.textColor,
@@ -95,8 +135,8 @@ class _LocalsSignUpWithEmailState extends State<LocalsSignUpWithEmail> {
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
-                bgcolor: themeCubit.primaryColor,
-                textColor: themeCubit.backgroundColor,
+                bgcolor: ColorConstants.lightGray.withOpacity(0.2),
+                textColor: ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {}),
           )

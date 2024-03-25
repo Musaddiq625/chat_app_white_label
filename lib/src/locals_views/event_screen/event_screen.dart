@@ -18,11 +18,11 @@ import '../../constants/color_constants.dart';
 import '../../constants/image_constants.dart';
 import '../../models/contact.dart';
 
-class LocalsEventScreen extends StatefulWidget {
-  const LocalsEventScreen({super.key});
+class EventScreen extends StatefulWidget {
+  const EventScreen({super.key});
 
   @override
-  State<LocalsEventScreen> createState() => _LocalsEventScreenState();
+  State<EventScreen> createState() => _EventScreenState();
 }
 
 final String _fullText =
@@ -31,7 +31,7 @@ bool _showFullText = false;
 bool ticketRequired = true;
 final TextEditingController _controller = TextEditingController();
 
-class _LocalsEventScreenState extends State<LocalsEventScreen> {
+class _EventScreenState extends State<EventScreen> {
 
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 

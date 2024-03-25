@@ -20,15 +20,15 @@ import '../../components/search_text_field_component.dart';
 import '../../constants/image_constants.dart';
 import '../../models/contact.dart';
 
-class LocalsCreateEventScreen extends StatefulWidget {
-  const LocalsCreateEventScreen({super.key});
+class CreateEventScreen extends StatefulWidget {
+  const CreateEventScreen({super.key});
 
   @override
-  State<LocalsCreateEventScreen> createState() =>
-      _LocalsCreateEventScreenState();
+  State<CreateEventScreen> createState() =>
+      _CreateEventScreenState();
 }
 
-class _LocalsCreateEventScreenState extends State<LocalsCreateEventScreen> {
+class _CreateEventScreenState extends State<CreateEventScreen> {
   final TextEditingController _controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
   TextEditingController searchControllerConnections = TextEditingController();

@@ -4,6 +4,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
@@ -23,9 +24,9 @@ class DOBScreen extends StatefulWidget {
 class _DOBScreenState extends State<DOBScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
-  final TextEditingController _countryCodeController =
-
-      TextEditingController(text: '+92');
+  final TextEditingController _countryCodeController = TextEditingController(text: '+92');
+  TextEditingController _dateController = TextEditingController();
+  late final DateTime? picked;
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -76,30 +77,25 @@ class _DOBScreenState extends State<DOBScreen> {
                 height: 20,
               ),
               InkWell(
-                child: TextField(
-                  keyboardType: TextInputType.text,
-                  style: TextStyle(
-                      color: ColorConstants.white,
+                onTap: () => _selectDate(context),
+                child:
+                _dateController.value.text.isNotEmpty?
+                TextComponent(
+                  _dateController.text,
+                  style:  TextStyle(
+                      color: ColorConstants.lightGray,
                       fontFamily: FontConstants.fontProtestStrike,
                       fontSize: 30),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "DD    MM    YYYY",
-                    hintStyle: TextStyle(
-                        color: ColorConstants.lightGray,
-                        fontFamily: FontConstants.fontProtestStrike,
-                        fontSize: 30),
-                  ),
-                  onChanged: (value) {
-                    print(value);
-                  },
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(10),
-                    // Limit to 12 characters
-                    FilteringTextInputFormatter.digitsOnly,
-                    // Accept only digits
-                  ],
-                ),
+
+                ):TextComponent(
+
+                 "DD   MM   YYYY",
+                  style:  TextStyle(
+                      color: ColorConstants.lightGray,
+                      fontFamily: FontConstants.fontProtestStrike,
+                      fontSize: 30),
+
+                )
               ),
             ],
           ),
@@ -116,19 +112,17 @@ class _DOBScreenState extends State<DOBScreen> {
     );
   }
 
-  _selectDate(BuildContext context) async {
-    DatePickerDialog(
-      restorationId: 'date_picker_dialog',
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-      initialDate: _selectDate(context),
-      firstDate: DateTime(2021),
-      lastDate: DateTime(2022),
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
     );
-
-
-    // if (picked != null && picked != selectedDate)
-    //   setState(() {
-    //     selectedDate = picked;
-    //   });
+    if (picked != null) {
+      setState(() {
+        _dateController.text = DateFormat('dd MM yyyy').format(picked);
+      });
+    }
   }
 }

@@ -17,14 +17,14 @@ import '../../components/contacts_card_component.dart';
 import '../../constants/font_constants.dart';
 import '../../models/contact.dart';
 
-class LocalsHomeScreen extends StatefulWidget {
-  const LocalsHomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<LocalsHomeScreen> createState() => _LocalsHomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _LocalsHomeScreenState extends State<LocalsHomeScreen> {
+class _HomeScreenState extends State<HomeScreen> {
 
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<ImageProvider> images = [

@@ -16,14 +16,14 @@ import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
-class LocalsProfileScreen extends StatefulWidget {
-  const LocalsProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<LocalsProfileScreen> createState() => _LocalsProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _LocalsProfileScreenState extends State<LocalsProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
 
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   bool connectSend = false;

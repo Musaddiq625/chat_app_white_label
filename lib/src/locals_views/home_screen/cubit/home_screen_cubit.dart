@@ -1,21 +1,20 @@
 import 'dart:core';
 
 import 'package:bloc/bloc.dart';
+import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:meta/meta.dart';
+import 'home_screen_state.dart';
 
 
-import 'locals_event_screen_state.dart';
-
-
-
-class LocalsEventScreenCubit extends Cubit<LocalsEventScreenState> {
-  LocalsEventScreenCubit() : super(LocalsEventScreenInitial());
+class LocalsHomeScreenCubit extends Cubit<HomeScreenState> {
+  LocalsHomeScreenCubit() : super(HomeScreenInitial());
 
   Future<void> createGroupChat(String gropuName, String groupAbout,
       List contacts, String? filePath) async {
-    emit(LocalsEventScreenLoadingState());
+    emit(HomeScreenLoadingState());
     try {
       String? groupImage;
       if (filePath != null) {
@@ -24,9 +23,9 @@ class LocalsEventScreenCubit extends Cubit<LocalsEventScreenState> {
       }
       final groupData = await ChatUtils.createGroupChat(
           gropuName, groupAbout, groupImage, contacts);
-      emit(LocalsEventScreenSuccessState(groupData));
+      emit(HomeScreenSuccessState(groupData));
     } catch (e) {
-      emit(LocalsEventScreenFailureState(e.toString()));
+      emit(HomeScreenFailureState(e.toString()));
       LoggerUtil.logs(e.toString());
     }
   }

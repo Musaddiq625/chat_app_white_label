@@ -9,14 +9,14 @@ import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
-class LocalsSplashScreen extends StatefulWidget {
-  const LocalsSplashScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<LocalsSplashScreen> createState() => _LocalsSplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _LocalsSplashScreenState extends State<LocalsSplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
   @override
