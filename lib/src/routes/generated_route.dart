@@ -1,25 +1,41 @@
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
-
 import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/locals_signup/password_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/locals_signup/signup_with_email.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/dob_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/gender_selection.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/interest_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/name_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/select_profile_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/upload_picture_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/what_do_you_do_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/otp_screen/otp_screen.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
-import 'package:chat_app_white_label/src/screens/home_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_screen.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/group_chat_room.dart';
 import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
-import 'package:chat_app_white_label/src/screens/profile/profile_screen.dart';
-import 'package:chat_app_white_label/src/screens/splash/splash_screen.dart';
+
+// import 'package:chat_app_white_label/src/screens/splash/splash_screen.dart';
 import 'package:chat_app_white_label/src/screens/view_profile_screen/view_user_profile_screen.dart';
 import 'package:chat_app_white_label/src/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/route_constants.dart';
 import '../locals_views/create_event_screen/create_event_screen.dart';
-import '../locals_views/event_screen/event_screen.dart';
+
+// import 'package:chat_app_white_label/src/screens/home_screen.dart';
+import '../locals_views/home_screen/home_screen.dart';
+import '../locals_views/locals_signup/signup_with_number.dart';
+
+// import 'package:chat_app_white_label/src/screens/profile/profile_screen.dart';
+import '../locals_views/profile_screen/profile_screen.dart';
+import '../locals_views/splash_screen/splash_screen.dart';
 import '../screens/calls_screen.dart';
 import '../screens/status_screen.dart';
 
@@ -37,23 +53,24 @@ Route generateRoute(RouteSettings settings) {
     //     unreadCount: arg[1],
     //   ));
 
-    case RouteConstants.profileScreen:
-      final arg = settings.arguments! as String;
-      return materialRoute(ProfileScreen(
-        phoneNumber: arg,
-      ));
+    // case RouteConstants.profileScreen:
+    //   final arg = settings.arguments! as String;
+    //   return materialRoute(ProfileScreen(
+    //     phoneNumber: arg,
+    //   ));
 
     case RouteConstants.eventScreen:
       // final arg = settings.arguments! as String;
       return materialRoute(EventScreen());
-    case RouteConstants.editProfileScreen:
-      final arg = settings.arguments! as bool;
-      return materialRoute(ProfileScreen(
-        isEdit: arg,
-      ));
 
-    case RouteConstants.splashScreen:
-      return materialRoute(const SplashScreen());
+    // case RouteConstants.editProfileScreen:
+    //   final arg = settings.arguments! as bool;
+    //   return materialRoute(ProfileScreen(
+    //     isEdit: arg,
+    //   ));
+
+    // case RouteConstants.splashScreen:
+    //   return materialRoute(const SplashScreen());
 
     case RouteConstants.welcomeScreen:
       return materialRoute(const WelcomeScreen());
@@ -116,6 +133,67 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.createEventScreen:
       return materialRoute(const CreateEventScreen());
+
+    case RouteConstants.homeScreenLocal:
+      return materialRoute(const HomeScreen());
+
+    case RouteConstants.signUpEmail:
+      final arg = settings.arguments as String?;
+      return materialRoute(SignUpWithEmail(
+        routeType: arg,
+      ));
+      return materialRoute( SignUpWithEmail());
+
+    case RouteConstants.signUpNumber:
+      final arg = settings.arguments as String?;
+      return materialRoute(SignUpWithNumber(
+        routeType: arg ,
+      ));
+      // return materialRoute( SignUpWithNumber());
+
+    case RouteConstants.passwordScreen:
+      final arg = settings.arguments as String?;
+      return materialRoute(PasswordScreen(
+        routeType: arg,
+      ));
+      // return materialRoute(PasswordScreen());
+
+    case RouteConstants.otpScreenLocal:
+      final arg = settings.arguments as OtpArg;
+      return materialRoute(OtpScreen(
+        otpArg: arg,
+      ));
+      return materialRoute(const OtpScreen());
+
+    case RouteConstants.profileScreenLocal:
+      return materialRoute(ProfileScreen());
+
+    case RouteConstants.splashScreenLocal:
+      return materialRoute(const SplashScreen());
+
+    case RouteConstants.nameScreen:
+      return materialRoute(const NameScreen());
+
+    case RouteConstants.uploadProfileScreen:
+      return materialRoute(const UploadPictureScreen());
+
+    case RouteConstants.selectProfileScreen:
+      return materialRoute(const SelectProfileImageScreen());
+
+    case RouteConstants.dobScreen:
+      return materialRoute(const DOBScreen());
+
+    case RouteConstants.genderScreen:
+      return materialRoute(const GenderSelection());
+
+    case RouteConstants.interestScreen:
+      return materialRoute(const InterestScreen());
+
+    case RouteConstants.aboutYouScreen:
+      return materialRoute(const AboutYouScreen());
+
+    case RouteConstants.whatDoYouDoScreen:
+      return materialRoute(const WhatDoYouDoScreen());
 
     default:
       return materialRoute(const SplashScreen());
