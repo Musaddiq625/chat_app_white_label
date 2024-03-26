@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
               fontFamily: FontConstants.fontNunitoSans,
               useMaterial3: true,
             ),
-            initialRoute: RouteConstants.doneScreen,
+            initialRoute: RouteConstants.createEventScreen,
             onGenerateRoute: generateRoute,
             debugShowCheckedModeBanner: false,
           );

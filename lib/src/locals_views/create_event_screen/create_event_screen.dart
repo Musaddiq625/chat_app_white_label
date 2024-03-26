@@ -10,6 +10,7 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -24,8 +25,7 @@ class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({super.key});
 
   @override
-  State<CreateEventScreen> createState() =>
-      _CreateEventScreenState();
+  State<CreateEventScreen> createState() => _CreateEventScreenState();
 }
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
@@ -81,13 +81,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         // appBar:_appBar(),
         widget: _createEvent());
   }
-
-  // Widget _appBar(){
-  //   return Padding(
-  //     padding: const EdgeInsets.only(top: 23),
-  //     child:
-  //   );
-  // }
 
   toggleTaped() {
     print("Tapped ${themeCubit.isDarkMode}");
@@ -221,12 +214,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              IconComponent(
-                                iconData: Icons.calendar_month,
-                                circleSize: 25,
-                                iconSize: 25,
-                                backgroundColor: ColorConstants.transparent,
-                                borderColor: ColorConstants.transparent,
+                              SvgPicture.asset(
+                                height: 20,
+                                AssetConstants.calendar,
                               ),
                               SizedBox(
                                 width: 20,
@@ -274,12 +264,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              IconComponent(
-                                iconData: Icons.circle_rounded,
-                                circleSize: 25,
-                                iconSize: 25,
-                                backgroundColor: ColorConstants.transparent,
-                                borderColor: ColorConstants.transparent,
+                              SvgPicture.asset(
+                                height: 20,
+                                AssetConstants.end,
                               ),
                               SizedBox(
                                 width: 20,
@@ -307,27 +294,32 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   CreateEventTileComponent(
-                    icon: Icons.location_on,
+                    svg: AssetConstants.marker,
                     iconText: StringConstants.location,
                     subText: "Manchester",
                     onTap: _selectLocation,
+                    subTextColor: themeCubit.textColor,
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   CreateEventTileComponent(
-                      icon: Icons.airplane_ticket,
-                      iconText: StringConstants.price,
-                      subText: "Free",
-                      onTap: _selectPrice),
+                    svg: AssetConstants.ticket,
+                    iconText: StringConstants.price,
+                    subText: "Free",
+                    onTap: _selectPrice,
+                    subTextColor: themeCubit.textColor,
+                  ),
                   SizedBox(
                     height: 10,
                   ),
                   CreateEventTileComponent(
-                      icon: Icons.face,
-                      iconText: StringConstants.capacity,
-                      subText: "60",
-                      onTap: _selectCapacity),
+                    svg: AssetConstants.happy,
+                    iconText: StringConstants.capacity,
+                    subText: "60",
+                    onTap: _selectCapacity,
+                    subTextColor: themeCubit.textColor,
+                  ),
                   SizedBox(
                     height: 15,
                   ),
@@ -347,13 +339,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   TextField(
                     controller: _controllerQuestions,
                     maxLines: 4,
+                    style: TextStyle(color: themeCubit.textColor),
                     decoration: InputDecoration(
                       hintText: StringConstants.typeYourMessage,
                       filled: true,
                       fillColor: themeCubit.darkBackgroundColor,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: ColorConstants.transparent,
                           )),
                       hintStyle: TextStyle(
@@ -389,10 +382,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   CreateEventTileComponent(
-                      icon: Icons.location_on,
-                      iconText: StringConstants.visibility,
-                      subText: "Public",
-                      onTap: () {}),
+                    svg: AssetConstants.marker,
+                    iconText: StringConstants.visibility,
+                    subText: "Public",
+                    onTap: () {},
+                    subTextColor: themeCubit.textColor,
+                  ),
                   SizedBox(
                     height: 10,
                   ),
@@ -410,11 +405,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              IconComponent(
-                                iconData: Icons.airplane_ticket,
-                                borderColor: ColorConstants.transparent,
-                                backgroundColor: ColorConstants.transparent,
-                                circleSize: 15,
+                              SvgPicture.asset(
+                                height: 20,
+                                AssetConstants.ticket,
                               ),
                               SizedBox(
                                 width: 20,
@@ -478,11 +471,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              IconComponent(
-                                iconData: Icons.airplane_ticket,
-                                borderColor: ColorConstants.transparent,
-                                backgroundColor: ColorConstants.transparent,
-                                circleSize: 15,
+                              SvgPicture.asset(
+                                height: 20,
+                                AssetConstants.ticket,
                               ),
                               SizedBox(
                                 width: 20,
@@ -565,6 +556,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     child: ButtonComponent(
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.createEvent,
+                      textColor: themeCubit.backgroundColor,
                       onPressedFunction: () {
                         _createBottomSheet();
                         // NavigationUtil.push(
@@ -587,7 +579,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       isShowHeader: false,
       body: InfoSheetComponent(
         heading: StringConstants.eventCreatedSuccessfully,
-        image: AssetConstants.group,
+        image: AssetConstants.confetti,
       ),
     );
     Future.delayed(const Duration(milliseconds: 1000), () async {
@@ -721,13 +713,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     width: double.infinity,
                   ),
                   Image.asset(
-                    // AssetConstants.group,
-                    AssetConstants.group,
+                    AssetConstants.confetti,
                     width: 150,
                     height: 150,
                   ),
                   Container(
                     width: 300,
+                    padding: EdgeInsets.only(top: 10),
                     child: Text(
                       StringConstants.eventCreatedSuccessfully,
                       style: TextStyle(
@@ -1291,6 +1283,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ),
                 TextComponent(
                   StringConstants.choseToAskQuestion,
+                  maxLines: 2,
                   style: TextStyle(color: themeCubit.textColor),
                 ),
                 SizedBox(
@@ -1682,6 +1675,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     width: MediaQuery.sizeOf(context).width * 0.7,
                     child: TextField(
                       controller: _controller,
+                      style: TextStyle(color: themeCubit.textColor),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 15.0),

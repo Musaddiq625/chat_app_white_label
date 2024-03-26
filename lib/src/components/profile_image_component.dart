@@ -28,7 +28,7 @@ class ProfileImageComponent extends StatelessWidget {
                 color: Colors.grey[200],
               ),
               errorWidget: (context, url, error) => Image.asset(
-                isGroup ? AssetConstants.group : AssetConstants.profile,
+                isGroup ? AssetConstants.group : AssetConstants.profileDummy,
                 width: size,
                 height: size,
                 fit: fit,
@@ -42,7 +42,7 @@ class ProfileImageComponent extends StatelessWidget {
                   const Duration(milliseconds: 500), // Adjust fade-out duration
             )
           : Image.asset(
-              isGroup ? AssetConstants.group : AssetConstants.profile,
+              isGroup ? AssetConstants.group : AssetConstants.profileDummy,
               width: size,
               height: size,
               fit: fit,

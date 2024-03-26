@@ -2,7 +2,7 @@ class AssetConstants {
   static const String images = "assets/images";
 
   static const String logo = "$images/logo.jpg";
-  // static const String profile = "$images/profile.jpg";
+  static const String profileDummy = "$images/profile.jpg";
   static const String group = "$images/group.jpg";
   static const String backgroundImage = "$images/backgroundImage.jpg";
   static const String searchImage = "$images/search.png";
@@ -14,4 +14,11 @@ class AssetConstants {
   static const String message = "$images/message.svg";
   static const String profile = "$images/profile.svg";
   static const String done = "$images/done.png";
+  static const String calendar = "$images/calendar.svg";
+  static const String happy = "$images/happy.svg";
+  static const String marker = "$images/marker.svg";
+  static const String ticket = "$images/ticket.svg";
+  static const String end = "$images/end.svg";
+  static const String confetti = "$images/confetti.png";
+  static const String garland = "$images/garland.png";
 }
