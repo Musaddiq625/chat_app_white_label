@@ -21,4 +21,11 @@ class AssetConstants {
   static const String share = "$icons/share_black.svg";
   static const String more = "$icons/more_white.svg";
   // static const String google = "$icons/google.png";
+  static const String calendar = "$images/calendar.svg";
+  static const String happy = "$images/happy.svg";
+  static const String marker = "$images/marker.svg";
+  static const String ticket = "$images/ticket.svg";
+  static const String end = "$images/end.svg";
+  static const String confetti = "$images/confetti.png";
+  static const String garland = "$images/garland.png";
 }

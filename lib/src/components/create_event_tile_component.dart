@@ -1,30 +1,32 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/color_constants.dart';
 import '../utils/theme_cubit/theme_cubit.dart';
 import 'icon_component.dart';
 
 class CreateEventTileComponent extends StatelessWidget {
-  final icon;
-  final iconText;
-  final subText;
-  final subIcon;
-  final Color iconColor, subIconColor,subTextColor;
+  final String? svg;
+  final String iconText;
+  final String subText;
+  final IconData subIcon;
+  final Color iconColor, subIconColor, subTextColor;
   final Function()? onTap;
 
-  const CreateEventTileComponent(
-      {super.key,
-      this.icon,
-      this.iconText,
-      this.subText,
-      this.onTap,
-      this.subIcon = Icons.arrow_forward_ios,
-      this.iconColor = ColorConstants.black,
-      this.subIconColor = ColorConstants.lightGray,
-      this.subTextColor = ColorConstants.black,
-      });
+  const CreateEventTileComponent({
+    super.key,
+    this.svg,
+    required this.iconText,
+    required this.subText,
+    required this.onTap,
+    this.subIcon = Icons.arrow_forward_ios,
+    this.iconColor = ColorConstants.black,
+    this.subIconColor = ColorConstants.lightGray,
+    this.subTextColor = ColorConstants.black,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,18 +46,12 @@ class CreateEventTileComponent extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  if (icon!=null)
-                    Container(
-                      child: IconComponent(
-                        iconData: icon,
-                        iconColor: iconColor!,
-                        borderColor: ColorConstants.transparent,
-                        backgroundColor: ColorConstants.transparent,
-                        circleSize: 25,
-                        iconSize: 25,
-                      ),
+                  if (svg != null)
+                    SvgPicture.asset(
+                      height: 20,
+                      svg!,
                     ),
-                  if (icon!=null)
+                  if (svg != null)
                     SizedBox(
                       width: 10,
                     ),
