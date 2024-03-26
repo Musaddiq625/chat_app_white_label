@@ -13,7 +13,9 @@ import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
 import '../../components/contacts_card_component.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/route_constants.dart';
 import '../../models/contact.dart';
+import '../../utils/navigation_util.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -183,8 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       textColor: themeCubit.backgroundColor,
                       buttonText: StringConstants.viewEvent,
                       onPressedFunction: () {
-                        // NavigationUtil.push(
-                        //     context, RouteConstants.localsEventScreen);
+                        NavigationUtil.push(
+                            context, RouteConstants.eventScreen);
                       }),
                   const Spacer(),
                   IconComponent(
@@ -383,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     svgData: AssetConstants.share,
                     iconColor: ColorConstants.black,
                     borderColor: Colors.transparent,
-                    backgroundColor: const Color.fromARGB(255, 87, 64, 208),
+                    // backgroundColor:ColorConstants.transparent,
                     circleSize: 60,
                     customText: StringConstants.share,
                     customTextColor: themeCubit.textColor,
@@ -417,6 +419,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.pop(context);
                         _shareWithConnectionBottomSheet(
                             StringConstants.fireWorks, contacts[index].name);
+                      },
+                      onProfileTap: (){
+                        NavigationUtil.push(context, RouteConstants.profileScreenLocal);
                       },
                     );
                   },

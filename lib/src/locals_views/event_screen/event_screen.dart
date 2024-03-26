@@ -62,6 +62,7 @@ class _EventScreenState extends State<EventScreen> {
       removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
+        // physics: BouncingScrollPhysics(),
         child: Container(
           color: themeCubit.backgroundColor,
           child: Column(
@@ -336,10 +337,10 @@ class _EventScreenState extends State<EventScreen> {
           padding: const EdgeInsets.all(18.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-             Text(
+            TextComponent(
               StringConstants.abouttheEvent,
               style: TextStyle(
-                fontFamily: FontConstants.fontProtestStrike,
+                  fontFamily: FontConstants.fontProtestStrike,
                   fontSize: 18,
                   color: themeCubit.primaryColor),
             ),
@@ -370,7 +371,8 @@ class _EventScreenState extends State<EventScreen> {
                             ? ' ${StringConstants.showLess}'
                             : ' ...${StringConstants.readMore}',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: themeCubit.textColor),
+                            fontWeight: FontWeight.bold,
+                            color: themeCubit.textColor),
                       ),
                   ],
                 ),
@@ -388,13 +390,15 @@ class _EventScreenState extends State<EventScreen> {
                     children: [
                       const ProfileImageComponent(url: ""),
                       const SizedBox(width: 10),
-                       Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextComponent(
                             "1456 ${StringConstants.participants}",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: themeCubit.textColor),
                           ),
                           TextComponent(
                             "Elena, Ilsa and more",
@@ -431,7 +435,7 @@ class _EventScreenState extends State<EventScreen> {
                     ],
                   ),
                   const Divider(thickness: 0.2),
-                   Row(
+                  Row(
                     children: [
                       ProfileImageComponent(url: ""),
                       SizedBox(width: 10),
@@ -441,7 +445,9 @@ class _EventScreenState extends State<EventScreen> {
                           Text(
                             StringConstants.flexibleDate,
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: themeCubit.textColor),
                           ),
                           Text(
                             StringConstants.dateWillbeDecidelater,
@@ -463,7 +469,9 @@ class _EventScreenState extends State<EventScreen> {
                           Text(
                             "Manchester",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: themeCubit.textColor),
                           ),
                           Text(
                             StringConstants.exactLocationAfterJoining,
@@ -486,7 +494,9 @@ class _EventScreenState extends State<EventScreen> {
                             Text(
                               "SR 150",
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: themeCubit.textColor),
                             ),
                             Text(
                               StringConstants.ticketrequired,
@@ -509,7 +519,9 @@ class _EventScreenState extends State<EventScreen> {
                           Text(
                             StringConstants.freeToJoin,
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold,color: themeCubit.textColor),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: themeCubit.textColor),
                           ),
                           Text(
                             StringConstants.noCharityRequired,
@@ -531,18 +543,20 @@ class _EventScreenState extends State<EventScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-        color:themeCubit.darkBackgroundColor,
+        color: themeCubit.darkBackgroundColor,
         elevation: 0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          shrinkWrap: true,
+          // mainAxisSize: MainAxisSize.min,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
                 padding: const EdgeInsets.only(top: 10, left: 18),
                 child: RichText(
                   textAlign: TextAlign.start,
                   text: TextSpan(
-                    style:  TextStyle(
-
+                    style: TextStyle(
                         fontFamily: FontConstants.fontProtestStrike,
                         fontSize: 18,
                         color: themeCubit.primaryColor),
@@ -661,10 +675,10 @@ class _EventScreenState extends State<EventScreen> {
         isShowHeader: false,
         body: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(topLeft:Radius.circular(20) ,topRight:Radius.circular(20) ),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             color: themeCubit.darkBackgroundColor,
           ),
-
           padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -675,7 +689,7 @@ class _EventScreenState extends State<EventScreen> {
                   Text(
                     StringConstants.join,
                     style: TextStyle(
-                      fontFamily: FontConstants.fontProtestStrike,
+                        fontFamily: FontConstants.fontProtestStrike,
                         color: themeCubit.primaryColor,
                         fontSize: 18),
                   ),
@@ -708,7 +722,10 @@ class _EventScreenState extends State<EventScreen> {
                   ),
                 ],
               ),
-              Text(StringConstants.freeToJoin,style: TextStyle(color: themeCubit.textColor),),
+              Text(
+                StringConstants.freeToJoin,
+                style: TextStyle(color: themeCubit.textColor),
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -775,7 +792,7 @@ class _EventScreenState extends State<EventScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: MediaQuery.sizeOf(context).width*0.8,
+                    width: MediaQuery.sizeOf(context).width * 0.8,
                     child: ButtonComponent(
                       buttonText: StringConstants.join,
                       textColor: themeCubit.backgroundColor,
@@ -796,7 +813,8 @@ class _EventScreenState extends State<EventScreen> {
                     ),
                   )
                 ],
-              )
+              ),
+              SizedBox(height: 10,)
             ],
           ),
         ));
@@ -828,9 +846,15 @@ class _EventScreenState extends State<EventScreen> {
             height: 10,
           ),
           Text(
-            StringConstants.doYouHaveQuestion,style: TextStyle(color: themeCubit.textColor),
+            StringConstants.doYouHaveQuestion,
+            style: TextStyle(color: themeCubit.textColor),
           ),
-          TextFieldComponent(_controller,hintText: StringConstants.typeYourMessage,fieldColor: ColorConstants.lightGray.withOpacity(0.5),maxLines: 4,),
+          TextFieldComponent(
+            _controller,
+            hintText: StringConstants.typeYourMessage,
+            fieldColor: ColorConstants.lightGray.withOpacity(0.5),
+            maxLines: 4,
+          ),
           // TextField(
           //   controller: _controller,
           //   maxLines: 4,

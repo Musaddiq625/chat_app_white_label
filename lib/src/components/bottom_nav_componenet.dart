@@ -1,4 +1,6 @@
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,6 +21,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
     setState(() {
       _selectedIndex = index;
     });
+    if (index == 1) {
+      NavigationUtil.push(context, RouteConstants.createEventScreen);
+    }
+    else if (index == 2) {
+      NavigationUtil.push(context, RouteConstants.chatListingScreen);
+    }
+
   }
 
   @override

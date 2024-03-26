@@ -61,7 +61,7 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.eventScreen:
       // final arg = settings.arguments! as String;
-      return materialRoute(EventScreen());
+      return materialRoute(const EventScreen());
 
     // case RouteConstants.editProfileScreen:
     //   final arg = settings.arguments! as bool;

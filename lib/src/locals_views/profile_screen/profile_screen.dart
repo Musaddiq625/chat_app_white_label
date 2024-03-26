@@ -206,6 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ? ButtonComponent(
                 bgcolor: themeCubit.primaryColor,
                 buttonText: StringConstants.connectSent,
+                textColor: themeCubit.backgroundColor,
                 onPressedFunction: () {
                   _yesShareItBottomSheet();
                   // NavigationUtil.push(
@@ -215,6 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             : ButtonComponent(
                 bgcolor: themeCubit.primaryColor,
                 buttonText: StringConstants.connect,
+            textColor: themeCubit.backgroundColor,
                 onPressedFunction: () {
                   setState(() {
                     connectSend = true;

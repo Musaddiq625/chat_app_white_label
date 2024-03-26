@@ -11,13 +11,14 @@ import '../constants/color_constants.dart';
 class ContactCard extends StatelessWidget {
   final ContactModel contact;
   final Function()? onShareTap;
+  final Function()? onProfileTap;
   final bool showShareIcon;
 
   const ContactCard(
       {Key? key,
       required this.contact,
       this.onShareTap,
-      this.showShareIcon = true})
+      this.showShareIcon = true, this.onProfileTap})
       : super(key: key);
 
   @override
@@ -28,50 +29,53 @@ class ContactCard extends StatelessWidget {
         padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ProfileImageComponent(url: contact.url),
-                SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      contact.name,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: themeCubit.textColor),
-                    ),
-                    Text(
-                      contact.title,
-                      style: const TextStyle(
-                          fontSize: 14, color: ColorConstants.lightGray),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                if (showShareIcon)
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          ColorConstants.btnGradientColor,
-                          Color.fromARGB(255, 220, 210, 210)
-                        ],
+            InkWell(
+              onTap: onProfileTap ,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ProfileImageComponent(url: contact.url),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        contact.name,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: themeCubit.textColor),
                       ),
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: IconComponent(
-                      svgData: AssetConstants.share,
-                      borderColor: Colors.transparent,
-                      backgroundColor: ColorConstants.transparent,
-                      circleSize: 40,
-                      iconSize: 18,
-                      onTap: onShareTap,
-                    ),
-                  )
-              ],
+                      Text(
+                        contact.title,
+                        style: const TextStyle(
+                            fontSize: 14, color: ColorConstants.lightGray),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  if (showShareIcon)
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            ColorConstants.btnGradientColor,
+                            Color.fromARGB(255, 220, 210, 210)
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: IconComponent(
+                        svgData: AssetConstants.share,
+                        borderColor: Colors.transparent,
+                        backgroundColor: ColorConstants.transparent,
+                        circleSize: 40,
+                        iconSize: 18,
+                        onTap: onShareTap,
+                      ),
+                    )
+                ],
+              ),
             ),
             const Divider(thickness: 0.2),
           ],

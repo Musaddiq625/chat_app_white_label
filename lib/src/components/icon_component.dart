@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../constants/color_constants.dart';
 
 class IconComponent extends StatelessWidget {
   final IconData? iconData;
@@ -34,7 +35,8 @@ class IconComponent extends StatelessWidget {
     this.customIconText,
     this.customTextColor = Colors.black,
     this.customTextSize = 12,
-    this.customFontWeight = FontWeight.bold, this.svgData,
+    this.customFontWeight = FontWeight.bold,
+    this.svgData,
   });
 
   @override
@@ -48,21 +50,27 @@ class IconComponent extends StatelessWidget {
             alignment: Alignment.center,
             width: customIconText == null ? circleSize : null,
             // width:  MediaQuery.of(context).size.width/4, // Set the width to the circle size
-            height:
-                circleHeight ?? circleSize, // Set the height to the circle size
-            decoration: customIconText == null
+            height: circleHeight ?? circleSize,
+            // Set the height to the circle size
+            decoration: customIconText != null
                 ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
                     color: backgroundColor,
-                    shape: BoxShape.circle,
+                    // shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        ColorConstants.btnGradientColor,
+                        Color.fromARGB(255, 220, 210, 210)
+                      ],
+                    ),
                     border: Border.all(
                       color: borderColor,
                       width: borderSize,
                     ),
                   )
                 : BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
                     color: backgroundColor,
-                    // shape: BoxShape.circle,
+                    shape: BoxShape.circle,
                     border: Border.all(
                       color: borderColor,
                       width: borderSize,
@@ -74,19 +82,18 @@ class IconComponent extends StatelessWidget {
                       SizedBox(
                         width: 5,
                       ),
-                      iconData !=null
+                      iconData != null
                           ? Icon(
-                        iconData,
-                        size: iconSize,
-                        color: iconColor,
-                      ):
-                      SvgPicture.asset(
-                        height: iconSize,
-                        svgData!,
-                        colorFilter: ColorFilter.mode(
-                            iconColor,
-                            BlendMode.srcIn),
-                      ),
+                              iconData,
+                              size: iconSize,
+                              color: iconColor,
+                            )
+                          : SvgPicture.asset(
+                              height: iconSize,
+                              svgData!,
+                              colorFilter:
+                                  ColorFilter.mode(iconColor, BlendMode.srcIn),
+                            ),
                       SizedBox(
                         width: 5,
                       ),
@@ -99,20 +106,18 @@ class IconComponent extends StatelessWidget {
                       ),
                     ],
                   )
-                :
-            iconData !=null
-           ? Icon(
-                    iconData,
-                    size: iconSize,
-                    color: iconColor,
-                  ):
-            SvgPicture.asset(
-              height: iconSize,
-              svgData!,
-              colorFilter: ColorFilter.mode(
-                  iconColor,
-                  BlendMode.srcIn),
-            ),
+                : iconData != null
+                    ? Icon(
+                        iconData,
+                        size: iconSize,
+                        color: iconColor,
+                      )
+                    : SvgPicture.asset(
+                        height: iconSize,
+                        svgData!,
+                        colorFilter:
+                            ColorFilter.mode(iconColor, BlendMode.srcIn),
+                      ),
           ),
           if (customText != null)
             const SizedBox(

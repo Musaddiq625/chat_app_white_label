@@ -30,7 +30,7 @@ class _DoneScreenState extends State<DoneScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(const Duration(milliseconds: 100), () async {
+    Future.delayed(const Duration(milliseconds: 1500), () async {
       NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
     });
   }
