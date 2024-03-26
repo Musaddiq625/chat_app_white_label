@@ -11,7 +11,9 @@ import '../../components/icon_component.dart';
 import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/navigation_util.dart';
 
 class UploadPictureScreen extends StatefulWidget {
   const UploadPictureScreen({super.key});
@@ -55,7 +57,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconComponent(
-              iconData: Icons.arrow_back_ios,
+              iconData: Icons.arrow_back_ios_new_outlined,
               borderColor: ColorConstants.transparent,
               backgroundColor: ColorConstants.iconBg,
               iconColor: ColorConstants.white,
@@ -243,7 +245,9 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 bgcolor: themeCubit.primaryColor,
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {}),
+                onPressedFunction: () {
+                  NavigationUtil.push(context, RouteConstants.selectProfileScreen);
+                }),
           )
       ],
     );

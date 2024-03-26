@@ -7,7 +7,9 @@ import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/text_component.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class SelectProfileImageScreen extends StatefulWidget {
@@ -77,7 +79,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconComponent(
-                iconData: Icons.arrow_back_ios,
+                iconData: Icons.arrow_back_ios_new_outlined,
                 borderColor: Colors.transparent,
                 backgroundColor: ColorConstants.iconBg,
                 iconColor: Colors.white,
@@ -184,7 +186,12 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 bgcolor: themeCubit.primaryColor,
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.confirmProfilePicture,
-                onPressedFunction: () {}),
+                onPressedFunction: () {
+                  NavigationUtil.push(context, RouteConstants.dobScreen);
+
+                }),
+
+
           )
         ],
       ),

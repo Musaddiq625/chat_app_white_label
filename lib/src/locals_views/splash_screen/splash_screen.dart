@@ -1,7 +1,12 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -23,22 +28,34 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return UIScaffold(
         removeSafeAreaPadding: false,
-        bgImage:
-            "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+        // bgImage:
+        //     "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
         widget: getStarted());
   }
 
   Widget getStarted() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Image.asset(
+            AssetConstants.splash,
+
+          ),
+          // Container(
+          //   decoration: BoxDecoration(
+          //     image: DecorationImage(
+          //       image: AssetImage(AssetConstants.done),
+          //       fit: BoxFit.cover,
+          //     )
+          //   ),
+          // ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-               Text(
+              TextComponent(
                 "Attend Events.",
                 style: TextStyle(
                     fontSize: 38,
@@ -46,23 +63,25 @@ class _SplashScreenState extends State<SplashScreen> {
                     color: themeCubit.backgroundColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
-               Text(
+              Text(
                 "Connect with People.",
                 style: TextStyle(
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
                     color: themeCubit.backgroundColor,
                     fontFamily: FontConstants.fontProtestStrike),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "It all start here.",
-                style: TextStyle(fontSize: 15, color: themeCubit.backgroundColor),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(
                 height: 20,
+              ),
+              TextComponent(
+                "It all start here.",
+                style:
+                    TextStyle(fontSize: 15, color: themeCubit.backgroundColor),
+              ),
+              const SizedBox(
+                height: 60,
               ),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width * 0.8,
@@ -119,14 +138,21 @@ class _SplashScreenState extends State<SplashScreen> {
               SizedBox(
                 height: 20,
               ),
-              SizedBox(
+              Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [ColorConstants.btnGradientColor, Color.fromARGB(255, 220, 210, 210)],
+                    ),
+                    borderRadius: BorderRadius.circular(25),
+
+                ),
                 width: MediaQuery.sizeOf(context).width,
                 child: ButtonComponent(
-                    bgcolor: ColorConstants.btnGradientColor,
+                    bgcolor: ColorConstants.transparent,
                     textColor: ColorConstants.black,
                     buttonText: StringConstants.continueWithPhone,
                     onPressedFunction: () {
-                      _showJoinBottomSheet();
+                      NavigationUtil.push(context, RouteConstants.signUpNumber);
                     }),
               ),
               SizedBox(
@@ -139,7 +165,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     textColor: themeCubit.textColor,
                     buttonText: StringConstants.continueWithEmail,
                     onPressedFunction: () {
-                      _showJoinBottomSheet();
+                      NavigationUtil.push(context, RouteConstants.signUpEmail);
                     }),
               ),
               SizedBox(
@@ -170,7 +196,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   ),
                   SizedBox(
-                    width: MediaQuery.sizeOf(context).width*0.42,
+                    width: MediaQuery.sizeOf(context).width * 0.42,
                     child: GestureDetector(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -181,10 +207,24 @@ class _SplashScreenState extends State<SplashScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.apple,
-                              color: ColorConstants.black,
-                            )
+                            // Container(
+                            //   height: 25,
+                            //   width: 25,
+                            //   child: Image.asset(
+                            //     AssetConstants.google,
+                            //   ),
+                            // ),
+                            SvgPicture.asset(
+                              height: 20,
+                              AssetConstants.share,
+                              colorFilter: ColorFilter.mode(
+                                 themeCubit.backgroundColor,
+                                  BlendMode.srcIn),
+                            ),
+                            // Icon(
+                            //   Icons.svg,
+                            //   color: ColorConstants.black,
+                            // )
                           ],
                         ),
                       ),

@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SizedBox(width: 10),
         IconComponent(
-          iconData: Icons.sort,
+          svgData: AssetConstants.filter,
           borderColor: Colors.transparent,
           backgroundColor: ColorConstants.iconBg,
           iconColor: Colors.white,
@@ -197,21 +197,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
-                      iconData: Icons.share,
+                      // iconData: Icons.share,
+                    svgData: AssetConstants.share,
                       borderColor: Colors.transparent,
                       backgroundColor: ColorConstants.iconBg,
                       iconColor: Colors.white,
                       circleSize: 35,
-                      iconSize: 20,
+                      iconSize: 15,
                       onTap: _shareEventBottomSheet),
                   const SizedBox(width: 10),
                   IconComponent(
-                    iconData: Icons.menu,
+                    svgData: AssetConstants.more,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
                     iconColor: Colors.white,
                     circleSize: 35,
-                    iconSize: 20,
+                    iconSize: 15,
                     onTap: _showMoreBottomSheet,
                   )
                 ],
@@ -257,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.2,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 35, top: 8, bottom: 8),
@@ -282,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.2,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 35, top: 8, bottom: 8),
@@ -379,7 +380,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     customTextColor: themeCubit.textColor,
                   ),
                   IconComponent(
-                    iconData: Icons.share,
+                    svgData: AssetConstants.share,
+                    iconColor: ColorConstants.black,
                     borderColor: Colors.transparent,
                     backgroundColor: const Color.fromARGB(255, 87, 64, 208),
                     circleSize: 60,

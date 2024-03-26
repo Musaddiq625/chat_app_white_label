@@ -10,7 +10,9 @@ import '../../components/text_component.dart';
 import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/navigation_util.dart';
 
 class WhatDoYouDoScreen extends StatefulWidget {
   const WhatDoYouDoScreen({super.key});
@@ -49,7 +51,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconComponent(
-              iconData: Icons.arrow_back_ios,
+              iconData: Icons.arrow_back_ios_new_outlined,
               borderColor: ColorConstants.transparent,
               backgroundColor: ColorConstants.iconBg,
               iconColor: ColorConstants.white,
@@ -107,7 +109,9 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
               bgcolor: ColorConstants.lightGray.withOpacity(0.2),
               textColor: ColorConstants.lightGray,
               buttonText: StringConstants.continues,
-              onPressedFunction: () {}),
+              onPressedFunction: () {
+                NavigationUtil.push(context, RouteConstants.genderScreen);
+              }),
         )
       ],
     );

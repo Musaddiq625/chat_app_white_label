@@ -11,7 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'globals.dart';
+import '../../globals.dart';
 
 // class AgoraCalling extends StatefulWidget with WidgetsBindingObserver {
 class AgoraVideoCalling extends StatefulWidget {

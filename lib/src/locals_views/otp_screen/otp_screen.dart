@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/locals_signup/signup_with_email.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +16,8 @@ import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final OtpArg? otpArg;
+  const OtpScreen({super.key,  this.otpArg});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -74,7 +78,7 @@ class _OtpScreenState extends State<OtpScreen> {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconComponent(
-                iconData: Icons.arrow_back_ios,
+                iconData: Icons.arrow_back_ios_new_outlined,
                 borderColor: Colors.transparent,
                 backgroundColor: ColorConstants.iconBg,
                 iconColor: Colors.white,
@@ -157,10 +161,48 @@ class _OtpScreenState extends State<OtpScreen> {
                 bgcolor: ColorConstants.lightGray.withOpacity(0.2),
                 textColor: ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {}),
+                onPressedFunction: () {
+                  if(widget.otpArg?.type == "number"){
+                    NavigationUtil.push(context, RouteConstants.signUpEmail,
+                    args: "number");
+                  }
+                  else if(widget.otpArg?.type == "email"){
+                    NavigationUtil.push(context, RouteConstants.signUpNumber);
+                  }
+                  else if(widget.otpArg?.type == "afterEmail"){
+                    NavigationUtil.push(context, RouteConstants.nameScreen,
+                        args: "OnBoarding");
+                  }
+                  else if(widget.otpArg?.type == "setPasswordBeforeNumber"){
+                    NavigationUtil.push(context, RouteConstants.passwordScreen,
+                    args: "phoneNumber");
+                  }
+                  else if(widget.otpArg?.type == "setPasswordAfterNumber"){
+                    NavigationUtil.push(context, RouteConstants.passwordScreen,
+                        args: "OnBoarding");
+                  }
+
+
+                }),
           )
         ],
       ),
     );
   }
+}
+
+
+
+class OtpArg {
+  final String verificationId;
+  final String phoneNumber;
+  final String phoneCode;
+  final String type;
+
+  OtpArg(
+      this.verificationId,
+      this.phoneNumber,
+      this.phoneCode,
+      this.type
+      );
 }

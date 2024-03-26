@@ -11,7 +11,9 @@ import '../../components/icon_component.dart';
 import '../../components/text_component.dart';
 import '../../components/text_field_component.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class DOBScreen extends StatefulWidget {
@@ -49,7 +51,7 @@ class _DOBScreenState extends State<DOBScreen> {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconComponent(
-                iconData: Icons.arrow_back_ios,
+                iconData: Icons.arrow_back_ios_new_outlined,
                 borderColor: Colors.transparent,
                 backgroundColor: ColorConstants.iconBg,
                 iconColor: Colors.white,
@@ -105,7 +107,9 @@ class _DOBScreenState extends State<DOBScreen> {
                 bgcolor: ColorConstants.lightGray.withOpacity(0.2),
                 textColor: ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {}),
+                onPressedFunction: () {
+                  NavigationUtil.push(context, RouteConstants.whatDoYouDoScreen);
+                }),
           )
         ],
       ),

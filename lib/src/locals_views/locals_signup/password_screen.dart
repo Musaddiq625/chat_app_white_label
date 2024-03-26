@@ -1,8 +1,8 @@
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:country_code_picker/country_code_picker.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/button_component.dart';
@@ -13,7 +13,9 @@ import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class PasswordScreen extends StatefulWidget {
-  const PasswordScreen({super.key});
+  String? routeType;
+
+  PasswordScreen({super.key, this.routeType});
 
   @override
   State<PasswordScreen> createState() => _PasswordScreenState();
@@ -45,7 +47,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconComponent(
-                iconData: Icons.arrow_back_ios,
+                iconData: Icons.arrow_back_ios_new_outlined,
                 borderColor: Colors.transparent,
                 backgroundColor: ColorConstants.iconBg,
                 iconColor: Colors.white,
@@ -74,9 +76,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
               ),
 
               TextFieldComponent(
-
                 _phoneNumbercontroller,
-                title:"Password",
+                title: "Password",
                 hintText: "",
                 fieldColor: ColorConstants.lightGray.withOpacity(0.5),
                 textColor: themeCubit.textColor,
@@ -86,9 +87,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
               ),
 
               TextFieldComponent(
-
                 _phoneNumbercontroller,
-                title:"Confirm Password",
+                title: "Confirm Password",
                 hintText: "",
                 fieldColor: ColorConstants.lightGray.withOpacity(0.5),
                 textColor: themeCubit.textColor,
@@ -115,7 +115,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
                 bgcolor: ColorConstants.lightGray.withOpacity(0.2),
                 textColor: ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {}),
+                onPressedFunction: () {
+                  if (widget.routeType == "OnBoarding") {
+                    NavigationUtil.push(context, RouteConstants.nameScreen);
+                  } else if (widget.routeType == "phoneNumber") {
+                    NavigationUtil.push(context, RouteConstants.signUpNumber,
+                        args: "afterEmail");
+                  }
+                }),
           )
         ],
       ),

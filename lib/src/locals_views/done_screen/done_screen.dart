@@ -1,4 +1,6 @@
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,6 +24,15 @@ class _DoneScreenState extends State<DoneScreen> {
         removeSafeAreaPadding: false,
         bgImage:AssetConstants.done,
         widget: getStarted());
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 100), () async {
+      NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
+    });
   }
 
   Widget getStarted() {

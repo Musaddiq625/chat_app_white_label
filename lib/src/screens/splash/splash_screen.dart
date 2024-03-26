@@ -73,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _navigateToNext() async {
     final userData = await FirebaseUtils.getCurrentUser();
 
-    Future.delayed(const Duration(milliseconds: 100), () async {
+    Future.delayed(const Duration(milliseconds: 6000), () async {
       if (userData != null) {
         if (userData.isProfileComplete == true) {
           NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);

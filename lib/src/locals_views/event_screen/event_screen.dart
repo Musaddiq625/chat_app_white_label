@@ -112,7 +112,7 @@ class _EventScreenState extends State<EventScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 15, left: 10, bottom: 80),
               child: IconComponent(
-                iconData: Icons.arrow_back_ios_new,
+                iconData: Icons.arrow_back_ios_new_outlined,
                 borderColor: Colors.transparent,
                 backgroundColor: ColorConstants.iconBg,
                 iconColor: ColorConstants.white,

@@ -7,11 +7,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
+import '../otp_screen/otp_screen.dart';
 
 class SignUpWithEmail extends StatefulWidget {
-  const SignUpWithEmail({super.key});
+  String? routeType;
+  SignUpWithEmail({super.key, this.routeType,});
 
   @override
   State<SignUpWithEmail> createState() => _SignUpWithEmailState();
@@ -43,7 +47,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconComponent(
-                iconData: Icons.arrow_back_ios,
+                iconData: Icons.arrow_back_ios_new_outlined,
                 borderColor: Colors.transparent,
                 backgroundColor: ColorConstants.iconBg,
                 iconColor: Colors.white,
@@ -98,7 +102,21 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 bgcolor: themeCubit.primaryColor,
                 textColor: themeCubit.backgroundColor,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {}),
+                onPressedFunction: () {
+                  if(widget.routeType == "number"){
+                    NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+                        args: OtpArg(
+                            "", "","","setPasswordAfterNumber"
+                        ));
+                  }
+                  else{
+                    NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+                        args: OtpArg(
+                            "", "","","setPasswordBeforeNumber"
+                        ));
+                  }
+
+                }),
           )
         ],
       ),

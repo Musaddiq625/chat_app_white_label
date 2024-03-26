@@ -1,5 +1,7 @@
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,9 +12,11 @@ import '../../components/icon_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
+import '../otp_screen/otp_screen.dart';
 
 class SignUpWithNumber extends StatefulWidget {
-  const SignUpWithNumber({super.key});
+  String? routeType;
+   SignUpWithNumber({super.key, this.routeType});
 
   @override
   State<SignUpWithNumber> createState() => _SignUpWithNumberState();
@@ -44,7 +48,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconComponent(
-                iconData: Icons.arrow_back_ios,
+                iconData: Icons.arrow_back_ios_new_outlined,
                 borderColor: Colors.transparent,
                 backgroundColor: ColorConstants.iconBg,
                 iconColor: Colors.white,
@@ -138,7 +142,20 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                 bgcolor: ColorConstants.lightGray.withOpacity(0.2),
                 textColor: ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {}),
+                onPressedFunction: () {
+                  if(widget.routeType == "afterEmail"){
+                    NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+                        args: OtpArg(
+                            "", "","","afterEmail"
+                        ));
+                  }
+                  else{
+                    NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+                        args: OtpArg(
+                            "", "","","number"
+                        ));
+                  }
+                }),
           )
         ],
       ),

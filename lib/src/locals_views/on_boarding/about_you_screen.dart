@@ -10,7 +10,9 @@ import '../../components/text_component.dart';
 import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/navigation_util.dart';
 
 class AboutYouScreen extends StatefulWidget {
   const AboutYouScreen({super.key});
@@ -54,7 +56,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconComponent(
-                  iconData: Icons.arrow_back_ios,
+                  iconData: Icons.arrow_back_ios_new_outlined,
                   borderColor: ColorConstants.transparent,
                   backgroundColor: ColorConstants.iconBg,
                   iconColor: ColorConstants.white,
@@ -129,7 +131,9 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               bgcolor: themeCubit.primaryColor,
               textColor: themeCubit.backgroundColor,
               buttonText: StringConstants.continues,
-              onPressedFunction: () {}),
+              onPressedFunction: () {
+                NavigationUtil.push(context, RouteConstants.interestScreen);
+              }),
         )
       ],
     );

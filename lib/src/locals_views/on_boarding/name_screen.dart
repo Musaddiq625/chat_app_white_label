@@ -1,3 +1,5 @@
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +14,14 @@ import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
 
-class OnBoardingScreen extends StatefulWidget {
-  const OnBoardingScreen({super.key});
+class NameScreen extends StatefulWidget {
+  const NameScreen({super.key});
 
   @override
-  State<OnBoardingScreen> createState() => _OnBoardingScreenState();
+  State<NameScreen> createState() => _NameScreenState();
 }
 
-class _OnBoardingScreenState extends State<OnBoardingScreen> {
+class _NameScreenState extends State<NameScreen> {
  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
  final TextEditingController _firstNameController = TextEditingController();
  final TextEditingController _secondNameController = TextEditingController();
@@ -49,7 +51,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconComponent(
-              iconData: Icons.arrow_back_ios,
+              iconData: Icons.arrow_back_ios_new_outlined,
               borderColor: ColorConstants.transparent,
               backgroundColor: ColorConstants.iconBg,
               iconColor: ColorConstants.white,
@@ -131,7 +133,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               bgcolor: ColorConstants.lightGray.withOpacity(0.2),
               textColor: ColorConstants.lightGray,
               buttonText: StringConstants.continues,
-              onPressedFunction: () {}),
+              onPressedFunction: () {
+                NavigationUtil.push(context, RouteConstants.uploadProfileScreen);
+              }),
         )
       ],
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class IconComponent extends StatelessWidget {
-  final IconData iconData;
+  final IconData? iconData;
+  final String? svgData;
   final double iconSize;
   final Color iconColor;
   final Color backgroundColor;
@@ -19,7 +21,7 @@ class IconComponent extends StatelessWidget {
 
   // Constructor to initialize the icon data, size, color, border size, border color, and circle size
   IconComponent({
-    required this.iconData,
+    this.iconData,
     this.iconSize = 24.0, // Default icon size
     this.iconColor = Colors.black, // Default icon color
     this.borderSize = 2.0, // Default border size
@@ -32,7 +34,7 @@ class IconComponent extends StatelessWidget {
     this.customIconText,
     this.customTextColor = Colors.black,
     this.customTextSize = 12,
-    this.customFontWeight = FontWeight.bold,
+    this.customFontWeight = FontWeight.bold, this.svgData,
   });
 
   @override
@@ -44,7 +46,6 @@ class IconComponent extends StatelessWidget {
         children: [
           Container(
             alignment: Alignment.center,
-
             width: customIconText == null ? circleSize : null,
             // width:  MediaQuery.of(context).size.width/4, // Set the width to the circle size
             height:
@@ -73,10 +74,18 @@ class IconComponent extends StatelessWidget {
                       SizedBox(
                         width: 5,
                       ),
-                      Icon(
+                      iconData !=null
+                          ? Icon(
                         iconData,
                         size: iconSize,
                         color: iconColor,
+                      ):
+                      SvgPicture.asset(
+                        height: iconSize,
+                        svgData!,
+                        colorFilter: ColorFilter.mode(
+                            iconColor,
+                            BlendMode.srcIn),
                       ),
                       SizedBox(
                         width: 5,
@@ -90,11 +99,20 @@ class IconComponent extends StatelessWidget {
                       ),
                     ],
                   )
-                : Icon(
+                :
+            iconData !=null
+           ? Icon(
                     iconData,
                     size: iconSize,
                     color: iconColor,
-                  ),
+                  ):
+            SvgPicture.asset(
+              height: iconSize,
+              svgData!,
+              colorFilter: ColorFilter.mode(
+                  iconColor,
+                  BlendMode.srcIn),
+            ),
           ),
           if (customText != null)
             const SizedBox(

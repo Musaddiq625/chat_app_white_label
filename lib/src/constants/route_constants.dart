@@ -21,10 +21,26 @@ class RouteConstants {
   static const String viewUserProfile = 'viewUserProfile';
   static const String viewGroupProfile = 'viewGroupProfile';
 
+  static const String splashScreenLocal = 'splashScreen';
   static const String eventScreen = 'eventScreen';
   static const String chatListingScreen = 'chatListingScreen';
   static const String chatRoomScreen = 'chatRoomScreen';
   static const String createEventScreen = 'createEventScreen';
   static const String chatListing = 'chatListing';
   static const String doneScreen = 'doneScreen';
+  static const String homeScreenLocal = 'homeScreenLocal';
+  static const String signUpEmail = 'signUpEmail';
+  static const String signUpNumber = 'signUpNumber';
+  static const String passwordScreen = 'passwordScreen';
+  static const String otpScreenLocal = 'otpScreenLocal';
+  static const String profileScreenLocal = 'profileScreenLocal';
+  static const String nameScreen = 'nameScreen';
+  static const String uploadProfileScreen = 'uploadProfileScreen';
+  static const String selectProfileScreen = 'selectProfileScreen';
+  static const String dobScreen = 'dobScreen';
+  static const String genderScreen = 'genderScreen';
+  static const String interestScreen = 'interestScreen';
+  static const String aboutYouScreen = 'aboutYouScreen';
+  static const String whatDoYouDoScreen = 'whatDoYouDoScreen';
+
 }
