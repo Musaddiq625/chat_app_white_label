@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app_white_label/src/components/status_tiles_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/screens/status_generate_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -101,7 +102,6 @@ class _StatusScreenState extends State<StatusScreen>
     //   }
     // }
 
-
     Future<void> pickImage(ImageSource source) async {
       // FilePickerResult? _picker =
       // await FilePicker.platform.pickFiles(
@@ -132,7 +132,6 @@ class _StatusScreenState extends State<StatusScreen>
       //     throw ArgumentError('Invalid image source');
       // }
 
-
       // switch (source) {
       //   case ImageSource.gallery:
       //     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -162,11 +161,12 @@ class _StatusScreenState extends State<StatusScreen>
 
       List<File> files = [];
       if (source == ImageSource.camera) {
-        final XFile? cameraImage = await ImagePicker().pickImage(source: source);
+        final XFile? cameraImage =
+            await ImagePicker().pickImage(source: source);
         if (cameraImage != null) {
           files.add(File(cameraImage.path));
         }
-      }else {
+      } else {
         FilePickerResult? result = await FilePicker.platform.pickFiles(
           type: FileType.custom,
           allowedExtensions: ['jpg', 'png', 'mp4'],
@@ -236,20 +236,20 @@ class _StatusScreenState extends State<StatusScreen>
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ListTile(
-                  leading:  Stack(
+                  leading: Stack(
                     children: [
-                      if(FirebaseUtils.user?.image == null)
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: AssetImage(
-                          'assets/images/woman.png',
+                      if (FirebaseUtils.user?.image == null)
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundImage: AssetImage(
+                            'assets/images/woman.png',
+                          ),
                         ),
-                      ),
-                      if(FirebaseUtils.user!.image != null)
+                      if (FirebaseUtils.user!.image != null)
                         CircleAvatar(
                           radius: 25,
                           backgroundImage: NetworkImage(
-                              FirebaseUtils.user!.image!,
+                            FirebaseUtils.user!.image!,
                           ),
                         ),
                       Positioned(
@@ -285,7 +285,7 @@ class _StatusScreenState extends State<StatusScreen>
                 ),
               ),
               Container(
-                width: MediaQuery.of(context).size.width,
+                width: AppConstants.responsiveWidth(context),
                 color: Colors.grey.shade200,
                 padding: const EdgeInsets.only(
                   left: 20,

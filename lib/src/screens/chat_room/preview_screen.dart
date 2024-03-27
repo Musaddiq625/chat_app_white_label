@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
@@ -49,8 +50,8 @@ class _PreviewScreenState extends State<PreviewScreen> {
   @override
   Widget build(BuildContext context) {
     // Get the screen size
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = AppConstants.responsiveWidth(context);
+    double screenHeight = AppConstants.responsiveHeight(context);
     EdgeInsets safeArea = MediaQuery.of(context).padding;
     double aspectRatio = screenWidth / (screenHeight - safeArea.top);
     if (widget.isVideo &&

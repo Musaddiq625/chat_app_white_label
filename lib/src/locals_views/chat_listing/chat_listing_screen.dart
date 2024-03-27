@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/components/filter_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/textfield_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
@@ -157,8 +158,8 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false, isShowHeader: false,
         body: StatefulBuilder(builder: (context, setState) {
-      return Container(
-        height: MediaQuery.of(context).size.height * 0.9,
+      return SizedBox(
+        height: AppConstants.responsiveHeight(context, percentage: 90),
         child: Stack(
           children: [
             Column(

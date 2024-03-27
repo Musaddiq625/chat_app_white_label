@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
@@ -96,7 +97,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Text(
+              TextComponent(
                 StringConstants.passwordValidation,
                 style: TextStyle(
                   fontSize: 12,

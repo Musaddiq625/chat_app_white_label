@@ -2,6 +2,7 @@ import 'package:chat_app_white_label/src/components/create_event_tile_component.
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
@@ -139,8 +140,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height * 0.85,
+                        width: AppConstants.responsiveWidth(context),
+                        height: AppConstants.responsiveHeight(context,
+                            percentage: 85),
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Column(
@@ -202,7 +204,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 13,
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: AppConstants.responsiveWidth(context),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       color: themeCubit.darkBackgroundColor,
@@ -251,8 +253,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               ),
                               Spacer(),
                               SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.5,
+                                  width: AppConstants.responsiveWidth(context) /
+                                      1.5,
                                   child: Divider(
                                     thickness: 0.1,
                                   ))
@@ -392,7 +394,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: AppConstants.responsiveWidth(context),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       color: themeCubit.darkBackgroundColor,
@@ -457,7 +459,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: AppConstants.responsiveWidth(context),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       color: themeCubit.darkBackgroundColor,
@@ -552,7 +554,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: AppConstants.responsiveWidth(context),
                     child: ButtonComponent(
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.createEvent,
@@ -1122,7 +1124,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 100,
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: AppConstants.responsiveWidth(context),
                     child: ButtonComponent(
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.done,
@@ -1226,7 +1228,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 100,
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: AppConstants.responsiveWidth(context),
                     child: ButtonComponent(
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.done,
