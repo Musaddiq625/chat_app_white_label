@@ -1,12 +1,13 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../components/button_component.dart';
 import '../../components/ui_scaffold.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class DoneScreen extends StatefulWidget {
@@ -18,11 +19,12 @@ class DoneScreen extends StatefulWidget {
 
 class _DoneScreenState extends State<DoneScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
         removeSafeAreaPadding: false,
-        bgImage:AssetConstants.done,
+        bgImage: AssetConstants.done,
         widget: getStarted());
   }
 
@@ -45,16 +47,8 @@ class _DoneScreenState extends State<DoneScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Have fun",
-                style: TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.bold,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
-              Text(
-                "exploring!",
+              TextComponent(
+                StringConstants.haveFunExlporing,
                 style: TextStyle(
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
@@ -64,8 +58,8 @@ class _DoneScreenState extends State<DoneScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Text(
-                "Let's get you started and finds events.",
+              TextComponent(
+                StringConstants.letsGetYouStarted,
                 style: TextStyle(fontSize: 15, color: themeCubit.textColor),
               ),
               const SizedBox(

@@ -1,15 +1,12 @@
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/text_component.dart';
-import '../../components/text_field_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
@@ -26,7 +23,8 @@ class DOBScreen extends StatefulWidget {
 class _DOBScreenState extends State<DOBScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
-  final TextEditingController _countryCodeController = TextEditingController(text: '+92');
+  final TextEditingController _countryCodeController =
+      TextEditingController(text: '+92');
   TextEditingController _dateController = TextEditingController();
   late final DateTime? picked;
   DateTime selectedDate = DateTime.now();
@@ -62,14 +60,7 @@ class _DOBScreenState extends State<DOBScreen> {
                 height: 30,
               ),
               TextComponent(
-                "What is your",
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
-              TextComponent(
-                "birthday?",
+                StringConstants.whatsYouDob,
                 style: TextStyle(
                     fontSize: 22,
                     color: themeCubit.textColor,
@@ -79,26 +70,22 @@ class _DOBScreenState extends State<DOBScreen> {
                 height: 20,
               ),
               InkWell(
-                onTap: () => _selectDate(context),
-                child:
-                _dateController.value.text.isNotEmpty?
-                TextComponent(
-                  _dateController.text,
-                  style:  TextStyle(
-                      color: ColorConstants.lightGray,
-                      fontFamily: FontConstants.fontProtestStrike,
-                      fontSize: 30),
-
-                ):TextComponent(
-
-                 "DD   MM   YYYY",
-                  style:  TextStyle(
-                      color: ColorConstants.lightGray,
-                      fontFamily: FontConstants.fontProtestStrike,
-                      fontSize: 30),
-
-                )
-              ),
+                  onTap: () => _selectDate(context),
+                  child: _dateController.value.text.isNotEmpty
+                      ? TextComponent(
+                          _dateController.text,
+                          style: TextStyle(
+                              color: ColorConstants.lightGray,
+                              fontFamily: FontConstants.fontProtestStrike,
+                              fontSize: 30),
+                        )
+                      : TextComponent(
+                          "DD   MM   YYYY",
+                          style: TextStyle(
+                              color: ColorConstants.lightGray,
+                              fontFamily: FontConstants.fontProtestStrike,
+                              fontSize: 30),
+                        )),
             ],
           ),
           SizedBox(
@@ -108,7 +95,8 @@ class _DOBScreenState extends State<DOBScreen> {
                 textColor: ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
-                  NavigationUtil.push(context, RouteConstants.whatDoYouDoScreen);
+                  NavigationUtil.push(
+                      context, RouteConstants.whatDoYouDoScreen);
                 }),
           )
         ],

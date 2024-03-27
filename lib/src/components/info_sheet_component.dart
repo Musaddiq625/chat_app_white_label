@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,13 +42,14 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
             ),
           Container(
             width: 300,
-            child: Text(
+            child: TextComponent(
               widget.heading,
               style: TextStyle(
                   fontSize: 20,
                   fontFamily: FontConstants.fontProtestStrike,
                   color: themeCubit.textColor),
               textAlign: TextAlign.center,
+              maxLines: 4,
             ),
           ),
           const SizedBox(
@@ -55,10 +57,11 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
           ),
           Container(
             width: 300,
-            child: Text(
+            child: TextComponent(
               widget.body ?? "",
               style: TextStyle(fontSize: 15, color: themeCubit.textColor),
               textAlign: TextAlign.center,
+              maxLines: 4,
             ),
           ),
           const SizedBox(

@@ -62,14 +62,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
               height: 30,
             ),
             TextComponent(
-              "What do you do ",
-              style: TextStyle(
-                  fontSize: 22,
-                  color: themeCubit.textColor,
-                  fontFamily: FontConstants.fontProtestStrike),
-            ),
-            TextComponent(
-              "for living?",
+              StringConstants.whatDoYouDo,
               style: TextStyle(
                   fontSize: 22,
                   color: themeCubit.textColor,
@@ -84,7 +77,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                   fontSize: 30),
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                hintText: "Project Manager at ABC agency",
+                hintText:StringConstants.whatDoYouDoHintText,
                 hintStyle: TextStyle(
                     color: ColorConstants.lightGray,
                     fontFamily: FontConstants.fontProtestStrike,

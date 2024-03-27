@@ -1,7 +1,5 @@
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/button_component.dart';
@@ -22,14 +20,15 @@ class GenderSelection extends StatefulWidget {
 }
 
 class _GenderSelectionState extends State<GenderSelection> {
- late final themeCubit = BlocProvider.of<ThemeCubit>(context);
- final TextEditingController _firstNameController = TextEditingController();
- final TextEditingController _secondNameController = TextEditingController();
- String? _selectedOption;
- String _selectedMale = 'Male';
- String _selectedFemale = 'Female';
- String _seletedNonBinary = 'Non Binary';
- String _selectedRatherNotSay = 'Rather Not Say';
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _secondNameController = TextEditingController();
+  String? _selectedOption;
+  String _selectedMale = 'Male';
+  String _selectedFemale = 'Female';
+  String _seletedNonBinary = 'Non Binary';
+  String _selectedRatherNotSay = 'Rather Not Say';
+
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
@@ -38,7 +37,6 @@ class _GenderSelectionState extends State<GenderSelection> {
         widget: onBoarding());
   }
 
-
   Widget onBoarding() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -46,7 +44,7 @@ class _GenderSelectionState extends State<GenderSelection> {
     );
   }
 
-  enterName(){
+  enterName() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,26 +65,21 @@ class _GenderSelectionState extends State<GenderSelection> {
               height: 30,
             ),
             TextComponent(
-              "How do you ",
+              StringConstants.howDoYouIdentify,
               style: TextStyle(
                   fontSize: 22,
                   color: themeCubit.textColor,
                   fontFamily: FontConstants.fontProtestStrike),
             ),
-            TextComponent(
-              "identify?",
-              style: TextStyle(
-                  fontSize: 22,
-                  color: themeCubit.textColor,
-                  fontFamily: FontConstants.fontProtestStrike),
+            SizedBox(
+              height: 20,
             ),
-            SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextComponent(
-                  "Male",
-                  style:  TextStyle(
+                  StringConstants.male,
+                  style: TextStyle(
                       fontSize: 30,
                       color: themeCubit.textColor,
                       fontFamily: FontConstants.fontProtestStrike),
@@ -109,12 +102,14 @@ class _GenderSelectionState extends State<GenderSelection> {
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextComponent(
-                  "Female",
+                  StringConstants.female,
                   style: TextStyle(
                       fontSize: 30,
                       color: themeCubit.textColor,
@@ -138,12 +133,14 @@ class _GenderSelectionState extends State<GenderSelection> {
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextComponent(
-                  "Non Binary",
+                  StringConstants.nonBinary,
                   style: TextStyle(
                       fontSize: 30,
                       color: themeCubit.textColor,
@@ -156,7 +153,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                     onChanged: (bool? value) {
                       if (value != null) {
                         setState(() {
-                          _selectedOption = value ? 'Non Binary': null;
+                          _selectedOption = value ? 'Non Binary' : null;
                         });
                       }
                     },
@@ -167,13 +164,15 @@ class _GenderSelectionState extends State<GenderSelection> {
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextComponent(
-                  "Rather not say",
-                  style:  TextStyle(
+                  StringConstants.ratherNotSay,
+                  style: TextStyle(
                       fontSize: 30,
                       color: themeCubit.textColor,
                       fontFamily: FontConstants.fontProtestStrike),
@@ -185,7 +184,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                     onChanged: (bool? value) {
                       if (value != null) {
                         setState(() {
-                          _selectedOption = value ? 'Rather not say': null;
+                          _selectedOption = value ? 'Rather not say' : null;
                         });
                       }
                     },

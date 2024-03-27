@@ -142,14 +142,7 @@ class _InterestScreenState extends State<InterestScreen> {
               height: 30,
             ),
             TextComponent(
-              "What's your",
-              style: TextStyle(
-                  fontSize: 22,
-                  color: themeCubit.textColor,
-                  fontFamily: FontConstants.fontProtestStrike),
-            ),
-            TextComponent(
-              "interest?",
+              StringConstants.whatsYourInterest,
               style: TextStyle(
                   fontSize: 22,
                   color: themeCubit.textColor,
@@ -158,12 +151,13 @@ class _InterestScreenState extends State<InterestScreen> {
             SizedBox(
               height: 10,
             ),
-            Text(
+            TextComponent(
               StringConstants.pickUp4Things,
               style: TextStyle(
                 fontSize: 12,
                 color: ColorConstants.lightGray,
               ),
+              maxLines: 4,
             ),
             SizedBox(
               height: 20,
@@ -211,7 +205,7 @@ class _InterestScreenState extends State<InterestScreen> {
                 .map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
                       TagComponent(
                         iconData: tag['iconData'],
-                        customTextColor: themeCubit.textColor,
+                        customTextColor: selectedTags.contains(tag['name'])? ColorConstants.black : themeCubit.textColor,
                         backgroundColor:selectedTags.contains(tag['name'])? themeCubit.primaryColor: ColorConstants.lightGray.withOpacity(0.3),
                         iconColor: themeCubit.primaryColor,
                         customIconText: tag['name'],

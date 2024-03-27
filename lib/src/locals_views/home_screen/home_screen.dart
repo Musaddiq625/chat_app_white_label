@@ -1,6 +1,7 @@
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -8,6 +9,7 @@ import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../components/bottom_nav_componenet.dart';
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -53,23 +55,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return UIScaffold(
       removeSafeAreaPadding: false,
       bgImage:
           "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
       widget: _eventWidget(),
       bottomNavigationBar: Container(
-          // decoration: BoxDecoration(
-          //   boxShadow: [
-          //     BoxShadow(
-          //       color: Colors.grey.withOpacity(1.5),
-          //       spreadRadius: 05,
-          //       blurRadius: 10,
-          //       offset: Offset(0, -3), // changes position of shadow
-          //     ),
-          //   ],
-          // ),
           child: const BottomNavBar()),
     );
   }
@@ -152,25 +143,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                   Text(
+                  TextComponent(
                     "+1456 ${StringConstants.joined}",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
                 ],
               ),
-              const Text(
+              const TextComponent(
                 "Property \nnetworking event",
                 style: TextStyle(
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                  fontFamily: FontConstants.fontProtestStrike
-                ),
+                    fontFamily: FontConstants.fontProtestStrike),
               ),
               const SizedBox(
                 height: 10,
               ),
-               Text(
+              TextComponent(
                 "17 Feb . 11AM - 2PM . Manchester",
                 style: TextStyle(fontSize: 15, color: Colors.white),
               ),
@@ -200,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(width: 10),
                   IconComponent(
                       // iconData: Icons.share,
-                    svgData: AssetConstants.share,
+                      svgData: AssetConstants.share,
                       borderColor: Colors.transparent,
                       backgroundColor: ColorConstants.iconBg,
                       iconColor: Colors.white,
@@ -251,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    Text(StringConstants.saveEvent,
+                    TextComponent(StringConstants.saveEvent,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -278,9 +268,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                     Text(StringConstants.showLessLikeThis,
+                    TextComponent(StringConstants.showLessLikeThis,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14,color: themeCubit.textColor)),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: themeCubit.textColor)),
                   ],
                 ),
               ),
@@ -303,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    const Text(StringConstants.reportEvent,
+                    const TextComponent(StringConstants.reportEvent,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -329,9 +321,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                   Padding(
+                  Padding(
                     padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
-                    child: Text(
+                    child: TextComponent(
                       StringConstants.shareEvent,
                       style: TextStyle(
                           color: themeCubit.primaryColor,
@@ -398,9 +390,9 @@ class _HomeScreenState extends State<HomeScreen> {
               const Divider(
                 thickness: 0.5,
               ),
-               Padding(
+              Padding(
                 padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
-                child: Text(
+                child: TextComponent(
                   StringConstants.yourConnections,
                   style: TextStyle(
                       color: themeCubit.primaryColor,
@@ -420,8 +412,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         _shareWithConnectionBottomSheet(
                             StringConstants.fireWorks, contacts[index].name);
                       },
-                      onProfileTap: (){
-                        NavigationUtil.push(context, RouteConstants.profileScreenLocal);
+                      onProfileTap: () {
+                        NavigationUtil.push(
+                            context, RouteConstants.profileScreenLocal);
                       },
                     );
                   },
@@ -445,22 +438,20 @@ class _HomeScreenState extends State<HomeScreen> {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style:  TextStyle(
-
+                style: TextStyle(
                     fontSize: 20,
                     fontFamily: FontConstants.fontProtestStrike,
                     height: 1.5),
                 children: <TextSpan>[
-                   TextSpan(
-                      text: StringConstants.areYouSureYouwantToShare),
+                  TextSpan(text: StringConstants.areYouSureYouwantToShare),
                   TextSpan(
                     text: eventName,
-                    style:  TextStyle(color: themeCubit.primaryColor),
+                    style: TextStyle(color: themeCubit.primaryColor),
                   ),
-                   TextSpan(text: " with \n"),
+                  TextSpan(text: " with \n"),
                   TextSpan(
                     text: "$userName?",
-                    style:  TextStyle(color: themeCubit.primaryColor),
+                    style: TextStyle(color: themeCubit.primaryColor),
                   ),
                 ],
               ),
@@ -471,12 +462,15 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 InkWell(
                     onTap: () => Navigator.pop(context),
-                    child:  Text(StringConstants.goBack, style:  TextStyle(color: themeCubit.textColor),)),
+                    child: TextComponent(
+                      StringConstants.goBack,
+                      style: TextStyle(color: themeCubit.textColor),
+                    )),
                 const SizedBox(width: 30),
                 ButtonComponent(
-                  bgcolor:themeCubit.primaryColor,
+                  bgcolor: themeCubit.primaryColor,
                   textColor: themeCubit.backgroundColor,
-                  buttonText: "Yes, share it",
+                  buttonText: StringConstants.yesShareIt,
                   onPressedFunction: () {
                     Navigator.pop(context);
                     _yesShareItBottomSheet();

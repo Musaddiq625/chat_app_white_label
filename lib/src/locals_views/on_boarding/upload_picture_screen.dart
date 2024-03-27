@@ -69,14 +69,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
               height: 30,
             ),
             TextComponent(
-              "Let's put a face to ",
-              style: TextStyle(
-                  fontSize: 22,
-                  color: themeCubit.textColor,
-                  fontFamily: FontConstants.fontProtestStrike),
-            ),
-            TextComponent(
-              "the name!",
+              StringConstants.letsPutAFace,
               style: TextStyle(
                   fontSize: 22,
                   color: themeCubit.textColor,

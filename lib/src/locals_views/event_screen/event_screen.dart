@@ -147,7 +147,7 @@ class _EventScreenState extends State<EventScreen> {
                       ],
                     ),
                   ),
-                  const Text(
+                  const TextComponent(
                     "+1456 ${StringConstants.joined}",
                     style: TextStyle(fontSize: 16, color: ColorConstants.white),
                   ),
@@ -156,11 +156,11 @@ class _EventScreenState extends State<EventScreen> {
             ),
             const Padding(
               padding: EdgeInsets.only(left: 10),
-              child: Text(
+              child: TextComponent(
                 "Property \nnetworking event",
                 style: TextStyle(
                     fontSize: 30,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: FontConstants.fontProtestStrike,
                     color: ColorConstants.white),
               ),
             ),
@@ -169,7 +169,7 @@ class _EventScreenState extends State<EventScreen> {
             ),
             const Padding(
               padding: EdgeInsets.only(left: 10),
-              child: Text(
+              child: TextComponent(
                 "17 Feb . 11AM - 2PM . Manchester",
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
@@ -215,7 +215,7 @@ class _EventScreenState extends State<EventScreen> {
                                       const Padding(
                                         padding: EdgeInsets.only(
                                             left: 18.0, top: 18, bottom: 18),
-                                        child: Text(
+                                        child: TextComponent(
                                           StringConstants.shareEvent,
                                           style: TextStyle(
                                               color: Colors.indigo,
@@ -283,7 +283,7 @@ class _EventScreenState extends State<EventScreen> {
                                   const Padding(
                                     padding: EdgeInsets.only(
                                         left: 18.0, top: 10, bottom: 16),
-                                    child: Text(
+                                    child: TextComponent(
                                       StringConstants.yourConnections,
                                       style: TextStyle(
                                           color: Colors.indigo,
@@ -442,14 +442,14 @@ class _EventScreenState extends State<EventScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TextComponent(
                             StringConstants.flexibleDate,
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: themeCubit.textColor),
                           ),
-                          Text(
+                          TextComponent(
                             StringConstants.dateWillbeDecidelater,
                             style: TextStyle(
                                 fontSize: 14, color: ColorConstants.lightGray),
@@ -466,14 +466,14 @@ class _EventScreenState extends State<EventScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TextComponent(
                             "Manchester",
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: themeCubit.textColor),
                           ),
-                          Text(
+                          TextComponent(
                             StringConstants.exactLocationAfterJoining,
                             style: TextStyle(
                                 fontSize: 14, color: ColorConstants.lightGray),
@@ -491,14 +491,14 @@ class _EventScreenState extends State<EventScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TextComponent(
                               "SR 150",
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: themeCubit.textColor),
                             ),
-                            Text(
+                            TextComponent(
                               StringConstants.ticketrequired,
                               style: TextStyle(
                                   fontSize: 14,
@@ -516,14 +516,14 @@ class _EventScreenState extends State<EventScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TextComponent(
                             StringConstants.freeToJoin,
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: themeCubit.textColor),
                           ),
-                          Text(
+                          TextComponent(
                             StringConstants.noCharityRequired,
                             style: TextStyle(
                                 fontSize: 14, color: ColorConstants.lightGray),
@@ -605,7 +605,7 @@ class _EventScreenState extends State<EventScreen> {
                   const SizedBox(
                     width: 20,
                   ),
-                  const Text(StringConstants.saveEvent,
+                  const TextComponent(StringConstants.saveEvent,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                 ],
@@ -631,7 +631,7 @@ class _EventScreenState extends State<EventScreen> {
                   const SizedBox(
                     width: 20,
                   ),
-                  const Text(StringConstants.saveEvent,
+                  const TextComponent(StringConstants.saveEvent,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                 ],
@@ -686,7 +686,7 @@ class _EventScreenState extends State<EventScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  TextComponent(
                     StringConstants.join,
                     style: TextStyle(
                         fontFamily: FontConstants.fontProtestStrike,
@@ -708,7 +708,7 @@ class _EventScreenState extends State<EventScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  TextComponent(
                     "Property \nnetworking event",
                     style: TextStyle(
                         fontSize: 20,
@@ -722,7 +722,7 @@ class _EventScreenState extends State<EventScreen> {
                   ),
                 ],
               ),
-              Text(
+              TextComponent(
                 StringConstants.freeToJoin,
                 style: TextStyle(color: themeCubit.textColor),
               ),
@@ -736,7 +736,7 @@ class _EventScreenState extends State<EventScreen> {
               const Divider(
                 thickness: 0.5,
               ),
-              Text(
+              TextComponent(
                 StringConstants.somethingToKnow,
                 style: TextStyle(
                     color: themeCubit.primaryColor,
@@ -755,8 +755,8 @@ class _EventScreenState extends State<EventScreen> {
                   SizedBox(
                     width: 20,
                   ),
-                  Text(
-                    "When you join, you're in the game!\n Chat's open and ready for you ",
+                  TextComponent(
+                    StringConstants.whenYouJoinYoureInTheGame,
                     style: TextStyle(color: themeCubit.textColor),
                   ),
                 ],
@@ -779,9 +779,10 @@ class _EventScreenState extends State<EventScreen> {
                   SizedBox(
                     width: 20,
                   ),
-                  Text(
-                    "When you join, you're in the game!\n Chat's open and ready for you ",
+                  TextComponent(
+                      StringConstants.whenYouJoinYoureInTheGame,
                     style: TextStyle(color: themeCubit.textColor),
+                    maxLines: 4,
                   ),
                 ],
               ),
@@ -814,7 +815,9 @@ class _EventScreenState extends State<EventScreen> {
                   )
                 ],
               ),
-              SizedBox(height: 10,)
+              SizedBox(
+                height: 10,
+              )
             ],
           ),
         ));
@@ -833,7 +836,7 @@ class _EventScreenState extends State<EventScreen> {
               SizedBox(
                 width: 20,
               ),
-              Text(
+              TextComponent(
                 "Message for Raul",
                 style: TextStyle(
                     color: themeCubit.primaryColor,
@@ -845,9 +848,10 @@ class _EventScreenState extends State<EventScreen> {
           SizedBox(
             height: 10,
           ),
-          Text(
+          TextComponent(
             StringConstants.doYouHaveQuestion,
             style: TextStyle(color: themeCubit.textColor),
+            maxLines: 4,
           ),
           TextFieldComponent(
             _controller,

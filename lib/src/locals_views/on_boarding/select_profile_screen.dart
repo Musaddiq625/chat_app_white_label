@@ -90,14 +90,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 height: 30,
               ),
               TextComponent(
-                "Select your",
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
-              TextComponent(
-                "profile photo",
+                StringConstants.selectYourPicture,
                 style: TextStyle(
                     fontSize: 22,
                     color: themeCubit.textColor,
@@ -106,12 +99,13 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Text(
+              TextComponent(
                 StringConstants.chooseAnyOfTheUplodedImages,
                 style: TextStyle(
                   fontSize: 12,
                   color: ColorConstants.lightGray,
                 ),
+                maxLines: 4,
               ),
               SizedBox(
                 height: 20,
@@ -188,10 +182,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 buttonText: StringConstants.confirmProfilePicture,
                 onPressedFunction: () {
                   NavigationUtil.push(context, RouteConstants.dobScreen);
-
                 }),
-
-
           )
         ],
       ),

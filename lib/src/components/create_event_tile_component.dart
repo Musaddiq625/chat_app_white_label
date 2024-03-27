@@ -26,7 +26,7 @@ class CreateEventTileComponent extends StatelessWidget {
     this.subIcon = Icons.arrow_forward_ios,
     this.iconColor = ColorConstants.black,
     this.subIconColor = ColorConstants.lightGray,
-    this.subTextColor = ColorConstants.black,
+    this.subTextColor = ColorConstants.white,
   });
 
   @override

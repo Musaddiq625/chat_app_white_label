@@ -164,6 +164,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           StringConstants.registerCreateManageEvents,
                           style: TextStyle(
                               color: ColorConstants.lightGray, fontSize: 15),
+                          maxLines: 6,
                         ),
                         SizedBox(
                           height: 20,

@@ -74,14 +74,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               height: 30,
             ),
             TextComponent(
-              "Tell us a bit",
-              style: TextStyle(
-                  fontSize: 22,
-                  color: themeCubit.textColor,
-                  fontFamily: FontConstants.fontProtestStrike),
-            ),
-            TextComponent(
-              "about yourself",
+              StringConstants.tellUsABitAboutYourSelf,
               style: TextStyle(
                   fontSize: 22,
                   color: themeCubit.textColor,
@@ -194,7 +187,6 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
             iconText: StringConstants.workout,
             subIconColor: themeCubit.primaryColor,
             subText: "Very Active",
-            subTextColor: themeCubit.textColor,
             onTap: () {}),
         SizedBox(height: 10,),
         CreateEventTileComponent(
@@ -203,7 +195,6 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
             iconText: StringConstants.height,
             subIconColor: themeCubit.primaryColor,
             subText: "5'8",
-            subTextColor: themeCubit.textColor,
             onTap: () {}),
         SizedBox(height: 10,),
         CreateEventTileComponent(
