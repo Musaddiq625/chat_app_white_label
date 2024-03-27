@@ -50,11 +50,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
             children: [
               IconComponent(
                 iconData: Icons.arrow_back_ios_new_outlined,
-                borderColor: Colors.transparent,
                 backgroundColor: ColorConstants.iconBg,
-                iconColor: Colors.white,
-                circleSize: 30,
-                iconSize: 20,
               ),
               SizedBox(
                 height: 30,

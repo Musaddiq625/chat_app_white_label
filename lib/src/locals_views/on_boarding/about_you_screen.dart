@@ -110,7 +110,6 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
             TextFieldComponent(
               _bioController,
               hintText: StringConstants.bioHint,
-              fieldColor: ColorConstants.lightGray.withOpacity(0.5),
               maxLines: 5,
               textColor: themeCubit.textColor,
             ),

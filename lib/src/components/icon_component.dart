@@ -23,11 +23,11 @@ class IconComponent extends StatelessWidget {
   // Constructor to initialize the icon data, size, color, border size, border color, and circle size
   IconComponent({
     this.iconData,
-    this.iconSize = 24.0, // Default icon size
-    this.iconColor = Colors.black, // Default icon color
+    this.iconSize = 20, // Default icon size
+    this.iconColor = Colors.white, // Default icon color
     this.borderSize = 2.0, // Default border size
     this.borderColor = Colors.transparent, // Default border color
-    this.circleSize = 50,
+    this.circleSize = 30,
     this.circleHeight,
     this.backgroundColor = Colors.grey,
     this.onTap, // Default circle size

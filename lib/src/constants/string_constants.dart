@@ -5,6 +5,9 @@ class StringConstants {
   static const String phoneNumber = "phone number?";
   static const String whatsYourPhoneNumber = "What's your\nphone number?";
   static const String whatsYourEmailAddress = "What's your\nemail address?";
+  static const String whatsYourName = "What's your\nname?";
+  static const String firstName = "First Name";
+  static const String lastName = "Last Name";
   static const String password = "Password";
   static const String confirmPassword = "Confirm Password";
   static const String setYourAccountPassword = "Set your\naccount's password?";

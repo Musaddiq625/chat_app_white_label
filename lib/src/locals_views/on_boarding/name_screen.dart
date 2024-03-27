@@ -1,7 +1,6 @@
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,9 +21,10 @@ class NameScreen extends StatefulWidget {
 }
 
 class _NameScreenState extends State<NameScreen> {
- late final themeCubit = BlocProvider.of<ThemeCubit>(context);
- final TextEditingController _firstNameController = TextEditingController();
- final TextEditingController _secondNameController = TextEditingController();
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _secondNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
@@ -33,7 +33,6 @@ class _NameScreenState extends State<NameScreen> {
         widget: onBoarding());
   }
 
-
   Widget onBoarding() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
@@ -41,7 +40,7 @@ class _NameScreenState extends State<NameScreen> {
     );
   }
 
-  enterName(){
+  enterName() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,14 +61,7 @@ class _NameScreenState extends State<NameScreen> {
               height: 30,
             ),
             TextComponent(
-              "What's your",
-              style: TextStyle(
-                  fontSize: 22,
-                  color: themeCubit.textColor,
-                  fontFamily: FontConstants.fontProtestStrike),
-            ),
-            TextComponent(
-              "name?",
+              StringConstants.whatsYourName,
               style: TextStyle(
                   fontSize: 22,
                   color: themeCubit.textColor,
@@ -84,7 +76,7 @@ class _NameScreenState extends State<NameScreen> {
                   fontSize: 30),
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                hintText: "First Name",
+                hintText: StringConstants.firstName,
                 hintStyle: TextStyle(
                     color: ColorConstants.lightGray,
                     fontFamily: FontConstants.fontProtestStrike,
@@ -109,7 +101,7 @@ class _NameScreenState extends State<NameScreen> {
                   fontSize: 30),
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                hintText: "Last Name",
+                hintText: StringConstants.lastName,
                 hintStyle: TextStyle(
                     color: ColorConstants.lightGray,
                     fontFamily: FontConstants.fontProtestStrike,
@@ -134,7 +126,8 @@ class _NameScreenState extends State<NameScreen> {
               textColor: ColorConstants.lightGray,
               buttonText: StringConstants.continues,
               onPressedFunction: () {
-                NavigationUtil.push(context, RouteConstants.uploadProfileScreen);
+                NavigationUtil.push(
+                    context, RouteConstants.uploadProfileScreen);
               }),
         )
       ],
