@@ -550,13 +550,21 @@ List dummyMessageList = [
       type: MessageType.text,
       sentAt: '1707459588852'),
   MessageModel(
-      fromId: '923083306918',
-      toId: '921122334455',
+      fromId: '921122334455',
+      toId: '923083306918',
       msg:
-          'https://firebasestorage.googleapis.com/v0/b/weuno-chat-app.appspot.com/o/chats%2F923083306918_921122334455%2Fchat_document%2F1707462477514_we_uno_chat_file-sample_100kB.doc?alt=media&token=daf27335-950e-4b3f-9190-3144a30d7ad6',
+      'Contrary to popular  making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia 😓',
       readAt: '1707482146484',
-      type: MessageType.document,
+      type: MessageType.text,
       sentAt: '1707459588852'),
+  // MessageModel(
+  //     fromId: '923083306918',
+  //     toId: '921122334455',
+  //     msg:
+  //         'https://firebasestorage.googleapis.com/v0/b/weuno-chat-app.appspot.com/o/chats%2F923083306918_921122334455%2Fchat_document%2F1707462477514_we_uno_chat_file-sample_100kB.doc?alt=media&token=daf27335-950e-4b3f-9190-3144a30d7ad6',
+  //     readAt: '1707482146484',
+  //     type: MessageType.document,
+  //     sentAt: '1707459588852'),
   // MessageModel(
   //     fromId: '923083306918',
   //     toId: '921122334455',

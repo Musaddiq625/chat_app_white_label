@@ -2,6 +2,15 @@ class StringConstants {
   static const String errSomethingWentWrong = 'Something Went Wrong';
   static const String locals = "Locals";
   static const String joined = "Joined";
+  static const String phoneNumber = "phone number?";
+  static const String whatsYourPhoneNumber = "What's your\nphone number?";
+  static const String whatsYourEmailAddress = "What's your\nemail address?";
+  static const String password = "Password";
+  static const String confirmPassword = "Confirm Password";
+  static const String setYourAccountPassword = "Set your\naccount's password?";
+  static const String enterTheVerificationCode = "Enter the\nverification code";
+  static const String verificationCode = "verification code";
+  static const String didntReciveCode = "Didnt receive the code? Resend in  ";
   static const String createEvent = "Create Event";
   static const String viewEvent = "View Event";
   static const String getStarted = "Get Started";

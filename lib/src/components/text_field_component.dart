@@ -62,7 +62,7 @@ class TextFieldComponent extends StatefulWidget {
         this.digitsOnly = false,
         this.prefixWidget,
         this.changeDirection = false,
-        this.textDirection,  this.textColor=ColorConstants.black,
+        this.textDirection,  this.textColor=ColorConstants.white,
       }) : super(key: key);
   @override
   State<TextFieldComponent> createState() => _TextFieldComponentState();
@@ -74,7 +74,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
   @override
   void initState() {
     hidePassword = widget.hidePassword;
-    // widget.fieldColor = themeCubit.darkBackgroundColor.withOpacity(0.2);
+    widget.fieldColor = ColorConstants.lightGray.withOpacity(0.2);
     if (widget.capitalizeText) {
       inputFormatters.add(_UpperCaseTextFormatter());
     }
@@ -90,19 +90,19 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
       children: [
         if (widget.title != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 6),
+            padding:  EdgeInsets.only(bottom: 6),
             child: Row(
               children: [
                 TextComponent(
                   widget.title!,
-                  style: const TextStyle(
-                      color: ColorConstants.purple,
+                  style:  TextStyle(
+                      color: widget.textColor,
                       fontWeight: FontWeight.bold),
                 ),
                 TextComponent(
                   widget.isMandatory ? '*' : '',
-                  style: const TextStyle(
-                    color: ColorConstants.purple,
+                  style:  TextStyle(
+                    color:widget.textColor,
                   ),
                 ),
               ],
@@ -132,14 +132,14 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
           decoration: InputDecoration(
             counterText: '',
             filled: true,
-            fillColor: widget.fieldColor,
+            fillColor: widget.fieldColor.withOpacity(0.5),
             enabled: !widget.disableField,
             hintText: _showHintText(
               text: widget.hintText,
               showAsterisk: widget.isMandatory,
             ),
-            labelStyle: const TextStyle(color: ColorConstants.lightGrey),
-            hintStyle: const TextStyle(color: ColorConstants.lightGrey,fontSize: 14),
+            labelStyle:  TextStyle(color: ColorConstants.lightGrey),
+            hintStyle:  TextStyle(color: ColorConstants.lightGrey,fontSize: 14),
             border: _outLineBorder(),
             errorBorder: _outLineBorder(),
             enabledBorder: _outLineBorder(),
@@ -148,7 +148,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
             errorMaxLines: 2,
             prefixIcon: widget.prefixWidget != null
                 ? Padding(
-              padding: const EdgeInsets.only(left: 15, bottom: 1),
+              padding:  EdgeInsets.only(left: 15, bottom: 1),
               child: SizedBox(
                 width: 35,
                 child: widget.prefixWidget,
@@ -157,7 +157,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
                 : null,
             prefixIconConstraints: _boxConstraints(),
             suffixIconConstraints: _boxConstraints(),
-            contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            contentPadding:  EdgeInsets.fromLTRB(16, 16, 16, 16),
             suffixIcon: hidePassword != null
                 ? GestureDetector(
               child: _iconWidget(),

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
@@ -42,7 +44,6 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Image.asset(
             AssetConstants.splash,
-
           ),
           // Container(
           //   decoration: BoxDecoration(
@@ -63,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     color: themeCubit.backgroundColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
-              Text(
+              TextComponent(
                 "Connect with People.",
                 style: TextStyle(
                     fontSize: 38,
@@ -104,162 +105,207 @@ class _SplashScreenState extends State<SplashScreen> {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            color: themeCubit.darkBackgroundColor.withOpacity(0.8),
-          ),
-          padding: const EdgeInsets.only(top: 20.0, left: 30, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                StringConstants.getStarted,
-                style: TextStyle(
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike,
-                    fontSize: 18),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                StringConstants.connectWithPeople,
-                style: TextStyle(color: ColorConstants.lightGray, fontSize: 15),
-              ),
-              Text(
-                StringConstants.registerCreateManageEvents,
-                style: TextStyle(color: ColorConstants.lightGray, fontSize: 15),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [ColorConstants.btnGradientColor, Color.fromARGB(255, 220, 210, 210)],
+        body: Stack(
+          children: [
+            Positioned(
+                // top: 130,
+                // left: 220,
+                child: Container(
+                  width: 300,
+                  height: 300,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    // gradient: LinearGradient(colors: [
+                    //   Color(0xff7c7c7c),
+                    //   Color(0xff1c1c1c),
+                    //   // Color(0xff9b9b9b),
+                    //   // Color(0xff9b9b9b),
+                    //   // Color(0xff9b9b9b),
+                    // ]),
+                    color: ColorConstants.blackLight,
+                  ),
+                )),
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(25)),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      // color: themeCubit.darkBackgroundColor.withOpacity(0.8),
                     ),
-                    borderRadius: BorderRadius.circular(25),
-
-                ),
-                width: MediaQuery.sizeOf(context).width,
-                child: ButtonComponent(
-                    bgcolor: ColorConstants.transparent,
-                    textColor: ColorConstants.black,
-                    buttonText: StringConstants.continueWithPhone,
-                    onPressedFunction: () {
-                      NavigationUtil.push(context, RouteConstants.signUpNumber);
-                    }),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width,
-                child: ButtonComponent(
-                    bgcolor: ColorConstants.lightGray,
-                    textColor: themeCubit.textColor,
-                    buttonText: StringConstants.continueWithEmail,
-                    onPressedFunction: () {
-                      NavigationUtil.push(context, RouteConstants.signUpEmail);
-                    }),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.42,
-                    child: GestureDetector(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 9.5),
-                        decoration: BoxDecoration(
+                    padding:
+                        const EdgeInsets.only(top: 20.0, left: 30, right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 15,
+                        ),
+                        TextComponent(
+                          StringConstants.getStarted,
+                          style: TextStyle(
+                              color: themeCubit.textColor,
+                              fontFamily: FontConstants.fontProtestStrike,
+                              fontSize: 18),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextComponent(
+                          StringConstants.connectWithPeople,
+                          style: TextStyle(
+                              color: ColorConstants.lightGray, fontSize: 15),
+                        ),
+                        TextComponent(
+                          StringConstants.registerCreateManageEvents,
+                          style: TextStyle(
+                              color: ColorConstants.lightGray, fontSize: 15),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                ColorConstants.btnGradientColor,
+                                Color.fromARGB(255, 220, 210, 210)
+                              ],
+                            ),
                             borderRadius: BorderRadius.circular(25),
-                            color: ColorConstants.black),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          width: MediaQuery.sizeOf(context).width,
+                          child: ButtonComponent(
+                              bgcolor: ColorConstants.transparent,
+                              textColor: ColorConstants.black,
+                              buttonText: StringConstants.continueWithPhone,
+                              onPressedFunction: () {
+                                NavigationUtil.push(
+                                    context, RouteConstants.signUpNumber);
+                              }),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.sizeOf(context).width,
+                          child: ButtonComponent(
+                              bgcolor: ColorConstants.lightGray,
+                              textColor: themeCubit.textColor,
+                              buttonText: StringConstants.continueWithEmail,
+                              onPressedFunction: () {
+                                NavigationUtil.push(
+                                    context, RouteConstants.signUpEmail);
+                              }),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(
-                              Icons.apple,
-                              color: ColorConstants.white,
+                            SizedBox(
+                              width: MediaQuery.sizeOf(context).width * 0.42,
+                              child: GestureDetector(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 9.5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: ColorConstants.black),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.apple,
+                                        color: ColorConstants.white,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.sizeOf(context).width * 0.42,
+                              child: GestureDetector(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 9.5),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: ColorConstants.white),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      // Container(
+                                      //   height: 25,
+                                      //   width: 25,
+                                      //   child: Image.asset(
+                                      //     AssetConstants.google,
+                                      //   ),
+                                      // ),
+                                      SvgPicture.asset(
+                                        height: 20,
+                                        AssetConstants.google,
+                                        colorFilter: ColorFilter.mode(
+                                            themeCubit.backgroundColor,
+                                            BlendMode.srcIn),
+                                      ),
+                                      // Icon(
+                                      //   Icons.svg,
+                                      //   color: ColorConstants.black,
+                                      // )
+                                    ],
+                                  ),
+                                ),
+                              ),
                             )
                           ],
                         ),
-                      ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        // const TextComponent(
+                        //   listOfText: [
+                        //     StringConstants.agreeToOur,
+                        //     StringConstants.termsAndConditions,
+                        //   ],
+                        // ),
+
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: StringConstants.agreeToOur,
+                                style: TextStyle(
+                                    color: ColorConstants.lightGray,
+                                    fontSize: 15), // Change the color here
+                              ),
+                              TextSpan(
+                                text: StringConstants.termsAndConditions,
+                                style: TextStyle(
+                                    color: ColorConstants.lightGray,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 15), // Change the color here
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.42,
-                    child: GestureDetector(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 9.5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: ColorConstants.white),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Container(
-                            //   height: 25,
-                            //   width: 25,
-                            //   child: Image.asset(
-                            //     AssetConstants.google,
-                            //   ),
-                            // ),
-                            SvgPicture.asset(
-                              height: 20,
-                              AssetConstants.share,
-                              colorFilter: ColorFilter.mode(
-                                 themeCubit.backgroundColor,
-                                  BlendMode.srcIn),
-                            ),
-                            // Icon(
-                            //   Icons.svg,
-                            //   color: ColorConstants.black,
-                            // )
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: StringConstants.agreeToOur,
-                      style: TextStyle(
-                          color: ColorConstants.lightGray,
-                          fontSize: 15), // Change the color here
-                    ),
-                    TextSpan(
-                      text: StringConstants.termsAndConditions,
-                      style: TextStyle(
-                          color: ColorConstants.lightGray,
-                          decoration: TextDecoration.underline,
-                          fontSize: 15), // Change the color here
-                    ),
-                  ],
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
+            ),
+          ],
         ));
   }
 }

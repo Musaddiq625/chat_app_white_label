@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
@@ -88,15 +89,8 @@ class _OtpScreenState extends State<OtpScreen> {
               SizedBox(
                 height: 30,
               ),
-              Text(
-                "Enter the",
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
-              Text(
-                "verification code",
+              TextComponent(
+                StringConstants.enterTheVerificationCode,
                 style: TextStyle(
                     fontSize: 22,
                     color: themeCubit.textColor,
@@ -138,11 +132,11 @@ class _OtpScreenState extends State<OtpScreen> {
                 height: 20,
               ),
               if (_counter > 0)
-              Text('Didnt receive the code? Resend in  ${_counter > 0 ? _counter : ""}',
+              TextComponent('${StringConstants.didntReciveCode}  ${_counter > 0 ? _counter : ""}',
                   style: const TextStyle(
                       fontSize: 14, fontWeight: FontWeight.bold,color: ColorConstants.lightGray)),
               if (_counter <= 0)
-                Text(StringConstants.resendCode,
+                TextComponent(StringConstants.resendCode,
                     style:  TextStyle(
                         decoration: TextDecoration.underline,
                         decorationColor:themeCubit.primaryColor ,

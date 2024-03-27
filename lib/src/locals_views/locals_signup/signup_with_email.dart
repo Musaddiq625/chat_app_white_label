@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -57,15 +58,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               SizedBox(
                 height: 30,
               ),
-              Text(
-                "What's your",
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
-              Text(
-                "email address?",
+              TextComponent(
+                StringConstants.whatsYourEmailAddress,
                 style: TextStyle(
                     fontSize: 22,
                     color: themeCubit.textColor,
@@ -77,13 +71,12 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               TextFieldComponent(
                 _emailcontroller,
                 hintText: "abc@gmail.com",
-                fieldColor: ColorConstants.lightGray.withOpacity(0.5),
                 textColor: themeCubit.textColor,
               ),
               const SizedBox(
                 height: 20,
               ),
-              Text(
+              TextComponent(
                 StringConstants.verificationCodeSentToEmail,
                 style: TextStyle(
                   fontSize: 12,

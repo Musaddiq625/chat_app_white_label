@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
@@ -58,15 +59,8 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
               SizedBox(
                 height: 30,
               ),
-              Text(
-                "What's your",
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
-              Text(
-                "phone number?",
+              TextComponent(
+                StringConstants.whatsYourPhoneNumber,
                 style: TextStyle(
                     fontSize: 22,
                     color: themeCubit.textColor,
@@ -123,7 +117,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
               const SizedBox(
                 height: 20,
               ),
-              Text(
+              TextComponent(
                 StringConstants.verificationCodeSent,
                 style: TextStyle(
                   fontSize: 12,

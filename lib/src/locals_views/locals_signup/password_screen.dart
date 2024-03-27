@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
@@ -57,29 +58,23 @@ class _PasswordScreenState extends State<PasswordScreen> {
               SizedBox(
                 height: 30,
               ),
-              Text(
-                "Set your",
+              TextComponent(
+               StringConstants.setYourAccountPassword ,
                 style: TextStyle(
                     fontSize: 22,
                     color: themeCubit.textColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
-              Text(
-                "account's password?",
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
+
               const SizedBox(
                 height: 20,
               ),
 
               TextFieldComponent(
                 _phoneNumbercontroller,
-                title: "Password",
+                title: StringConstants.password,
                 hintText: "",
-                fieldColor: ColorConstants.lightGray.withOpacity(0.5),
+                // fieldColor: ColorConstants.lightGray.withOpacity(0.5),
                 textColor: themeCubit.textColor,
               ),
               const SizedBox(
@@ -88,15 +83,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
               TextFieldComponent(
                 _phoneNumbercontroller,
-                title: "Confirm Password",
+                title: StringConstants.confirmPassword,
                 hintText: "",
-                fieldColor: ColorConstants.lightGray.withOpacity(0.5),
                 textColor: themeCubit.textColor,
               ),
               const SizedBox(
                 height: 20,
               ),
-              Text(
+              TextComponent(
                 StringConstants.passwordValidation,
                 style: TextStyle(
                   fontSize: 12,
