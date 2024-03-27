@@ -21,7 +21,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   bool connectSend = false;
   int _currentPage = 0;
@@ -149,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,
-      body: InfoSheetComponent(
+      body: const InfoSheetComponent(
         heading: StringConstants.requestSend + " XyZ",
         body: StringConstants.connectSendBody,
       ),
@@ -216,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             : ButtonComponent(
                 bgcolor: themeCubit.primaryColor,
                 buttonText: StringConstants.connect,
-            textColor: themeCubit.backgroundColor,
+                textColor: themeCubit.backgroundColor,
                 onPressedFunction: () {
                   setState(() {
                     connectSend = true;
@@ -242,7 +241,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Column(
                 children: [
-
                   Expanded(
                     child: PageView.builder(
                       controller: _pageController,
@@ -285,7 +283,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: List.generate(imgList.length, (index) {
               return Container(
-                margin: EdgeInsets.symmetric(horizontal: 3),
+                margin: const EdgeInsets.symmetric(horizontal: 3),
                 height: 4,
                 width: 15,
                 decoration: BoxDecoration(
@@ -297,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             }),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Column(
@@ -313,14 +311,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
+              const Row(
                 children: [
                   Icon(
                     Icons.shopping_bag,
                     color: ColorConstants.lightGray,
                     size: 15,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 5,
                   ),
                   Text(
@@ -332,21 +330,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
+              const Row(
                 children: [
                   Icon(
                     Icons.cake,
                     color: ColorConstants.lightGray,
                     size: 15,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 5,
                   ),
                   Text(
                     "31 yo",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 30,
                   ),
                   Icon(
@@ -354,7 +352,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: ColorConstants.lightGray,
                     size: 15,
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 5,
                   ),
                   Text(
@@ -368,19 +366,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.face,
                     color: ColorConstants.lightGray,
                     size: 14,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 5,
                   ),
-                  Text(
+                  const Text(
                     "2 mutual, connections",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   SizedBox(
@@ -406,7 +404,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   IconComponent(
                     iconData: Icons.share,
                     borderColor: Colors.transparent,
@@ -427,7 +425,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 100,
               ),
             ],
@@ -448,7 +446,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Padding(
+              Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: TextComponent(
                     StringConstants.aboutMe,
@@ -460,7 +458,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(
                 height: 10,
               ),
-               Text(
+              Text(
                 "New to the city, keen to explore with new minded people and build my own network",
                 style: TextStyle(
                   fontSize: 15,
@@ -497,13 +495,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             TagComponent(
                               iconData: tag['iconData'],
                               customTextColor: themeCubit.textColor,
-                              backgroundColor: ColorConstants.lightGray.withOpacity(0.3),
+                              backgroundColor:
+                                  ColorConstants.lightGray.withOpacity(0.3),
                               iconColor: themeCubit.primaryColor,
                               customIconText: tag['name'],
                               circleHeight: 35,
                               iconSize: 20,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             )
                           ]))
@@ -530,7 +529,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Padding(
+                Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: TextComponent(
                       StringConstants.myInterests,
@@ -539,7 +538,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: themeCubit.primaryColor,
                           fontFamily: FontConstants.fontProtestStrike),
                     )),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Wrap(
@@ -550,13 +549,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               TagComponent(
                                 iconData: tag['iconData'],
                                 customTextColor: themeCubit.textColor,
-                                backgroundColor: ColorConstants.lightGray.withOpacity(0.3),
+                                backgroundColor:
+                                    ColorConstants.lightGray.withOpacity(0.3),
                                 iconColor: themeCubit.primaryColor,
                                 customIconText: tag['name'],
                                 circleHeight: 35,
                                 iconSize: 20,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               )
                             ]))
@@ -587,7 +587,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: const TextStyle(
                         fontSize: 20, color: ColorConstants.bgcolorbutton),
                     children: <TextSpan>[
-                       TextSpan(
+                      TextSpan(
                         text: "${StringConstants.events}  ",
                         style: TextStyle(
                             fontSize: 20,
@@ -628,7 +628,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 )),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         SingleChildScrollView(
@@ -641,7 +641,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     (event) => Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(30.0)),
                           image: DecorationImage(
                             image: NetworkImage(
@@ -685,20 +685,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ],
                                       ),
                                     ),
-                                     Text(
+                                    Text(
                                       "${event['joined']}${StringConstants.joined}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 13,
                                           color: ColorConstants.white),
                                     ),
                                   ],
                                 ),
                               ),
-                               Padding(
-                                padding: EdgeInsets.only(left: 10),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
                                 child: Text(
-                                  event['eventName'] ,
-                                  style: TextStyle(
+                                  event['eventName'],
+                                  style: const TextStyle(
                                       fontSize: 20,
                                       fontFamily:
                                           FontConstants.fontProtestStrike,
@@ -708,11 +708,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               const SizedBox(
                                 height: 10,
                               ),
-                               Padding(
-                                padding: EdgeInsets.only(left: 10),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
                                 child: Text(
                                   event['dateTime'],
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 13, color: Colors.white),
                                 ),
                               ),
@@ -749,7 +749,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: const TextStyle(
                         fontSize: 20, color: ColorConstants.bgcolorbutton),
                     children: <TextSpan>[
-                       TextSpan(
+                      TextSpan(
                         text: "${StringConstants.clubs}  ",
                         style: TextStyle(
                             fontSize: 20,
@@ -789,7 +789,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 )),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         SingleChildScrollView(
@@ -802,7 +802,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     (tag) => Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(30.0)),
                           image: DecorationImage(
                             image: NetworkImage(

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
@@ -269,8 +270,8 @@ class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
   @override
   Widget build(BuildContext context) {
     // Get the screen size
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = AppConstants.responsiveWidth(context);
+    double screenHeight = AppConstants.responsiveHeight(context);
     EdgeInsets safeArea = MediaQuery.of(context).padding;
     double aspectRatio = screenWidth / (screenHeight - safeArea.top);
     if (videoController == null && widget.type == MessageType.video ||

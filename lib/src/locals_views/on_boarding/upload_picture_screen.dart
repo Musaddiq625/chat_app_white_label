@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,7 +65,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
               circleSize: 30,
               iconSize: 20,
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             TextComponent(
@@ -81,7 +82,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                   color: themeCubit.textColor,
                   fontFamily: FontConstants.fontProtestStrike),
             ),
-            TextComponent(
+            const TextComponent(
               StringConstants.requiredPictures,
               style: TextStyle(
                 fontSize: 12,
@@ -132,41 +133,44 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
             //     //     ))
             //   ],
             // ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
 
             selectedImages.isNotEmpty
-                ?SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Container(// This is just for demonstration. You can remove or change it as needed.
-                child: Row(
-                  children: selectedImages.map((image) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                ? SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      // This is just for demonstration. You can remove or change it as needed.
                       child: Row(
-                        children: [
-                          Container(
-
-                            decoration: BoxDecoration(
-                              color: ColorConstants.white, // Ensure this is defined in your themeCubit
-                              borderRadius: BorderRadius.circular(10.0), // This gives the curved border radius
+                        children: selectedImages.map((image) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: ColorConstants
+                                        .white, // Ensure this is defined in your themeCubit
+                                    borderRadius: BorderRadius.circular(
+                                        10.0), // This gives the curved border radius
+                                  ),
+                                  width: AppConstants.responsiveWidth(context,
+                                      percentage: 60),
+                                  height: 250,
+                                  child: Image.file(
+                                    image,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                              ],
                             ),
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            height: 250,
-                            child: Image.file(
-                              image,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          SizedBox(width: 20),
-                        ],
+                          );
+                        }).toList(),
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            )
+                    ),
+                  )
                 : Container(
                     width: MediaQuery.sizeOf(context).width * 0.6,
                     height: 250,
@@ -188,7 +192,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                   )
           ],
         ),
-        Spacer(),
+        const Spacer(),
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
@@ -211,17 +215,18 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 }
               }),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
-              bgcolor: selectedImages.length>=2
+              bgcolor: selectedImages.length >= 2
                   ? ColorConstants.lightGray.withOpacity(0.2)
                   : ColorConstants.white,
-              textColor:
-              selectedImages.length>=2 ? ColorConstants.white : ColorConstants.black,
+              textColor: selectedImages.length >= 2
+                  ? ColorConstants.white
+                  : ColorConstants.black,
               buttonText: StringConstants.takeASelfie,
               onPressedFunction: () async {
                 List<File> files = [];
@@ -235,10 +240,10 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 }
               }),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
-        if (selectedImages.length>=2)
+        if (selectedImages.length >= 2)
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
@@ -246,7 +251,8 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
-                  NavigationUtil.push(context, RouteConstants.selectProfileScreen);
+                  NavigationUtil.push(
+                      context, RouteConstants.selectProfileScreen);
                 }),
           )
       ],

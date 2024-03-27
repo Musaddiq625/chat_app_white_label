@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,8 @@ class MessageBubbleComponent extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 8),
               constraints: BoxConstraints(
                   minWidth: 0,
-                  maxWidth: MediaQuery.of(context).size.width * 0.7),
+                  maxWidth:
+                      AppConstants.responsiveWidth(context, percentage: 70)),
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
               decoration: BoxDecoration(
                   color: isMe ? ColorConstants.greenLight : Colors.white,

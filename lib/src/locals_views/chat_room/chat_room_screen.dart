@@ -7,6 +7,7 @@ import 'package:chat_app_white_label/src/components/profile_image_component.dart
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/textfield_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
@@ -287,7 +288,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         takeFullHeightWhenPossible: false, isShowHeader: false,
         body: StatefulBuilder(builder: (context, setState) {
       return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.9,
+        height: AppConstants.responsiveHeight(context, percentage: 90),
         child: Stack(
           children: [
             Column(
