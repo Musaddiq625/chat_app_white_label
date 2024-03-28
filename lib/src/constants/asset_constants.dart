@@ -24,8 +24,15 @@ class AssetConstants {
   static const String calendar = "$images/calendar.svg";
   static const String happy = "$images/happy.svg";
   static const String marker = "$images/marker.svg";
-  static const String ticket = "$images/ticket.svg";
+  static const String ticket = "$images/ticket_new.svg";
+  static const String tag = "$images/price_tag.svg";
+  static const String clock = "$images/clock.svg";
+  static const String chatMsg = "$images/chat.svg";
+  static const String paperPlane = "$images/paper_plane.svg";
+  static const String paperPlaneImage = "$images/paper-plane.png";
   static const String end = "$images/end.svg";
   static const String confetti = "$images/confetti.png";
   static const String garland = "$images/garland.png";
+  static const String copyLink = "$images/copy_link.svg";
+  static const String instagram = "$images/instagram.png";
 }

@@ -350,10 +350,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconComponent(
-                    iconData: Icons.link,
+                    // iconData: Icons.link,
+                    svgData: AssetConstants.copyLink,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.yellow,
-                    iconColor: Colors.white,
+                    backgroundColor: themeCubit.primaryColor,
+                    iconColor: ColorConstants.black,
                     circleSize: 60,
                     customText: StringConstants.copyLink,
                     customTextColor: themeCubit.textColor,
@@ -363,15 +364,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.blue,
                     circleSize: 60,
+                    iconSize: 30,
                     customText: StringConstants.facebook,
                     customTextColor: themeCubit.textColor,
                   ),
                   IconComponent(
-                    iconData: Icons.install_desktop,
+                    svgDataCheck: false,
+                    svgData: AssetConstants.instagram,
+                    backgroundColor: Colors.transparent,
                     borderColor: Colors.transparent,
                     circleSize: 60,
                     customText: StringConstants.instagram,
                     customTextColor: themeCubit.textColor,
+                    iconSize: 60,
                   ),
                   IconComponent(
                     svgData: AssetConstants.share,
@@ -484,13 +489,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _yesShareItBottomSheet() {
+    _navigateToBack();
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,
       body: InfoSheetComponent(
         heading: StringConstants.eventShared,
-        image: AssetConstants.group,
+        image: AssetConstants.garland,
       ),
     );
+  }
+  _navigateToBack() async {
+    Future.delayed(const Duration(milliseconds: 1800), () async {
+      NavigationUtil.pop(context);
+    });
   }
 }

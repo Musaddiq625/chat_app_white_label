@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -100,7 +101,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 children: [
                   SizedBox(
                       child: GestureDetector(
-                    onTap: toggleTaped,
+                    // onTap: _goBackBottomSheet(),
                     child: IconComponent(
                       iconData: Icons.arrow_back_ios_new,
                       iconSize: 20,
@@ -343,7 +344,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     maxLines: 4,
                     style: TextStyle(color: themeCubit.textColor),
                     decoration: InputDecoration(
-                      hintText: StringConstants.typeYourMessage,
+                      hintText: StringConstants.typeYourDescription,
                       filled: true,
                       fillColor: themeCubit.darkBackgroundColor,
                       border: OutlineInputBorder(
@@ -752,36 +753,42 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconComponent(
-                    customTextColor: themeCubit.textColor,
-                    iconData: Icons.link,
+                    // iconData: Icons.link,
+                    svgData: AssetConstants.copyLink,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.yellow,
-                    iconColor: Colors.white,
+                    backgroundColor: themeCubit.primaryColor,
+                    iconColor: ColorConstants.black,
                     circleSize: 60,
                     customText: StringConstants.copyLink,
+                    customTextColor: themeCubit.textColor,
                   ),
                   IconComponent(
-                    customTextColor: themeCubit.textColor,
                     iconData: Icons.facebook,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.blue,
                     circleSize: 60,
+                    iconSize: 30,
                     customText: StringConstants.facebook,
+                    customTextColor: themeCubit.textColor,
                   ),
                   IconComponent(
-                    customTextColor: themeCubit.textColor,
-                    iconData: Icons.install_desktop,
+                    svgDataCheck: false,
+                    svgData: AssetConstants.instagram,
+                    backgroundColor: Colors.transparent,
                     borderColor: Colors.transparent,
                     circleSize: 60,
                     customText: StringConstants.instagram,
+                    customTextColor: themeCubit.textColor,
+                    iconSize: 60,
                   ),
                   IconComponent(
-                    customTextColor: themeCubit.textColor,
-                    iconData: Icons.share,
+                    svgData: AssetConstants.share,
+                    iconColor: ColorConstants.black,
                     borderColor: Colors.transparent,
-                    backgroundColor: const Color.fromARGB(255, 87, 64, 208),
+                    // backgroundColor:ColorConstants.transparent,
                     circleSize: 60,
                     customText: StringConstants.share,
+                    customTextColor: themeCubit.textColor,
                   )
                 ],
               ),
@@ -884,6 +891,47 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     _yesShareItBottomSheet();
                   },
                   bgcolor: ColorConstants.yellow,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ));
+  }
+
+  _goBackBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            const SizedBox(height: 25),
+            const ProfileImageComponent(url: ''),
+            const SizedBox(height: 20),
+            const TextComponent(StringConstants.areYouSureYouwantToExit,
+                style:TextStyle(
+                fontSize: 20,
+                fontFamily: FontConstants.fontProtestStrike)),
+
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: TextComponent(
+                      StringConstants.goBack,
+                      style: TextStyle(color: themeCubit.textColor),
+                    )),
+                const SizedBox(width: 30),
+                ButtonComponent(
+                  bgcolor: themeCubit.primaryColor,
+                  textColor: themeCubit.backgroundColor,
+                  buttonText: StringConstants.yesShareIt,
+                  onPressedFunction: () {
+                    NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
+                  },
                 ),
               ],
             ),

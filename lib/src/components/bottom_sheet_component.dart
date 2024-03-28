@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -39,29 +41,59 @@ class BottomSheetComponent {
               FocusScope.of(context).unfocus();
             },
             child: SingleChildScrollView(
-              child: Container(
-                // constraints: const BoxConstraints(maxHeight:100),
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // SizedBoxConstants.sizedBoxSixH(),
-                    if (isShowHeader)
-                      header ??
-                          ((leadingTitle != null)
-                              ? _defaultBottomSheetHeader(
-                                  leadingPressed: leadingPressed,
-                                  leadingTitle: leadingTitle,
-                                  leadingIcon: leadingIcon,
-                                  context: context,
-                                )
-                              : const SizedBox.shrink()),
-                    if (isShowHeader) const Divider(),
-                    Flexible(child: body)
-                  ],
-                ),
+              child: Stack(
+                children: [
+                  Positioned(
+                      // top: 130,
+                      // left: 220,
+                      child: Container(
+                    // width: 400,
+                    // height: 800,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      // gradient: LinearGradient(colors: [
+                      //   Color(0xff7c7c7c),
+                      //   Color(0xff1c1c1c),
+                      //   // Color(0xff9b9b9b),
+                      //   // Color(0xff9b9b9b),
+                      //   // Color(0xff9b9b9b),
+                      // ]),
+                      color: ColorConstants.transparent,
+                    ),
+                  )),
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(25)),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                        child: Container(
+                          // constraints: const BoxConstraints(maxHeight:100),
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // SizedBoxConstants.sizedBoxSixH(),
+                              if (isShowHeader)
+                                header ??
+                                    ((leadingTitle != null)
+                                        ? _defaultBottomSheetHeader(
+                                            leadingPressed: leadingPressed,
+                                            leadingTitle: leadingTitle,
+                                            leadingIcon: leadingIcon,
+                                            context: context,
+                                          )
+                                        : const SizedBox.shrink()),
+                              if (isShowHeader) const Divider(),
+                              Flexible(child: body)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

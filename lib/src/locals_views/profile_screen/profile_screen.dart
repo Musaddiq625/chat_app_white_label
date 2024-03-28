@@ -1,6 +1,7 @@
 import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -301,7 +302,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              const TextComponent(
                 "NAME ",
                 style: TextStyle(
                     fontSize: 38,
@@ -314,14 +315,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const Row(
                 children: [
                   Icon(
-                    Icons.shopping_bag,
+                    Icons.business_center_rounded,
                     color: ColorConstants.lightGray,
                     size: 15,
                   ),
                   SizedBox(
                     width: 5,
                   ),
-                  Text(
+                  TextComponent(
                     "Founder, WeUno",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
@@ -340,22 +341,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(
                     width: 5,
                   ),
-                  Text(
+                  TextComponent(
                     "31 yo",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
                   SizedBox(
-                    width: 30,
+                    width: 20,
                   ),
                   Icon(
-                    Icons.location_on,
+                    Icons.location_on_sharp,
                     color: ColorConstants.lightGray,
                     size: 15,
                   ),
                   SizedBox(
                     width: 5,
                   ),
-                  Text(
+                  TextComponent(
                     "Manchester",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
@@ -367,14 +368,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Row(
                 children: [
                   const Icon(
-                    Icons.face,
+                    Icons.tag_faces_rounded,
                     color: ColorConstants.lightGray,
                     size: 14,
                   ),
                   const SizedBox(
                     width: 5,
                   ),
-                  const Text(
+                  const TextComponent(
                     "2 mutual, connections",
                     style: TextStyle(fontSize: 15, color: Colors.white),
                   ),
@@ -406,21 +407,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
-                    iconData: Icons.share,
+                    svgData: AssetConstants.share,
+                    // iconData: Icons.share,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
                     iconColor: Colors.white,
                     circleSize: 38,
-                    iconSize: 20,
+                    iconSize: 15,
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
-                    iconData: Icons.menu,
+                    // iconData: Icons.more,
+                    svgData: AssetConstants.more,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
                     iconColor: Colors.white,
                     circleSize: 38,
-                    iconSize: 20,
+                    iconSize: 6,
                     // onTap: _showMoreBottomSheet,
                   )
                 ],
@@ -480,9 +483,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: 10,
                   ),
                   IconComponent(
-                    iconData: Icons.facebook,
+                    // iconData: Icons.facebook,
+                    svgDataCheck: false,
+                    svgData: AssetConstants.instagram,
                     borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.blue,
+                    backgroundColor: ColorConstants.transparent,
+                    iconSize: 50,
                     circleSize: 30,
                     circleHeight: 30,
                   ),

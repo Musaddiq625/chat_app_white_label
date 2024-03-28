@@ -6,9 +6,10 @@ import '../constants/color_constants.dart';
 class IconComponent extends StatelessWidget {
   final IconData? iconData;
   final String? svgData;
+  final bool svgDataCheck;
   final double iconSize;
   final Color iconColor;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final double borderSize;
   final Color borderColor;
   final double? circleHeight;
@@ -29,14 +30,15 @@ class IconComponent extends StatelessWidget {
     this.borderColor = Colors.transparent, // Default border color
     this.circleSize = 30,
     this.circleHeight,
-    this.backgroundColor = Colors.grey,
+    this.backgroundColor,
     this.onTap, // Default circle size
     this.customText,
     this.customIconText,
-    this.customTextColor = Colors.black,
+    this.customTextColor = Colors.white,
     this.customTextSize = 12,
     this.customFontWeight = FontWeight.bold,
     this.svgData,
+    this.svgDataCheck = true,
   });
 
   @override
@@ -57,25 +59,42 @@ class IconComponent extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     color: backgroundColor,
                     // shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        ColorConstants.btnGradientColor,
-                        Color.fromARGB(255, 220, 210, 210)
-                      ],
-                    ),
+                    // gradient: LinearGradient(
+                    //   colors: [
+                    //     ColorConstants.btnGradientColor,
+                    //     Color.fromARGB(255, 220, 210, 210)
+                    //   ],
+                    // ),
                     border: Border.all(
                       color: borderColor,
                       width: borderSize,
                     ),
                   )
-                : BoxDecoration(
-                    color: backgroundColor,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: borderColor,
-                      width: borderSize,
-                    ),
-                  ),
+                : customText == null
+                    ? BoxDecoration(
+                        color: backgroundColor,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: borderColor,
+                          width: borderSize,
+                        ),
+                      )
+                    : BoxDecoration(
+                        color: backgroundColor,
+                        shape: BoxShape.circle,
+                        gradient: backgroundColor == null
+                            ? LinearGradient(
+                                colors: [
+                                  ColorConstants.btnGradientColor,
+                                  Color.fromARGB(255, 220, 210, 210)
+                                ],
+                              )
+                            : null,
+                        border: Border.all(
+                          color: borderColor,
+                          width: borderSize,
+                        ),
+                      ),
             child: customIconText != null
                 ? Row(
                     children: [
@@ -112,12 +131,18 @@ class IconComponent extends StatelessWidget {
                         size: iconSize,
                         color: iconColor,
                       )
-                    : SvgPicture.asset(
-                        height: iconSize,
-                        svgData!,
-                        colorFilter:
-                            ColorFilter.mode(iconColor, BlendMode.srcIn),
-                      ),
+                    : svgDataCheck
+                        ? SvgPicture.asset(
+                            height: iconSize,
+                            svgData!,
+                            colorFilter:
+                                ColorFilter.mode(iconColor, BlendMode.srcIn),
+                          )
+                        : Image.asset(
+                            svgData!,
+                            width: iconSize,
+                            height: iconSize,
+                          ),
           ),
           if (customText != null)
             const SizedBox(

@@ -2,6 +2,7 @@ import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/asset_constants.dart';
 import '../utils/theme_cubit/theme_cubit.dart';
@@ -10,8 +11,9 @@ class InfoSheetComponent extends StatefulWidget {
   final heading;
   final body;
   final image;
+  final bool svg;
 
-  const InfoSheetComponent({super.key, this.heading, this.body, this.image});
+  const InfoSheetComponent({super.key, this.heading, this.body, this.image,this.svg=false});
 
   @override
   State<InfoSheetComponent> createState() => _InfoSheetComponentState();
@@ -34,18 +36,25 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
             width: double.infinity,
           ),
           if (widget.image != null)
+            widget.svg?
+            SvgPicture.asset(
+              // height: 25.55,
+              widget.image,
+              height: 150,
+            ):
             Image.asset(
               // AssetConstants.group,
               widget.image,
               width: 150,
               height: 150,
             ),
+          SizedBox(height: 20),
           Container(
             width: 300,
             child: TextComponent(
               widget.heading,
               style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 30,
                   fontFamily: FontConstants.fontProtestStrike,
                   color: themeCubit.textColor),
               textAlign: TextAlign.center,
@@ -65,7 +74,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
             ),
           ),
           const SizedBox(
-            height: 50,
+            height: 20,
           )
         ],
       ),

@@ -116,8 +116,8 @@ class StringConstants {
   static const String pricing = "Pricing";
   static const String yourConnections = "Your Connections";
   static const String fireWorks = "FireWorks";
-  static const String areYouSureYouwantToShare =
-      "Are you sure you want to share \nEvent ";
+  static const String areYouSureYouwantToShare = "Are you sure you want to share \nEvent ";
+  static const String areYouSureYouwantToExit = "Are you sure you want to exit \nYour event will be deleted ";
   static const String goBack = "Go back";
   static const String eventShared = "Event Shared !";
   static const String eventCreatedSuccessfully =
@@ -149,6 +149,7 @@ class StringConstants {
   static const String requestStatus =
       "You will be notifiy when your request is accepted";
   static const String typeYourMessage = "Type your message here...";
+  static const String typeYourDescription = "Provide a brief description about the event here";
   static const String doYouHaveQuestion =
       "Do you have questions or comments for the creator? Feel free to leave them here. This message is private.";
 

@@ -1,12 +1,15 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -16,6 +19,7 @@ import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../constants/color_constants.dart';
+import '../../constants/route_constants.dart';
 import '../../models/contact.dart';
 
 class EventScreen extends StatefulWidget {
@@ -81,14 +85,17 @@ class _EventScreenState extends State<EventScreen> {
               textColor: ColorConstants.black,
               bgcolor: ColorConstants.btnGradientColor,
             ),
-            ButtonWithIconComponent(
-              btnText: '  ${StringConstants.join}',
-              icon: Icons.add_circle,
-              bgcolor: themeCubit.primaryColor,
-              // btnTextColor: themeCubit.textColor,
-              onPressed: () {
-                _showJoinBottomSheet();
-              },
+            SizedBox(
+              width: AppConstants.responsiveWidth(context, percentage: 30),
+              child: ButtonWithIconComponent(
+                btnText: '  ${StringConstants.join}',
+                icon: Icons.add_circle,
+                bgcolor: themeCubit.primaryColor,
+                // btnTextColor: themeCubit.textColor,
+                onPressed: () {
+                  _showJoinBottomSheet();
+                },
+              ),
             ),
           ],
         ),
@@ -183,8 +190,8 @@ class _EventScreenState extends State<EventScreen> {
                 children: [
                   IconComponent(
                     iconData: Icons.favorite,
-                    borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.iconBg,
+                    backgroundColor:
+                        ColorConstants.darkBackgrounddColor.withOpacity(0.9),
                     iconColor: Colors.red,
                     customIconText: " 22",
                     circleSize: 60,
@@ -193,129 +200,23 @@ class _EventScreenState extends State<EventScreen> {
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
-                      iconData: Icons.share,
-                      borderColor: ColorConstants.transparent,
-                      backgroundColor: ColorConstants.iconBg,
-                      iconColor: ColorConstants.white,
+                      // iconData: Icons.share,
+                      svgData: AssetConstants.share,
+                      backgroundColor:
+                          ColorConstants.darkBackgrounddColor.withOpacity(0.9),
                       circleSize: 35,
-                      iconSize: 20,
+                      iconSize: 15,
                       onTap: () {
-                        BottomSheetComponent.showBottomSheet(context,
-                            takeFullHeightWhenPossible: false,
-                            isShowHeader: false,
-                            body: Container(
-                              constraints: const BoxConstraints(maxHeight: 600),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 18.0, top: 18, bottom: 18),
-                                        child: TextComponent(
-                                          StringConstants.shareEvent,
-                                          style: TextStyle(
-                                              color: Colors.indigo,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () => Navigator.pop(context),
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 20.0),
-                                          child: IconComponent(
-                                            iconData: Icons.cancel_outlined,
-                                            borderColor: Colors.transparent,
-                                            iconColor: Colors.black,
-                                            circleSize: 50,
-                                            backgroundColor: Colors.transparent,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      IconComponent(
-                                        iconData: Icons.link,
-                                        borderColor: Colors.transparent,
-                                        backgroundColor: ColorConstants.yellow,
-                                        iconColor: Colors.white,
-                                        circleSize: 60,
-                                        customText: StringConstants.copyLink,
-                                      ),
-                                      IconComponent(
-                                        iconData: Icons.facebook,
-                                        borderColor: Colors.transparent,
-                                        backgroundColor: ColorConstants.blue,
-                                        circleSize: 60,
-                                        customText: StringConstants.facebook,
-                                      ),
-                                      IconComponent(
-                                        iconData: Icons.install_desktop,
-                                        borderColor: Colors.transparent,
-                                        circleSize: 60,
-                                        customText: StringConstants.instagram,
-                                      ),
-                                      IconComponent(
-                                        iconData: Icons.share,
-                                        borderColor: Colors.transparent,
-                                        backgroundColor: const Color.fromARGB(
-                                            255, 87, 64, 208),
-                                        circleSize: 60,
-                                        customText: StringConstants.share,
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  const Divider(
-                                    thickness: 0.5,
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 18.0, top: 10, bottom: 16),
-                                    child: TextComponent(
-                                      StringConstants.yourConnections,
-                                      style: TextStyle(
-                                          color: Colors.indigo,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount: contacts.length,
-                                      itemBuilder: (context, index) {
-                                        return ContactCard(
-                                          contact: contacts[index],
-                                          showShareIcon: false,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ));
+                        _shareEventBottomSheet();
                       }),
                   const SizedBox(width: 10),
                   IconComponent(
-                    iconData: Icons.menu,
-                    borderColor: ColorConstants.transparent,
-                    backgroundColor: ColorConstants.iconBg,
-                    iconColor: ColorConstants.white,
+                    // iconData: Icons.menu,
+                    svgData: AssetConstants.more,
+                    backgroundColor:
+                        ColorConstants.darkBackgrounddColor.withOpacity(0.9),
                     circleSize: 35,
-                    iconSize: 20,
+                    iconSize: 6,
                     onTap: _showMoreBottomSheet,
                   )
                 ],
@@ -388,7 +289,11 @@ class _EventScreenState extends State<EventScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const ProfileImageComponent(url: ""),
+                      SvgPicture.asset(
+                        height: 35,
+                        AssetConstants.happy,
+                      ),
+                      // const ProfileImageComponent(url: AssetConstants.happy,assetImage: true,),
                       const SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,7 +342,11 @@ class _EventScreenState extends State<EventScreen> {
                   const Divider(thickness: 0.2),
                   Row(
                     children: [
-                      ProfileImageComponent(url: ""),
+                      SvgPicture.asset(
+                        height: 35,
+                        AssetConstants.calendar,
+                      ),
+                      // ProfileImageComponent(url: ""),
                       SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,7 +370,11 @@ class _EventScreenState extends State<EventScreen> {
                   const Divider(thickness: 0.2),
                   Row(
                     children: [
-                      ProfileImageComponent(url: ""),
+                      SvgPicture.asset(
+                        height: 35,
+                        AssetConstants.marker,
+                      ),
+                      // ProfileImageComponent(url: ""),
                       SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -486,7 +399,11 @@ class _EventScreenState extends State<EventScreen> {
                   if (ticketRequired == true)
                     Row(
                       children: [
-                        ProfileImageComponent(url: ""),
+                        SvgPicture.asset(
+                          height: 35,
+                          AssetConstants.ticket,
+                        ),
+                        // ProfileImageComponent(url: ""),
                         SizedBox(width: 10),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -511,7 +428,11 @@ class _EventScreenState extends State<EventScreen> {
                   Divider(thickness: 0.2),
                   Row(
                     children: [
-                      ProfileImageComponent(url: ""),
+                      SvgPicture.asset(
+                        height: 35,
+                        AssetConstants.tag,
+                      ),
+                      // ProfileImageComponent(url: ""),
                       SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -583,6 +504,197 @@ class _EventScreenState extends State<EventScreen> {
     );
   }
 
+  _shareEventBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Container(
+          constraints: const BoxConstraints(maxHeight: 600),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
+                    child: TextComponent(
+                      StringConstants.shareEvent,
+                      style: TextStyle(
+                          color: themeCubit.primaryColor,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 18),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: IconComponent(
+                        iconData: Icons.close,
+                        borderColor: Colors.transparent,
+                        iconColor: themeCubit.textColor,
+                        circleSize: 50,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconComponent(
+                    // iconData: Icons.link,
+                    svgData: AssetConstants.copyLink,
+                    borderColor: Colors.transparent,
+                    backgroundColor: themeCubit.primaryColor,
+                    iconColor: ColorConstants.black,
+                    circleSize: 60,
+                    customText: StringConstants.copyLink,
+                    customTextColor: themeCubit.textColor,
+                  ),
+                  IconComponent(
+                    iconData: Icons.facebook,
+                    borderColor: Colors.transparent,
+                    backgroundColor: ColorConstants.blue,
+                    circleSize: 60,
+                    iconSize: 30,
+                    customText: StringConstants.facebook,
+                    customTextColor: themeCubit.textColor,
+                  ),
+                  IconComponent(
+                    svgDataCheck: false,
+                    svgData: AssetConstants.instagram,
+                    backgroundColor: Colors.transparent,
+                    borderColor: Colors.transparent,
+                    circleSize: 60,
+                    customText: StringConstants.instagram,
+                    customTextColor: themeCubit.textColor,
+                    iconSize: 60,
+                  ),
+                  IconComponent(
+                    svgData: AssetConstants.share,
+                    iconColor: ColorConstants.black,
+                    borderColor: Colors.transparent,
+                    // backgroundColor:ColorConstants.transparent,
+                    circleSize: 60,
+                    customText: StringConstants.share,
+                    customTextColor: themeCubit.textColor,
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const Divider(
+                thickness: 0.5,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
+                child: TextComponent(
+                  StringConstants.yourConnections,
+                  style: TextStyle(
+                      color: themeCubit.primaryColor,
+                      fontFamily: FontConstants.fontProtestStrike,
+                      fontSize: 18),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: contacts.length,
+                  itemBuilder: (ctx, index) {
+                    return ContactCard(
+                      contact: contacts[index],
+                      onShareTap: () {
+                        Navigator.pop(context);
+                        _shareWithConnectionBottomSheet(
+                            StringConstants.fireWorks, contacts[index].name);
+                      },
+                      onProfileTap: () {
+                        NavigationUtil.push(
+                            context, RouteConstants.profileScreenLocal);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+  _shareWithConnectionBottomSheet(String eventName, String userName) {
+    BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            const SizedBox(height: 25),
+            const ProfileImageComponent(url: ''),
+            const SizedBox(height: 20),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: FontConstants.fontProtestStrike,
+                    height: 1.5),
+                children: <TextSpan>[
+                  TextSpan(text: StringConstants.areYouSureYouwantToShare),
+                  TextSpan(
+                    text: eventName,
+                    style: TextStyle(color: themeCubit.primaryColor),
+                  ),
+                  TextSpan(text: " with \n"),
+                  TextSpan(
+                    text: "$userName?",
+                    style: TextStyle(color: themeCubit.primaryColor),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: TextComponent(
+                      StringConstants.goBack,
+                      style: TextStyle(color: themeCubit.textColor),
+                    )),
+                const SizedBox(width: 30),
+                ButtonComponent(
+                  bgcolor: themeCubit.primaryColor,
+                  textColor: themeCubit.backgroundColor,
+                  buttonText: StringConstants.yesShareIt,
+                  onPressedFunction: () {
+                    Navigator.pop(context);
+                    _yesShareItBottomSheet();
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ));
+  }
+
+  _yesShareItBottomSheet() {
+    _navigateToBack();
+    BottomSheetComponent.showBottomSheet(
+      context,
+      isShowHeader: false,
+      body: InfoSheetComponent(
+        heading: StringConstants.eventShared,
+        image: AssetConstants.garland,
+      ),
+    );
+  }
+
   _showMoreBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
@@ -598,7 +710,7 @@ class _EventScreenState extends State<EventScreen> {
                     iconData: Icons.share,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
-                    iconColor: Colors.indigo,
+                    iconColor: themeCubit.primaryColor,
                     circleSize: 35,
                     iconSize: 20,
                   ),
@@ -606,13 +718,15 @@ class _EventScreenState extends State<EventScreen> {
                     width: 20,
                   ),
                   const TextComponent(StringConstants.saveEvent,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: ColorConstants.white)),
                 ],
               ),
             ),
             const Divider(
-              thickness: 0.5,
+              thickness: 0.1,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 35, top: 12, bottom: 12),
@@ -624,21 +738,23 @@ class _EventScreenState extends State<EventScreen> {
                     iconData: Icons.thumb_down,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
-                    iconColor: Colors.indigo,
+                    iconColor: themeCubit.primaryColor,
                     circleSize: 35,
                     iconSize: 20,
                   ),
                   const SizedBox(
                     width: 20,
                   ),
-                  const TextComponent(StringConstants.saveEvent,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const TextComponent(StringConstants.showLessLikeThis,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: ColorConstants.white)),
                 ],
               ),
             ),
             const Divider(
-              thickness: 0.5,
+              thickness: 0.1,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 35, top: 12, bottom: 12),
@@ -677,7 +793,7 @@ class _EventScreenState extends State<EventScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            color: themeCubit.darkBackgroundColor,
+            // color: themeCubit.darkBackgroundColor,
           ),
           padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
           child: Column(
@@ -748,10 +864,14 @@ class _EventScreenState extends State<EventScreen> {
               ),
               Row(
                 children: [
-                  ProfileImageComponent(
-                    url: "",
-                    size: 30,
+                  SvgPicture.asset(
+                    height: 35,
+                    AssetConstants.chatMsg,
                   ),
+                  // ProfileImageComponent(
+                  //   url: "",
+                  //   size: 30,
+                  // ),
                   SizedBox(
                     width: 20,
                   ),
@@ -772,15 +892,19 @@ class _EventScreenState extends State<EventScreen> {
               ),
               Row(
                 children: [
-                  ProfileImageComponent(
-                    url: "",
-                    size: 30,
+                  SvgPicture.asset(
+                    height: 35,
+                    AssetConstants.clock,
                   ),
+                  // ProfileImageComponent(
+                  //   url: "",
+                  //   size: 30,
+                  // ),
                   SizedBox(
                     width: 20,
                   ),
                   TextComponent(
-                      StringConstants.whenYouJoinYoureInTheGame,
+                    StringConstants.whenYouJoinYoureInTheGame,
                     style: TextStyle(color: themeCubit.textColor),
                     maxLines: 4,
                   ),
@@ -800,14 +924,17 @@ class _EventScreenState extends State<EventScreen> {
                       onPressedFunction: () {
                         _sendMessage();
                         Navigator.pop(context);
+                        _navigateToBack();
                         BottomSheetComponent.showBottomSheet(
                           context,
                           isShowHeader: false,
                           body: InfoSheetComponent(
                             heading: StringConstants.requestSent,
                             body: StringConstants.requestStatus,
-                            image: AssetConstants.group,
+                            image: AssetConstants.paperPlaneImage,
+                            // svg: true,
                           ),
+                          // whenComplete:_navigateToBack(),
                         );
                       },
                       bgcolor: themeCubit.primaryColor,
@@ -823,6 +950,12 @@ class _EventScreenState extends State<EventScreen> {
         ));
   }
 
+  _navigateToBack() async {
+    Future.delayed(const Duration(milliseconds: 1800), () async {
+      NavigationUtil.pop(context);
+    });
+  }
+
   _messageComponent() {
     return Container(
       child: Column(
@@ -834,13 +967,13 @@ class _EventScreenState extends State<EventScreen> {
                 size: 30,
               ),
               SizedBox(
-                width: 20,
+                width: 10,
               ),
               TextComponent(
                 "Message for Raul",
                 style: TextStyle(
                     color: themeCubit.primaryColor,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: FontConstants.fontProtestStrike,
                     fontSize: 18),
               ),
             ],
