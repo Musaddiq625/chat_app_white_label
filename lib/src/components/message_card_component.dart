@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/preview_screen.dart';
 import 'package:chat_app_white_label/src/utils/api_utlils.dart';
@@ -65,8 +66,8 @@ class _MessageCardState extends State<MessageCard> {
         child: isDateMessage
             ? _dateMessage()
             : isMe
-                ? _purpleMessage()
-                : _whiteMessage());
+                ? _blackMessage()
+                : _greenMessage());
   }
 
   Widget _dateMessage() {
@@ -83,7 +84,7 @@ class _MessageCardState extends State<MessageCard> {
   }
 
   // sender or another user message
-  Widget _whiteMessage() {
+  Widget _greenMessage() {
     // if (FirebaseUtils.user?.isOnline == true) {
     //update last read message if sender and receiver are different
     // if (widget.isGroupMessage == false) {
@@ -100,7 +101,7 @@ class _MessageCardState extends State<MessageCard> {
       children: [
         //message content
         SizedBox(
-          width: mq.width * 0.95,
+          width: AppConstants.responsiveWidth(context, percentage: 95),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -116,17 +117,17 @@ class _MessageCardState extends State<MessageCard> {
                 child: Container(
                   width: widget.message.type == MessageType.image ||
                           widget.message.type == MessageType.video
-                      ? mq.width * 0.6
+                      ? AppConstants.responsiveWidth(context, percentage: 60)
                       : null,
                   padding: EdgeInsets.only(
                       left: widget.message.type == MessageType.audio ? 0 : 10,
                       right: widget.message.type == MessageType.audio ? 0 : 10,
                       top: 10,
                       bottom: 10),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: mq.width * .04, vertical: mq.height * .01),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                   decoration: BoxDecoration(
-                      color: themeCubit.darkBackgroundColor,
+                      color: themeCubit.primaryColor,
                       // border: Border.all(color: ColorConstants.white),
                       //making borders curved
                       borderRadius: const BorderRadius.only(
@@ -152,7 +153,7 @@ class _MessageCardState extends State<MessageCard> {
                         Text(
                           widget.message.msg ?? '',
                           style: TextStyle(
-                              fontSize: 15, color: themeCubit.textColor),
+                              fontSize: 15, color: themeCubit.backgroundColor),
                         ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -178,21 +179,17 @@ class _MessageCardState extends State<MessageCard> {
         ),
       ],
     );
-
-    // else {
-    //   return Container();
-    // }
   }
 
   // our or user message
-  Widget _purpleMessage() {
+  Widget _blackMessage() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         //message content
         // Spacer(),
         SizedBox(
-          width: mq.width * 0.95,
+          width: AppConstants.responsiveWidth(context, percentage: 95),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -201,17 +198,17 @@ class _MessageCardState extends State<MessageCard> {
                 child: Container(
                   width: widget.message.type == MessageType.image ||
                           widget.message.type == MessageType.video
-                      ? mq.width * 0.6
+                      ? AppConstants.responsiveWidth(context, percentage: 60)
                       : null,
                   padding: EdgeInsets.only(
                       left: widget.message.type == MessageType.audio ? 5 : 10,
                       right: widget.message.type == MessageType.audio ? 0 : 10,
                       top: 10,
                       bottom: 10),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: mq.width * .04, vertical: mq.height * .01),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                   decoration: BoxDecoration(
-                      color: themeCubit.primaryColor,
+                      color: themeCubit.darkBackgroundColor,
                       // border: Border.all(color: ColorConstants.purple),
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(15),
@@ -236,7 +233,7 @@ class _MessageCardState extends State<MessageCard> {
                         Text(
                           widget.message.msg ?? '',
                           style: TextStyle(
-                              fontSize: 15, color: themeCubit.backgroundColor),
+                              fontSize: 15, color: themeCubit.textColor),
                         ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -276,83 +273,6 @@ class _MessageCardState extends State<MessageCard> {
       ],
     );
   }
-
-  // Widget _audio({
-  //   required String message,
-  //   required bool isCurrentUser,
-  //   required int index,
-  //   required String time,
-  //   required String duration,
-  // }) {
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width * 0.5,
-  //     padding: EdgeInsets.all(8),
-  //     decoration: BoxDecoration(
-  //       color: isCurrentUser
-  //           ? ColorConstants.greenMain
-  //           : ColorConstants.greenMain.withOpacity(0.18),
-  //       borderRadius: BorderRadius.circular(10),
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         GestureDetector(
-  //           onTap: () {
-  //             chatRoomCubit.onPressedPlayButton(index, message);
-  //             // changeProg(duration: duration);
-  //           },
-  //           onSecondaryTap: () {
-  //             audioPlayer.stop();
-  //             //    chatRoomCubit.completedPercentage.value = 0.0;
-  //           },
-  //           child: (chatRoomCubit.isRecordPlaying &&
-  //                   chatRoomCubit.currentId == index)
-  //               ? Icon(
-  //                   Icons.cancel,
-  //                   color:
-  //                       isCurrentUser ? Colors.white : ColorConstants.greenMain,
-  //                 )
-  //               : Icon(
-  //                   Icons.play_arrow,
-  //                   color:
-  //                       isCurrentUser ? Colors.white : ColorConstants.greenMain,
-  //                 ),
-  //         ),
-  //         Expanded(
-  //           child: Padding(
-  //             padding: const EdgeInsets.symmetric(horizontal: 0),
-  //             child: Stack(
-  //               clipBehavior: Clip.none,
-  //               alignment: Alignment.center,
-  //               children: [
-  //                 // Text( chatRoomCubit.completedPercentage.value.toString(),style: TextStyle(color: Colors.white),),
-  //                 LinearProgressIndicator(
-  //                   minHeight: 5,
-  //                   backgroundColor: Colors.grey,
-  //                   valueColor: AlwaysStoppedAnimation<Color>(
-  //                     isCurrentUser ? Colors.white : ColorConstants.greenMain,
-  //                   ),
-  //                   value: (chatRoomCubit.isRecordPlaying &&
-  //                           chatRoomCubit.currentId == index)
-  //                       ? chatRoomCubit.completedPercentage
-  //                       : chatRoomCubit.totalDuration.toDouble(),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //         SizedBox(
-  //           width: 10,
-  //         ),
-  //         Text(
-  //           duration,
-  //           style: TextStyle(
-  //               fontSize: 12,
-  //               color: isCurrentUser ? Colors.white : ColorConstants.greenMain),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   // bottom sheet for modifying message details
   void _showBottomSheet(bool isMe) {
@@ -607,7 +527,7 @@ class ImageMessageComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: mq.width * 0.6,
+      width: AppConstants.responsiveWidth(context, percentage: 60),
       height: 200,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
@@ -634,12 +554,12 @@ class VideoMessageComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: mq.width * 0.6,
+      width: AppConstants.responsiveWidth(context, percentage: 60),
       height: 200,
       child: Stack(
         children: [
           SizedBox(
-            width: mq.width * 0.6,
+            width: AppConstants.responsiveWidth(context, percentage: 60),
             height: 200,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
@@ -711,7 +631,7 @@ class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: mq.width * 0.5,
+      width: AppConstants.responsiveWidth(context, percentage: 50),
       height: 35,
       child: ValueListenableBuilder<String?>(
           valueListenable: filePathToExternalStorage,
