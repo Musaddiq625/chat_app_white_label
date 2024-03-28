@@ -4,7 +4,7 @@ import 'package:chat_app_white_label/src/components/chat_tile_component.dart';
 import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/components/filter_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/components/textfield_component.dart';
+import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
@@ -77,6 +77,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                     ),
                     TextFieldComponent(
                       TextEditingController(),
+                      fieldColor: themeCubit.darkBackgroundColor,
                       suffixIcon: const Padding(
                         padding: EdgeInsets.only(right: 15),
                         child: Icon(Icons.search),

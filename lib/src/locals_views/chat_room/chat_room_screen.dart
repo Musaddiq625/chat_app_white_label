@@ -5,7 +5,7 @@ import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/components/textfield_component.dart';
+import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -71,66 +71,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       ),
                     ],
                   ),
-          )
+          ),
+          _chatInput()
         ],
-      ),
-      bottomNavigationBar: Container(
-        height: 70,
-        decoration: BoxDecoration(
-            color: themeCubit.backgroundColor,
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15), topRight: Radius.circular(15))),
-        child: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      ColorConstants.btnGradientColor,
-                      ColorConstants.white
-                    ],
-                  )),
-              child: Icon(
-                Icons.add,
-                color: themeCubit.backgroundColor,
-              ),
-            ),
-            Expanded(
-              child: Container(
-                height: 40,
-                padding: const EdgeInsets.only(right: 10),
-                child: TextField(
-                  decoration: InputDecoration(
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: IconComponent(
-                          circleSize: 30,
-                          backgroundColor: themeCubit.primaryColor,
-                          iconData: Icons.send,
-                          iconColor: themeCubit.backgroundColor,
-                          iconSize: 18,
-                        ),
-                      ),
-                      fillColor:
-                          themeCubit.darkBackgroundColor.withOpacity(0.9),
-                      filled: true,
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(28)),
-                      hintText: "Your message..",
-                      hintStyle: const TextStyle(
-                          fontSize: 12, color: ColorConstants.lightGrey)),
-                ),
-              ),
-            )
-          ],
-        ),
       ),
     );
   }
@@ -198,6 +141,68 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _chatInput() {
+    return Container(
+      height: 70,
+      decoration: BoxDecoration(
+          color: themeCubit.backgroundColor,
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15))),
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    ColorConstants.btnGradientColor,
+                    ColorConstants.white
+                  ],
+                )),
+            child: Icon(
+              Icons.add,
+              color: themeCubit.backgroundColor,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 40,
+              padding: const EdgeInsets.only(right: 10),
+              child: TextField(
+                cursorColor: themeCubit.primaryColor,
+                style: TextStyle(color: themeCubit.textColor),
+                decoration: InputDecoration(
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: IconComponent(
+                        circleSize: 30,
+                        backgroundColor: themeCubit.primaryColor,
+                        iconData: Icons.send,
+                        iconColor: themeCubit.backgroundColor,
+                        iconSize: 18,
+                      ),
+                    ),
+                    fillColor: themeCubit.darkBackgroundColor.withOpacity(0.9),
+                    filled: true,
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(28)),
+                    hintText: "Your message..",
+                    hintStyle: const TextStyle(
+                        fontSize: 12, color: ColorConstants.lightGrey)),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -554,7 +559,7 @@ List dummyMessageList = [
       fromId: '921122334455',
       toId: '923083306918',
       msg:
-      'Contrary to popular  making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia 😓',
+          'Contrary to popular  making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia 😓',
       readAt: '1707482146484',
       type: MessageType.text,
       sentAt: '1707459588852'),
