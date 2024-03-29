@@ -48,13 +48,16 @@ class _DOBScreenState extends State<DOBScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconComponent(
-                iconData: Icons.arrow_back_ios_new_outlined,
-                borderColor: Colors.transparent,
-                backgroundColor: ColorConstants.iconBg,
-                iconColor: Colors.white,
-                circleSize: 30,
-                iconSize: 20,
+              InkWell(
+                onTap:()=> NavigationUtil.pop(context),
+                child: IconComponent(
+                  iconData: Icons.arrow_back_ios_new_outlined,
+                  borderColor: Colors.transparent,
+                  backgroundColor: ColorConstants.iconBg,
+                  iconColor: Colors.white,
+                  circleSize: 30,
+                  iconSize: 20,
+                ),
               ),
               SizedBox(
                 height: 30,

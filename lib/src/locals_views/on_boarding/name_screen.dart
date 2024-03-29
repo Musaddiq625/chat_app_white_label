@@ -49,13 +49,16 @@ class _NameScreenState extends State<NameScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconComponent(
-              iconData: Icons.arrow_back_ios_new_outlined,
-              borderColor: ColorConstants.transparent,
-              backgroundColor: ColorConstants.iconBg,
-              iconColor: ColorConstants.white,
-              circleSize: 30,
-              iconSize: 20,
+            InkWell(
+              onTap:()=> NavigationUtil.pop(context),
+              child: IconComponent(
+                iconData: Icons.arrow_back_ios_new_outlined,
+                borderColor: ColorConstants.transparent,
+                backgroundColor: ColorConstants.iconBg,
+                iconColor: ColorConstants.white,
+                circleSize: 30,
+                iconSize: 20,
+              ),
             ),
             SizedBox(
               height: 30,

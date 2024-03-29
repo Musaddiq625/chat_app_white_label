@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chat_app_white_label/src/components/create_event_tile_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -41,6 +43,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
   String _selectedQuestionRequired = 'Required';
   String _selectedQuestionPublic = 'Public';
+  int? selectedIndexPrice;
   int? _draggingIndex;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
@@ -56,24 +59,43 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     // ... other contacts
   ];
 
-  List<String> questions = ['Question 1']; // Initialize with one question
+  List<String> questions = ['Question 1'];
+  List<TextEditingController> _questionControllers = [];// Initialize with one question
   final TextEditingController _controllerQuestions = TextEditingController();
 
-  void _addQuestion() {
-    setState(() {
-      questions.add('Question ${questions.length + 1}'); // Add a new question
-    });
+
+  //
+  // void _addQuestion() {
+  //   setState(() {
+  //     questions.add('Question ${questions.length + 1}'); // Add a new question
+  //   });
+  // }
+  //
+  // void _onReorder(int oldIndex, int newIndex) {
+  //   setState(() {
+  //     if (newIndex > oldIndex) {
+  //       newIndex -= 1;
+  //     }
+  //     final String item = questions.removeAt(oldIndex);
+  //     questions.insert(newIndex, item);
+  //   });
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers for each question
+    _questionControllers = List.generate(questions.length, (index) => TextEditingController());
   }
 
-  void _onReorder(int oldIndex, int newIndex) {
-    setState(() {
-      if (newIndex > oldIndex) {
-        newIndex -= 1;
-      }
-      final String item = questions.removeAt(oldIndex);
-      questions.insert(newIndex, item);
-    });
+
+  @override
+  void dispose() {
+    // Dispose of the controllers when the widget is disposed
+    _questionControllers.forEach((controller) => controller.dispose());
+    super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +111,29 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     themeCubit.toggleTheme();
   }
 
+
+
+
+  Widget _buildContainer(int rowIndex, int index,StateSetter setStateBottomSheet) {
+    int containerIndex = rowIndex * 3 + index; // Calculate the index for each container
+    return GestureDetector(
+      onTap: () => setStateBottomSheet(() => selectedIndexPrice = containerIndex),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+        decoration: BoxDecoration(
+          color: selectedIndexPrice == containerIndex ? themeCubit.primaryColor : Colors.grey.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex],
+          style: TextStyle(fontSize: 15, color:selectedIndexPrice == containerIndex ?ColorConstants.black : ColorConstants.white),
+        ),
+      ),
+    );
+  }
+
   Widget _createEvent() {
     return Container(
       child: SingleChildScrollView(
@@ -101,7 +146,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 children: [
                   SizedBox(
                       child: GestureDetector(
-                    // onTap: _goBackBottomSheet(),
+                    onTap: _goBackBottomSheet,
                     child: IconComponent(
                       iconData: Icons.arrow_back_ios_new,
                       iconSize: 20,
@@ -245,13 +290,64 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              IconComponent(
-                                iconData: Icons.straight,
-                                circleSize: 25,
-                                iconSize: 25,
-                                backgroundColor: ColorConstants.transparent,
-                                borderColor: ColorConstants.transparent,
+                              Column(
+                                children:
+
+                                List.generate(6, (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 2.0,left: 6),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      height: 3,
+                                      width: 3,
+                                    ),
+                                  );
+                                }),
                               ),
+
+                              // Column(
+                              //   children: [
+                              //     IconComponent(
+                              //       iconData: Icons.circle_rounded,
+                              //       circleSize: 3,
+                              //       iconSize: 3,
+                              //       backgroundColor: ColorConstants.transparent,
+                              //       borderColor: ColorConstants.transparent,
+                              //     ),
+                              //     IconComponent(
+                              //       iconData: Icons.circle_rounded,
+                              //       circleSize: 5,
+                              //       iconSize: 5,
+                              //       backgroundColor: ColorConstants.transparent,
+                              //       borderColor: ColorConstants.transparent,
+                              //     ),
+                              //     IconComponent(
+                              //       iconData: Icons.circle_rounded,
+                              //       circleSize: 5,
+                              //       iconSize: 5,
+                              //       backgroundColor: ColorConstants.transparent,
+                              //       borderColor: ColorConstants.transparent,
+                              //     ),
+                              //     IconComponent(
+                              //       iconData: Icons.circle_rounded,
+                              //       circleSize: 5,
+                              //       iconSize: 5,
+                              //       backgroundColor: ColorConstants.transparent,
+                              //       borderColor: ColorConstants.transparent,
+                              //     ),
+                              //   ],
+                              // ),
+
+                              // IconComponent(
+                              //   iconData: Icons.straight,
+                              //   circleSize: 25,
+                              //   iconSize: 25,
+                              //   backgroundColor: ColorConstants.transparent,
+                              //   borderColor: ColorConstants.transparent,
+                              // ),
                               Spacer(),
                               SizedBox(
                                   width: AppConstants.responsiveWidth(context) /
@@ -409,7 +505,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SvgPicture.asset(
-                                height: 20,
+                                height: 25,
                                 AssetConstants.ticket,
                               ),
                               SizedBox(
@@ -475,7 +571,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SvgPicture.asset(
-                                height: 20,
+                                height: 25,
                                 AssetConstants.ticket,
                               ),
                               SizedBox(
@@ -646,9 +742,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     children: [
                       Expanded(
                         flex: 4,
-                        child: Text(
+                        child: TextComponent(
                           StringConstants.exactLocationApproval,
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 15,color: themeCubit.textColor),
+                          maxLines: 4,
                         ),
                       ),
                       Spacer(),
@@ -656,7 +753,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         // This bool value toggles the switch.
                         value: locationVisible,
                         activeColor: ColorConstants.white,
-                        activeTrackColor: ColorConstants.green,
+                        activeTrackColor: themeCubit.primaryColor,
                         onChanged: (bool value) {
                           // This is called when the user toggles the switch.
                           setState(() {
@@ -717,8 +814,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ),
                   Image.asset(
                     AssetConstants.confetti,
-                    width: 150,
-                    height: 150,
+                    width: 100,
+                    height: 100,
                   ),
                   Container(
                     width: 300,
@@ -907,13 +1004,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         body: Column(
           children: [
             const SizedBox(height: 25),
-            const ProfileImageComponent(url: ''),
+             Image.asset(AssetConstants.warning,width: 60,height: 60,),
             const SizedBox(height: 20),
             const TextComponent(StringConstants.areYouSureYouwantToExit,
-                style:TextStyle(
-                fontSize: 20,
-                fontFamily: FontConstants.fontProtestStrike)),
-
+                style: TextStyle(
+                  color: ColorConstants.white,
+                    fontSize: 20, fontFamily: FontConstants.fontProtestStrike)),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -926,11 +1022,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     )),
                 const SizedBox(width: 30),
                 ButtonComponent(
-                  bgcolor: themeCubit.primaryColor,
-                  textColor: themeCubit.backgroundColor,
-                  buttonText: StringConstants.yesShareIt,
+                  bgcolor: ColorConstants.red,
+                  textColor: themeCubit.textColor,
+                  buttonText: StringConstants.yesExit,
                   onPressedFunction: () {
-                    NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
+                    NavigationUtil.popAllAndPush(
+                        context, RouteConstants.homeScreenLocal);
                   },
                 ),
               ],
@@ -951,241 +1048,261 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
+
+  Widget _buildRow(int rowIndex,StateSetter setStateBottomSheet) {
+    return Container(
+      child: Row(
+        children: List.generate(3, (index) => _buildContainer(rowIndex, index,setStateBottomSheet)),
+      ),
+    );
+  }
+
   _selectPrice() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-              color: themeCubit.darkBackgroundColor,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: StatefulBuilder(
+
+            builder: (context, setState) {
+            return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+                  color: themeCubit.darkBackgroundColor,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Column(
                     children: [
-                      TextComponent(
-                        StringConstants.pricing,
-                        style: TextStyle(
-                            color: themeCubit.primaryColor,
-                            fontFamily: FontConstants.fontProtestStrike,
-                            fontSize: 18),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextComponent(
+                            StringConstants.pricing,
+                            style: TextStyle(
+                                color: themeCubit.primaryColor,
+                                fontFamily: FontConstants.fontProtestStrike,
+                                fontSize: 18),
+                          ),
+                          InkWell(
+                            onTap: () => Navigator.pop(context),
+                            child: IconComponent(
+                              iconData: Icons.close,
+                              borderColor: Colors.transparent,
+                              iconColor: themeCubit.textColor,
+                              circleSize: 20,
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                        ],
                       ),
-                      InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: IconComponent(
-                          iconData: Icons.close,
-                          borderColor: Colors.transparent,
-                          iconColor: themeCubit.textColor,
-                          circleSize: 20,
-                          backgroundColor: Colors.transparent,
+                      SizedBox(
+                        height: 10,
+                      ),
+                  _buildRow(0,setState),
+                  SizedBox(height: 10),
+                  _buildRow(1,setState),
+
+                      // Container(
+                      //   child: Row(
+                      //     children: [
+                      //       Flexible(
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             color: ColorConstants.backgroundColor
+                      //                 .withOpacity(0.3),
+                      //             borderRadius: BorderRadius.circular(15),
+                      //           ),
+                      //           alignment: Alignment.center,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.only(
+                      //                 top: 25, bottom: 25, left: 30, right: 30),
+                      //             child: TextComponent("Free",
+                      //                 style: TextStyle(
+                      //                     fontSize: 15,
+                      //                     color: themeCubit.textColor)),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       SizedBox(
+                      //         width: 10,
+                      //       ),
+                      //       Flexible(
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             color: ColorConstants.backgroundColor
+                      //                 .withOpacity(0.3),
+                      //             borderRadius: BorderRadius.circular(15),
+                      //           ),
+                      //           alignment: Alignment.center,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.only(
+                      //                 top: 25, bottom: 25, left: 30, right: 30),
+                      //             child: TextComponent("£5",
+                      //                 style: TextStyle(
+                      //                     fontSize: 15,
+                      //                     color: themeCubit.textColor)),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       SizedBox(
+                      //         width: 10,
+                      //       ),
+                      //       Flexible(
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             color: ColorConstants.backgroundColor
+                      //                 .withOpacity(0.3),
+                      //             borderRadius: BorderRadius.circular(15),
+                      //           ),
+                      //           alignment: Alignment.center,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.only(
+                      //                 top: 25, bottom: 25, left: 30, right: 30),
+                      //             child: TextComponent("£10",
+                      //                 style: TextStyle(
+                      //                     fontSize: 15,
+                      //                     color: themeCubit.textColor)),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // Container(
+                      //   child: Row(
+                      //     children: [
+                      //       Flexible(
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             color: ColorConstants.backgroundColor
+                      //                 .withOpacity(0.3),
+                      //             borderRadius: BorderRadius.circular(15),
+                      //           ),
+                      //           alignment: Alignment.center,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.only(
+                      //                 top: 25, bottom: 25, left: 30, right: 30),
+                      //             child: TextComponent("£25",
+                      //                 style: TextStyle(
+                      //                     fontSize: 15,
+                      //                     color: themeCubit.textColor)),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       SizedBox(
+                      //         width: 10,
+                      //       ),
+                      //       Flexible(
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             color: ColorConstants.backgroundColor
+                      //                 .withOpacity(0.3),
+                      //             borderRadius: BorderRadius.circular(15),
+                      //           ),
+                      //           alignment: Alignment.center,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.only(
+                      //                 top: 25, bottom: 25, left: 30, right: 30),
+                      //             child: TextComponent("£50",
+                      //                 style: TextStyle(
+                      //                     fontSize: 15,
+                      //                     color: themeCubit.textColor)),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       SizedBox(
+                      //         width: 10,
+                      //       ),
+                      //       Flexible(
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             color: ColorConstants.backgroundColor
+                      //                 .withOpacity(0.3),
+                      //             borderRadius: BorderRadius.circular(15),
+                      //           ),
+                      //           alignment: Alignment.center,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.only(
+                      //                 top: 25, bottom: 25, left: 30, right: 30),
+                      //             child: TextComponent(
+                      //               "£100",
+                      //               style: TextStyle(
+                      //                   fontSize: 15, color: themeCubit.textColor),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        thickness: 0.5,
+                      ),
+                      Text(StringConstants.setOtherAmount,
+                          style:
+                              TextStyle(fontSize: 15, color: themeCubit.textColor)),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+                          hintText: "£",
+                          filled: true,
+                          fillColor:
+                              ColorConstants.backgroundColor.withOpacity(0.3),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide(
+                                color: ColorConstants.transparent,
+                              )),
+                          hintStyle: TextStyle(
+                              color: ColorConstants.lightGray, fontSize: 14),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide:
+                                  BorderSide(color: ColorConstants.transparent)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide:
+                                  BorderSide(color: ColorConstants.transparent)),
+                          // suffixIcon: IconButton(
+                          //   icon: Icon(Icons.send),
+                          //   onPressed: _sendMessage,
+                          // ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 100,
+                      ),
+                      Container(
+                        width: AppConstants.responsiveWidth(context),
+                        child: ButtonComponent(
+                          bgcolor: themeCubit.primaryColor,
+                          textColor: ColorConstants.black,
+                          buttonText: StringConstants.done,
+                          onPressedFunction: () {
+                            // _yesShareItBottomSheet();
+                            // NavigationUtil.push(
+                            //     context, RouteConstants.localsEventScreen);
+                          },
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorConstants.backgroundColor
-                                  .withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 25, bottom: 25, left: 30, right: 30),
-                              child: TextComponent("Free",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: themeCubit.textColor)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorConstants.backgroundColor
-                                  .withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 25, bottom: 25, left: 30, right: 30),
-                              child: TextComponent("£5",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: themeCubit.textColor)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorConstants.backgroundColor
-                                  .withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 25, bottom: 25, left: 30, right: 30),
-                              child: TextComponent("£10",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: themeCubit.textColor)),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorConstants.backgroundColor
-                                  .withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 25, bottom: 25, left: 30, right: 30),
-                              child: TextComponent("£25",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: themeCubit.textColor)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorConstants.backgroundColor
-                                  .withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 25, bottom: 25, left: 30, right: 30),
-                              child: TextComponent("£50",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: themeCubit.textColor)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorConstants.backgroundColor
-                                  .withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 25, bottom: 25, left: 30, right: 30),
-                              child: TextComponent(
-                                "£100",
-                                style: TextStyle(
-                                    fontSize: 15, color: themeCubit.textColor),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Divider(
-                    thickness: 0.5,
-                  ),
-                  Text(StringConstants.setOtherAmount,
-                      style:
-                          TextStyle(fontSize: 15, color: themeCubit.textColor)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-                      hintText: "£",
-                      filled: true,
-                      fillColor:
-                          ColorConstants.backgroundColor.withOpacity(0.3),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide: BorderSide(
-                            color: ColorConstants.transparent,
-                          )),
-                      hintStyle: TextStyle(
-                          color: ColorConstants.lightGray, fontSize: 14),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                              BorderSide(color: ColorConstants.transparent)),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                              BorderSide(color: ColorConstants.transparent)),
-                      // suffixIcon: IconButton(
-                      //   icon: Icon(Icons.send),
-                      //   onPressed: _sendMessage,
-                      // ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 100,
-                  ),
-                  Container(
-                    width: AppConstants.responsiveWidth(context),
-                    child: ButtonComponent(
-                      bgcolor: themeCubit.primaryColor,
-                      buttonText: StringConstants.done,
-                      onPressedFunction: () {
-                        // _yesShareItBottomSheet();
-                        // NavigationUtil.push(
-                        //     context, RouteConstants.localsEventScreen);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            )));
+                ));
+          }
+        )
+    );
   }
 
   _selectCapacity() {
@@ -1298,9 +1415,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         body: StatefulBuilder(builder: (context, setState) {
       return Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-              color: ColorConstants.black.withOpacity(0.8)),
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(18.0),
             child: Column(
@@ -1352,6 +1469,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       onPressed: () {
                         setState(() =>
                             questions.add('Question ${questions.length + 1}'));
+                        TextEditingController newController = TextEditingController();
+                        // Add the new controller to the _questionControllers list
+                        _questionControllers.add(newController);
                       },
                     ),
                     ButtonComponent(
@@ -1672,12 +1792,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return ReorderableListView(
       shrinkWrap: true,
       onReorder: (int oldIndex, int newIndex) {
-        setState(() {
-          if (newIndex > oldIndex) {
-            newIndex -= 1;
-          }
+        setStateBottomSheet(() {
+          // if (newIndex > oldIndex) {
+          //   newIndex -= 1;
+          // }
           final String item = questions.removeAt(oldIndex);
           questions.insert(newIndex, item);
+
+          final TextEditingController controller = _questionControllers.removeAt(oldIndex);
+          _questionControllers.insert(newIndex, controller);
         });
       },
       children: List<Widget>.generate(questions.length, (int index) {
@@ -1696,6 +1819,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 GestureDetector(
                   onTap: () => {
                     setStateBottomSheet(() {
+                      _questionControllers[index].dispose();
+                      _questionControllers.removeAt(index);
                       questions.removeAt(index); // Remove the question
                     })
                   },
@@ -1724,7 +1849,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   SizedBox(
                     width: MediaQuery.sizeOf(context).width * 0.7,
                     child: TextField(
-                      controller: _controller,
+                      controller:  _questionControllers[index],
                       style: TextStyle(color: themeCubit.textColor),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(

@@ -15,7 +15,7 @@ class ButtonComponent extends StatelessWidget {
       required this.onPressedFunction,
       this.bgcolor = ColorConstants.bgcolorbutton,
       this.textSize = 15,
-      this.textColor ,
+      this.textColor=ColorConstants.black ,
       this.horizontalLength = 25});
 
   @override

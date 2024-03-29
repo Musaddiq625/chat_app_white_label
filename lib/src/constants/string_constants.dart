@@ -119,6 +119,7 @@ class StringConstants {
   static const String areYouSureYouwantToShare = "Are you sure you want to share \nEvent ";
   static const String areYouSureYouwantToExit = "Are you sure you want to exit \nYour event will be deleted ";
   static const String goBack = "Go back";
+  static const String yesExit = "Yes, please exit";
   static const String eventShared = "Event Shared !";
   static const String eventCreatedSuccessfully =
       "Yay! Your event has been  created successfully!";

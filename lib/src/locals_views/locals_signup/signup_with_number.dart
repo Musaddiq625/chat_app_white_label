@@ -48,9 +48,12 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
             crossAxisAlignment: CrossAxisAlignment.start,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconComponent(
-                iconData: Icons.arrow_back_ios_new_outlined,
-                backgroundColor: ColorConstants.iconBg,
+              InkWell(
+                onTap:()=> NavigationUtil.pop(context),
+                child: IconComponent(
+                  iconData: Icons.arrow_back_ios_new_outlined,
+                  backgroundColor: ColorConstants.iconBg,
+                ),
               ),
               SizedBox(
                 height: 30,
