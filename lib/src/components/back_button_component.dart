@@ -16,7 +16,7 @@ class BackButtonComponent extends StatelessWidget {
 
   const BackButtonComponent({
     Key? key,
-    this.bgColor = ColorConstants.bgcolorbutton,
+    this.bgColor = ColorConstants.blackLight,
     this.image,
     this.isCircular = false,
     this.onTap,

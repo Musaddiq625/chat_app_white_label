@@ -54,7 +54,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
             child: TextComponent(
               widget.heading,
               style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 25,
                   fontFamily: FontConstants.fontProtestStrike,
                   color: themeCubit.textColor),
               textAlign: TextAlign.center,

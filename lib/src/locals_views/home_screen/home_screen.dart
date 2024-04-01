@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -389,11 +390,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              SizedBoxConstants.sizedBoxTenH(),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.1,
               ),
               Padding(
                 padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),

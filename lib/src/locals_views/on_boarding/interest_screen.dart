@@ -1,9 +1,10 @@
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/button_component.dart';
-import '../../components/icon_component.dart';
 import '../../components/tag_component.dart';
 import '../../components/text_component.dart';
 import '../../components/ui_scaffold.dart';
@@ -84,6 +85,14 @@ class _InterestScreenState extends State<InterestScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+      appBar: AppBarComponent(
+        "",
+        action: TextComponent(StringConstants.skip,
+            style: TextStyle(
+              fontSize: 14,
+              color: themeCubit.textColor,
+            )),
+      ),
       removeSafeAreaPadding: false,
       bgColor: themeCubit.backgroundColor,
       widget: onBoarding(),
@@ -96,7 +105,6 @@ class _InterestScreenState extends State<InterestScreen> {
             buttonText: StringConstants.continues,
             onPressedFunction: () {
               NavigationUtil.push(context, RouteConstants.doneScreen);
-
             }),
       ),
     );
@@ -105,7 +113,7 @@ class _InterestScreenState extends State<InterestScreen> {
   Widget onBoarding() {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: enterName(),
       ),
     );
@@ -120,30 +128,30 @@ class _InterestScreenState extends State<InterestScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap:()=> NavigationUtil.pop(context),
-                  child: IconComponent(
-                    iconData: Icons.arrow_back_ios_new_outlined,
-                    borderColor: ColorConstants.transparent,
-                    backgroundColor: ColorConstants.iconBg,
-                    iconColor: ColorConstants.white,
-                    circleSize: 30,
-                    iconSize: 20,
-                  ),
-                ),
-                TextComponent(StringConstants.skip,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: themeCubit.textColor,
-                    ))
-              ],
-            ),
-            SizedBox(
-              height: 30,
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     InkWell(
+            //       onTap:()=> NavigationUtil.pop(context),
+            //       child: IconComponent(
+            //         iconData: Icons.arrow_back_ios_new_outlined,
+            //         borderColor: ColorConstants.transparent,
+            //         backgroundColor: ColorConstants.iconBg,
+            //         iconColor: ColorConstants.white,
+            //         circleSize: 30,
+            //         iconSize: 20,
+            //       ),
+            //     ),
+            //     TextComponent(StringConstants.skip,
+            //         style: TextStyle(
+            //           fontSize: 14,
+            //           color: themeCubit.textColor,
+            //         ))
+            //   ],
+            // ),
+            // SizedBox(
+            //   height: 30,
+            // ),
             TextComponent(
               StringConstants.whatsYourInterest,
               style: TextStyle(
@@ -151,9 +159,7 @@ class _InterestScreenState extends State<InterestScreen> {
                   color: themeCubit.textColor,
                   fontFamily: FontConstants.fontProtestStrike),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBoxConstants.sizedBoxTenH(),
             TextComponent(
               StringConstants.pickUp4Things,
               style: TextStyle(
@@ -162,21 +168,13 @@ class _InterestScreenState extends State<InterestScreen> {
               ),
               maxLines: 4,
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBoxConstants.sizedBoxTwentyH(),
             hobbies(),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBoxConstants.sizedBoxTwentyH(),
             creativity(),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBoxConstants.sizedBoxTwentyH(),
             hobbies(),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBoxConstants.sizedBoxTwentyH(),
             creativity(),
             SizedBox(
               height: 50,
@@ -199,17 +197,19 @@ class _InterestScreenState extends State<InterestScreen> {
             color: themeCubit.textColor,
           ),
         ),
-        SizedBox(
-          height: 20,
-        ),
+        SizedBoxConstants.sizedBoxTenH(),
         Wrap(
           children: [
             ...tagList
                 .map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
                       TagComponent(
                         iconData: tag['iconData'],
-                        customTextColor: selectedTags.contains(tag['name'])? ColorConstants.black : themeCubit.textColor,
-                        backgroundColor:selectedTags.contains(tag['name'])? themeCubit.primaryColor: ColorConstants.lightGray.withOpacity(0.3),
+                        customTextColor: selectedTags.contains(tag['name'])
+                            ? ColorConstants.black
+                            : themeCubit.textColor,
+                        backgroundColor: selectedTags.contains(tag['name'])
+                            ? themeCubit.primaryColor
+                            : ColorConstants.lightGray.withOpacity(0.3),
                         iconColor: themeCubit.primaryColor,
                         customIconText: tag['name'],
                         circleHeight: 35,
@@ -247,9 +247,7 @@ class _InterestScreenState extends State<InterestScreen> {
             color: themeCubit.textColor,
           ),
         ),
-        SizedBox(
-          height: 20,
-        ),
+        SizedBoxConstants.sizedBoxTenH(),
         Wrap(
           children: [
             ...interestTagList

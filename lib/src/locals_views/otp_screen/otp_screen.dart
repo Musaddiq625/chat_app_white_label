@@ -9,6 +9,7 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../components/app_bar_component.dart';
 import '../../components/button_component.dart';
 import '../../components/custom_text_field.dart';
 import '../../components/icon_component.dart';
@@ -38,6 +39,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+        appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: enterOtp());
@@ -69,7 +71,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Widget enterOtp() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,20 +80,20 @@ class _OtpScreenState extends State<OtpScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap:()=> NavigationUtil.pop(context),
-                child: IconComponent(
-                  iconData: Icons.arrow_back_ios_new_outlined,
-                  borderColor: Colors.transparent,
-                  backgroundColor: ColorConstants.iconBg,
-                  iconColor: Colors.white,
-                  circleSize: 30,
-                  iconSize: 20,
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
+              // InkWell(
+              //   onTap:()=> NavigationUtil.pop(context),
+              //   child: IconComponent(
+              //     iconData: Icons.arrow_back_ios_new_outlined,
+              //     borderColor: Colors.transparent,
+              //     backgroundColor: ColorConstants.iconBg,
+              //     iconColor: Colors.white,
+              //     circleSize: 30,
+              //     iconSize: 20,
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 30,
+              // ),
               TextComponent(
                 StringConstants.enterTheVerificationCode,
                 style: TextStyle(
@@ -105,7 +107,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Row(
                 children: <Widget>[
                   Container(
-                    width: 150,
+                    width: 120,
                     alignment: Alignment.center,
                     child: CustomTextField(
                       hintText: '000000',

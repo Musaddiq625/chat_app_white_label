@@ -19,6 +19,10 @@ class SizedBoxConstants {
 
   static SizedBox sizedBoxEightW() => SizedBox(width: 8);
 
+  static SizedBox sizedBoxTenH() => SizedBox(height:10);
+
+  static SizedBox sizedBoxTenW() => SizedBox(width:10);
+
   static SizedBox sizedBoxTwelveH() => SizedBox(height: 12);
 
   static SizedBox sizedBoxTwelveW() => SizedBox(width: 12);
@@ -46,6 +50,10 @@ class SizedBoxConstants {
   static SizedBox sizedBoxSixtyW() => SizedBox(width: 60);
 
   static SizedBox sizedBoxSixtyH() => SizedBox(height: 60);
+
+  static SizedBox sizedBoxEightyW() => SizedBox(width: 80);
+
+  static SizedBox sizedBoxEightyH() => SizedBox(height: 80);
 
   static SizedBox sizedBoxHundredH() => SizedBox(height: 100);
 }

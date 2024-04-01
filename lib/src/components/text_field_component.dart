@@ -77,7 +77,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
   @override
   void initState() {
     hidePassword = widget.hidePassword;
-    widget.fieldColor = ColorConstants.lightGray.withOpacity(0.2);
+    widget.fieldColor = ColorConstants.blackLight.withOpacity(0.6);
     if (widget.capitalizeText) {
       inputFormatters.add(_UpperCaseTextFormatter());
     }
@@ -143,7 +143,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
               showAsterisk: widget.isMandatory,
             ),
             labelStyle: TextStyle(color: ColorConstants.lightGrey),
-            hintStyle: TextStyle(color: ColorConstants.lightGrey, fontSize: 14),
+            hintStyle: TextStyle(color: ColorConstants.lightGrey.withOpacity(0.3), fontSize: 14),
             border: _outLineBorder(),
             errorBorder: _outLineBorder(),
             enabledBorder: _outLineBorder(),

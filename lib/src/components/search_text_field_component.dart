@@ -31,7 +31,11 @@ class SearchTextField extends StatelessWidget {
           onSubmitted: onSearch,
           controller: textEditingController,
           textInputAction: TextInputAction.search,
+          style: TextStyle(
+              color: ColorConstants.white,
+          ),
           decoration: InputDecoration(
+
               contentPadding:
                   EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
               suffixIcon: GestureDetector(

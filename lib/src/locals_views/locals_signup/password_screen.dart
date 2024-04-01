@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../components/app_bar_component.dart';
 import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/text_field_component.dart';
@@ -32,6 +33,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+        appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: setPassword());
@@ -48,18 +50,18 @@ class _PasswordScreenState extends State<PasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap:()=> NavigationUtil.pop(context),
-                child: IconComponent(
-                  iconData: Icons.arrow_back_ios_new_outlined,
-                  borderColor: Colors.transparent,
-                  backgroundColor: ColorConstants.iconBg,
-                  iconColor: Colors.white,
-                  circleSize: 30,
-                  iconSize: 20,
-                ),
-              ),
-              SizedBoxConstants.sizedBoxThirtyH(),
+              // InkWell(
+              //   onTap:()=> NavigationUtil.pop(context),
+              //   child: IconComponent(
+              //     iconData: Icons.arrow_back_ios_new_outlined,
+              //     borderColor: Colors.transparent,
+              //     backgroundColor: ColorConstants.iconBg,
+              //     iconColor: Colors.white,
+              //     circleSize: 30,
+              //     iconSize: 20,
+              //   ),
+              // ),
+              // SizedBoxConstants.sizedBoxThirtyH(),
               TextComponent(
                StringConstants.setYourAccountPassword ,
                 style: TextStyle(

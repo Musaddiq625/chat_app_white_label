@@ -8,7 +8,7 @@ class StringConstants {
   static const String letsPutAFace= "Let's put a face to\nthe name!";
   static const String selectYourPicture= "Select your\nprofile photo";
   static const String whensYouDob= "When is your\nbirthday?";
-  static const String whatDoYouDo= "What do you do\nfor living??";
+  static const String whatDoYouDo= "What do you do\nfor living?";
   static const String whatsYourName = "What's your\nname?";
   static const String howDoYouIdentify = "How do you\nidentify?";
   static const String tellUsABitAboutYourSelf = "Tell us a bit\nabout yourself";
@@ -101,7 +101,7 @@ class StringConstants {
   static const String creativity = "Creativity";
   static const String verificationCodeSent = "Verification code will be sent on this number.";
  static const String requiredPictures = "At least 2 pictures are required";
-  static const String alsoDoThisLaterInProfile = "You can also do this later in your profile";
+  static const String alsoDoThisLaterInProfile = "You can also do this later in your profile section.";
   static const String pickUp4Things = "Pick up to 4  things you like. This will help us get the right events for you";
   static const String scrollLeft = "Scroll left to set other image.";
   static const String chooseAnyOfTheUplodedImages =

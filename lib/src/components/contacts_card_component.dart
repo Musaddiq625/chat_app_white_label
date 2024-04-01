@@ -25,11 +25,11 @@ class ContactCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
-      child: Column(
-        children: [
-          InkWell(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 0, right: 20),
+          child: InkWell(
             onTap: onProfileTap ,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,9 +80,9 @@ class ContactCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(thickness: 0.2),
-        ],
-      ),
+        ),
+        const Divider(thickness: 0.1),
+      ],
     );
   }
 }

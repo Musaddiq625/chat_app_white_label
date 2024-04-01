@@ -1,8 +1,10 @@
 import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +14,7 @@ import '../../components/icon_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -32,8 +35,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // Replace with your image URL
     const NetworkImage(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const NetworkImage(
-        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
     // Replace with your asset path
     // Add more image providers as needed
   ];
@@ -167,6 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //   body: _profileWidget(),
     // );
     return UIScaffold(
+
       removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
@@ -236,8 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         // Use a Container with a specific height or Flexible with FlexFit.loose
         // Here, I'm using a Container with a specific height as an example
         Container(
-          height: MediaQuery.sizeOf(context).height *
-              1, // Adjust this value as needed
+          height: AppConstants.responsiveHeight(context,percentage:98), // Adjust this value as needed
           child: Stack(
             children: [
               Column(
@@ -263,6 +264,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                child: InkWell(
+                  onTap:()=> NavigationUtil.pop(context),
+                  child: IconComponent(
+                    iconData: Icons.arrow_back_ios_new_outlined,
+                    backgroundColor: ColorConstants.iconBg,
+                  ),
+                ),
               ),
               _infoWidget(),
             ],
@@ -405,7 +416,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 30),
                   IconComponent(
                     svgData: AssetConstants.share,
                     // iconData: Icons.share,
@@ -486,15 +497,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // iconData: Icons.facebook,
                     svgDataCheck: false,
                     svgData: AssetConstants.instagram,
-                    borderColor: Colors.transparent,
+                    // borderColor: Colors.red,
                     backgroundColor: ColorConstants.transparent,
-                    iconSize: 50,
-                    circleSize: 30,
-                    circleHeight: 30,
+                    iconSize: 100,
+                    borderSize: 0,
+                    // circleSize: 30,
+                    // circleHeight: 30,
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                SizedBoxConstants.sizedBoxTenW(),
                   ...tagList
                       .map((tag) =>
                           Row(mainAxisSize: MainAxisSize.min, children: [
@@ -508,9 +518,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               circleHeight: 35,
                               iconSize: 20,
                             ),
-                            const SizedBox(
-                              width: 5,
-                            )
+                            SizedBoxConstants.sizedBoxTenW(),
                           ]))
                       .toList(),
                 ],

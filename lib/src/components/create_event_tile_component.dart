@@ -37,7 +37,7 @@ class CreateEventTileComponent extends StatelessWidget {
       child: Container(
         width: AppConstants.responsiveWidth(context),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          borderRadius: BorderRadius.all(Radius.circular(16.0)),
           color: themeCubit.darkBackgroundColor,
         ),
         child: Padding(

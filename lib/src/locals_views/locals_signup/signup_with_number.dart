@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/button_component.dart';
-import '../../components/icon_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
@@ -18,7 +18,8 @@ import '../otp_screen/otp_screen.dart';
 
 class SignUpWithNumber extends StatefulWidget {
   String? routeType;
-   SignUpWithNumber({super.key, this.routeType});
+
+  SignUpWithNumber({super.key, this.routeType});
 
   @override
   State<SignUpWithNumber> createState() => _SignUpWithNumberState();
@@ -33,6 +34,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+        appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: continueWithNumber());
@@ -40,7 +42,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
 
   Widget continueWithNumber() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,14 +51,14 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
             crossAxisAlignment: CrossAxisAlignment.start,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap:()=> NavigationUtil.pop(context),
-                child: IconComponent(
-                  iconData: Icons.arrow_back_ios_new_outlined,
-                  backgroundColor: ColorConstants.iconBg,
-                ),
-              ),
-              SizedBoxConstants.sizedBoxForthyH(),
+              // InkWell(
+              //   onTap:()=> NavigationUtil.pop(context),
+              //   child: IconComponent(
+              //     iconData: Icons.arrow_back_ios_new_outlined,
+              //     backgroundColor: ColorConstants.iconBg,
+              //   ),
+              // ),
+              // SizedBoxConstants.sizedBoxForthyH(),
               TextComponent(
                 StringConstants.whatsYourPhoneNumber,
                 style: TextStyle(
@@ -131,17 +133,12 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                 textColor: ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
-                  if(widget.routeType == "afterEmail"){
+                  if (widget.routeType == "afterEmail") {
                     NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-                        args: OtpArg(
-                            "", "","","afterEmail"
-                        ));
-                  }
-                  else{
+                        args: OtpArg("", "", "", "afterEmail"));
+                  } else {
                     NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-                        args: OtpArg(
-                            "", "","","number"
-                        ));
+                        args: OtpArg("", "", "", "number"));
                   }
                 }),
           )

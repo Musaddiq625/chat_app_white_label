@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../components/app_bar_component.dart';
 import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/text_component.dart';
@@ -29,6 +30,7 @@ class _NameScreenState extends State<NameScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+        appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: onBoarding());
@@ -36,7 +38,7 @@ class _NameScreenState extends State<NameScreen> {
 
   Widget onBoarding() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: enterName(),
     );
   }
@@ -50,18 +52,18 @@ class _NameScreenState extends State<NameScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            InkWell(
-              onTap:()=> NavigationUtil.pop(context),
-              child: IconComponent(
-                iconData: Icons.arrow_back_ios_new_outlined,
-                borderColor: ColorConstants.transparent,
-                backgroundColor: ColorConstants.iconBg,
-                iconColor: ColorConstants.white,
-                circleSize: 30,
-                iconSize: 20,
-              ),
-            ),
-            SizedBoxConstants.sizedBoxThirtyH(),
+            // InkWell(
+            //   onTap:()=> NavigationUtil.pop(context),
+            //   child: IconComponent(
+            //     iconData: Icons.arrow_back_ios_new_outlined,
+            //     borderColor: ColorConstants.transparent,
+            //     backgroundColor: ColorConstants.iconBg,
+            //     iconColor: ColorConstants.white,
+            //     circleSize: 30,
+            //     iconSize: 20,
+            //   ),
+            // ),
+            // SizedBoxConstants.sizedBoxThirtyH(),
             TextComponent(
               StringConstants.whatsYourName,
               style: TextStyle(
@@ -88,12 +90,7 @@ class _NameScreenState extends State<NameScreen> {
               onChanged: (value) {
                 print(value);
               },
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(10),
-                // Limit to 12 characters
-                FilteringTextInputFormatter.digitsOnly,
-                // Accept only digits
-              ],
+
             ),
             TextField(
               controller: _secondNameController,
@@ -113,12 +110,6 @@ class _NameScreenState extends State<NameScreen> {
               onChanged: (value) {
                 print(value);
               },
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(10),
-                // Limit to 12 characters
-                FilteringTextInputFormatter.digitsOnly,
-                // Accept only digits
-              ],
             ),
           ],
         ),

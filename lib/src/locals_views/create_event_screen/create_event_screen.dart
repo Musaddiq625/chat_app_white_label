@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chat_app_white_label/src/components/create_event_tile_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -9,6 +7,7 @@ import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -60,9 +59,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   ];
 
   List<String> questions = ['Question 1'];
-  List<TextEditingController> _questionControllers = [];// Initialize with one question
+  List<TextEditingController> _questionControllers =
+      []; // Initialize with one question
   final TextEditingController _controllerQuestions = TextEditingController();
-
 
   //
   // void _addQuestion() {
@@ -85,9 +84,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   void initState() {
     super.initState();
     // Initialize controllers for each question
-    _questionControllers = List.generate(questions.length, (index) => TextEditingController());
+    _questionControllers =
+        List.generate(questions.length, (index) => TextEditingController());
   }
-
 
   @override
   void dispose() {
@@ -95,7 +94,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     _questionControllers.forEach((controller) => controller.dispose());
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -111,24 +109,31 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     themeCubit.toggleTheme();
   }
 
-
-
-
-  Widget _buildContainer(int rowIndex, int index,StateSetter setStateBottomSheet) {
-    int containerIndex = rowIndex * 3 + index; // Calculate the index for each container
+  Widget _buildContainer(
+      int rowIndex, int index, StateSetter setStateBottomSheet) {
+    int containerIndex =
+        rowIndex * 3 + index; // Calculate the index for each container
     return GestureDetector(
-      onTap: () => setStateBottomSheet(() => selectedIndexPrice = containerIndex),
+      onTap: () =>
+          setStateBottomSheet(() => selectedIndexPrice = containerIndex),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+        width: 100,
+        margin: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 25),
         decoration: BoxDecoration(
-          color: selectedIndexPrice == containerIndex ? themeCubit.primaryColor : Colors.grey.withOpacity(0.3),
+          color: selectedIndexPrice == containerIndex
+              ? themeCubit.primaryColor
+              : Colors.grey.withOpacity(0.3),
           borderRadius: BorderRadius.circular(15),
         ),
         alignment: Alignment.center,
-        child: Text(
+        child: TextComponent(
           ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex],
-          style: TextStyle(fontSize: 15, color:selectedIndexPrice == containerIndex ?ColorConstants.black : ColorConstants.white),
+          style: TextStyle(
+              fontSize: 15,
+              color: selectedIndexPrice == containerIndex
+                  ? ColorConstants.black
+                  : ColorConstants.white),
         ),
       ),
     );
@@ -218,7 +223,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: 20),
-                                child: Text(
+                                child: TextComponent(
                                   "xyz Event",
                                   style: TextStyle(
                                       fontSize: 38,
@@ -227,15 +232,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                       color: ColorConstants.white),
                                 ),
                               ),
+                              SizedBoxConstants.sizedBoxEightyH()
                             ],
                           ),
                         ),
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: 15,
-                  ),
+                  SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
@@ -291,11 +295,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Column(
-                                children:
-
-                                List.generate(6, (index) {
+                                children: List.generate(6, (index) {
                                   return Padding(
-                                    padding: const EdgeInsets.only(top: 2.0,left: 6),
+                                    padding: const EdgeInsets.only(
+                                        top: 2.0, left: 6),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Colors.white,
@@ -419,9 +422,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     onTap: _selectCapacity,
                     subTextColor: themeCubit.textColor,
                   ),
-                  SizedBox(
-                    height: 15,
-                  ),
+                  SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
@@ -432,9 +433,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           color: themeCubit.primaryColor),
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  SizedBoxConstants.sizedBoxTenH(),
                   TextField(
                     controller: _controllerQuestions,
                     maxLines: 4,
@@ -464,9 +463,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       // ),
                     ),
                   ),
-                  SizedBox(
-                    height: 15,
-                  ),
+                  SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
@@ -600,7 +597,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                     if (editQuestion != false)
                                       Row(
                                         children: [
-                                          Text(
+                                          TextComponent(
                                             StringConstants.editQuestions,
                                             style: TextStyle(
                                                 fontSize: 15,
@@ -689,89 +686,91 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
   _selectLocation() {
     BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false,
-        isShowHeader: false,
-        body: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-              color: themeCubit.darkBackgroundColor,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextComponent(
-                        StringConstants.selectLocation,
+        takeFullHeightWhenPossible: false, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            color: themeCubit.darkBackgroundColor,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextComponent(
+                      StringConstants.selectLocation,
+                      style: TextStyle(
+                          color: themeCubit.primaryColor,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 18),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: IconComponent(
+                        iconData: Icons.close,
+                        borderColor: Colors.transparent,
+                        iconColor: themeCubit.textColor,
+                        circleSize: 20,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SearchTextField(
+                  title: "Search",
+                  hintText: "Search name, postcode..",
+                  onSearch: (text) {
+                    // widget.viewModel.onSearchStories(text);
+                  },
+                  textEditingController: searchController,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: TextComponent(
+                        StringConstants.exactLocationApproval,
                         style: TextStyle(
-                            color: themeCubit.primaryColor,
-                            fontFamily: FontConstants.fontProtestStrike,
-                            fontSize: 18),
+                            fontSize: 15, color: themeCubit.textColor),
+                        maxLines: 4,
                       ),
-                      InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: IconComponent(
-                          iconData: Icons.close,
-                          borderColor: Colors.transparent,
-                          iconColor: themeCubit.textColor,
-                          circleSize: 20,
-                          backgroundColor: Colors.transparent,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  SearchTextField(
-                    title: "Search",
-                    hintText: "Search name, postcode..",
-                    onSearch: (text) {
-                      // widget.viewModel.onSearchStories(text);
-                    },
-                    textEditingController: searchController,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: TextComponent(
-                          StringConstants.exactLocationApproval,
-                          style: TextStyle(fontSize: 15,color: themeCubit.textColor),
-                          maxLines: 4,
-                        ),
-                      ),
-                      Spacer(),
-                      Switch(
-                        // This bool value toggles the switch.
-                        value: locationVisible,
-                        activeColor: ColorConstants.white,
-                        activeTrackColor: themeCubit.primaryColor,
-                        onChanged: (bool value) {
-                          // This is called when the user toggles the switch.
-                          setState(() {
-                            locationVisible = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    thickness: 1,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            )));
+                    ),
+                    Spacer(),
+                    Switch(
+                      // This bool value toggles the switch.
+                      value: locationVisible,
+                      activeColor: ColorConstants.white,
+                      activeTrackColor: themeCubit.primaryColor,
+                      onChanged: (bool value) {
+                        // This is called when the user toggles the switch.
+                        setState(() {
+                          locationVisible = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 1,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ));
+    }));
   }
 
   _createEventBottomSheet() {
@@ -795,7 +794,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   InkWell(
                     onTap: () => Navigator.pop(context),
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 40.0, top: 10),
+                      padding: const EdgeInsets.only(right: 40.0, top: 15),
                       child: IconComponent(
                         iconData: Icons.close,
                         borderColor: Colors.transparent,
@@ -1004,12 +1003,17 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         body: Column(
           children: [
             const SizedBox(height: 25),
-             Image.asset(AssetConstants.warning,width: 60,height: 60,),
+            Image.asset(
+              AssetConstants.warning,
+              width: 60,
+              height: 60,
+            ),
             const SizedBox(height: 20),
             const TextComponent(StringConstants.areYouSureYouwantToExit,
                 style: TextStyle(
-                  color: ColorConstants.white,
-                    fontSize: 20, fontFamily: FontConstants.fontProtestStrike)),
+                    color: ColorConstants.white,
+                    fontSize: 20,
+                    fontFamily: FontConstants.fontProtestStrike)),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1048,261 +1052,268 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-
-  Widget _buildRow(int rowIndex,StateSetter setStateBottomSheet) {
+  Widget _buildRow(int rowIndex, StateSetter setStateBottomSheet) {
     return Container(
       child: Row(
-        children: List.generate(3, (index) => _buildContainer(rowIndex, index,setStateBottomSheet)),
+        children: List.generate(3,
+            (index) => _buildContainer(rowIndex, index, setStateBottomSheet)),
       ),
     );
   }
 
   _selectPrice() {
     BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false,
-        isShowHeader: false,
-        body: StatefulBuilder(
-
-            builder: (context, setState) {
-            return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-                  color: themeCubit.darkBackgroundColor,
+        takeFullHeightWhenPossible: false, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            color: themeCubit.darkBackgroundColor,
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(
+                          StringConstants.pricing,
+                          style: TextStyle(
+                              color: themeCubit.primaryColor,
+                              fontFamily: FontConstants.fontProtestStrike,
+                              fontSize: 18),
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: IconComponent(
+                            iconData: Icons.close,
+                            borderColor: Colors.transparent,
+                            iconColor: themeCubit.textColor,
+                            circleSize: 20,
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBoxConstants.sizedBoxTwentyH(),
+                    _buildRow(0, setState),
+                    SizedBox(height: 10),
+                    _buildRow(1, setState),
+                    // Container(
+                    //   child: Row(
+                    //     children: [
+                    //       Flexible(
+                    //         child: Container(
+                    //           decoration: BoxDecoration(
+                    //             color: ColorConstants.backgroundColor
+                    //                 .withOpacity(0.3),
+                    //             borderRadius: BorderRadius.circular(15),
+                    //           ),
+                    //           alignment: Alignment.center,
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.only(
+                    //                 top: 25, bottom: 25, left: 30, right: 30),
+                    //             child: TextComponent("Free",
+                    //                 style: TextStyle(
+                    //                     fontSize: 15,
+                    //                     color: themeCubit.textColor)),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         width: 10,
+                    //       ),
+                    //       Flexible(
+                    //         child: Container(
+                    //           decoration: BoxDecoration(
+                    //             color: ColorConstants.backgroundColor
+                    //                 .withOpacity(0.3),
+                    //             borderRadius: BorderRadius.circular(15),
+                    //           ),
+                    //           alignment: Alignment.center,
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.only(
+                    //                 top: 25, bottom: 25, left: 30, right: 30),
+                    //             child: TextComponent("£5",
+                    //                 style: TextStyle(
+                    //                     fontSize: 15,
+                    //                     color: themeCubit.textColor)),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         width: 10,
+                    //       ),
+                    //       Flexible(
+                    //         child: Container(
+                    //           decoration: BoxDecoration(
+                    //             color: ColorConstants.backgroundColor
+                    //                 .withOpacity(0.3),
+                    //             borderRadius: BorderRadius.circular(15),
+                    //           ),
+                    //           alignment: Alignment.center,
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.only(
+                    //                 top: 25, bottom: 25, left: 30, right: 30),
+                    //             child: TextComponent("£10",
+                    //                 style: TextStyle(
+                    //                     fontSize: 15,
+                    //                     color: themeCubit.textColor)),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
+                    // Container(
+                    //   child: Row(
+                    //     children: [
+                    //       Flexible(
+                    //         child: Container(
+                    //           decoration: BoxDecoration(
+                    //             color: ColorConstants.backgroundColor
+                    //                 .withOpacity(0.3),
+                    //             borderRadius: BorderRadius.circular(15),
+                    //           ),
+                    //           alignment: Alignment.center,
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.only(
+                    //                 top: 25, bottom: 25, left: 30, right: 30),
+                    //             child: TextComponent("£25",
+                    //                 style: TextStyle(
+                    //                     fontSize: 15,
+                    //                     color: themeCubit.textColor)),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         width: 10,
+                    //       ),
+                    //       Flexible(
+                    //         child: Container(
+                    //           decoration: BoxDecoration(
+                    //             color: ColorConstants.backgroundColor
+                    //                 .withOpacity(0.3),
+                    //             borderRadius: BorderRadius.circular(15),
+                    //           ),
+                    //           alignment: Alignment.center,
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.only(
+                    //                 top: 25, bottom: 25, left: 30, right: 30),
+                    //             child: TextComponent("£50",
+                    //                 style: TextStyle(
+                    //                     fontSize: 15,
+                    //                     color: themeCubit.textColor)),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         width: 10,
+                    //       ),
+                    //       Flexible(
+                    //         child: Container(
+                    //           decoration: BoxDecoration(
+                    //             color: ColorConstants.backgroundColor
+                    //                 .withOpacity(0.3),
+                    //             borderRadius: BorderRadius.circular(15),
+                    //           ),
+                    //           alignment: Alignment.center,
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.only(
+                    //                 top: 25, bottom: 25, left: 30, right: 30),
+                    //             child: TextComponent(
+                    //               "£100",
+                    //               style: TextStyle(
+                    //                   fontSize: 15, color: themeCubit.textColor),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    SizedBoxConstants.sizedBoxTenH(),
+                  ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextComponent(
-                            StringConstants.pricing,
-                            style: TextStyle(
-                                color: themeCubit.primaryColor,
-                                fontFamily: FontConstants.fontProtestStrike,
-                                fontSize: 18),
-                          ),
-                          InkWell(
-                            onTap: () => Navigator.pop(context),
-                            child: IconComponent(
-                              iconData: Icons.close,
-                              borderColor: Colors.transparent,
-                              iconColor: themeCubit.textColor,
-                              circleSize: 20,
-                              backgroundColor: Colors.transparent,
-                            ),
-                          ),
-                        ],
+              ),
+              Divider(
+                thickness: 0.1,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  children: [
+                    TextComponent(
+                      StringConstants.setOtherAmount,
+                      style:
+                          TextStyle(fontSize: 15, color: themeCubit.textColor),
+                      maxLines: 5,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      style: TextStyle(
+                        color: ColorConstants.white,
                       ),
-                      SizedBox(
-                        height: 10,
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 15.0),
+                        hintText: "£",
+                        filled: true,
+                        fillColor:
+                            ColorConstants.backgroundColor.withOpacity(0.3),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: BorderSide(
+                              color: ColorConstants.transparent,
+                            )),
+                        hintStyle: TextStyle(
+                            color: ColorConstants.lightGray, fontSize: 14),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide:
+                                BorderSide(color: ColorConstants.transparent)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide:
+                                BorderSide(color: ColorConstants.transparent)),
+                        // suffixIcon: IconButton(
+                        //   icon: Icon(Icons.send),
+                        //   onPressed: _sendMessage,
+                        // ),
                       ),
-                  _buildRow(0,setState),
-                  SizedBox(height: 10),
-                  _buildRow(1,setState),
-
-                      // Container(
-                      //   child: Row(
-                      //     children: [
-                      //       Flexible(
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             color: ColorConstants.backgroundColor
-                      //                 .withOpacity(0.3),
-                      //             borderRadius: BorderRadius.circular(15),
-                      //           ),
-                      //           alignment: Alignment.center,
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 25, bottom: 25, left: 30, right: 30),
-                      //             child: TextComponent("Free",
-                      //                 style: TextStyle(
-                      //                     fontSize: 15,
-                      //                     color: themeCubit.textColor)),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       SizedBox(
-                      //         width: 10,
-                      //       ),
-                      //       Flexible(
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             color: ColorConstants.backgroundColor
-                      //                 .withOpacity(0.3),
-                      //             borderRadius: BorderRadius.circular(15),
-                      //           ),
-                      //           alignment: Alignment.center,
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 25, bottom: 25, left: 30, right: 30),
-                      //             child: TextComponent("£5",
-                      //                 style: TextStyle(
-                      //                     fontSize: 15,
-                      //                     color: themeCubit.textColor)),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       SizedBox(
-                      //         width: 10,
-                      //       ),
-                      //       Flexible(
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             color: ColorConstants.backgroundColor
-                      //                 .withOpacity(0.3),
-                      //             borderRadius: BorderRadius.circular(15),
-                      //           ),
-                      //           alignment: Alignment.center,
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 25, bottom: 25, left: 30, right: 30),
-                      //             child: TextComponent("£10",
-                      //                 style: TextStyle(
-                      //                     fontSize: 15,
-                      //                     color: themeCubit.textColor)),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 10,
-                      // ),
-                      // Container(
-                      //   child: Row(
-                      //     children: [
-                      //       Flexible(
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             color: ColorConstants.backgroundColor
-                      //                 .withOpacity(0.3),
-                      //             borderRadius: BorderRadius.circular(15),
-                      //           ),
-                      //           alignment: Alignment.center,
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 25, bottom: 25, left: 30, right: 30),
-                      //             child: TextComponent("£25",
-                      //                 style: TextStyle(
-                      //                     fontSize: 15,
-                      //                     color: themeCubit.textColor)),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       SizedBox(
-                      //         width: 10,
-                      //       ),
-                      //       Flexible(
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             color: ColorConstants.backgroundColor
-                      //                 .withOpacity(0.3),
-                      //             borderRadius: BorderRadius.circular(15),
-                      //           ),
-                      //           alignment: Alignment.center,
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 25, bottom: 25, left: 30, right: 30),
-                      //             child: TextComponent("£50",
-                      //                 style: TextStyle(
-                      //                     fontSize: 15,
-                      //                     color: themeCubit.textColor)),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       SizedBox(
-                      //         width: 10,
-                      //       ),
-                      //       Flexible(
-                      //         child: Container(
-                      //           decoration: BoxDecoration(
-                      //             color: ColorConstants.backgroundColor
-                      //                 .withOpacity(0.3),
-                      //             borderRadius: BorderRadius.circular(15),
-                      //           ),
-                      //           alignment: Alignment.center,
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.only(
-                      //                 top: 25, bottom: 25, left: 30, right: 30),
-                      //             child: TextComponent(
-                      //               "£100",
-                      //               style: TextStyle(
-                      //                   fontSize: 15, color: themeCubit.textColor),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      SizedBox(
-                        height: 10,
+                    ),
+                    SizedBox(
+                      height: 100,
+                    ),
+                    Container(
+                      width: AppConstants.responsiveWidth(context),
+                      child: ButtonComponent(
+                        bgcolor: themeCubit.primaryColor,
+                        textColor: ColorConstants.black,
+                        buttonText: StringConstants.done,
+                        onPressedFunction: () {
+                          // _yesShareItBottomSheet();
+                          // NavigationUtil.push(
+                          //     context, RouteConstants.localsEventScreen);
+                        },
                       ),
-                      Divider(
-                        thickness: 0.5,
-                      ),
-                      Text(StringConstants.setOtherAmount,
-                          style:
-                              TextStyle(fontSize: 15, color: themeCubit.textColor)),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                        controller: _controller,
-                        decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-                          hintText: "£",
-                          filled: true,
-                          fillColor:
-                              ColorConstants.backgroundColor.withOpacity(0.3),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(
-                                color: ColorConstants.transparent,
-                              )),
-                          hintStyle: TextStyle(
-                              color: ColorConstants.lightGray, fontSize: 14),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide:
-                                  BorderSide(color: ColorConstants.transparent)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide:
-                                  BorderSide(color: ColorConstants.transparent)),
-                          // suffixIcon: IconButton(
-                          //   icon: Icon(Icons.send),
-                          //   onPressed: _sendMessage,
-                          // ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 100,
-                      ),
-                      Container(
-                        width: AppConstants.responsiveWidth(context),
-                        child: ButtonComponent(
-                          bgcolor: themeCubit.primaryColor,
-                          textColor: ColorConstants.black,
-                          buttonText: StringConstants.done,
-                          onPressedFunction: () {
-                            // _yesShareItBottomSheet();
-                            // NavigationUtil.push(
-                            //     context, RouteConstants.localsEventScreen);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ));
-          }
-        )
-    );
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ));
+    }));
   }
 
   _selectCapacity() {
@@ -1345,14 +1356,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
+                  TextComponent(
                     StringConstants.limitNumberOfParticipants,
                     style: TextStyle(color: themeCubit.textColor),
+                    maxLines: 5,
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
+                  TextComponent(
                     StringConstants.participants,
                     style: TextStyle(color: themeCubit.textColor),
                   ),
@@ -1360,6 +1372,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   TextField(
+                    style: TextStyle(
+                      color: ColorConstants.white,
+                    ),
                     controller: _controller,
                     decoration: InputDecoration(
                       contentPadding:
@@ -1469,7 +1484,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       onPressed: () {
                         setState(() =>
                             questions.add('Question ${questions.length + 1}'));
-                        TextEditingController newController = TextEditingController();
+                        TextEditingController newController =
+                            TextEditingController();
                         // Add the new controller to the _questionControllers list
                         _questionControllers.add(newController);
                       },
@@ -1489,318 +1505,26 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   }
 
   question(StateSetter setStateBottomSheet) {
-    // return ListView.builder(
-    //     shrinkWrap: true,
-    //     itemCount: questions.length,
-    //     itemBuilder: (context, index) {
-    //       return Container(
-    //         child: Column(children: [
-    //           Row(
-    //             children: [
-    //               TextComponent(
-    //                 questions[index],
-    //                 style: TextStyle(color: themeCubit.textColor),
-    //               ),
-    //               SizedBox(
-    //                 width: 10,
-    //               ),
-    //               GestureDetector(
-    //                 onTap: () => {
-    //                   setStateBottomSheet(() {
-    //                     questions.removeAt(index); // Remove the question
-    //                   })
-    //                 },
-    //                 child: IconComponent(
-    //                   iconData: Icons.delete,
-    //                   borderColor: ColorConstants.red,
-    //                   backgroundColor: ColorConstants.red,
-    //                   iconColor: ColorConstants.white,
-    //                   iconSize: 15,
-    //                   circleSize: 20,
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //           SizedBox(
-    //             height: 10,
-    //           ),
-    //           TextField(
-    //             controller: _controller,
-    //             decoration: InputDecoration(
-    //               contentPadding:
-    //                   EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-    //               hintText: StringConstants.typeYourQuestion,
-    //               filled: true,
-    //               fillColor: ColorConstants.lightGray.withOpacity(0.3),
-    //               suffixIcon: GestureDetector(
-    //                 child: Padding(
-    //                     padding: EdgeInsets.only(right: 20, top: 8),
-    //                     child: IconComponent(
-    //                       iconData: Icons.menu,
-    //                       borderColor: ColorConstants.transparent,
-    //                       backgroundColor: ColorConstants.transparent,
-    //                       iconColor: ColorConstants.lightGray.withOpacity(0.4),
-    //                       iconSize: 25,
-    //                       circleSize: 25,
-    //                     )),
-    //               ),
-    //               border: OutlineInputBorder(
-    //                   borderRadius: BorderRadius.circular(15.0),
-    //                   borderSide: BorderSide(
-    //                     color: ColorConstants.transparent,
-    //                   )),
-    //               hintStyle:
-    //                   TextStyle(color: ColorConstants.lightGray, fontSize: 14),
-    //               enabledBorder: OutlineInputBorder(
-    //                   borderRadius: BorderRadius.circular(15.0),
-    //                   borderSide:
-    //                       BorderSide(color: ColorConstants.transparent)),
-    //               focusedBorder: OutlineInputBorder(
-    //                   borderRadius: BorderRadius.circular(15.0),
-    //                   borderSide:
-    //                       BorderSide(color: ColorConstants.transparent)),
-    //             ),
-    //           ),
-    //           Row(
-    //             mainAxisAlignment: MainAxisAlignment.end,
-    //             children: [
-    //               IconComponent(
-    //                 iconData: Icons.arrow_downward_outlined,
-    //                 borderColor: ColorConstants.transparent,
-    //                 backgroundColor: ColorConstants.transparent,
-    //                 iconColor: ColorConstants.lightGray,
-    //                 iconSize: 25,
-    //                 circleSize: 25,
-    //               ),
-    //               Column(
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: <Widget>[
-    //                   MenuAnchor(
-    //                     style: MenuStyle(
-    //                       backgroundColor: MaterialStatePropertyAll<Color>(
-    //                           themeCubit.backgroundColor),
-    //                     ),
-    //                     childFocusNode: _buttonFocusNode,
-    //                     menuChildren: <Widget>[
-    //                       Row(
-    //                         children: [
-    //                           Checkbox(
-    //                             value: _selectedQuestionRequired == 'Required',
-    //                             onChanged: (bool? value) {
-    //                               if (value != null) {
-    //                                 setState(() {
-    //                                   _selectedQuestionRequired = 'Required';
-    //                                 });
-    //                               }
-    //                             },
-    //                             shape: CircleBorder(),
-    //                             // Makes the checkbox circular
-    //                             activeColor: ColorConstants.primaryColor,
-    //                             // Sets the color of the checkbox when selected
-    //                             checkColor: Colors.black,
-    //                           ),
-    //                           TextComponent(
-    //                             "Required",
-    //                             style: TextStyle(color: themeCubit.textColor),
-    //                           ),
-    //                           SizedBox(
-    //                             width: 10,
-    //                           )
-    //                         ],
-    //                       ),
-    //                       Divider(
-    //                         thickness: 0.1,
-    //                       ),
-    //                       Row(
-    //                         children: [
-    //                           Checkbox(
-    //                             value: _selectedQuestionRequired == 'Optional',
-    //                             onChanged: (bool? value) {
-    //                               if (value != null) {
-    //                                 setState(() {
-    //                                   _selectedQuestionRequired = 'Optional';
-    //                                 });
-    //                               }
-    //                             },
-    //                             shape: CircleBorder(),
-    //                             // Makes the checkbox circular
-    //                             activeColor: ColorConstants.primaryColor,
-    //                             // Sets the color of the checkbox when selected
-    //                             checkColor: Colors.black,
-    //                           ),
-    //                           TextComponent(
-    //                             "Optional",
-    //                             style: TextStyle(color: themeCubit.textColor),
-    //                           ),
-    //                           SizedBox(
-    //                             width: 10,
-    //                           )
-    //                         ],
-    //                       ),
-    //                     ],
-    //                     builder: (BuildContext context,
-    //                         MenuController controller, Widget? child) {
-    //                       return TextButton(
-    //                         focusNode: _buttonFocusNode,
-    //                         onPressed: () {
-    //                           if (controller.isOpen) {
-    //                             controller.close();
-    //                           } else {
-    //                             controller.open();
-    //                           }
-    //                         },
-    //                         child: TextComponent(
-    //                           _selectedQuestionRequired,
-    //                           style: TextStyle(color: ColorConstants.lightGray),
-    //                         ), // Use the selected option as the label
-    //                       );
-    //                     },
-    //                   ),
-    //                 ],
-    //               ),
-    //               SizedBox(
-    //                 width: 10,
-    //               ),
-    //               IconComponent(
-    //                 iconData: Icons.arrow_downward_outlined,
-    //                 borderColor: ColorConstants.transparent,
-    //                 backgroundColor: ColorConstants.transparent,
-    //                 iconColor: ColorConstants.lightGray,
-    //                 iconSize: 25,
-    //                 circleSize: 25,
-    //               ),
-    //               Column(
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: <Widget>[
-    //                   MenuAnchor(
-    //                     alignmentOffset: Offset(-250, 0),
-    //                     style: MenuStyle(
-    //                       backgroundColor: MaterialStatePropertyAll<Color>(
-    //                           themeCubit.backgroundColor),
-    //                     ),
-    //                     childFocusNode: _buttonFocusNode,
-    //                     menuChildren: <Widget>[
-    //                       Row(
-    //                         children: [
-    //                           Checkbox(
-    //                             value: _selectedQuestionPublic == 'Public',
-    //                             onChanged: (bool? value) {
-    //                               if (value != null) {
-    //                                 setState(() {
-    //                                   _selectedQuestionPublic = 'Public';
-    //                                 });
-    //                               }
-    //                             },
-    //                             shape: CircleBorder(),
-    //                             // Makes the checkbox circular
-    //                             activeColor: ColorConstants.primaryColor,
-    //                             // Sets the color of the checkbox when selected
-    //                             checkColor: Colors.black,
-    //                           ),
-    //                           Column(
-    //                             mainAxisSize: MainAxisSize.min,
-    //                             crossAxisAlignment: CrossAxisAlignment.start,
-    //                             children: [
-    //                               TextComponent(
-    //                                 'Public',
-    //                                 style:
-    //                                     TextStyle(color: themeCubit.textColor),
-    //                               ),
-    //                               Text(
-    //                                 'Responses can be seen by everyone',
-    //                                 style:
-    //                                     TextStyle(color: themeCubit.textColor),
-    //                               ),
-    //                             ],
-    //                           ),
-    //                           SizedBox(
-    //                             width: 20,
-    //                           )
-    //                         ],
-    //                       ),
-    //                       Divider(
-    //                         thickness: 0.1,
-    //                       ),
-    //                       Row(
-    //                         children: [
-    //                           Checkbox(
-    //                             value: _selectedQuestionPublic == 'Private',
-    //                             onChanged: (bool? value) {
-    //                               if (value != null) {
-    //                                 setState(() {
-    //                                   _selectedQuestionPublic = 'Private';
-    //                                 });
-    //                               }
-    //                             },
-    //                             shape: CircleBorder(),
-    //                             // Makes the checkbox circular
-    //                             activeColor: ColorConstants.primaryColor,
-    //                             // Sets the color of the checkbox when selected
-    //                             checkColor: Colors.black,
-    //                           ),
-    //                           Column(
-    //                             crossAxisAlignment: CrossAxisAlignment.start,
-    //                             children: [
-    //                               TextComponent(
-    //                                 'Private',
-    //                                 style:
-    //                                     TextStyle(color: themeCubit.textColor),
-    //                               ),
-    //                               TextComponent(
-    //                                 'Only host can see the responses',
-    //                                 style:
-    //                                     TextStyle(color: themeCubit.textColor),
-    //                               ),
-    //                             ],
-    //                           ),
-    //                           SizedBox(
-    //                             width: 20,
-    //                           )
-    //                         ],
-    //                       )
-    //                     ],
-    //                     builder: (BuildContext context,
-    //                         MenuController controller, Widget? child) {
-    //                       return TextButton(
-    //                         focusNode: _buttonFocusNode,
-    //                         onPressed: () {
-    //                           if (controller.isOpen) {
-    //                             controller.close();
-    //                           } else {
-    //                             controller.open();
-    //                           }
-    //                         },
-    //                         child: Column(
-    //                           children: [
-    //                             TextComponent(
-    //                               _selectedQuestionPublic,
-    //                               style: TextStyle(
-    //                                   color: ColorConstants.lightGray),
-    //                             ),
-    //                           ],
-    //                         ), // Use the selected option as the label
-    //                       );
-    //                     },
-    //                   ),
-    //                 ],
-    //               ),
-    //             ],
-    //           ),
-    //         ]),
-    //       );
-    //     });
     return ReorderableListView(
       shrinkWrap: true,
+      proxyDecorator: (Widget child, int index, Animation<double> animation) {
+        // Apply your custom decoration here
+        return Container(
+          color: Colors.transparent, // Change this to your desired color
+          child: child,
+        );
+      },
       onReorder: (int oldIndex, int newIndex) {
         setStateBottomSheet(() {
-          // if (newIndex > oldIndex) {
-          //   newIndex -= 1;
-          // }
+          print('Reordering: $oldIndex -> $newIndex');
+          print ("item  ${questions}");
           final String item = questions.removeAt(oldIndex);
           questions.insert(newIndex, item);
 
-          final TextEditingController controller = _questionControllers.removeAt(oldIndex);
+          final TextEditingController controller =
+          _questionControllers.removeAt(oldIndex);
           _questionControllers.insert(newIndex, controller);
+          print('Reordering After reordering: $questions');
         });
       },
       children: List<Widget>.generate(questions.length, (int index) {
@@ -1848,31 +1572,34 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 children: [
                   SizedBox(
                     width: MediaQuery.sizeOf(context).width * 0.7,
-                    child: TextField(
-                      controller:  _questionControllers[index],
-                      style: TextStyle(color: themeCubit.textColor),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 15.0),
-                        hintText: StringConstants.typeYourQuestion,
-                        filled: true,
-                        fillColor: ColorConstants.transparent,
-                        // suffixIcon:
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide: BorderSide(
-                              color: ColorConstants.transparent,
-                            )),
-                        hintStyle: TextStyle(
-                            color: ColorConstants.lightGray, fontSize: 14),
-                        enabledBorder: OutlineInputBorder(
+                    child: Material(
+                      color: ColorConstants.transparent,
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: TextField(
+                        controller: _questionControllers[index],
+                        style: TextStyle(color: themeCubit.textColor),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 15.0),
+                          hintText: StringConstants.typeYourQuestion,
+                          filled: true,
+                          fillColor: ColorConstants.transparent,
+                          border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
                             borderSide:
-                                BorderSide(color: ColorConstants.transparent)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide:
-                                BorderSide(color: ColorConstants.transparent)),
+                                BorderSide(color: ColorConstants.transparent),
+                          ),
+                          hintStyle: TextStyle(
+                              color: ColorConstants.lightGray, fontSize: 14),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide(
+                                  color: ColorConstants.transparent)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                              borderSide: BorderSide(
+                                  color: ColorConstants.transparent)),
+                        ),
                       ),
                     ),
                   ),
@@ -2115,3 +1842,304 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 }
+
+// return ListView.builder(
+//     shrinkWrap: true,
+//     itemCount: questions.length,
+//     itemBuilder: (context, index) {
+//       return Container(
+//         child: Column(children: [
+//           Row(
+//             children: [
+//               TextComponent(
+//                 questions[index],
+//                 style: TextStyle(color: themeCubit.textColor),
+//               ),
+//               SizedBox(
+//                 width: 10,
+//               ),
+//               GestureDetector(
+//                 onTap: () => {
+//                   setStateBottomSheet(() {
+//                     questions.removeAt(index); // Remove the question
+//                   })
+//                 },
+//                 child: IconComponent(
+//                   iconData: Icons.delete,
+//                   borderColor: ColorConstants.red,
+//                   backgroundColor: ColorConstants.red,
+//                   iconColor: ColorConstants.white,
+//                   iconSize: 15,
+//                   circleSize: 20,
+//                 ),
+//               ),
+//             ],
+//           ),
+//           SizedBox(
+//             height: 10,
+//           ),
+//           TextField(
+//             controller: _controller,
+//             decoration: InputDecoration(
+//               contentPadding:
+//                   EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+//               hintText: StringConstants.typeYourQuestion,
+//               filled: true,
+//               fillColor: ColorConstants.lightGray.withOpacity(0.3),
+//               suffixIcon: GestureDetector(
+//                 child: Padding(
+//                     padding: EdgeInsets.only(right: 20, top: 8),
+//                     child: IconComponent(
+//                       iconData: Icons.menu,
+//                       borderColor: ColorConstants.transparent,
+//                       backgroundColor: ColorConstants.transparent,
+//                       iconColor: ColorConstants.lightGray.withOpacity(0.4),
+//                       iconSize: 25,
+//                       circleSize: 25,
+//                     )),
+//               ),
+//               border: OutlineInputBorder(
+//                   borderRadius: BorderRadius.circular(15.0),
+//                   borderSide: BorderSide(
+//                     color: ColorConstants.transparent,
+//                   )),
+//               hintStyle:
+//                   TextStyle(color: ColorConstants.lightGray, fontSize: 14),
+//               enabledBorder: OutlineInputBorder(
+//                   borderRadius: BorderRadius.circular(15.0),
+//                   borderSide:
+//                       BorderSide(color: ColorConstants.transparent)),
+//               focusedBorder: OutlineInputBorder(
+//                   borderRadius: BorderRadius.circular(15.0),
+//                   borderSide:
+//                       BorderSide(color: ColorConstants.transparent)),
+//             ),
+//           ),
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.end,
+//             children: [
+//               IconComponent(
+//                 iconData: Icons.arrow_downward_outlined,
+//                 borderColor: ColorConstants.transparent,
+//                 backgroundColor: ColorConstants.transparent,
+//                 iconColor: ColorConstants.lightGray,
+//                 iconSize: 25,
+//                 circleSize: 25,
+//               ),
+//               Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: <Widget>[
+//                   MenuAnchor(
+//                     style: MenuStyle(
+//                       backgroundColor: MaterialStatePropertyAll<Color>(
+//                           themeCubit.backgroundColor),
+//                     ),
+//                     childFocusNode: _buttonFocusNode,
+//                     menuChildren: <Widget>[
+//                       Row(
+//                         children: [
+//                           Checkbox(
+//                             value: _selectedQuestionRequired == 'Required',
+//                             onChanged: (bool? value) {
+//                               if (value != null) {
+//                                 setState(() {
+//                                   _selectedQuestionRequired = 'Required';
+//                                 });
+//                               }
+//                             },
+//                             shape: CircleBorder(),
+//                             // Makes the checkbox circular
+//                             activeColor: ColorConstants.primaryColor,
+//                             // Sets the color of the checkbox when selected
+//                             checkColor: Colors.black,
+//                           ),
+//                           TextComponent(
+//                             "Required",
+//                             style: TextStyle(color: themeCubit.textColor),
+//                           ),
+//                           SizedBox(
+//                             width: 10,
+//                           )
+//                         ],
+//                       ),
+//                       Divider(
+//                         thickness: 0.1,
+//                       ),
+//                       Row(
+//                         children: [
+//                           Checkbox(
+//                             value: _selectedQuestionRequired == 'Optional',
+//                             onChanged: (bool? value) {
+//                               if (value != null) {
+//                                 setState(() {
+//                                   _selectedQuestionRequired = 'Optional';
+//                                 });
+//                               }
+//                             },
+//                             shape: CircleBorder(),
+//                             // Makes the checkbox circular
+//                             activeColor: ColorConstants.primaryColor,
+//                             // Sets the color of the checkbox when selected
+//                             checkColor: Colors.black,
+//                           ),
+//                           TextComponent(
+//                             "Optional",
+//                             style: TextStyle(color: themeCubit.textColor),
+//                           ),
+//                           SizedBox(
+//                             width: 10,
+//                           )
+//                         ],
+//                       ),
+//                     ],
+//                     builder: (BuildContext context,
+//                         MenuController controller, Widget? child) {
+//                       return TextButton(
+//                         focusNode: _buttonFocusNode,
+//                         onPressed: () {
+//                           if (controller.isOpen) {
+//                             controller.close();
+//                           } else {
+//                             controller.open();
+//                           }
+//                         },
+//                         child: TextComponent(
+//                           _selectedQuestionRequired,
+//                           style: TextStyle(color: ColorConstants.lightGray),
+//                         ), // Use the selected option as the label
+//                       );
+//                     },
+//                   ),
+//                 ],
+//               ),
+//               SizedBox(
+//                 width: 10,
+//               ),
+//               IconComponent(
+//                 iconData: Icons.arrow_downward_outlined,
+//                 borderColor: ColorConstants.transparent,
+//                 backgroundColor: ColorConstants.transparent,
+//                 iconColor: ColorConstants.lightGray,
+//                 iconSize: 25,
+//                 circleSize: 25,
+//               ),
+//               Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: <Widget>[
+//                   MenuAnchor(
+//                     alignmentOffset: Offset(-250, 0),
+//                     style: MenuStyle(
+//                       backgroundColor: MaterialStatePropertyAll<Color>(
+//                           themeCubit.backgroundColor),
+//                     ),
+//                     childFocusNode: _buttonFocusNode,
+//                     menuChildren: <Widget>[
+//                       Row(
+//                         children: [
+//                           Checkbox(
+//                             value: _selectedQuestionPublic == 'Public',
+//                             onChanged: (bool? value) {
+//                               if (value != null) {
+//                                 setState(() {
+//                                   _selectedQuestionPublic = 'Public';
+//                                 });
+//                               }
+//                             },
+//                             shape: CircleBorder(),
+//                             // Makes the checkbox circular
+//                             activeColor: ColorConstants.primaryColor,
+//                             // Sets the color of the checkbox when selected
+//                             checkColor: Colors.black,
+//                           ),
+//                           Column(
+//                             mainAxisSize: MainAxisSize.min,
+//                             crossAxisAlignment: CrossAxisAlignment.start,
+//                             children: [
+//                               TextComponent(
+//                                 'Public',
+//                                 style:
+//                                     TextStyle(color: themeCubit.textColor),
+//                               ),
+//                               Text(
+//                                 'Responses can be seen by everyone',
+//                                 style:
+//                                     TextStyle(color: themeCubit.textColor),
+//                               ),
+//                             ],
+//                           ),
+//                           SizedBox(
+//                             width: 20,
+//                           )
+//                         ],
+//                       ),
+//                       Divider(
+//                         thickness: 0.1,
+//                       ),
+//                       Row(
+//                         children: [
+//                           Checkbox(
+//                             value: _selectedQuestionPublic == 'Private',
+//                             onChanged: (bool? value) {
+//                               if (value != null) {
+//                                 setState(() {
+//                                   _selectedQuestionPublic = 'Private';
+//                                 });
+//                               }
+//                             },
+//                             shape: CircleBorder(),
+//                             // Makes the checkbox circular
+//                             activeColor: ColorConstants.primaryColor,
+//                             // Sets the color of the checkbox when selected
+//                             checkColor: Colors.black,
+//                           ),
+//                           Column(
+//                             crossAxisAlignment: CrossAxisAlignment.start,
+//                             children: [
+//                               TextComponent(
+//                                 'Private',
+//                                 style:
+//                                     TextStyle(color: themeCubit.textColor),
+//                               ),
+//                               TextComponent(
+//                                 'Only host can see the responses',
+//                                 style:
+//                                     TextStyle(color: themeCubit.textColor),
+//                               ),
+//                             ],
+//                           ),
+//                           SizedBox(
+//                             width: 20,
+//                           )
+//                         ],
+//                       )
+//                     ],
+//                     builder: (BuildContext context,
+//                         MenuController controller, Widget? child) {
+//                       return TextButton(
+//                         focusNode: _buttonFocusNode,
+//                         onPressed: () {
+//                           if (controller.isOpen) {
+//                             controller.close();
+//                           } else {
+//                             controller.open();
+//                           }
+//                         },
+//                         child: Column(
+//                           children: [
+//                             TextComponent(
+//                               _selectedQuestionPublic,
+//                               style: TextStyle(
+//                                   color: ColorConstants.lightGray),
+//                             ),
+//                           ],
+//                         ), // Use the selected option as the label
+//                       );
+//                     },
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//         ]),
+//       );
+//     });

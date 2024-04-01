@@ -1,11 +1,9 @@
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/button_component.dart';
-import '../../components/icon_component.dart';
 import '../../components/text_component.dart';
 import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
@@ -23,26 +21,34 @@ class WhatDoYouDoScreen extends StatefulWidget {
 }
 
 class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
- late final themeCubit = BlocProvider.of<ThemeCubit>(context);
- final TextEditingController _firstNameController = TextEditingController();
- final TextEditingController _secondNameController = TextEditingController();
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _secondNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+        appBar: AppBarComponent(
+          "",
+          action: TextComponent(StringConstants.skip,
+              style: TextStyle(
+                fontSize: 14,
+                color: themeCubit.textColor,
+              )),
+        ),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: onBoarding());
   }
 
-
   Widget onBoarding() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: enterName(),
     );
   }
 
-  enterName(){
+  enterName() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,18 +57,18 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            InkWell(
-              onTap:()=> NavigationUtil.pop(context),
-              child: IconComponent(
-                iconData: Icons.arrow_back_ios_new_outlined,
-                borderColor: ColorConstants.transparent,
-                backgroundColor: ColorConstants.iconBg,
-                iconColor: ColorConstants.white,
-                circleSize: 30,
-                iconSize: 20,
-              ),
-            ),
-            SizedBoxConstants.sizedBoxThirtyH(),
+            // InkWell(
+            //   onTap:()=> NavigationUtil.pop(context),
+            //   child: IconComponent(
+            //     iconData: Icons.arrow_back_ios_new_outlined,
+            //     borderColor: ColorConstants.transparent,
+            //     backgroundColor: ColorConstants.iconBg,
+            //     iconColor: ColorConstants.white,
+            //     circleSize: 30,
+            //     iconSize: 20,
+            //   ),
+            // ),
+            // SizedBoxConstants.sizedBoxThirtyH(),
             TextComponent(
               StringConstants.whatDoYouDo,
               style: TextStyle(
@@ -80,7 +86,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                   fontSize: 30),
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                hintText:StringConstants.whatDoYouDoHintText,
+                hintText: StringConstants.whatDoYouDoHintText,
                 hintStyle: TextStyle(
                     color: ColorConstants.lightGray,
                     fontFamily: FontConstants.fontProtestStrike,
@@ -90,12 +96,6 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
               onChanged: (value) {
                 print(value);
               },
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(10),
-                // Limit to 12 characters
-                FilteringTextInputFormatter.digitsOnly,
-                // Accept only digits
-              ],
             ),
           ],
         ),

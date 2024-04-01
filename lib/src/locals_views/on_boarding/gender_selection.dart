@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
+import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
 
@@ -32,6 +34,7 @@ class _GenderSelectionState extends State<GenderSelection> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+      appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: onBoarding());
@@ -53,7 +56,7 @@ class _GenderSelectionState extends State<GenderSelection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            InkWell(
+      /*      InkWell(
               onTap:()=> NavigationUtil.pop(context),
               child: IconComponent(
                 iconData: Icons.arrow_back_ios_new_outlined,
@@ -66,7 +69,7 @@ class _GenderSelectionState extends State<GenderSelection> {
             ),
             SizedBox(
               height: 30,
-            ),
+            ),*/
             TextComponent(
               StringConstants.howDoYouIdentify,
               style: TextStyle(
@@ -74,9 +77,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                   color: themeCubit.textColor,
                   fontFamily: FontConstants.fontProtestStrike),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBoxConstants.sizedBoxTwentyH(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -105,9 +106,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBoxConstants.sizedBoxTenH(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -136,9 +135,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBoxConstants.sizedBoxTenH(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -167,9 +164,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBoxConstants.sizedBoxTenH(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
