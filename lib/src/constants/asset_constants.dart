@@ -20,6 +20,7 @@ class AssetConstants {
   static const String filter = "$icons/filter.svg";
   static const String share = "$icons/share_black.svg";
   static const String more = "$icons/more_white.svg";
+  static const String backArrow = "$icons/back_arrow.png";
   // static const String google = "$icons/google.png";
   static const String calendar = "$images/calendar.svg";
   static const String happy = "$images/happy.svg";
