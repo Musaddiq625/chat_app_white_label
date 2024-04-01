@@ -10,6 +10,7 @@ import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/text_field_component.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
@@ -58,9 +59,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   iconSize: 20,
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
+              SizedBoxConstants.sizedBoxThirtyH(),
               TextComponent(
                StringConstants.setYourAccountPassword ,
                 style: TextStyle(
@@ -69,9 +68,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     fontFamily: FontConstants.fontProtestStrike),
               ),
 
-              const SizedBox(
-                height: 20,
-              ),
+              SizedBoxConstants.sizedBoxThirtyH(),
 
               TextFieldComponent(
                 _phoneNumbercontroller,
@@ -80,25 +77,21 @@ class _PasswordScreenState extends State<PasswordScreen> {
                 // fieldColor: ColorConstants.lightGray.withOpacity(0.5),
                 textColor: themeCubit.textColor,
               ),
-              const SizedBox(
-                height: 20,
-              ),
-
+              SizedBoxConstants.sizedBoxTwentyH(),
               TextFieldComponent(
                 _phoneNumbercontroller,
                 title: StringConstants.confirmPassword,
                 hintText: "",
                 textColor: themeCubit.textColor,
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              SizedBoxConstants.sizedBoxForthyH(),
               TextComponent(
                 StringConstants.passwordValidation,
                 style: TextStyle(
                   fontSize: 12,
-                  color: themeCubit.textColor,
+                  color: ColorConstants.lightGray,
                 ),
+                maxLines: 4,
               ),
               const SizedBox(
                 height: 20,

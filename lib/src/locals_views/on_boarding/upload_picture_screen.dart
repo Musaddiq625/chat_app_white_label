@@ -13,6 +13,7 @@ import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
+import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
 
@@ -68,9 +69,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 iconSize: 20,
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            SizedBoxConstants.sizedBoxThirtyH(),
             TextComponent(
               StringConstants.letsPutAFace,
               style: TextStyle(
@@ -78,6 +77,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                   color: themeCubit.textColor,
                   fontFamily: FontConstants.fontProtestStrike),
             ),
+            SizedBoxConstants.sizedBoxTwelveH(),
             const TextComponent(
               StringConstants.requiredPictures,
               style: TextStyle(
@@ -154,9 +154,12 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                                   width: AppConstants.responsiveWidth(context,
                                       percentage: 60),
                                   height: 250,
-                                  child: Image.file(
-                                    image,
-                                    fit: BoxFit.cover,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Image.file(
+                                      image,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 20),
@@ -171,7 +174,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                     width: MediaQuery.sizeOf(context).width * 0.6,
                     height: 250,
                     decoration: BoxDecoration(
-                      color: themeCubit.darkBackgroundColor,
+                      color: ColorConstants.lightGray.withOpacity(0.4),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Column(

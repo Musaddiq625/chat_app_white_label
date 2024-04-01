@@ -100,7 +100,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
                 TextComponent(
                   widget.title!,
                   style: TextStyle(
-                      color: widget.textColor, fontWeight: FontWeight.bold),
+                      color: widget.textColor),
                 ),
                 TextComponent(
                   widget.isMandatory ? '*' : '',
@@ -161,7 +161,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
                 : null,
             prefixIconConstraints: _boxConstraints(),
             suffixIconConstraints: _boxConstraints(),
-            contentPadding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+            contentPadding: EdgeInsets.fromLTRB(16, 10, 16, 16),
             suffixIcon: hidePassword != null
                 ? GestureDetector(
                     child: _iconWidget(),

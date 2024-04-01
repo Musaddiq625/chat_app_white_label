@@ -11,6 +11,7 @@ import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
+import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
 
@@ -61,9 +62,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                 iconSize: 20,
               ),
             ),
-            SizedBox(
-              height: 30,
-            ),
+            SizedBoxConstants.sizedBoxThirtyH(),
             TextComponent(
               StringConstants.whatDoYouDo,
               style: TextStyle(
@@ -71,6 +70,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                   color: themeCubit.textColor,
                   fontFamily: FontConstants.fontProtestStrike),
             ),
+            SizedBoxConstants.sizedBoxThirtyH(),
             TextField(
               controller: _firstNameController,
               keyboardType: TextInputType.text,

@@ -8,6 +8,7 @@ import '../../components/icon_component.dart';
 import '../../components/text_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
+import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
@@ -89,9 +90,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                   iconSize: 20,
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
+              SizedBoxConstants.sizedBoxThirtyH(),
               TextComponent(
                 StringConstants.selectYourPicture,
                 style: TextStyle(
@@ -99,9 +98,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                     color: themeCubit.textColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              SizedBoxConstants.sizedBoxTwelveH(),
               TextComponent(
                 StringConstants.chooseAnyOfTheUplodedImages,
                 style: TextStyle(
@@ -110,9 +107,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 ),
                 maxLines: 4,
               ),
-              SizedBox(
-                height: 20,
-              ),
+              SizedBoxConstants.sizedBoxForthyH(),
               SizedBox(
                 height: 250,
                 child: PageView.builder(
@@ -160,9 +155,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                   );
                 }),
               ),
-              SizedBox(
-                height: 30,
-              ),
+              SizedBoxConstants.sizedBoxThirtyH(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

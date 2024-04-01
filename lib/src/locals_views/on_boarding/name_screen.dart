@@ -11,6 +11,7 @@ import '../../components/text_component.dart';
 import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 
 class NameScreen extends StatefulWidget {
@@ -60,9 +61,7 @@ class _NameScreenState extends State<NameScreen> {
                 iconSize: 20,
               ),
             ),
-            SizedBox(
-              height: 30,
-            ),
+            SizedBoxConstants.sizedBoxThirtyH(),
             TextComponent(
               StringConstants.whatsYourName,
               style: TextStyle(
@@ -70,6 +69,7 @@ class _NameScreenState extends State<NameScreen> {
                   color: themeCubit.textColor,
                   fontFamily: FontConstants.fontProtestStrike),
             ),
+            SizedBoxConstants.sizedBoxThirtyH(),
             TextField(
               controller: _firstNameController,
               keyboardType: TextInputType.text,

@@ -7,7 +7,7 @@ class StringConstants {
   static const String whatsYourEmailAddress = "What's your\nemail address?";
   static const String letsPutAFace= "Let's put a face to\nthe name!";
   static const String selectYourPicture= "Select your\nprofile photo";
-  static const String whatsYouDob= "What is your\nbirthday?";
+  static const String whensYouDob= "When is your\nbirthday?";
   static const String whatDoYouDo= "What do you do\nfor living??";
   static const String whatsYourName = "What's your\nname?";
   static const String howDoYouIdentify = "How do you\nidentify?";
@@ -109,7 +109,7 @@ class StringConstants {
   static const String verificationCodeSentToEmail =
       "Verification code will be sent on this email.";
   static const String passwordValidation =
-      "Should be 8 character long with 1 number and special character";
+      "Should be 8 character long with 1 number and special character.";
   static const String price = "Price";
   static const String share = "Share";
   static const String selectLocation = "Select Location";

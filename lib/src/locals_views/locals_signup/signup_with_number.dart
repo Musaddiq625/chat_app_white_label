@@ -2,6 +2,7 @@ import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
@@ -55,9 +56,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                   backgroundColor: ColorConstants.iconBg,
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
+              SizedBoxConstants.sizedBoxForthyH(),
               TextComponent(
                 StringConstants.whatsYourPhoneNumber,
                 style: TextStyle(
@@ -65,9 +64,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                     color: themeCubit.textColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              SizedBoxConstants.sizedBoxTwentyH(),
               Row(
                 children: <Widget>[
                   CountryCodePicker(
@@ -113,14 +110,12 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              SizedBoxConstants.sizedBoxTwentyH(),
               TextComponent(
                 StringConstants.verificationCodeSent,
                 style: TextStyle(
                   fontSize: 12,
-                  color: themeCubit.textColor,
+                  color: ColorConstants.lightGray,
                 ),
               ),
               const SizedBox(

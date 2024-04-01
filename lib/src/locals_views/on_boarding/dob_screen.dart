@@ -9,6 +9,7 @@ import '../../components/icon_component.dart';
 import '../../components/text_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
+import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
@@ -59,19 +60,15 @@ class _DOBScreenState extends State<DOBScreen> {
                   iconSize: 20,
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
+              SizedBoxConstants.sizedBoxThirtyH(),
               TextComponent(
-                StringConstants.whatsYouDob,
+                StringConstants.whensYouDob,
                 style: TextStyle(
                     fontSize: 22,
                     color: themeCubit.textColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              SizedBoxConstants.sizedBoxThirtyH(),
               InkWell(
                   onTap: () => _selectDate(context),
                   child: _dateController.value.text.isNotEmpty

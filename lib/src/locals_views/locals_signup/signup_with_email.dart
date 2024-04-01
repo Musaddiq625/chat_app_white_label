@@ -9,6 +9,7 @@ import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
+import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
@@ -58,9 +59,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                   iconSize: 20,
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
+              SizedBoxConstants.sizedBoxForthyH(),
               TextComponent(
                 StringConstants.whatsYourEmailAddress,
                 style: TextStyle(
@@ -68,22 +67,18 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                     color: themeCubit.textColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              SizedBoxConstants.sizedBoxThirtyH(),
               TextFieldComponent(
                 _emailcontroller,
                 hintText: "abc@gmail.com",
                 textColor: themeCubit.textColor,
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              SizedBoxConstants.sizedBoxForthyH(),
               TextComponent(
                 StringConstants.verificationCodeSentToEmail,
                 style: TextStyle(
                   fontSize: 12,
-                  color: themeCubit.textColor,
+                  color: ColorConstants.lightGray,
                 ),
               ),
               const SizedBox(
