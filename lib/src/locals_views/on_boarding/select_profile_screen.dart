@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +12,8 @@ import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/loading_dialog.dart';
+import '../../utils/logger_util.dart';
 import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
@@ -24,6 +27,8 @@ class SelectProfileImageScreen extends StatefulWidget {
 
 class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late OnboardingCubit onBoardingCubit =
+      BlocProvider.of<OnboardingCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
@@ -52,11 +57,25 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-        appBar: AppBarComponent(""),
-        removeSafeAreaPadding: false,
-        bgColor: themeCubit.backgroundColor,
-        widget: setPassword());
+    return BlocConsumer<OnboardingCubit, OnBoardingState>(
+      listener:(context,state){
+        LoggerUtil.logs('login state: $state');
+        if(state is OnBoardingLoadingState){
+          LoadingDialog.showLoadingDialog(context);
+        }
+        else if(state is OnBoardingUserDataFirstStepSuccessState){
+          LoadingDialog.hideLoadingDialog(context);
+          NavigationUtil.push(context, RouteConstants.dobScreen);
+        }
+      },
+      builder: (context, state) {
+        return UIScaffold(
+            appBar: AppBarComponent(""),
+            removeSafeAreaPadding: false,
+            bgColor: themeCubit.backgroundColor,
+            widget: setProfileImage());
+      },
+    );
   }
 
   @override
@@ -70,7 +89,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
       });
   }
 
-  Widget setPassword() {
+  Widget setProfileImage() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Column(
@@ -179,7 +198,8 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.confirmProfilePicture,
                 onPressedFunction: () {
-                  NavigationUtil.push(context, RouteConstants.dobScreen);
+                  onBoardingCubit.userDetail("selectedImage");
+
                 }),
           )
         ],

@@ -17,6 +17,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
+import '../models/MoreAboutMe.dart';
+
 class FirebaseUtils {
   static FirebaseService firebaseService = getIt<FirebaseService>();
 
@@ -81,6 +83,34 @@ class FirebaseUtils {
     });
     LoggerUtil.logs('Created User');
   }
+
+
+  static Future<void> updateUserStepOne(String firstName,String lastName,List<String> userImages, String profileImage) async {
+    final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
+    await usersCollection.doc(replacedPhoneNumber).set({
+      'first_name': firstName,
+      'last_name': lastName,
+      'user_images': FieldValue.arrayUnion(userImages),
+      'profile_image':profileImage,
+    },SetOptions(merge: true));
+    LoggerUtil.logs('Updated User Step 1');
+  }
+
+
+  static Future<void> updateUserStepTwo(String dob,String aboutMe,String gender,String bio,MoreAboutMe moreAboutMe,List<String>  hobbies,List<String> creativity) async {
+    final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
+    await usersCollection.doc(replacedPhoneNumber).set({
+      'date_of_birth': dob,
+      'about_me': aboutMe,
+      'gender': gender,
+      'bio': bio,
+      'more_about_me': moreAboutMe.toJson(),
+      'hobbies':hobbies,
+      'creativity':creativity,
+    },SetOptions(merge: true));
+    LoggerUtil.logs('Updated User Step 2');
+  }
+
 
   static Future<void> createCalls(String callId, String callerNumber,
       List<String> receiverNumber, String type) async {

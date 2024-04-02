@@ -163,7 +163,7 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(OtpScreen(
         otpArg: arg,
       ));
-      return materialRoute(const OtpScreen());
+      // return materialRoute(const OtpScreen());
 
     case RouteConstants.profileScreenLocal:
       return materialRoute(ProfileScreen());

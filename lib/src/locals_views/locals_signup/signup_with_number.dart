@@ -10,6 +10,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../components/button_component.dart';
 import '../../constants/font_constants.dart';
@@ -133,32 +134,35 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                     alignLeft: false,
                   ),
                   Expanded(
-                    child: TextField(
-                      controller: _phoneNumbercontroller,
-                      keyboardType: TextInputType.phone,
-                      style: TextStyle(
-                          color: ColorConstants.white,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 30),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "1234 123456",
-                        hintStyle: TextStyle(
-                            color: ColorConstants.lightGray,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: TextField(
+                        controller: _phoneNumbercontroller,
+                        keyboardType: TextInputType.phone,
+                        style: TextStyle(
+                            color: ColorConstants.white,
                             fontFamily: FontConstants.fontProtestStrike,
                             fontSize: 30),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "1234123456",
+                          hintStyle: TextStyle(
+                              color: ColorConstants.lightGray,
+                              fontFamily: FontConstants.fontProtestStrike,
+                              fontSize: 30),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _phoneNumberValid=value.length >=10 && value.trim().isNotEmpty;
+                          });
+                        },
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(10),
+                          // Limit to 12 characters
+                          FilteringTextInputFormatter.digitsOnly,
+                          // Accept only digits
+                        ],
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          _phoneNumberValid=value.length >=10 && value.trim().isNotEmpty;
-                        });
-                      },
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(10),
-                        // Limit to 12 characters
-                        FilteringTextInputFormatter.digitsOnly,
-                        // Accept only digits
-                      ],
                     ),
                   ),
                 ],
@@ -188,27 +192,27 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                     : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
-                  // if (_phoneNumbercontroller.text.isEmpty ||
-                  //     _phoneNumbercontroller.text.length < 10) {
-                  //   Fluttertoast.showToast(
-                  //       msg: "Please enter a valid phone number",
-                  //       toastLength: Toast.LENGTH_SHORT,
-                  //       gravity: ToastGravity.BOTTOM,
-                  //       timeInSecForIosWeb: 1,
-                  //       backgroundColor: Colors.red,
-                  //       textColor: Colors.white,
-                  //       fontSize: 16.0);
-                  //   return;
-                  // }
-                  // signUpCubit.loginUsers(_countryCodeController.text +
-                  //     _phoneNumbercontroller.text);
-                  if (widget.routeType == "afterEmail") {
-                    NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-                        args: OtpArg("", "", "", "afterEmail"));
-                  } else {
-                    NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-                        args: OtpArg("", "", "", "number"));
+                  if (_phoneNumbercontroller.text.isEmpty ||
+                      _phoneNumbercontroller.text.length < 10) {
+                    Fluttertoast.showToast(
+                        msg: "Please enter a valid phone number",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                    return;
                   }
+                  signUpCubit.loginUsers(_countryCodeController.text +
+                      _phoneNumbercontroller.text);
+                  // if (widget.routeType == "afterEmail") {
+                  //   NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+                  //       args: OtpArg("", "", "", "afterEmail"));
+                  // } else {
+                  //   NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+                  //       args: OtpArg("", "", "", "number"));
+                  // }
                 }),
           )
         ],

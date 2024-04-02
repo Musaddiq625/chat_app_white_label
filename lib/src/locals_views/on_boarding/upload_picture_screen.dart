@@ -17,6 +17,7 @@ import '../../constants/route_constants.dart';
 import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
+import 'cubit/onboarding_cubit.dart';
 
 class UploadPictureScreen extends StatefulWidget {
   const UploadPictureScreen({super.key});
@@ -27,8 +28,7 @@ class UploadPictureScreen extends StatefulWidget {
 
 class _UploadPictureScreenState extends State<UploadPictureScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _secondNameController = TextEditingController();
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   File? selectedImage;
   File? selectedCameraImage;
   bool imageUploded = false;
@@ -37,7 +37,8 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold( appBar: AppBarComponent(""),
+    return UIScaffold(
+        appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: onBoarding());
@@ -57,20 +58,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // InkWell(
-            //   onTap:()=> NavigationUtil.pop(context),
-            //   child: IconComponent(
-            //     iconData: Icons.arrow_back_ios_new_outlined,
-            //     borderColor: ColorConstants.transparent,
-            //     backgroundColor: ColorConstants.iconBg,
-            //     iconColor: ColorConstants.white,
-            //     circleSize: 30,
-            //     iconSize: 20,
-            //   ),
-            // ),
-            // SizedBoxConstants.sizedBoxThirtyH(),
             TextComponent(
               StringConstants.letsPutAFace,
               style: TextStyle(
@@ -86,59 +74,13 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 color: ColorConstants.lightGray,
               ),
             ),
-            // Stack(
-            //   children: [
-            //     CircleAvatar(
-            //       radius: 65,
-            //       backgroundImage: (selectedImage != null
-            //           ? FileImage(selectedImage!)
-            //           : imageUrl != null
-            //           ? NetworkImage(imageUrl ?? '')
-            //           : const AssetImage(AssetConstants.profile))
-            //       as ImageProvider,
-            //     ),
-            //     // Positioned(
-            //     //     right: 5,
-            //     //     bottom: 5,
-            //     //     child: GestureDetector(
-            //     //       onTap: () async {
-            //     //         if (selectedImage == null) {
-            //     //           final XFile? image = await ImagePicker()
-            //     //               .pickImage(source: ImageSource.gallery);
-            //     //           if (image != null) {
-            //     //             setState(() {
-            //     //               selectedImage = File(image.path);
-            //     //             });
-            //     //           }
-            //     //         } else {
-            //     //           setState(() {
-            //     //             selectedImage = null;
-            //     //           });
-            //     //         }
-            //     //       },
-            //     //       child: CircleAvatar(
-            //     //           radius: 15,
-            //     //           backgroundColor:
-            //     //           const Color.fromARGB(255, 238, 238, 238),
-            //     //           child: Icon(
-            //     //             selectedImage == null
-            //     //                 ? Icons.edit
-            //     //                 : Icons.cancel_outlined,
-            //     //             color: const Color.fromARGB(255, 139, 139, 139),
-            //     //             size: 16,
-            //     //           )),
-            //     //     ))
-            //   ],
-            // ),
             const SizedBox(
               height: 40,
             ),
-
             selectedImages.isNotEmpty
                 ? SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Container(
-                      // This is just for demonstration. You can remove or change it as needed.
                       child: Row(
                         children: selectedImages.map((image) {
                           return Padding(
@@ -147,10 +89,8 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: ColorConstants
-                                        .white, // Ensure this is defined in your themeCubit
-                                    borderRadius: BorderRadius.circular(
-                                        10.0), // This gives the curved border radius
+                                    color: ColorConstants.white,
+                                    borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   width: AppConstants.responsiveWidth(context,
                                       percentage: 60),
@@ -251,6 +191,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
+                  onBoardingCubit.userImages == selectedImages.toList();
                   NavigationUtil.push(
                       context, RouteConstants.selectProfileScreen);
                 }),

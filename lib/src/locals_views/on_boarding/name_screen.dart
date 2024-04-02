@@ -1,4 +1,5 @@
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _NameScreenState extends State<NameScreen> {
   bool _isFirstName = false;
   bool _isSecondName = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _secondNameController = TextEditingController();
 
@@ -117,6 +119,8 @@ class _NameScreenState extends State<NameScreen> {
                   : ColorConstants.lightGray,
               buttonText: StringConstants.continues,
               onPressedFunction: () {
+                onBoardingCubit.firstName=_firstNameController.text;
+                onBoardingCubit.lastName=_secondNameController.text;
                 NavigationUtil.push(
                     context, RouteConstants.uploadProfileScreen);
               }),
