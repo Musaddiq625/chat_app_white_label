@@ -31,7 +31,7 @@ class StringConstants {
   static const String setYourAccountPassword = "Set your\naccount's password?";
   static const String enterTheVerificationCode = "Enter the\nverification code";
   static const String verificationCode = "verification code";
-  static const String didntReciveCode = "Didnt receive the code? Resend in  ";
+  static const String didntReciveCode = "Didnt receive the code? Resend in";
   static const String createEvent = "Create Event";
   static const String viewEvent = "View Event";
   static const String getStarted = "Get Started";
