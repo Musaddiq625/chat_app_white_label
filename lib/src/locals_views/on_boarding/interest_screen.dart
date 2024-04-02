@@ -54,6 +54,7 @@ class _InterestScreenState extends State<InterestScreen> {
     // Add more tag data items as required
   ];
 
+  List<String> selectedInterestTagList = [];
   List<Map<String, dynamic>> interestTagList = [
     {
       'iconData': Icons.favorite,
@@ -210,7 +211,9 @@ class _InterestScreenState extends State<InterestScreen> {
                         backgroundColor: selectedTags.contains(tag['name'])
                             ? themeCubit.primaryColor
                             : ColorConstants.lightGray.withOpacity(0.3),
-                        iconColor: themeCubit.primaryColor,
+                        iconColor: selectedTags.contains(tag['name'])
+                            ? themeCubit.backgroundColor
+                            : themeCubit.primaryColor,
                         customIconText: tag['name'],
                         circleHeight: 35,
                         iconSize: 20,
@@ -254,13 +257,27 @@ class _InterestScreenState extends State<InterestScreen> {
                 .map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
                       TagComponent(
                         iconData: tag['iconData'],
-                        customTextColor: themeCubit.textColor,
-                        backgroundColor:
-                            ColorConstants.lightGray.withOpacity(0.3),
-                        iconColor: themeCubit.primaryColor,
+                        customTextColor: selectedInterestTagList.contains(tag['name'])
+                            ? ColorConstants.black
+                            : themeCubit.textColor,
+                        backgroundColor: selectedInterestTagList.contains(tag['name'])
+                            ? themeCubit.primaryColor
+                            : ColorConstants.lightGray.withOpacity(0.3),
+                        iconColor: selectedInterestTagList.contains(tag['name'])
+                            ? themeCubit.backgroundColor
+                            : themeCubit.primaryColor,
                         customIconText: tag['name'],
                         circleHeight: 35,
                         iconSize: 20,
+                        onTap: () {
+                          setState(() {
+                            if (selectedInterestTagList.contains(tag['name'])) {
+                              selectedInterestTagList.remove(tag['name']);
+                            } else if (selectedInterestTagList.length < 4) {
+                              selectedInterestTagList.add(tag['name']);
+                            }
+                          });
+                        },
                       ),
                       SizedBox(
                         width: 5,

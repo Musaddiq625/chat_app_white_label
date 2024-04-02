@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/signup_with_email.dart';
+import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,13 +14,18 @@ import '../../components/app_bar_component.dart';
 import '../../components/button_component.dart';
 import '../../components/custom_text_field.dart';
 import '../../components/icon_component.dart';
+import '../../components/toast_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/firebase_utils.dart';
+import '../../utils/loading_dialog.dart';
+import '../../utils/logger_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class OtpScreen extends StatefulWidget {
   final OtpArg? otpArg;
-  const OtpScreen({super.key,  this.otpArg});
+
+  const OtpScreen({super.key, this.otpArg});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -31,18 +37,54 @@ class _OtpScreenState extends State<OtpScreen> {
   Timer? _timer;
   int _counter = 15;
 
+
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
-      TextEditingController(text: '+92');
+  TextEditingController(text: '+92');
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-        appBar: AppBarComponent(""),
-        removeSafeAreaPadding: false,
-        bgColor: themeCubit.backgroundColor,
-        widget: enterOtp());
+    return BlocConsumer<OTPCubit, OTPState>(
+        listener: (context, state) async {
+          LoggerUtil.logs('login state: $state');
+          if (state is OTPLoadingState) {
+            LoadingDialog.showLoadingDialog(context);
+          } else if (state is OTPSuccessNewUserState) {
+            if (state.fcmToken != null) {
+              await FirebaseUtils.addFcmToken(state.phoneNumber, state.fcmToken!);
+            }
+            LoadingDialog.hideLoadingDialog(context);
+            NavigationUtil.push(context, RouteConstants.signUpEmail,
+                args: state.phoneNumber);
+          }
+          else if(state is OtpSuccessResendState){
+            LoadingDialog.hideLoadingDialog(context);
+            setState(() {
+              _counter = 15; // Reset the counter
+              startTimer(); // Restart the timer
+            });
+          }
+          else if (state is OTPSuccessOldUserState) {
+
+            NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
+          } else if (state is OTPFailureState) {
+            LoadingDialog.hideLoadingDialog(context);
+            // ToastComponent.showToast(state.error.toString(), context: context);
+            ToastComponent.showToast("Invalid Otp", context: context);
+
+          } else if (state is OTPCancleState) {
+            LoadingDialog.hideLoadingDialog(context);
+          }
+        },
+        builder: (context, state) {
+          return UIScaffold(
+              appBar: AppBarComponent(""),
+              removeSafeAreaPadding: false,
+              bgColor: themeCubit.backgroundColor,
+              widget: enterOtp());
+        }
+    );
   }
 
   @override
@@ -118,7 +160,9 @@ class _OtpScreenState extends State<OtpScreen> {
                       onChanged: (String value) {
                         setState(() {
                           _isOtpValid =
-                              value.length == 6 && value.trim().isNotEmpty;
+                              value.length == 6 && value
+                                  .trim()
+                                  .isNotEmpty;
                         });
                       },
                       style: TextStyle(
@@ -137,16 +181,23 @@ class _OtpScreenState extends State<OtpScreen> {
                 height: 20,
               ),
               if (_counter > 0)
-              TextComponent('${StringConstants.didntReciveCode}  ${_counter > 0 ? _counter : ""}',
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.bold,color: ColorConstants.lightGray)),
+                TextComponent(
+                    '${StringConstants.didntReciveCode}  ${_counter > 0
+                        ? _counter
+                        : ""}',
+                    style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: ColorConstants.lightGray)),
               if (_counter <= 0)
                 TextComponent(StringConstants.resendCode,
-                    style:  TextStyle(
+                    style: TextStyle(
                         decoration: TextDecoration.underline,
-                        decorationColor:themeCubit.primaryColor ,
+                        decorationColor: themeCubit.primaryColor,
                         decorationThickness: 3,
-                        fontSize: 14, fontWeight: FontWeight.bold,color:themeCubit.primaryColor)),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: themeCubit.primaryColor)),
 
               const SizedBox(
                 height: 20,
@@ -155,33 +206,33 @@ class _OtpScreenState extends State<OtpScreen> {
             ],
           ),
           SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.9,
+            width: MediaQuery
+                .sizeOf(context)
+                .width * 0.9,
             child: ButtonComponent(
-                bgcolor: ColorConstants.lightGray.withOpacity(0.2),
-                textColor: ColorConstants.lightGray,
+                bgcolor: _isOtpValid?themeCubit.primaryColor:ColorConstants.lightGray.withOpacity(0.2),
+                textColor: _isOtpValid?themeCubit.backgroundColor: ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
-                  if(widget.otpArg?.type == "number"){
+                  if (widget.otpArg?.type == "number") {
                     NavigationUtil.push(context, RouteConstants.signUpEmail,
-                    args: "number");
+                        args: "number");
                   }
-                  else if(widget.otpArg?.type == "email"){
+                  else if (widget.otpArg?.type == "email") {
                     NavigationUtil.push(context, RouteConstants.signUpNumber);
                   }
-                  else if(widget.otpArg?.type == "afterEmail"){
+                  else if (widget.otpArg?.type == "afterEmail") {
                     NavigationUtil.push(context, RouteConstants.nameScreen,
                         args: "OnBoarding");
                   }
-                  else if(widget.otpArg?.type == "setPasswordBeforeNumber"){
+                  else if (widget.otpArg?.type == "setPasswordBeforeNumber") {
                     NavigationUtil.push(context, RouteConstants.passwordScreen,
-                    args: "phoneNumber");
+                        args: "phoneNumber");
                   }
-                  else if(widget.otpArg?.type == "setPasswordAfterNumber"){
+                  else if (widget.otpArg?.type == "setPasswordAfterNumber") {
                     NavigationUtil.push(context, RouteConstants.passwordScreen,
                         args: "OnBoarding");
                   }
-
-
                 }),
           )
         ],
@@ -191,17 +242,14 @@ class _OtpScreenState extends State<OtpScreen> {
 }
 
 
-
 class OtpArg {
   final String verificationId;
   final String phoneNumber;
   final String phoneCode;
   final String type;
 
-  OtpArg(
-      this.verificationId,
+  OtpArg(this.verificationId,
       this.phoneNumber,
       this.phoneCode,
-      this.type
-      );
+      this.type);
 }

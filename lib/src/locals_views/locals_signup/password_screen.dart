@@ -25,8 +25,11 @@ class PasswordScreen extends StatefulWidget {
 }
 
 class _PasswordScreenState extends State<PasswordScreen> {
+  bool _isPasswordValid = false;
+  bool _isCorrectPasswordValid = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-  final TextEditingController _phoneNumbercontroller = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _correctPasswordController = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
 
@@ -41,27 +44,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
   Widget setPassword() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // InkWell(
-              //   onTap:()=> NavigationUtil.pop(context),
-              //   child: IconComponent(
-              //     iconData: Icons.arrow_back_ios_new_outlined,
-              //     borderColor: Colors.transparent,
-              //     backgroundColor: ColorConstants.iconBg,
-              //     iconColor: Colors.white,
-              //     circleSize: 30,
-              //     iconSize: 20,
-              //   ),
-              // ),
-              // SizedBoxConstants.sizedBoxThirtyH(),
               TextComponent(
                StringConstants.setYourAccountPassword ,
                 style: TextStyle(
@@ -69,22 +59,30 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     color: themeCubit.textColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
-
               SizedBoxConstants.sizedBoxThirtyH(),
-
               TextFieldComponent(
-                _phoneNumbercontroller,
+                _passwordController,
                 title: StringConstants.password,
                 hintText: "",
                 // fieldColor: ColorConstants.lightGray.withOpacity(0.5),
                 textColor: themeCubit.textColor,
+                  onChanged: (value) {
+                    setState(() {
+                      _isPasswordValid=value.length >=8 && value.trim().isNotEmpty;
+                    });
+                  }
               ),
               SizedBoxConstants.sizedBoxTwentyH(),
               TextFieldComponent(
-                _phoneNumbercontroller,
+                _correctPasswordController,
                 title: StringConstants.confirmPassword,
                 hintText: "",
                 textColor: themeCubit.textColor,
+                  onChanged: (value) {
+                    setState(() {
+                      _isCorrectPasswordValid=value.length >=8 && value.trim().isNotEmpty;
+                    });
+                  }
               ),
               SizedBoxConstants.sizedBoxForthyH(),
               TextComponent(
@@ -95,17 +93,18 @@ class _PasswordScreenState extends State<PasswordScreen> {
                 ),
                 maxLines: 4,
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              // Spacer(),
+
             ],
           ),
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
-                bgcolor: ColorConstants.lightGray.withOpacity(0.2),
-                textColor: ColorConstants.lightGray,
+                bgcolor: _isPasswordValid && _isCorrectPasswordValid
+                    ? themeCubit.primaryColor
+                    : ColorConstants.lightGray.withOpacity(0.2),
+                textColor: _isPasswordValid && _isCorrectPasswordValid
+                    ? ColorConstants.black
+                    : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
                   if (widget.routeType == "OnBoarding") {

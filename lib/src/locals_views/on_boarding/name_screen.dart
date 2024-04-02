@@ -23,6 +23,8 @@ class NameScreen extends StatefulWidget {
 }
 
 class _NameScreenState extends State<NameScreen> {
+  bool _isFirstName = false;
+  bool _isSecondName = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _secondNameController = TextEditingController();
@@ -50,20 +52,8 @@ class _NameScreenState extends State<NameScreen> {
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // InkWell(
-            //   onTap:()=> NavigationUtil.pop(context),
-            //   child: IconComponent(
-            //     iconData: Icons.arrow_back_ios_new_outlined,
-            //     borderColor: ColorConstants.transparent,
-            //     backgroundColor: ColorConstants.iconBg,
-            //     iconColor: ColorConstants.white,
-            //     circleSize: 30,
-            //     iconSize: 20,
-            //   ),
-            // ),
-            // SizedBoxConstants.sizedBoxThirtyH(),
+
             TextComponent(
               StringConstants.whatsYourName,
               style: TextStyle(
@@ -87,10 +77,11 @@ class _NameScreenState extends State<NameScreen> {
                     fontFamily: FontConstants.fontProtestStrike,
                     fontSize: 30),
               ),
-              onChanged: (value) {
-                print(value);
-              },
-
+                onChanged: (value) {
+                  setState(() {
+                    _isFirstName=value.length >=2 && value.trim().isNotEmpty;
+                  });
+                }
             ),
             TextField(
               controller: _secondNameController,
@@ -107,17 +98,23 @@ class _NameScreenState extends State<NameScreen> {
                     fontFamily: FontConstants.fontProtestStrike,
                     fontSize: 30),
               ),
-              onChanged: (value) {
-                print(value);
-              },
+                onChanged: (value) {
+                  setState(() {
+                    _isSecondName=value.length >=2 && value.trim().isNotEmpty;
+                  });
+                }
             ),
           ],
         ),
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
-              bgcolor: ColorConstants.lightGray.withOpacity(0.2),
-              textColor: ColorConstants.lightGray,
+              bgcolor: _isFirstName && _isSecondName
+                  ? themeCubit.primaryColor
+                  : ColorConstants.lightGray.withOpacity(0.2),
+              textColor:_isFirstName && _isSecondName
+                  ? ColorConstants.black
+                  : ColorConstants.lightGray,
               buttonText: StringConstants.continues,
               onPressedFunction: () {
                 NavigationUtil.push(

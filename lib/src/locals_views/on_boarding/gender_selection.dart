@@ -198,8 +198,12 @@ class _GenderSelectionState extends State<GenderSelection> {
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
-              bgcolor: ColorConstants.lightGray.withOpacity(0.2),
-              textColor: ColorConstants.lightGray,
+              bgcolor: _selectedOption!=null
+                  ? themeCubit.primaryColor
+                  : ColorConstants.lightGray.withOpacity(0.2),
+              textColor:_selectedOption!=null
+                  ? ColorConstants.black
+                  : ColorConstants.lightGray,
               buttonText: StringConstants.continues,
               onPressedFunction: () {
                 NavigationUtil.push(context, RouteConstants.aboutYouScreen);

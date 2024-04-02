@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -498,6 +499,7 @@ class _EventScreenState extends State<EventScreen> {
                 contacts.length,
                 (index) => ContactCard(
                     contact: contacts[index], showShareIcon: false)),
+            SizedBoxConstants.sizedBoxSixtyH(),
           ],
         ),
       ),

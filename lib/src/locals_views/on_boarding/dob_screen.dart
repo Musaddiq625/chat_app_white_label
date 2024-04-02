@@ -23,6 +23,7 @@ class DOBScreen extends StatefulWidget {
 }
 
 class _DOBScreenState extends State<DOBScreen> {
+  bool _isDobValid = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
@@ -93,8 +94,12 @@ class _DOBScreenState extends State<DOBScreen> {
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
-                bgcolor: ColorConstants.lightGray.withOpacity(0.2),
-                textColor: ColorConstants.lightGray,
+                bgcolor: _dateController.value.text.isNotEmpty
+                    ? themeCubit.primaryColor
+                    : ColorConstants.lightGray.withOpacity(0.2),
+                textColor:_dateController.value.text.isNotEmpty
+                    ? ColorConstants.black
+                    : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
                   NavigationUtil.push(

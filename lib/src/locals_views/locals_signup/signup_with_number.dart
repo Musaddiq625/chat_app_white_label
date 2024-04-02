@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/locals_signup/cubit/signup_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../components/button_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../utils/loading_dialog.dart';
+import '../../utils/logger_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 import '../otp_screen/otp_screen.dart';
 
@@ -26,18 +29,64 @@ class SignUpWithNumber extends StatefulWidget {
 }
 
 class _SignUpWithNumberState extends State<SignUpWithNumber> {
+  bool _phoneNumberValid = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
 
+  late SignUpCubit signUpCubit = BlocProvider.of<SignUpCubit>(context);
+
+  @override
+  void initState() {
+    super.initState();
+    // signUpCubit = BlocProvider.of<SignUpCubit>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-        appBar: AppBarComponent(""),
-        removeSafeAreaPadding: false,
-        bgColor: themeCubit.backgroundColor,
-        widget: continueWithNumber());
+    return BlocConsumer<SignUpCubit, SignUpState>(
+      listener: (context, state) async {
+        LoggerUtil.logs('login state: $state');
+        if (state is SignUpLoadingState) {
+          LoadingDialog.showLoadingDialog(context);
+        } else if (state is SignUpSignUpState) {
+          LoadingDialog.hideLoadingDialog(context);
+          if (widget.routeType == "afterEmail") {
+            NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+                args: OtpArg(
+                    state.verificationId,
+                    "${_countryCodeController.text}${_phoneNumbercontroller.text}",
+                    _countryCodeController.text,
+                    "afterEmail"));
+          } else {
+            NavigationUtil.push(
+              context,
+              RouteConstants.otpScreenLocal,
+              args: OtpArg(
+                  state.verificationId,
+                  "${_countryCodeController.text}${_phoneNumbercontroller.text}",
+                  _countryCodeController.text,
+                  "number"),
+            );
+          }
+        } else if (state is SignUpSignInState) {
+          LoadingDialog.hideLoadingDialog(context);
+          NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
+        } else if (state is SignUpFailureState) {
+          LoadingDialog.hideLoadingDialog(context);
+        } else if (state is SignUpCancleState) {
+          LoadingDialog.hideLoadingDialog(context);
+        }
+      },
+      builder: (context, state) {
+        return UIScaffold(
+            appBar: AppBarComponent(""),
+            removeSafeAreaPadding: false,
+            bgColor: themeCubit.backgroundColor,
+            widget: continueWithNumber());
+      },
+    );
   }
 
   Widget continueWithNumber() {
@@ -100,7 +149,9 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                             fontSize: 30),
                       ),
                       onChanged: (value) {
-                        print(value);
+                        setState(() {
+                          _phoneNumberValid=value.length >=10 && value.trim().isNotEmpty;
+                        });
                       },
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(10),
@@ -129,10 +180,28 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
-                bgcolor: ColorConstants.lightGray.withOpacity(0.2),
-                textColor: ColorConstants.lightGray,
+                bgcolor: _phoneNumberValid
+                    ? themeCubit.primaryColor
+                    : ColorConstants.lightGray.withOpacity(0.2),
+                textColor:_phoneNumberValid
+                    ? ColorConstants.black
+                    : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
+                  // if (_phoneNumbercontroller.text.isEmpty ||
+                  //     _phoneNumbercontroller.text.length < 10) {
+                  //   Fluttertoast.showToast(
+                  //       msg: "Please enter a valid phone number",
+                  //       toastLength: Toast.LENGTH_SHORT,
+                  //       gravity: ToastGravity.BOTTOM,
+                  //       timeInSecForIosWeb: 1,
+                  //       backgroundColor: Colors.red,
+                  //       textColor: Colors.white,
+                  //       fontSize: 16.0);
+                  //   return;
+                  // }
+                  // signUpCubit.loginUsers(_countryCodeController.text +
+                  //     _phoneNumbercontroller.text);
                   if (widget.routeType == "afterEmail") {
                     NavigationUtil.push(context, RouteConstants.otpScreenLocal,
                         args: OtpArg("", "", "", "afterEmail"));

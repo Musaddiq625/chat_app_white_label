@@ -25,6 +25,7 @@ class SignUpWithEmail extends StatefulWidget {
 }
 
 class _SignUpWithEmailState extends State<SignUpWithEmail> {
+  bool _isEmailValid = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _countryCodeController =
@@ -74,6 +75,11 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 _emailcontroller,
                 hintText: "abc@gmail.com",
                 textColor: themeCubit.textColor,
+                  onChanged: (value) {
+                    setState(() {
+                      _isEmailValid=value.length >=8 && value.trim().isNotEmpty;
+                    });
+                  }
               ),
               SizedBoxConstants.sizedBoxForthyH(),
               TextComponent(
@@ -92,8 +98,12 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
-                bgcolor: themeCubit.primaryColor,
-                textColor: themeCubit.backgroundColor,
+                bgcolor: _isEmailValid
+                    ? themeCubit.primaryColor
+                    : ColorConstants.lightGray.withOpacity(0.2),
+                textColor:_isEmailValid
+                    ? ColorConstants.black
+                    : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
                   if(widget.routeType == "number"){

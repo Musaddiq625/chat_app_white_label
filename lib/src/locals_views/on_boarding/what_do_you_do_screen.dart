@@ -21,6 +21,7 @@ class WhatDoYouDoScreen extends StatefulWidget {
 }
 
 class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
+  bool _isDiscriptionValid = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _secondNameController = TextEditingController();
@@ -93,17 +94,23 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                     fontSize: 30),
               ),
               maxLines: 5,
-              onChanged: (value) {
-                print(value);
-              },
+                onChanged: (value) {
+                  setState(() {
+                    _isDiscriptionValid=value.length >=4 && value.trim().isNotEmpty;
+                  });
+                }
             ),
           ],
         ),
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
-              bgcolor: ColorConstants.lightGray.withOpacity(0.2),
-              textColor: ColorConstants.lightGray,
+              bgcolor: _isDiscriptionValid
+                  ? themeCubit.primaryColor
+                  : ColorConstants.lightGray.withOpacity(0.2),
+              textColor:_isDiscriptionValid
+                  ? ColorConstants.black
+                  : ColorConstants.lightGray,
               buttonText: StringConstants.continues,
               onPressedFunction: () {
                 NavigationUtil.push(context, RouteConstants.genderScreen);
