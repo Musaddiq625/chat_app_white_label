@@ -10,6 +10,13 @@ class StringUtil {
     return base64UrlEncode(values);
   }
 
+  static String getFormattedTime(String time) {
+    if (time.length == 1) {
+      return time = '0$time';
+    }
+    return time;
+  }
+
   /// getLength('FirstSecondThird',length: 5,fromStart: true); //First
   /// getLength('FirstSecondThird',length: 5,fromEnd: true); // Third
   static String getLength(
