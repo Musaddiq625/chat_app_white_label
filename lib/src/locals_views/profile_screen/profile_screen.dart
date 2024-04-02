@@ -168,7 +168,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //   body: _profileWidget(),
     // );
     return UIScaffold(
-
       removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
@@ -238,7 +237,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         // Use a Container with a specific height or Flexible with FlexFit.loose
         // Here, I'm using a Container with a specific height as an example
         Container(
-          height: AppConstants.responsiveHeight(context,percentage:98), // Adjust this value as needed
+          height: AppConstants.responsiveHeight(context,
+              percentage: 98), // Adjust this value as needed
           child: Stack(
             children: [
               Column(
@@ -266,9 +266,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                 child: InkWell(
-                  onTap:()=> NavigationUtil.pop(context),
+                  onTap: () => NavigationUtil.pop(context),
                   child: IconComponent(
                     iconData: Icons.arrow_back_ios_new_outlined,
                     backgroundColor: ColorConstants.iconBg,
@@ -472,7 +473,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Text(
+              TextComponent(
                 "New to the city, keen to explore with new minded people and build my own network",
                 style: TextStyle(
                   fontSize: 15,
@@ -504,7 +505,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // circleSize: 30,
                     // circleHeight: 30,
                   ),
-                SizedBoxConstants.sizedBoxTenW(),
+                  SizedBoxConstants.sizedBoxTenW(),
                   ...tagList
                       .map((tag) =>
                           Row(mainAxisSize: MainAxisSize.min, children: [
@@ -623,7 +624,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    TextComponent(
                       "See all",
                       style: TextStyle(
                           color: ColorConstants.lightGray.withOpacity(0.8),
@@ -699,7 +700,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ],
                                       ),
                                     ),
-                                    Text(
+                                    TextComponent(
                                       "${event['joined']}${StringConstants.joined}",
                                       style: const TextStyle(
                                           fontSize: 13,
@@ -710,7 +711,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 10),
-                                child: Text(
+                                child: TextComponent(
                                   event['eventName'],
                                   style: const TextStyle(
                                       fontSize: 20,
@@ -724,7 +725,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 10),
-                                child: Text(
+                                child: TextComponent(
                                   event['dateTime'],
                                   style: const TextStyle(
                                       fontSize: 13, color: Colors.white),
@@ -784,7 +785,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.only(top: 10, right: 10),
                 child: Row(
                   children: [
-                    Text(
+                    TextComponent(
                       "See all",
                       style: TextStyle(
                           color: ColorConstants.lightGray.withOpacity(0.8),
@@ -860,7 +861,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ],
                                       ),
                                     ),
-                                    const Text(
+                                    const TextComponent(
                                       "+1456 ${StringConstants.joined}",
                                       style: TextStyle(
                                           fontSize: 13,
@@ -871,7 +872,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               const Padding(
                                 padding: EdgeInsets.only(left: 10),
-                                child: Text(
+                                child: TextComponent(
                                   "Property networking event",
                                   style: TextStyle(
                                       fontSize: 20,
@@ -885,7 +886,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               const Padding(
                                 padding: EdgeInsets.only(left: 10),
-                                child: Text(
+                                child: TextComponent(
                                   "17 Feb . 11AM - 2PM ",
                                   style: TextStyle(
                                       fontSize: 13, color: Colors.white),

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chat_app_white_label/src/screens/contacts/contacts_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -10,9 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
-import '../screens/agora_video_calling.dart';
-import '../../globals.dart';
-import '../../globals.dart';
 import '../../globals.dart';
 import '../constants/firebase_constants.dart';
 import '../constants/route_constants.dart';
@@ -20,7 +16,7 @@ import '../models/call_data_model.dart';
 import '../screens/agora_calling.dart';
 import '../screens/agora_group_calling.dart';
 import '../screens/agora_group_video_calling.dart';
-import 'package:http/http.dart' as http;
+import '../screens/agora_video_calling.dart';
 import 'firebase_utils.dart';
 import 'logger_util.dart';
 

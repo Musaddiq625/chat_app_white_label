@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -43,58 +44,64 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OTPCubit, OTPState>(listener: (context, state) async {
-      LoggerUtil.logs('login state: $state');
-      if (state is OTPLoadingState) {
-        LoadingDialog.showLoadingDialog(context);
-      } else if (state is OTPSuccessNewUserState) {
-        LoadingDialog.hideLoadingDialog(context);
-        if (widget.otpArg.type == "number") {
-          NavigationUtil.push(context, RouteConstants.nameScreen,
-              args: "OnBoarding");
-          // NavigationUtil.push(context, RouteConstants.signUpEmail,
-          //     args: "number");
-        } else if (widget.otpArg.type == "email") {
-          NavigationUtil.push(context, RouteConstants.signUpNumber);
-        } else if (widget.otpArg.type == "afterEmail") {
-          NavigationUtil.push(context, RouteConstants.nameScreen,
-              args: "OnBoarding");
-        } else if (widget.otpArg.type == "setPasswordBeforeNumber") {
-          NavigationUtil.push(context, RouteConstants.passwordScreen,
-              args: "phoneNumber");
-        } else if (widget.otpArg.type == "setPasswordAfterNumber") {
-          NavigationUtil.push(context, RouteConstants.passwordScreen,
-              args: "OnBoarding");
-        }
+    return BlocConsumer<OTPCubit, OTPState>(
+        listener: (context, state) async {
+          LoggerUtil.logs('login state: $state');
+          if (state is OTPLoadingState) {
+            LoadingDialog.showLoadingDialog(context);
+          } else if (state is OTPSuccessNewUserState) {
+            // if (state.fcmToken != null) {
+            //   await FirebaseUtils.addFcmToken(state.phoneNumber, state.fcmToken!);
+            // }
+            // LoadingDialog.hideLoadingDialog(context);
+            // NavigationUtil.push(context, RouteConstants.signUpEmail,
+            //     args: state.phoneNumber);
+            LoadingDialog.hideLoadingDialog(context);
+            if (widget.otpArg.type == "number") {
+              NavigationUtil.push(context, RouteConstants.nameScreen,
+                  args: "OnBoarding");
+              // NavigationUtil.push(context, RouteConstants.signUpEmail,
+              //     args: "number");
+            } else if (widget.otpArg.type == "email") {
+              NavigationUtil.push(context, RouteConstants.signUpNumber);
+            } else if (widget.otpArg.type == "afterEmail") {
+              NavigationUtil.push(context, RouteConstants.nameScreen,
+                  args: "OnBoarding");
+            } else if (widget.otpArg.type == "setPasswordBeforeNumber") {
+              NavigationUtil.push(context, RouteConstants.passwordScreen,
+                  args: "phoneNumber");
+            } else if (widget.otpArg.type == "setPasswordAfterNumber") {
+              NavigationUtil.push(context, RouteConstants.passwordScreen,
+                  args: "OnBoarding");
+            }
+          }
+          else if(state is OtpSuccessResendState){
+            LoadingDialog.hideLoadingDialog(context);
+            setState(() {
+              _counter = 15; // Reset the counter
+              startTimer(); // Restart the timer
+            });
+          }
+          else if (state is OTPSuccessOldUserState) {
 
-        // if (state.fcmToken != null) {
-        //   await FirebaseUtils.addFcmToken(state.phoneNumber, state.fcmToken!);
-        // }
-        // LoadingDialog.hideLoadingDialog(context);
-        // NavigationUtil.push(context, RouteConstants.signUpEmail,
-        //     args: state.phoneNumber);
-      } else if (state is OtpSuccessResendState) {
-        LoadingDialog.hideLoadingDialog(context);
-        setState(() {
-          _counter = 15; // Reset the counter
-          startTimer(); // Restart the timer
-        });
-      } else if (state is OTPSuccessOldUserState) {
-        NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
-      } else if (state is OTPFailureState) {
-        LoadingDialog.hideLoadingDialog(context);
-        // ToastComponent.showToast(state.error.toString(), context: context);
-        ToastComponent.showToast("Invalid Otp", context: context);
-      } else if (state is OTPCancleState) {
-        LoadingDialog.hideLoadingDialog(context);
-      }
-    }, builder: (context, state) {
-      return UIScaffold(
-          appBar: AppBarComponent(""),
-          removeSafeAreaPadding: false,
-          bgColor: themeCubit.backgroundColor,
-          widget: enterOtp());
-    });
+            NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
+          } else if (state is OTPFailureState) {
+            LoadingDialog.hideLoadingDialog(context);
+            // ToastComponent.showToast(state.error.toString(), context: context);
+            ToastComponent.showToast("Invalid Otp", context: context);
+
+          } else if (state is OTPCancleState) {
+            LoadingDialog.hideLoadingDialog(context);
+          }
+        },
+        builder: (context, state) {
+          return UIScaffold(
+              appBar: AppBarComponent(""),
+              removeSafeAreaPadding: false,
+              bgColor: themeCubit.backgroundColor,
+              widget: enterOtp());
+        }
+    );
   }
 
   @override
@@ -163,7 +170,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     alignment: Alignment.center,
                     child: CustomTextField(
                       hintText: '000000',
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                           color: ColorConstants.lightGray,
                           fontFamily: FontConstants.fontProtestStrike,
                           fontSize: 30),
@@ -173,7 +180,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               value.length == 6 && value.trim().isNotEmpty;
                         });
                       },
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: ColorConstants.white,
                           fontFamily: FontConstants.fontProtestStrike,
                           fontSize: 30),
@@ -190,7 +197,7 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               if (_counter > 0)
                 TextComponent(
-                    '${StringConstants.didntReciveCode}  ${_counter > 0 ? _counter : ""}',
+                    '${StringConstants.didntReciveCode} ${_counter > 0 ? StringUtil.getFormattedTime(_counter.toString()) : ""}',
                     style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -275,6 +282,7 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 }
+
 
 class OtpArg {
   final String verificationId;

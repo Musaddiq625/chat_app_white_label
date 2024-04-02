@@ -19,9 +19,9 @@ class SizedBoxConstants {
 
   static SizedBox sizedBoxEightW() => SizedBox(width: 8);
 
-  static SizedBox sizedBoxTenH() => SizedBox(height:10);
+  static SizedBox sizedBoxTenH() => SizedBox(height: 10);
 
-  static SizedBox sizedBoxTenW() => SizedBox(width:10);
+  static SizedBox sizedBoxTenW() => SizedBox(width: 10);
 
   static SizedBox sizedBoxTwelveH() => SizedBox(height: 12);
 
