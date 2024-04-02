@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app_white_label/src/components/back_button_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class AppBarComponent extends StatelessWidget {
               children: [
                 Expanded(
                   child: Center(
-                    child: Text(
+                    child: TextComponent(
                       text!,
                       textAlign: TextAlign.center,
                       maxLines: 3,
@@ -83,7 +84,7 @@ class AppBarComponent extends StatelessWidget {
                 ),
                 if (subtitleText != null)
                   Expanded(
-                    child: Text(
+                    child: TextComponent(
                       subtitleText!,
                       // style: FontStyles.font15(),
                     ),

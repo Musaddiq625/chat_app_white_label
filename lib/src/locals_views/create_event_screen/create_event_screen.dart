@@ -118,8 +118,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           setStateBottomSheet(() => selectedIndexPrice = containerIndex),
       child: Container(
         width: 100,
-        margin: EdgeInsets.symmetric(horizontal: 8),
-        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 25),
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 25),
         decoration: BoxDecoration(
           color: selectedIndexPrice == containerIndex
               ? themeCubit.primaryColor
@@ -161,10 +161,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       iconColor: ColorConstants.lightGray,
                     ),
                   )),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
-                  Text(
+                  TextComponent(
                     StringConstants.createEvent,
                     style: TextStyle(
                         fontFamily: FontConstants.fontProtestStrike,
@@ -182,7 +182,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   Stack(
                     children: [
                       Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(30.0)),
                           image: DecorationImage(
                             image: NetworkImage(
@@ -210,18 +210,18 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         .withOpacity(0.5),
                                     iconColor: ColorConstants.white,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                  Text(
-                                    "Edit Cover",
+                                  const TextComponent(
+                                    StringConstants.editCover,
                                     style: TextStyle(
                                         color: ColorConstants.white,
                                         fontSize: 15),
                                   )
                                 ],
                               ),
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.only(left: 20),
                                 child: TextComponent(
                                   "xyz Event",
@@ -242,7 +242,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
+                    child: TextComponent(
                       StringConstants.eventDetail,
                       style: TextStyle(
                           fontFamily: FontConstants.fontProtestStrike,
@@ -250,13 +250,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           color: themeCubit.primaryColor),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 13,
                   ),
                   Container(
                     width: AppConstants.responsiveWidth(context),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0)),
                       color: themeCubit.darkBackgroundColor,
                     ),
                     child: Padding(
@@ -270,7 +271,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 height: 20,
                                 AssetConstants.calendar,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 20,
                               ),
                               TextComponent(
@@ -278,8 +279,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 style: TextStyle(
                                     fontSize: 15, color: themeCubit.textColor),
                               ),
-                              Spacer(),
-                              Text(
+                              const Spacer(),
+                              TextComponent(
                                 "17 Feb at 11 am",
                                 style: TextStyle(
                                     fontSize: 15,
@@ -288,7 +289,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
@@ -351,16 +352,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               //   backgroundColor: ColorConstants.transparent,
                               //   borderColor: ColorConstants.transparent,
                               // ),
-                              Spacer(),
+                              const Spacer(),
                               SizedBox(
                                   width: AppConstants.responsiveWidth(context) /
                                       1.5,
-                                  child: Divider(
+                                  child: const Divider(
                                     thickness: 0.1,
                                   ))
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Row(
@@ -370,16 +371,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 height: 20,
                                 AssetConstants.end,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 20,
                               ),
-                              Text(
+                              TextComponent(
                                 StringConstants.end,
                                 style: TextStyle(
                                     fontSize: 15, color: themeCubit.textColor),
                               ),
-                              Spacer(),
-                              Text(
+                              const Spacer(),
+                              TextComponent(
                                 "2 pm",
                                 style: TextStyle(
                                     fontSize: 15,
@@ -392,7 +393,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   CreateEventTileComponent(
@@ -402,7 +403,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     onTap: _selectLocation,
                     subTextColor: themeCubit.textColor,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   CreateEventTileComponent(
@@ -412,7 +413,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     onTap: _selectPrice,
                     subTextColor: themeCubit.textColor,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   CreateEventTileComponent(
@@ -425,7 +426,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
+                    child: TextComponent(
                       StringConstants.eventDescription,
                       style: TextStyle(
                           fontFamily: FontConstants.fontProtestStrike,
@@ -447,16 +448,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           borderSide: const BorderSide(
                             color: ColorConstants.transparent,
                           )),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                           color: ColorConstants.lightGray, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: ColorConstants.transparent)),
+                          borderSide: const BorderSide(
+                              color: ColorConstants.transparent)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(23.0),
-                          borderSide:
-                              BorderSide(color: ColorConstants.transparent)),
+                          borderSide: const BorderSide(
+                              color: ColorConstants.transparent)),
                       // suffixIcon: IconButton(
                       //   icon: Icon(Icons.send),
                       //   onPressed: _sendMessage,
@@ -466,7 +467,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
+                    child: TextComponent(
                       StringConstants.otherOptions,
                       style: TextStyle(
                           fontFamily: FontConstants.fontProtestStrike,
@@ -474,7 +475,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           color: themeCubit.primaryColor),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   CreateEventTileComponent(
@@ -484,13 +485,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     onTap: () {},
                     subTextColor: themeCubit.textColor,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
                     width: AppConstants.responsiveWidth(context),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0)),
                       color: themeCubit.darkBackgroundColor,
                     ),
                     child: Padding(
@@ -505,7 +507,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 height: 25,
                                 AssetConstants.ticket,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 20,
                               ),
                               Expanded(
@@ -519,7 +521,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                             fontSize: 15,
                                             color: themeCubit.textColor)),
                                     Container(
-                                      child: Text(
+                                      child: const TextComponent(
                                           StringConstants
                                               .requireGuestsApprovalBody,
                                           style: TextStyle(
@@ -530,7 +532,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   ],
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Switch(
                                 // This bool value toggles the switch.
                                 value: requireGuest,
@@ -549,13 +551,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
                     width: AppConstants.responsiveWidth(context),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20.0)),
                       color: themeCubit.darkBackgroundColor,
                     ),
                     child: Padding(
@@ -571,7 +574,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 height: 25,
                                 AssetConstants.ticket,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 20,
                               ),
                               Expanded(
@@ -579,14 +582,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    TextComponent(
                                       StringConstants.askQuestionWhenPeopleJoin,
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: themeCubit.textColor),
                                     ),
                                     Container(
-                                      child: Text(
+                                      child: const TextComponent(
                                           StringConstants
                                               .askQuestionWhenPeopleJoinBody,
                                           style: TextStyle(
@@ -603,7 +606,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                 fontSize: 15,
                                                 color: themeCubit.textColor),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 5,
                                           ),
                                           IconComponent(
@@ -622,7 +625,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   ],
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Switch(
                                 // This bool value toggles the switch.
                                 value: askQuestion,
@@ -673,7 +676,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,
-      body: InfoSheetComponent(
+      body: const InfoSheetComponent(
         heading: StringConstants.eventCreatedSuccessfully,
         image: AssetConstants.confetti,
       ),
@@ -690,7 +693,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         body: StatefulBuilder(builder: (context, setState) {
       return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             color: themeCubit.darkBackgroundColor,
           ),
@@ -720,7 +723,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 SearchTextField(
@@ -731,7 +734,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   },
                   textEditingController: searchController,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
@@ -746,7 +749,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         maxLines: 4,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Switch(
                       // This bool value toggles the switch.
                       value: locationVisible,
@@ -761,10 +764,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     ),
                   ],
                 ),
-                Divider(
+                const Divider(
                   thickness: 1,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
               ],
@@ -779,7 +782,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         isShowHeader: false,
         body: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0)),
             color: themeCubit.darkBackgroundColor,
@@ -818,8 +821,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ),
                   Container(
                     width: 300,
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: TextComponent(
                       StringConstants.eventCreatedSuccessfully,
                       style: TextStyle(
                           fontSize: 20,
@@ -833,14 +836,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ),
                   Container(
                     width: 300,
-                    child: Text(
+                    child: TextComponent(
                       StringConstants.inviteYourFriend,
                       style:
                           TextStyle(fontSize: 15, color: themeCubit.textColor),
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   )
                 ],
@@ -891,15 +894,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               const SizedBox(
                 height: 5,
               ),
-              Divider(
+              const Divider(
                 thickness: 0.1,
               ),
               const SizedBox(
                 height: 5,
               ),
               Padding(
-                padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 5),
-                child: Text(
+                padding: const EdgeInsets.only(left: 18.0, top: 10, bottom: 5),
+                child: TextComponent(
                   StringConstants.yourConnections,
                   style: TextStyle(
                       color: themeCubit.primaryColor,
@@ -908,8 +911,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ),
               ),
               Padding(
-                padding:
-                    EdgeInsets.only(left: 18.0, top: 10, bottom: 16, right: 18),
+                padding: const EdgeInsets.only(
+                    left: 18.0, top: 10, bottom: 16, right: 18),
                 child: SearchTextField(
                   title: "Search",
                   hintText: "Search name, postcode..",
@@ -978,7 +981,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               children: [
                 InkWell(
                     onTap: () => Navigator.pop(context),
-                    child: const Text(StringConstants.goBack)),
+                    child: const TextComponent(StringConstants.goBack)),
                 const SizedBox(width: 30),
                 ButtonComponent(
                   buttonText: "Yes, share it",
@@ -1045,7 +1048,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,
-      body: InfoSheetComponent(
+      body: const InfoSheetComponent(
         heading: StringConstants.eventShared,
         image: AssetConstants.group,
       ),
@@ -1067,7 +1070,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         body: StatefulBuilder(builder: (context, setState) {
       return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             color: themeCubit.darkBackgroundColor,
           ),
@@ -1101,7 +1104,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     ),
                     SizedBoxConstants.sizedBoxTwentyH(),
                     _buildRow(0, setState),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     _buildRow(1, setState),
                     // Container(
                     //   child: Row(
@@ -1243,7 +1246,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 thickness: 0.1,
               ),
               Padding(
@@ -1256,16 +1259,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           TextStyle(fontSize: 15, color: themeCubit.textColor),
                       maxLines: 5,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     TextField(
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: ColorConstants.white,
                       ),
                       controller: _controller,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 15.0),
                         hintText: "£",
                         filled: true,
@@ -1273,26 +1276,26 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             ColorConstants.backgroundColor.withOpacity(0.3),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                               color: ColorConstants.transparent,
                             )),
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                             color: ColorConstants.lightGray, fontSize: 14),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
-                            borderSide:
-                                BorderSide(color: ColorConstants.transparent)),
+                            borderSide: const BorderSide(
+                                color: ColorConstants.transparent)),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
-                            borderSide:
-                                BorderSide(color: ColorConstants.transparent)),
+                            borderSide: const BorderSide(
+                                color: ColorConstants.transparent)),
                         // suffixIcon: IconButton(
                         //   icon: Icon(Icons.send),
                         //   onPressed: _sendMessage,
                         // ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 100,
                     ),
                     Container(
@@ -1322,7 +1325,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         isShowHeader: false,
         body: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(20), topLeft: Radius.circular(20)),
               color: themeCubit.darkBackgroundColor,
             ),
@@ -1353,7 +1356,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   TextComponent(
@@ -1361,50 +1364,50 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     style: TextStyle(color: themeCubit.textColor),
                     maxLines: 5,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   TextComponent(
                     StringConstants.participants,
                     style: TextStyle(color: themeCubit.textColor),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   TextField(
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: ColorConstants.white,
                     ),
                     controller: _controller,
                     decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 15.0),
                       hintText: "Unlimited",
                       filled: true,
                       fillColor:
                           ColorConstants.backgroundColor.withOpacity(0.3),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: ColorConstants.transparent,
                           )),
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                           color: ColorConstants.lightGray, fontSize: 14),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                              BorderSide(color: ColorConstants.transparent)),
+                          borderSide: const BorderSide(
+                              color: ColorConstants.transparent)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
-                          borderSide:
-                              BorderSide(color: ColorConstants.transparent)),
+                          borderSide: const BorderSide(
+                              color: ColorConstants.transparent)),
                       // suffixIcon: IconButton(
                       //   icon: Icon(Icons.send),
                       //   onPressed: _sendMessage,
                       // ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 100,
                   ),
                   Container(
@@ -1429,7 +1432,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         takeFullHeightWhenPossible: false, isShowHeader: false,
         body: StatefulBuilder(builder: (context, setState) {
       return Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
           ),
@@ -1441,7 +1444,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    TextComponent(
                       StringConstants.questions,
                       style: TextStyle(
                           color: ColorConstants.primaryColor,
@@ -1460,7 +1463,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 TextComponent(
@@ -1468,7 +1471,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   maxLines: 2,
                   style: TextStyle(color: themeCubit.textColor),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 question(setState),
@@ -1478,7 +1481,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     ButtonWithIconComponent(
                       btnText: '  ${StringConstants.addQuestion}',
                       icon: Icons.add_circle,
-                      btnTextStyle: TextStyle(
+                      btnTextStyle: const TextStyle(
                           color: ColorConstants.black,
                           fontWeight: FontWeight.bold),
                       onPressed: () {
@@ -1517,12 +1520,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       onReorder: (int oldIndex, int newIndex) {
         setStateBottomSheet(() {
           print('Reordering: $oldIndex -> $newIndex');
-          print ("item  ${questions}");
+          print("item  ${questions}");
           final String item = questions.removeAt(oldIndex);
           questions.insert(newIndex, item);
 
           final TextEditingController controller =
-          _questionControllers.removeAt(oldIndex);
+              _questionControllers.removeAt(oldIndex);
           _questionControllers.insert(newIndex, controller);
           print('Reordering After reordering: $questions');
         });
@@ -1537,7 +1540,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   questions[index],
                   style: TextStyle(color: themeCubit.textColor),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 GestureDetector(
@@ -1559,7 +1562,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Container(
@@ -1579,25 +1582,25 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         controller: _questionControllers[index],
                         style: TextStyle(color: themeCubit.textColor),
                         decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                               vertical: 8.0, horizontal: 15.0),
                           hintText: StringConstants.typeYourQuestion,
                           filled: true,
                           fillColor: ColorConstants.transparent,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.0),
-                            borderSide:
-                                BorderSide(color: ColorConstants.transparent),
+                            borderSide: const BorderSide(
+                                color: ColorConstants.transparent),
                           ),
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                               color: ColorConstants.lightGray, fontSize: 14),
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: ColorConstants.transparent)),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                   color: ColorConstants.transparent)),
                         ),
                       ),
@@ -1610,7 +1613,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       });
                     },
                     child: Padding(
-                        padding: EdgeInsets.only(right: 20),
+                        padding: const EdgeInsets.only(right: 20),
                         child: IconComponent(
                           iconData: Icons.menu,
                           borderColor: ColorConstants.transparent,
@@ -1655,7 +1658,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   });
                                 }
                               },
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                               activeColor: ColorConstants.primaryColor,
                               checkColor: Colors.black,
                             ),
@@ -1663,12 +1666,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               "Required",
                               style: TextStyle(color: themeCubit.textColor),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             )
                           ],
                         ),
-                        Divider(
+                        const Divider(
                           thickness: 0.1,
                         ),
                         Row(
@@ -1682,7 +1685,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   });
                                 }
                               },
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                               activeColor: ColorConstants.primaryColor,
                               checkColor: Colors.black,
                             ),
@@ -1690,7 +1693,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               "Optional",
                               style: TextStyle(color: themeCubit.textColor),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             )
                           ],
@@ -1709,14 +1712,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           },
                           child: TextComponent(
                             _selectedQuestionRequired,
-                            style: TextStyle(color: ColorConstants.lightGray),
+                            style: const TextStyle(
+                                color: ColorConstants.lightGray),
                           ),
                         );
                       },
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 IconComponent(
@@ -1731,7 +1735,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     MenuAnchor(
-                      alignmentOffset: Offset(-250, 0),
+                      alignmentOffset: const Offset(-250, 0),
                       style: MenuStyle(
                         backgroundColor: MaterialStatePropertyAll<Color>(
                             themeCubit.backgroundColor),
@@ -1749,7 +1753,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   });
                                 }
                               },
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                               activeColor: ColorConstants.primaryColor,
                               checkColor: Colors.black,
                             ),
@@ -1761,18 +1765,18 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   'Public',
                                   style: TextStyle(color: themeCubit.textColor),
                                 ),
-                                Text(
+                                TextComponent(
                                   'Responses can be seen by everyone',
                                   style: TextStyle(color: themeCubit.textColor),
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             )
                           ],
                         ),
-                        Divider(
+                        const Divider(
                           thickness: 0.1,
                         ),
                         Row(
@@ -1786,7 +1790,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   });
                                 }
                               },
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                               activeColor: ColorConstants.primaryColor,
                               checkColor: Colors.black,
                             ),
@@ -1803,7 +1807,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             )
                           ],
@@ -1824,8 +1828,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             children: [
                               TextComponent(
                                 _selectedQuestionPublic,
-                                style:
-                                    TextStyle(color: ColorConstants.lightGray),
+                                style: const TextStyle(
+                                    color: ColorConstants.lightGray),
                               ),
                             ],
                           ),
@@ -2060,7 +2064,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 //                                 style:
 //                                     TextStyle(color: themeCubit.textColor),
 //                               ),
-//                               Text(
+//                               TextComponent(
 //                                 'Responses can be seen by everyone',
 //                                 style:
 //                                     TextStyle(color: themeCubit.textColor),

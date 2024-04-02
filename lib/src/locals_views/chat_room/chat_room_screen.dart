@@ -307,7 +307,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          TextComponent(
                             StringConstants.addPeople,
                             style: TextStyle(
                                 color: themeCubit.primaryColor,
