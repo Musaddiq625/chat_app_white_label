@@ -93,13 +93,13 @@ class ValidationService {
   static String? validateConfirmPassword({
     required String? password,
     required String? confirmPass,
-    required String? fieldName,
-    required String? confirmPasswordMessage,
+    String fieldName = StringConstants.confirmPassword,
+    String confirmPasswordMessage = StringConstants.passwordDoesNotMatch,
   }) {
     if (password!.isEmpty) {
       return '${StringConstants.errorPleaseEnterYour} $fieldName';
     } else if (confirmPass != password) {
-      return confirmPasswordMessage!;
+      return confirmPasswordMessage;
     } else {
       return null;
     }

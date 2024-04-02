@@ -145,13 +145,14 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                         _phoneNumbercontroller,
                         keyboardType: TextInputType.phone,
                         hintText: StringConstants.phoneTextFieldHint,
-                        validator: (p0) => ValidationService.validatePhone(
-                            _phoneNumbercontroller.text,
+                        validator: (phone) => ValidationService.validatePhone(
+                            phone!,
                             fieldName: StringConstants.phoneNumber),
                         onChanged: (value) {
                           setState(() {
-                            _phoneNumberValid =
-                                value.length >= 10 && value.trim().isNotEmpty;
+                            _phoneNumberValid = value.length >= 10 &&
+                                value.trim().isNotEmpty &&
+                                _formKey.currentState!.validate();
                           });
                         },
                       ),
@@ -208,6 +209,8 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                             context, RouteConstants.otpScreenLocal,
                             args: OtpArg("", "", "", "number"));
                       }
+                    } else {
+                      return null;
                     }
                   }),
             )

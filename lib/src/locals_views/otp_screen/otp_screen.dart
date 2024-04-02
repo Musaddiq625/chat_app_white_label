@@ -203,20 +203,26 @@ class _OtpScreenState extends State<OtpScreen> {
                     : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
-                  if (widget.otpArg?.type == "number") {
-                    NavigationUtil.push(context, RouteConstants.signUpEmail,
-                        args: "number");
-                  } else if (widget.otpArg?.type == "email") {
-                    NavigationUtil.push(context, RouteConstants.signUpNumber);
-                  } else if (widget.otpArg?.type == "afterEmail") {
-                    NavigationUtil.push(context, RouteConstants.nameScreen,
-                        args: "OnBoarding");
-                  } else if (widget.otpArg?.type == "setPasswordBeforeNumber") {
-                    NavigationUtil.push(context, RouteConstants.passwordScreen,
-                        args: "phoneNumber");
-                  } else if (widget.otpArg?.type == "setPasswordAfterNumber") {
-                    NavigationUtil.push(context, RouteConstants.passwordScreen,
-                        args: "OnBoarding");
+                  if (_isOtpValid) {
+                    if (widget.otpArg?.type == "number") {
+                      NavigationUtil.push(context, RouteConstants.signUpEmail,
+                          args: "number");
+                    } else if (widget.otpArg?.type == "email") {
+                      NavigationUtil.push(context, RouteConstants.signUpNumber);
+                    } else if (widget.otpArg?.type == "afterEmail") {
+                      NavigationUtil.push(context, RouteConstants.nameScreen,
+                          args: "OnBoarding");
+                    } else if (widget.otpArg?.type ==
+                        "setPasswordBeforeNumber") {
+                      NavigationUtil.push(
+                          context, RouteConstants.passwordScreen,
+                          args: "phoneNumber");
+                    } else if (widget.otpArg?.type ==
+                        "setPasswordAfterNumber") {
+                      NavigationUtil.push(
+                          context, RouteConstants.passwordScreen,
+                          args: "OnBoarding");
+                    }
                   }
                 }),
           )

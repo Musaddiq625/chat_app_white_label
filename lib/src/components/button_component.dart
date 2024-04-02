@@ -15,15 +15,13 @@ class ButtonComponent extends StatelessWidget {
       required this.onPressedFunction,
       this.bgcolor = ColorConstants.bgcolorbutton,
       this.textSize = 15,
-      this.textColor=ColorConstants.black ,
+      this.textColor = ColorConstants.black,
       this.horizontalLength = 25});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () async {
-          await onPressedFunction();
-        },
+        onPressed: () => onPressedFunction(),
         style: ElevatedButton.styleFrom(
             foregroundColor: textColor,
             backgroundColor: bgcolor,

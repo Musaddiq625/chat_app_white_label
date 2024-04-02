@@ -2,7 +2,7 @@ class StringConstants {
   static const String errSomethingWentWrong = 'Something Went Wrong';
   static const String locals = "Locals";
   static const String joined = "Joined";
-  static const String phoneNumber = "phone number?";
+  static const String phoneNumber = "phone number";
   static const String whatsYourPhoneNumber = "What's your\nphone number?";
   static const String whatsYourEmailAddress = "What's your\nemail address?";
   static const String letsPutAFace = "Let's put a face to\nthe name!";
@@ -186,6 +186,7 @@ class StringConstants {
   static const String editCover = "Edit Cover";
   static const String characters = "characters";
   static const String phoneTextFieldHint = "1234 123456";
+  static const String passwordDoesNotMatch = "Password Does not match";
   static const String errorInvalidEmail = "Invalid email format";
   static const String errorMinLengthPassword =
       "Password length should not be less than 8 characters";
