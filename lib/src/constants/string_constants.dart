@@ -5,18 +5,20 @@ class StringConstants {
   static const String phoneNumber = "phone number?";
   static const String whatsYourPhoneNumber = "What's your\nphone number?";
   static const String whatsYourEmailAddress = "What's your\nemail address?";
-  static const String letsPutAFace= "Let's put a face to\nthe name!";
-  static const String selectYourPicture= "Select your\nprofile photo";
-  static const String whensYouDob= "When is your\nbirthday?";
-  static const String whatDoYouDo= "What do you do\nfor living?";
+  static const String letsPutAFace = "Let's put a face to\nthe name!";
+  static const String selectYourPicture = "Select your\nprofile photo";
+  static const String whensYouDob = "When is your\nbirthday?";
+  static const String whatDoYouDo = "What do you do\nfor living?";
   static const String whatsYourName = "What's your\nname?";
   static const String howDoYouIdentify = "How do you\nidentify?";
   static const String tellUsABitAboutYourSelf = "Tell us a bit\nabout yourself";
   static const String whatsYourInterest = "What's your\ninterest?";
   static const String haveFunExlporing = "Have fun\nexploring!";
-  static const String letsGetYouStarted = "Let's get you started and finds events.";
+  static const String letsGetYouStarted =
+      "Let's get you started and finds events.";
   static const String whatDoYouDoHintText = "Project Manager at ABC agency";
-  static const String whenYouJoinYoureInTheGame = "When you join, you're in the game!\n Chat's open and ready for you";
+  static const String whenYouJoinYoureInTheGame =
+      "When you join, you're in the game!\n Chat's open and ready for you";
   static const String firstName = "First Name";
   static const String lastName = "Last Name";
   static const String password = "Password";
@@ -60,7 +62,8 @@ class StringConstants {
   static const String smoking = "Smoking";
   static const String drinking = "Drinking";
   static const String moreAboutYou = "More about you";
-  static const String bioHint = "Tell the world what you like, why you're here or anything about yourself ";
+  static const String bioHint =
+      "Tell the world what you like, why you're here or anything about yourself ";
   static const String showLessLikeThis = "Show less like this";
   static const String reportEvent = "Report event";
   static const String shareEvent = "Share event";
@@ -99,10 +102,13 @@ class StringConstants {
   static const String bio = "Bio";
   static const String hobbiesAndInterests = "Hobbies / interests";
   static const String creativity = "Creativity";
-  static const String verificationCodeSent = "Verification code will be sent on this number.";
- static const String requiredPictures = "At least 2 pictures are required";
-  static const String alsoDoThisLaterInProfile = "You can also do this later in your profile section.";
-  static const String pickUp4Things = "Pick up to 4  things you like. This will help us get the right events for you";
+  static const String verificationCodeSent =
+      "Verification code will be sent on this number.";
+  static const String requiredPictures = "At least 2 pictures are required";
+  static const String alsoDoThisLaterInProfile =
+      "You can also do this later in your profile section.";
+  static const String pickUp4Things =
+      "Pick up to 4  things you like. This will help us get the right events for you";
   static const String scrollLeft = "Scroll left to set other image.";
   static const String chooseAnyOfTheUplodedImages =
       "You can choose any of the uploaded images to be your profile picture. Make sure your face is visible";
@@ -116,8 +122,10 @@ class StringConstants {
   static const String pricing = "Pricing";
   static const String yourConnections = "Your Connections";
   static const String fireWorks = "FireWorks";
-  static const String areYouSureYouwantToShare = "Are you sure you want to share \nEvent ";
-  static const String areYouSureYouwantToExit = "Are you sure you want to exit \nYour event will be deleted ";
+  static const String areYouSureYouwantToShare =
+      "Are you sure you want to share \nEvent ";
+  static const String areYouSureYouwantToExit =
+      "Are you sure you want to exit \nYour event will be deleted ";
   static const String goBack = "Go back";
   static const String yesExit = "Yes, please exit";
   static const String eventShared = "Event Shared !";
@@ -150,7 +158,8 @@ class StringConstants {
   static const String requestStatus =
       "You will be notifiy when your request is accepted";
   static const String typeYourMessage = "Type your message here...";
-  static const String typeYourDescription = "Provide a brief description about the event here";
+  static const String typeYourDescription =
+      "Provide a brief description about the event here";
   static const String doYouHaveQuestion =
       "Do you have questions or comments for the creator? Feel free to leave them here. This message is private.";
 
@@ -174,4 +183,22 @@ class StringConstants {
   static const String renameGroup = 'Rename Group';
   static const String addPeople = "Add People";
   static const String addPeopleToGroup = "Add People to Group";
+  static const String editCover = "Edit Cover";
+  static const String characters = "characters";
+  static const String phoneTextFieldHint = "1234 123456";
+  static const String errorInvalidEmail = "Invalid email format";
+  static const String errorMinLengthPassword =
+      "Password length should not be less than 8 characters";
+  static const String errorThisFieldCantBeEmpty = "This field can't be empty";
+  static const String errorPleaseEnterYour = "Please enter your";
+  static const String errorInvalidPhone = "Invalid phone format";
+  static const String pleaseEnterAtLeast = "Please enter at least";
+  static const String errorNameShouldContainOnlyAlphabets =
+      "Name should contain only alphabets";
+  static const String errorLengthTenError =
+      "Field should contain 10 characters";
+  static const String errorInvalidPasswordFormat =
+      "Password should contains atleast 1 capital letter and a special character. Example: locals@123";
+  static const String errorEmailLengthShouldBeSixtyCharactersOrLess =
+      'errorEmailLengthShouldBeSixtyCharactersOrLess';
 }
