@@ -185,34 +185,34 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                       : ColorConstants.lightGray,
                   buttonText: StringConstants.continues,
                   onPressedFunction: () {
-                    // if (_phoneNumbercontroller.text.isEmpty ||
-                    //     _phoneNumbercontroller.text.length < 10) {
-                    //   Fluttertoast.showToast(
-                    //       msg: "Please enter a valid phone number",
-                    //       toastLength: Toast.LENGTH_SHORT,
-                    //       gravity: ToastGravity.BOTTOM,
-                    //       timeInSecForIosWeb: 1,
-                    //       backgroundColor: Colors.red,
-                    //       textColor: Colors.white,
-                    //       fontSize: 16.0);
-                    //   return;
-                    // }
-                    // signUpCubit.loginUsers(_countryCodeController.text +
-                    //     _phoneNumbercontroller.text);
-
-                    if (_formKey.currentState!.validate()) {
-                      if (widget.routeType == "afterEmail") {
-                        NavigationUtil.push(
-                            context, RouteConstants.otpScreenLocal,
-                            args: OtpArg("", "", "", "afterEmail"));
-                      } else {
-                        NavigationUtil.push(
-                            context, RouteConstants.otpScreenLocal,
-                            args: OtpArg("", "", "", "number"));
-                      }
-                    } else {
-                      return null;
+                    if (_phoneNumbercontroller.text.isEmpty ||
+                        _phoneNumbercontroller.text.length < 10) {
+                      Fluttertoast.showToast(
+                          msg: "Please enter a valid phone number",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                      return;
                     }
+                    signUpCubit.loginUsers(_countryCodeController.text +
+                        _phoneNumbercontroller.text);
+
+                    // if (_formKey.currentState!.validate()) {
+                    //   if (widget.routeType == "afterEmail") {
+                    //     NavigationUtil.push(
+                    //         context, RouteConstants.otpScreenLocal,
+                    //         args: OtpArg("", "", "", "afterEmail"));
+                    //   } else {
+                    //     NavigationUtil.push(
+                    //         context, RouteConstants.otpScreenLocal,
+                    //         args: OtpArg("", "", "", "number"));
+                    //   }
+                    // } else {
+                    //   return null;
+                    // }
                   }),
             )
           ],

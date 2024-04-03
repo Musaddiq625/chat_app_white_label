@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/models/social_link_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -17,7 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-import '../models/MoreAboutMe.dart';
+import '../models/more_about_me_model.dart';
 
 class FirebaseUtils {
   static FirebaseService firebaseService = getIt<FirebaseService>();
@@ -85,26 +86,27 @@ class FirebaseUtils {
   }
 
 
-  static Future<void> updateUserStepOne(String firstName,String lastName,List<String> userImages, String profileImage) async {
+  static Future<void> updateUserStepOne(String? firstName,String? lastName,List<String>? userImages, String? profileImage) async {
     final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
       'first_name': firstName,
       'last_name': lastName,
-      'user_images': FieldValue.arrayUnion(userImages),
+      'user_images':userImages,
       'profile_image':profileImage,
     },SetOptions(merge: true));
     LoggerUtil.logs('Updated User Step 1');
   }
 
 
-  static Future<void> updateUserStepTwo(String dob,String aboutMe,String gender,String bio,MoreAboutMe moreAboutMe,List<String>  hobbies,List<String> creativity) async {
+  static Future<void> updateUserStepTwo(String? dob,String? aboutMe,String? gender,String? bio,MoreAboutMe? moreAboutMe,SocialLinkModel? socialLinkModel,List<String>?  hobbies,List<String>? creativity) async {
     final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
-      'date_of_birth': dob,
+      'date_of_birth': dob ,
       'about_me': aboutMe,
       'gender': gender,
       'bio': bio,
-      'more_about_me': moreAboutMe.toJson(),
+      'social_links': socialLinkModel?.toJson(),
+      'more_about_me': moreAboutMe?.toJson(),
       'hobbies':hobbies,
       'creativity':creativity,
     },SetOptions(merge: true));
