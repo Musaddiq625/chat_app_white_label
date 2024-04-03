@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget getStarted() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,27 +111,27 @@ class _SplashScreenState extends State<SplashScreen> {
                 // top: 130,
                 // left: 220,
                 child: Container(
-                  width: 300,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    // gradient: LinearGradient(colors: [
-                    //   Color(0xff7c7c7c),
-                    //   Color(0xff1c1c1c),
-                    //   // Color(0xff9b9b9b),
-                    //   // Color(0xff9b9b9b),
-                    //   // Color(0xff9b9b9b),
-                    // ]),
-                    color: ColorConstants.blackLight,
-                  ),
-                )),
+              width: 300,
+              height: 300,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                // gradient: LinearGradient(colors: [
+                //   Color(0xff7c7c7c),
+                //   Color(0xff1c1c1c),
+                //   // Color(0xff9b9b9b),
+                //   // Color(0xff9b9b9b),
+                //   // Color(0xff9b9b9b),
+                // ]),
+                color: ColorConstants.blackLight,
+              ),
+            )),
             Center(
               child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
+                borderRadius: const BorderRadius.all(Radius.circular(25)),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20)),
@@ -142,7 +142,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         TextComponent(
@@ -152,21 +152,21 @@ class _SplashScreenState extends State<SplashScreen> {
                               fontFamily: FontConstants.fontProtestStrike,
                               fontSize: 18),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
-                        TextComponent(
+                        const TextComponent(
                           StringConstants.connectWithPeople,
                           style: TextStyle(
                               color: ColorConstants.lightGray, fontSize: 15),
                         ),
-                        TextComponent(
+                        const TextComponent(
                           StringConstants.registerCreateManageEvents,
                           style: TextStyle(
                               color: ColorConstants.lightGray, fontSize: 15),
                           maxLines: 6,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Container(
@@ -174,7 +174,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             gradient: LinearGradient(
                               colors: [
                                 ColorConstants.btnGradientColor,
-                                Color.fromARGB(255, 220, 210, 210)
+                                const Color.fromARGB(255, 220, 210, 210)
                               ],
                             ),
                             borderRadius: BorderRadius.circular(25),
@@ -186,10 +186,12 @@ class _SplashScreenState extends State<SplashScreen> {
                               buttonText: StringConstants.continueWithPhone,
                               onPressedFunction: () {
                                 NavigationUtil.push(
-                                    context, RouteConstants.signUpNumber);
+                                    context, RouteConstants.passwordScreen
+                                    // context, RouteConstants.signUpNumber
+                                    );
                               }),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         SizedBox(
@@ -203,7 +205,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                     context, RouteConstants.signUpEmail);
                               }),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(
@@ -218,7 +220,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(25),
                                       color: ColorConstants.black),
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(
@@ -267,7 +269,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             )
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         // const TextComponent(
@@ -279,7 +281,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
                         RichText(
                           textAlign: TextAlign.center,
-                          text: TextSpan(
+                          text: const TextSpan(
                             children: [
                               TextSpan(
                                 text: StringConstants.agreeToOur,
@@ -297,7 +299,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                       ],
