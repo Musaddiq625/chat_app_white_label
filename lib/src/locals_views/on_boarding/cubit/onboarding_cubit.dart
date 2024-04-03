@@ -18,7 +18,6 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
   String? lastName;
   List<String>? userImages;
   String? dateOfBirth;
-  String? dateOfBirth;
 
   userDetailFirstStep(String selectedImage)async{
     emit(OnBoardingLoadingState());
