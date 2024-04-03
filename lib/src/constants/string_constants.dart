@@ -1,5 +1,7 @@
 class StringConstants {
   static const String errSomethingWentWrong = 'Something Went Wrong';
+  static const String testingPhoneNo = '3331111111';
+  static const String testingOtp = '123456';
   static const String locals = "Locals";
   static const String joined = "Joined";
   static const String phoneNumber = "phone number";
