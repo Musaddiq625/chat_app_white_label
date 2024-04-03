@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import '../../../../main.dart';
 import '../../../utils/service/firbase_service.dart';
 
-
 part 'otp_state.dart';
 
 class OTPCubit extends Cubit<OTPState> {
@@ -16,9 +15,7 @@ class OTPCubit extends Cubit<OTPState> {
 
   OTPCubit() : super(OTPInitial());
 
-
-
-  otpUser(
+  Future<void> otpUser(
     String verificationId,
     String otpCode,
     String phoneNumber,
@@ -57,7 +54,7 @@ class OTPCubit extends Cubit<OTPState> {
     }
   }
 
-  resendOtptoUser(String phoneNumber)async{
+  resendOtptoUser(String phoneNumber) async {
     emit(OTPLoadingState());
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
@@ -75,8 +72,7 @@ class OTPCubit extends Cubit<OTPState> {
           // verificationId = _verificationId;
         },
       );
-    }
-    catch(e){
+    } catch (e) {
       print("Error $e");
     }
   }
