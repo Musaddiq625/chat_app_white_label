@@ -16,6 +16,7 @@ import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../models/OnBoardingNewModel.dart';
 import '../../utils/navigation_util.dart';
 import 'cubit/onboarding_cubit.dart';
 
@@ -34,6 +35,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   bool imageUploded = false;
   String? imageUrl;
   List<File> selectedImages = [];
+  OnBoardingNewModel? onBoardingModel;
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +193,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
-                  onBoardingCubit.userImages == selectedImages.toList();
+                  onBoardingModel?.userPhotos == selectedImages.toList();
                   NavigationUtil.push(
                       context, RouteConstants.selectProfileScreen);
                 }),

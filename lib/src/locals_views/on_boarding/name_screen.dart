@@ -15,6 +15,7 @@ import '../../constants/color_constants.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../models/OnBoardingNewModel.dart';
 
 class NameScreen extends StatefulWidget {
   const NameScreen({super.key});
@@ -30,6 +31,7 @@ class _NameScreenState extends State<NameScreen> {
   late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _secondNameController = TextEditingController();
+  OnBoardingNewModel? onBoardingModel;
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +121,8 @@ class _NameScreenState extends State<NameScreen> {
                   : ColorConstants.lightGray,
               buttonText: StringConstants.continues,
               onPressedFunction: () {
-                onBoardingCubit.firstName=_firstNameController.text;
-                onBoardingCubit.lastName=_secondNameController.text;
+                onBoardingModel?.firstName=_firstNameController.text;
+                onBoardingModel?.lastName=_secondNameController.text;
                 NavigationUtil.push(
                     context, RouteConstants.uploadProfileScreen);
               }),

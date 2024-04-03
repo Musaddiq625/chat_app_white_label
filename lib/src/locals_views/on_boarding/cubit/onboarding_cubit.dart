@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:chat_app_white_label/src/models/more_about_me_model.dart';
-import 'package:chat_app_white_label/src/models/social_link_model.dart';
 import 'package:flutter/material.dart';
-
+import '../../../models/OnBoardingNewModel.dart';
 import '../../../utils/firebase_utils.dart';
 
 part 'onboarding_state.dart';
@@ -12,23 +10,14 @@ part 'onboarding_state.dart';
 class OnboardingCubit extends Cubit<OnBoardingState> {
   OnboardingCubit() : super(OnBoardingInitial());
 
-  String? firstName;
-  String? lastName;
-  List<String>? userImages;
-  String? dateOfBirth;
-  String? aboutMe;
-  String? gender;
-  String? bio;
-  SocialLinkModel? socialLinkModel;
-  MoreAboutMe? moreAboutMeModel;
-  List<String>? hobbies;
-  List<String>? creativity;
+  OnBoardingNewModel? onBoardingModel;
 
   userDetailFirstStep(String? selectedImage) async {
+
     emit(OnBoardingLoadingState());
     try {
-      await FirebaseUtils.updateUserStepOne(
-          firstName, lastName, userImages, selectedImage);
+      onBoardingModel?.profileImage = selectedImage;
+      await FirebaseUtils.updateUserStepOne(onBoardingModel);
       emit(OnBoardingUserDataFirstStepSuccessState());
     } catch (e) {
       emit(OnBoardingFailureState(e.toString()));
@@ -38,8 +27,12 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
   userDetailSecondStep(String selectedImage) async {
     emit(OnBoardingLoadingState());
     try {
-      await FirebaseUtils.updateUserStepTwo(dateOfBirth, aboutMe, gender, bio,
-          moreAboutMeModel, socialLinkModel, hobbies, creativity);
+      await FirebaseUtils.updateUserStepTwo(onBoardingModel
+          // dateOfBirth, aboutMe, gender, bio,
+          // moreAboutMeModel, socialLinkModel, hobbies, creativity
+      );
+
+
       emit(OnBoardingUserDataFirstStepSuccessState());
     } catch (e) {
       emit(OnBoardingFailureState(e.toString()));
