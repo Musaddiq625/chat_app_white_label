@@ -1,6 +1,7 @@
 import 'dart:ui' as dart_ui;
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ class TextFieldComponent extends StatefulWidget {
   final String? Function(String?)? validator;
   final int? maxLength;
   final int maxLines;
+  final int errorMaxLines;
   final int minLines;
   final bool? enabled;
   final Function(String _)? onChanged;
@@ -50,6 +52,7 @@ class TextFieldComponent extends StatefulWidget {
     this.validator,
     this.maxLength,
     this.maxLines = 1,
+    this.errorMaxLines = 2,
     this.minLines = 1,
     this.enabled,
     this.onChanged(String _)?,
@@ -94,13 +97,12 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
       children: [
         if (widget.title != null)
           Padding(
-            padding: EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.only(bottom: 6),
             child: Row(
               children: [
                 TextComponent(
                   widget.title!,
-                  style: TextStyle(
-                      color: widget.textColor),
+                  style: TextStyle(color: widget.textColor),
                 ),
                 TextComponent(
                   widget.isMandatory ? '*' : '',
@@ -113,6 +115,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
           ),
         TextFormField(
           textDirection: widget.textDirection,
+
           onTap: widget.onTap,
           textInputAction: widget.textInputAction,
           key: widget.key,
@@ -128,49 +131,75 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
           onFieldSubmitted: widget.onFieldSubmitted,
           onChanged: (_) =>
               widget.onChanged == null ? () {} : widget.onChanged!(_),
-          style: TextStyle(
-            color: widget.textColor,
-          ),
+          style: const TextStyle(
+              color: ColorConstants.white,
+              fontFamily: FontConstants.fontProtestStrike,
+              fontSize: 30),
           inputFormatters: inputFormatters,
           cursorColor: themeCubit.primaryColor,
+
           decoration: InputDecoration(
-            counterText: '',
-            filled: true,
-            fillColor: widget.fieldColor.withOpacity(0.5),
-            enabled: !widget.disableField,
-            hintText: _showHintText(
-              text: widget.hintText,
-              showAsterisk: widget.isMandatory,
-            ),
-            labelStyle: TextStyle(color: ColorConstants.lightGrey),
-            hintStyle: TextStyle(color: ColorConstants.lightGrey.withOpacity(0.3), fontSize: 14),
-            border: _outLineBorder(),
-            errorBorder: _outLineBorder(),
-            enabledBorder: _outLineBorder(),
-            focusedBorder: _outLineBorder(),
-            disabledBorder: _outLineBorder(),
-            errorMaxLines: 2,
-            prefixIcon: widget.prefixWidget != null
-                ? Padding(
-                    padding: EdgeInsets.only(left: 15, bottom: 1),
-                    child: SizedBox(
-                      width: 35,
-                      child: widget.prefixWidget,
-                    ),
-                  )
-                : null,
-            prefixIconConstraints: _boxConstraints(),
-            suffixIconConstraints: _boxConstraints(),
-            contentPadding: EdgeInsets.fromLTRB(16, 10, 16, 16),
-            suffixIcon: hidePassword != null
-                ? GestureDetector(
-                    child: _iconWidget(),
-                    onTap: () {
-                      setState(() => hidePassword = !hidePassword!);
-                    },
-                  )
-                : widget.suffixIcon,
+            border: InputBorder.none,
+            errorMaxLines: widget.errorMaxLines,
+            hintText: widget.hintText,
+            counter: const Offstage(),
+            hintStyle: const TextStyle(
+                color: ColorConstants.lightGray,
+                fontFamily: FontConstants.fontProtestStrike,
+                fontSize: 30),
           ),
+          //    decoration: InputDecoration(
+          //   hintText: widget.hintText,
+          //    hintStyle: const TextStyle(
+          //                         color: ColorConstants.lightGray,
+          //                         fontFamily: FontConstants.fontProtestStrike,
+          //                         fontSize: 30),
+          //   border: InputBorder.none,
+          //   focusedBorder: const UnderlineInputBorder(
+          //     borderSide: BorderSide(color: ColorConstants.transparent, width: 2),
+          //   ),
+          //   enabledBorder: const UnderlineInputBorder(
+          //     borderSide: BorderSide(color: ColorConstants.transparent, width: 2),
+          //   ),
+          // ),
+          // decoration: InputDecoration(
+          //   counterText: '',
+          //   filled: true,
+          //   fillColor: widget.fieldColor.withOpacity(0.5),
+          //   enabled: !widget.disableField,
+          //   hintText: _showHintText(
+          //     text: widget.hintText,
+          //     showAsterisk: widget.isMandatory,
+          //   ),
+          //   labelStyle: TextStyle(color: ColorConstants.lightGrey),
+          //   hintStyle: TextStyle(color: ColorConstants.lightGrey.withOpacity(0.3), fontSize: 14),
+          //   border: _outLineBorder(),
+          //   errorBorder: _outLineBorder(),
+          //   enabledBorder: _outLineBorder(),
+          //   focusedBorder: _outLineBorder(),
+          //   disabledBorder: _outLineBorder(),
+          //   errorMaxLines: 2,
+          //   prefixIcon: widget.prefixWidget != null
+          //       ? Padding(
+          //           padding: EdgeInsets.only(left: 15, bottom: 1),
+          //           child: SizedBox(
+          //             width: 35,
+          //             child: widget.prefixWidget,
+          //           ),
+          //         )
+          //       : null,
+          //   prefixIconConstraints: _boxConstraints(),
+          //   suffixIconConstraints: _boxConstraints(),
+          //   contentPadding: EdgeInsets.fromLTRB(16, 10, 16, 16),
+          //   suffixIcon: hidePassword != null
+          //       ? GestureDetector(
+          //           child: _iconWidget(),
+          //           onTap: () {
+          //             setState(() => hidePassword = !hidePassword!);
+          //           },
+          //         )
+          //       : widget.suffixIcon,
+          // ),
         ),
       ],
     );
