@@ -198,7 +198,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.confirmProfilePicture,
                 onPressedFunction: () {
-                  onBoardingCubit.userDetail("selectedImage");
+                  onBoardingCubit.userDetailFirstStep("selectedImage");
 
                 }),
           )
