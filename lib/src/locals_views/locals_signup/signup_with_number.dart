@@ -82,7 +82,9 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
           NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
         } else if (state is SignUpFailureState) {
           LoadingDialog.hideLoadingDialog(context);
-          ToastComponent.showToast(state.error, context: context);
+
+          ToastComponent.showToast(state.error,
+              makeToastPositionTop: true, context: context);
         } else if (state is SignUpCancleState) {
           LoadingDialog.hideLoadingDialog(context);
         }
@@ -153,6 +155,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                         _phoneNumbercontroller,
                         maxLength: AppConstants.phoneNumberMaxLength,
                         keyboardType: TextInputType.phone,
+                        autoFocus: true,
                         hintText: StringConstants.phoneTextFieldHint,
                         validator: (phone) => ValidationService.validatePhone(
                             phone!.trim(),
