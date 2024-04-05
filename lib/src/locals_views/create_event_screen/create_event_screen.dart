@@ -9,6 +9,8 @@ import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/models/event_data_model.dart';
+import 'package:chat_app_white_label/src/utils/event_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,7 @@ class CreateEventScreen extends StatefulWidget {
 }
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
+  EventDataModel? _eventDataModel;
   final TextEditingController _controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
   TextEditingController searchControllerConnections = TextEditingController();
@@ -657,6 +660,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       buttonText: StringConstants.createEvent,
                       textColor: themeCubit.backgroundColor,
                       onPressedFunction: () {
+                        // EventUtils.createEvent(_eventDataModel!);
                         _createBottomSheet();
                         // NavigationUtil.push(
                         //     context, RouteConstants.localsEventScreen);
