@@ -5,11 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../main.dart';
 import '../constants/firebase_constants.dart';
 
-class CreateEventUtils{
+class EventUtils{
   static FirebaseService firebaseService = getIt<FirebaseService>();
 
-  static CollectionReference<Map<String, dynamic>> get createEventCollection =>
-      firebaseService.firestore.collection(FirebaseConstants.createEvent);
+  static CollectionReference<Map<String, dynamic>> get eventCollection =>
+      firebaseService.firestore.collection(FirebaseConstants.event);
 
 
 }

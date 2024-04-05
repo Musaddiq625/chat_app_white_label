@@ -5,5 +5,5 @@ class FirebaseConstants {
   static const String messages = "messages";
   static const String story = "story";
   static const String stories = "stories";
-  static const String createEvent = "event";
+  static const String event = "event";
 }
