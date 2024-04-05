@@ -17,9 +17,9 @@ import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 
 class PasswordScreen extends StatefulWidget {
-  String? routeType;
+  final String? routeType;
 
-  PasswordScreen({super.key, this.routeType});
+  const PasswordScreen({super.key, this.routeType});
 
   @override
   State<PasswordScreen> createState() => _PasswordScreenState();

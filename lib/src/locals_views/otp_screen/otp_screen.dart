@@ -1,27 +1,27 @@
 import 'dart:async';
 
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
 import 'package:chat_app_white_label/src/utils/string_utils.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import '../../components/app_bar_component.dart';
-import '../../components/button_component.dart';
-import '../../components/custom_text_field.dart';
-import '../../components/toast_component.dart';
-import '../../constants/font_constants.dart';
-import '../../constants/string_constants.dart';
-import '../../utils/loading_dialog.dart';
-import '../../utils/logger_util.dart';
-import '../../utils/theme_cubit/theme_cubit.dart';
 
 class OtpScreen extends StatefulWidget {
   final OtpArg otpArg;
@@ -43,6 +43,8 @@ class _OtpScreenState extends State<OtpScreen> {
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
+  bool isFieldsValidate = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +88,8 @@ class _OtpScreenState extends State<OtpScreen> {
       } else if (state is OTPFailureState) {
         LoadingDialog.hideLoadingDialog(context);
         // ToastComponent.showToast(state.error.toString(), context: context);
+        // AppConstants.openKeyboard(context);
+
         ToastComponent.showToast("Invalid Otp", context: context);
       } else if (state is OTPCancleState) {
         LoadingDialog.hideLoadingDialog(context);
@@ -126,173 +130,120 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget enterOtp() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // InkWell(
-              //   onTap:()=> NavigationUtil.pop(context),
-              //   child: IconComponent(
-              //     iconData: Icons.arrow_back_ios_new_outlined,
-              //     borderColor: Colors.transparent,
-              //     backgroundColor: ColorConstants.iconBg,
-              //     iconColor: Colors.white,
-              //     circleSize: 30,
-              //     iconSize: 20,
-              //   ),
-              // ),
-              // SizedBox(
-              //   height: 30,
-              // ),
-              GestureDetector(
-                onTap: () {
-                  if (kDebugMode) {
-                    setState(() {
-                      otpController.text = StringConstants.testingOtp;
-                      _isOtpValid = true;
-                    });
-                  }
-                },
-                child: TextComponent(
-                  StringConstants.enterTheVerificationCode,
-                  style: TextStyle(
-                      fontSize: 22,
-                      color: themeCubit.textColor,
-                      fontFamily: FontConstants.fontProtestStrike),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: <Widget>[
-                  Container(
-                      width: 120,
-                      alignment: Alignment.center,
-                      child:
-
-                          // TODO : CHANGE IT TO TEXTFORMFIELD
-                          //  CustomTextField(
-                          // hintText: '000000',
-                          // hintStyle: const TextStyle(
-                          //     color: ColorConstants.lightGray,
-                          //     fontFamily: FontConstants.fontProtestStrike,
-                          //     fontSize: 30),
-                          //   onChanged: (String value) {
-                          //     setState(() {
-                          //       _isOtpValid =
-                          //           value.length == 6 && value.trim().isNotEmpty;
-                          //     });
-                          //   },
-                          //   style: const TextStyle(
-                          //       color: ColorConstants.white,
-                          //       fontFamily: FontConstants.fontProtestStrike,
-                          //       fontSize: 30),
-                          //   maxLength: 6,
-                          //   keyboardType: TextInputType.number,
-                          //   controller: otpController,
-                          //   textAlign: TextAlign.center,
-                          // ),
-
-                          TextFieldComponent(
-                        otpController,
-                        hintText: '000000',
-                        maxLength: 6,
-                        keyboardType: TextInputType.number,
-                      )),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              if (_counter > 0)
-                TextComponent(
-                    '${StringConstants.didntReciveCode} ${_counter > 0 ? StringUtil.getFormattedTime(_counter.toString()) : ""}',
-                    style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: ColorConstants.lightGray)),
-              if (_counter <= 0)
-                InkWell(
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
                   onTap: () {
-                    otpCubit.resendOtptoUser(
-                      widget.otpArg.phoneNumber,
-                      // otpController.text,
-                      // widget.otpScreenArg.phoneNumber,
-                    );
+                    if (kDebugMode) {
+                      setState(() {
+                        otpController.text = StringConstants.testingOtp;
+                        _isOtpValid = true;
+                      });
+                    }
                   },
-                  child: TextComponent(StringConstants.resendCode,
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          decorationColor: themeCubit.primaryColor,
-                          decorationThickness: 3,
+                  child: TextComponent(
+                    StringConstants.enterTheVerificationCode,
+                    style: TextStyle(
+                        fontSize: 22,
+                        color: themeCubit.textColor,
+                        fontFamily: FontConstants.fontProtestStrike),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                        width: 120,
+                        alignment: Alignment.center,
+                        child: TextFieldComponent(
+                          otpController,
+                          hintText: StringConstants.otpTextFieldHint,
+                          maxLength: AppConstants.otpMaxLength,
+                          validator: (otp) {
+                            return ValidationService.validateVerfCode(
+                                otp: otp!);
+                          },
+                          onChanged: (String value) {
+                            handleOTPOnChange();
+                          },
+                          keyboardType: TextInputType.number,
+                        )),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                if (_counter > 0)
+                  TextComponent(
+                      '${StringConstants.didntReciveCode} ${_counter > 0 ? StringUtil.getFormattedTime(_counter.toString()) : ""}',
+                      style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: themeCubit.primaryColor)),
-                ),
+                          color: ColorConstants.lightGray)),
+                if (_counter <= 0)
+                  GestureDetector(
+                    onTap: () {
+                      otpCubit.resendOtptoUser(
+                        widget.otpArg.phoneNumber,
+                        // otpController.text,
+                        // widget.otpScreenArg.phoneNumber,
+                      );
+                    },
+                    child: TextComponent(StringConstants.resendCode,
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            decorationColor: themeCubit.primaryColor,
+                            decorationThickness: 3,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: themeCubit.primaryColor)),
+                  ),
 
-              const SizedBox(
-                height: 20,
-              ),
-              // Spacer(),
-            ],
-          ),
-          SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.9,
-            child: ButtonComponent(
-                bgcolor: _isOtpValid
-                    ? themeCubit.primaryColor
-                    : ColorConstants.lightGray.withOpacity(0.2),
-                textColor: _isOtpValid
-                    ? themeCubit.backgroundColor
-                    : ColorConstants.lightGray,
-                buttonText: StringConstants.continues,
-                onPressedFunction: () {
-                  if (otpController.text.isEmpty ||
-                      otpController.text.length != 6) {
-                    Fluttertoast.showToast(
-                        msg: "Please enter a valid 6 digit OTP",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-                    return;
-                  }
-                  FocusScope.of(context).unfocus();
-                  otpCubit.otpUser(
-                    widget.otpArg.verificationId,
-                    otpController.text,
-                    widget.otpArg.phoneNumber,
-                  );
-                  // if (widget.otpArg.type == "number") {
-                  //   NavigationUtil.push(context, RouteConstants.signUpEmail,
-                  //       args: "number");
-                  // }
-                  // else if (widget.otpArg.type == "email") {
-                  //   NavigationUtil.push(context, RouteConstants.signUpNumber);
-                  // }
-                  // else if (widget.otpArg.type == "afterEmail") {
-                  //   NavigationUtil.push(context, RouteConstants.nameScreen,
-                  //       args: "OnBoarding");
-                  // }
-                  // else if (widget.otpArg.type == "setPasswordBeforeNumber") {
-                  //   NavigationUtil.push(context, RouteConstants.passwordScreen,
-                  //       args: "phoneNumber");
-                  // }
-                  // else if (widget.otpArg.type == "setPasswordAfterNumber") {
-                  //   NavigationUtil.push(context, RouteConstants.passwordScreen,
-                  //       args: "OnBoarding");
-                  // }
-                }),
-          )
-        ],
+                const SizedBox(
+                  height: 20,
+                ),
+                // Spacer(),
+              ],
+            ),
+            SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.9,
+                child: ButtonComponent(
+                  bgcolor: themeCubit.primaryColor,
+                  textColor: themeCubit.backgroundColor,
+                  buttonText: StringConstants.continues,
+                  onPressedFunction:
+                      isFieldsValidate ? handleOTPResponse : null,
+                ))
+          ],
+        ),
       ),
+    );
+  }
+
+  void handleOTPOnChange() {
+    if (isFieldsValidate != _formKey.currentState!.validate()) {
+      isFieldsValidate = _formKey.currentState!.validate();
+      setState(() {});
+    }
+  }
+
+  void handleOTPResponse() async {
+    AppConstants.closeKeyboard();
+
+    await otpCubit.otpUser(
+      widget.otpArg.verificationId,
+      otpController.text,
+      widget.otpArg.phoneNumber,
     );
   }
 }
