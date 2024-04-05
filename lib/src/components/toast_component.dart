@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -58,7 +59,9 @@ class ToastComponent {
 
     fToast.showToast(
       child: toast,
-      gravity: makeToastPositionTop ? ToastGravity.TOP : ToastGravity.BOTTOM,
+      gravity: (makeToastPositionTop || AppConstants.isKeyboardOpen(context))
+          ? ToastGravity.TOP
+          : ToastGravity.BOTTOM,
       toastDuration: Duration(milliseconds: duration ?? 2000),
     );
   }

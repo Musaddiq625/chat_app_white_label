@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/string_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -31,7 +33,7 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final otpController = TextEditingController();
+  final TextEditingController otpController = TextEditingController();
   bool _isOtpValid = false;
   Timer? _timer;
   int _counter = 15;
@@ -44,64 +46,57 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OTPCubit, OTPState>(
-        listener: (context, state) async {
-          LoggerUtil.logs('login state: $state');
-          if (state is OTPLoadingState) {
-            LoadingDialog.showLoadingDialog(context);
-          } else if (state is OTPSuccessNewUserState) {
-            // if (state.fcmToken != null) {
-            //   await FirebaseUtils.addFcmToken(state.phoneNumber, state.fcmToken!);
-            // }
-            // LoadingDialog.hideLoadingDialog(context);
-            // NavigationUtil.push(context, RouteConstants.signUpEmail,
-            //     args: state.phoneNumber);
-            LoadingDialog.hideLoadingDialog(context);
-            if (widget.otpArg.type == "number") {
-              NavigationUtil.push(context, RouteConstants.nameScreen,
-                  args: "OnBoarding");
-              // NavigationUtil.push(context, RouteConstants.signUpEmail,
-              //     args: "number");
-            } else if (widget.otpArg.type == "email") {
-              NavigationUtil.push(context, RouteConstants.signUpNumber);
-            } else if (widget.otpArg.type == "afterEmail") {
-              NavigationUtil.push(context, RouteConstants.nameScreen,
-                  args: "OnBoarding");
-            } else if (widget.otpArg.type == "setPasswordBeforeNumber") {
-              NavigationUtil.push(context, RouteConstants.passwordScreen,
-                  args: "phoneNumber");
-            } else if (widget.otpArg.type == "setPasswordAfterNumber") {
-              NavigationUtil.push(context, RouteConstants.passwordScreen,
-                  args: "OnBoarding");
-            }
-          }
-          else if(state is OtpSuccessResendState){
-            LoadingDialog.hideLoadingDialog(context);
-            setState(() {
-              _counter = 15; // Reset the counter
-              startTimer(); // Restart the timer
-            });
-          }
-          else if (state is OTPSuccessOldUserState) {
-
-            NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
-          } else if (state is OTPFailureState) {
-            LoadingDialog.hideLoadingDialog(context);
-            // ToastComponent.showToast(state.error.toString(), context: context);
-            ToastComponent.showToast("Invalid Otp", context: context);
-
-          } else if (state is OTPCancleState) {
-            LoadingDialog.hideLoadingDialog(context);
-          }
-        },
-        builder: (context, state) {
-          return UIScaffold(
-              appBar: AppBarComponent(""),
-              removeSafeAreaPadding: false,
-              bgColor: themeCubit.backgroundColor,
-              widget: enterOtp());
+    return BlocConsumer<OTPCubit, OTPState>(listener: (context, state) async {
+      LoggerUtil.logs('login state: $state');
+      if (state is OTPLoadingState) {
+        LoadingDialog.showLoadingDialog(context);
+      } else if (state is OTPSuccessNewUserState) {
+        // if (state.fcmToken != null) {
+        //   await FirebaseUtils.addFcmToken(state.phoneNumber, state.fcmToken!);
+        // }
+        // LoadingDialog.hideLoadingDialog(context);
+        // NavigationUtil.push(context, RouteConstants.signUpEmail,
+        //     args: state.phoneNumber);
+        LoadingDialog.hideLoadingDialog(context);
+        if (widget.otpArg.type == "number") {
+          NavigationUtil.push(context, RouteConstants.nameScreen,
+              args: "OnBoarding");
+          // NavigationUtil.push(context, RouteConstants.signUpEmail,
+          //     args: "number");
+        } else if (widget.otpArg.type == "email") {
+          NavigationUtil.push(context, RouteConstants.signUpNumber);
+        } else if (widget.otpArg.type == "afterEmail") {
+          NavigationUtil.push(context, RouteConstants.nameScreen,
+              args: "OnBoarding");
+        } else if (widget.otpArg.type == "setPasswordBeforeNumber") {
+          NavigationUtil.push(context, RouteConstants.passwordScreen,
+              args: "phoneNumber");
+        } else if (widget.otpArg.type == "setPasswordAfterNumber") {
+          NavigationUtil.push(context, RouteConstants.passwordScreen,
+              args: "OnBoarding");
         }
-    );
+      } else if (state is OtpSuccessResendState) {
+        LoadingDialog.hideLoadingDialog(context);
+        setState(() {
+          _counter = 15; // Reset the counter
+          startTimer(); // Restart the timer
+        });
+      } else if (state is OTPSuccessOldUserState) {
+        NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
+      } else if (state is OTPFailureState) {
+        LoadingDialog.hideLoadingDialog(context);
+        // ToastComponent.showToast(state.error.toString(), context: context);
+        ToastComponent.showToast("Invalid Otp", context: context);
+      } else if (state is OTPCancleState) {
+        LoadingDialog.hideLoadingDialog(context);
+      }
+    }, builder: (context, state) {
+      return UIScaffold(
+          appBar: const AppBarComponent(""),
+          removeSafeAreaPadding: false,
+          bgColor: themeCubit.backgroundColor,
+          widget: enterOtp());
+    });
   }
 
   @override
@@ -153,12 +148,22 @@ class _OtpScreenState extends State<OtpScreen> {
               // SizedBox(
               //   height: 30,
               // ),
-              TextComponent(
-                StringConstants.enterTheVerificationCode,
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
+              GestureDetector(
+                onTap: () {
+                  if (kDebugMode) {
+                    setState(() {
+                      otpController.text = StringConstants.testingOtp;
+                      _isOtpValid = true;
+                    });
+                  }
+                },
+                child: TextComponent(
+                  StringConstants.enterTheVerificationCode,
+                  style: TextStyle(
+                      fontSize: 22,
+                      color: themeCubit.textColor,
+                      fontFamily: FontConstants.fontProtestStrike),
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -166,30 +171,39 @@ class _OtpScreenState extends State<OtpScreen> {
               Row(
                 children: <Widget>[
                   Container(
-                    width: 120,
-                    alignment: Alignment.center,
-                    child: CustomTextField(
-                      hintText: '000000',
-                      hintStyle: const TextStyle(
-                          color: ColorConstants.lightGray,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 30),
-                      onChanged: (String value) {
-                        setState(() {
-                          _isOtpValid =
-                              value.length == 6 && value.trim().isNotEmpty;
-                        });
-                      },
-                      style: const TextStyle(
-                          color: ColorConstants.white,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 30),
-                      maxLength: 6,
-                      keyboardType: TextInputType.number,
-                      controller: otpController,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                      width: 120,
+                      alignment: Alignment.center,
+                      child:
+
+                          // TODO : CHANGE IT TO TEXTFORMFIELD
+                          //  CustomTextField(
+                          // hintText: '000000',
+                          // hintStyle: const TextStyle(
+                          //     color: ColorConstants.lightGray,
+                          //     fontFamily: FontConstants.fontProtestStrike,
+                          //     fontSize: 30),
+                          //   onChanged: (String value) {
+                          //     setState(() {
+                          //       _isOtpValid =
+                          //           value.length == 6 && value.trim().isNotEmpty;
+                          //     });
+                          //   },
+                          //   style: const TextStyle(
+                          //       color: ColorConstants.white,
+                          //       fontFamily: FontConstants.fontProtestStrike,
+                          //       fontSize: 30),
+                          //   maxLength: 6,
+                          //   keyboardType: TextInputType.number,
+                          //   controller: otpController,
+                          //   textAlign: TextAlign.center,
+                          // ),
+
+                          TextFieldComponent(
+                        otpController,
+                        hintText: '000000',
+                        maxLength: 6,
+                        keyboardType: TextInputType.number,
+                      )),
                 ],
               ),
               const SizedBox(
@@ -204,7 +218,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         color: ColorConstants.lightGray)),
               if (_counter <= 0)
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     otpCubit.resendOtptoUser(
                       widget.otpArg.phoneNumber,
                       // otpController.text,
@@ -282,7 +296,6 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 }
-
 
 class OtpArg {
   final String verificationId;

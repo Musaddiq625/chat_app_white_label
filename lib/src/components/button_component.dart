@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ButtonComponent extends StatelessWidget {
   final String buttonText;
-  final Function onPressedFunction;
+  final Function()? onPressedFunction;
   final Color bgcolor;
   final double textSize;
   final Color? textColor;
@@ -12,7 +12,7 @@ class ButtonComponent extends StatelessWidget {
   ButtonComponent(
       {super.key,
       required this.buttonText,
-      required this.onPressedFunction,
+      this.onPressedFunction,
       this.bgcolor = ColorConstants.bgcolorbutton,
       this.textSize = 15,
       this.textColor = ColorConstants.black,
@@ -21,10 +21,12 @@ class ButtonComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () => onPressedFunction(),
+        onPressed: onPressedFunction,
         style: ElevatedButton.styleFrom(
             foregroundColor: textColor,
             backgroundColor: bgcolor,
+            disabledBackgroundColor: ColorConstants.lightGray.withOpacity(0.2),
+            disabledForegroundColor: ColorConstants.lightGray,
             shadowColor: Colors.transparent,
             padding: EdgeInsets.symmetric(
                 horizontal: horizontalLength, vertical: 12),

@@ -122,6 +122,10 @@ flutter:
     - family: Nunito Sans 10pt
       fonts:
         - asset: assets/fonts/NunitoSans-Font/NunitoSans_10pt-Regular.ttf
+
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter/Inter-Regular.ttf
     #     - asset: fonts/TrajanPro_Bold.ttf
     #       weight: 700
   #
