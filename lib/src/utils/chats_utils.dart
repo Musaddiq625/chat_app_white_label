@@ -55,10 +55,10 @@ class ChatUtils {
     final chatId = getConversationID(chatUser.id ?? '');
 
     await chatsCollection.doc(chatId).set(ChatModel(
-        id: '${FirebaseUtils.user?.id}_${chatUser.id ?? ''}',
+        id: '${FirebaseUtils.user?.id}_${chatUser.id ?? ''}', // 123 -> 123_456     456-> 123_456
         isGroup: false,
         updatedAt: FirebaseUtils.getDateTimeNowAsId(),
-        users: [FirebaseUtils.user?.id ?? '', chatUser.id ?? '']).toJson());
+        users: [FirebaseUtils.user!.id!, chatUser.id ?? '']).toJson());
 
     await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
       'chats': FieldValue.arrayUnion([chatId])
@@ -179,18 +179,20 @@ class ChatUtils {
     }
   }
 
-  static Future<void> updateMessageReadStatus(MessageModel message) async {
-    final sendingTime = DateTime.now().millisecondsSinceEpoch.toString();
-    final chatId = getConversationID(message.fromId ?? '');
-    final chatDoc = chatsCollection.doc(chatId);
+  // /// TODO: WARNING - Replace it with Group chat logic
+  // static Future<void> updateMessageReadStatus(MessageModel message) async {
+  //   final sendingTime = DateTime.now().millisecondsSinceEpoch.toString();
+  //   final chatId = getConversationID(message.fromId ?? '');
+  //   final chatDoc = chatsCollection.doc(chatId);
+  //
+  //   await chatDoc
+  //       .collection(FirebaseConstants.messages)
+  //       .doc(message.sentAt)
+  //       .update({'readAt': DateTime.now().millisecondsSinceEpoch.toString()});
+  //   await chatDoc.update({'last_message.readAt': sendingTime});
+  // }
 
-    await chatDoc
-        .collection(FirebaseConstants.messages)
-        .doc(message.sentAt)
-        .update({'readAt': DateTime.now().millisecondsSinceEpoch.toString()});
-    await chatDoc.update({'last_message.readAt': sendingTime});
-  }
-
+  /// TODO: WARNING - Replace it with Group chat logic
   static Future<void> updateUnreadCount(
       String chatUserId, String count, bool isUpdatingMe) async {
     await chatsCollection.doc(getConversationID(chatUserId)).update({
