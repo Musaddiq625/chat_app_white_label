@@ -186,9 +186,10 @@ class _SplashScreenState extends State<SplashScreen> {
                               buttonText: StringConstants.continueWithPhone,
                               onPressedFunction: () {
                                 NavigationUtil.push(
-                                    // context, RouteConstants.passwordScreen
-                                    context,
-                                    RouteConstants.signUpNumber);
+                                    context, RouteConstants.nameScreen
+                                    // context,
+                                    // RouteConstants.signUpNumber,
+                                    );
                               }),
                         ),
                         const SizedBox(

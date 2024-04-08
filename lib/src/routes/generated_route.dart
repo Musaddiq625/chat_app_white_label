@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
@@ -142,28 +144,28 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(SignUpWithEmail(
         routeType: arg,
       ));
-      return materialRoute( SignUpWithEmail());
+      return materialRoute(SignUpWithEmail());
 
     case RouteConstants.signUpNumber:
       final arg = settings.arguments as String?;
       return materialRoute(SignUpWithNumber(
-        routeType: arg ,
+        routeType: arg,
       ));
-      // return materialRoute( SignUpWithNumber());
+    // return materialRoute( SignUpWithNumber());
 
     case RouteConstants.passwordScreen:
       final arg = settings.arguments as String?;
       return materialRoute(PasswordScreen(
         routeType: arg,
       ));
-      // return materialRoute(PasswordScreen());
+    // return materialRoute(PasswordScreen());
 
     case RouteConstants.otpScreenLocal:
       final arg = settings.arguments as OtpArg;
       return materialRoute(OtpScreen(
         otpArg: arg,
       ));
-      // return materialRoute(const OtpScreen());
+    // return materialRoute(const OtpScreen());
 
     case RouteConstants.profileScreenLocal:
       return materialRoute(ProfileScreen());
@@ -178,7 +180,11 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const UploadPictureScreen());
 
     case RouteConstants.selectProfileScreen:
-      return materialRoute(const SelectProfileImageScreen());
+      final arg = settings.arguments as List<File>;
+
+      return materialRoute(SelectProfileImageScreen(
+        selectedImages: arg,
+      ));
 
     case RouteConstants.dobScreen:
       return materialRoute(const DOBScreen());

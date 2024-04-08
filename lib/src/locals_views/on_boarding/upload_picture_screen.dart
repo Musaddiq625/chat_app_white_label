@@ -8,17 +8,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../components/app_bar_component.dart';
-import '../../components/button_component.dart';
-import '../../components/icon_component.dart';
-import '../../components/ui_scaffold.dart';
-import '../../constants/color_constants.dart';
-import '../../constants/font_constants.dart';
-import '../../constants/route_constants.dart';
-import '../../constants/size_box_constants.dart';
-import '../../constants/string_constants.dart';
-import '../../models/OnBoardingNewModel.dart';
-import '../../utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'cubit/onboarding_cubit.dart';
 
 class UploadPictureScreen extends StatefulWidget {
@@ -196,7 +199,8 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 onPressedFunction: () {
                   userDetailModel?.userPhotos == selectedImages.toList();
                   NavigationUtil.push(
-                      context, RouteConstants.selectProfileScreen);
+                      context, RouteConstants.selectProfileScreen,
+                      args: selectedImages);
                 }),
           )
       ],

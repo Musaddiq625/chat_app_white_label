@@ -1,24 +1,26 @@
+import 'dart:io';
+
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../components/app_bar_component.dart';
-import '../../components/button_component.dart';
-import '../../components/icon_component.dart';
-import '../../components/text_component.dart';
-import '../../constants/font_constants.dart';
-import '../../constants/route_constants.dart';
-import '../../constants/size_box_constants.dart';
-import '../../constants/string_constants.dart';
-import '../../utils/loading_dialog.dart';
-import '../../utils/logger_util.dart';
-import '../../utils/navigation_util.dart';
-import '../../utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 
 class SelectProfileImageScreen extends StatefulWidget {
-  const SelectProfileImageScreen({super.key});
+  final List<File> selectedImages;
+  const SelectProfileImageScreen({super.key, required this.selectedImages});
 
   @override
   State<SelectProfileImageScreen> createState() =>
@@ -58,19 +60,18 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<OnboardingCubit, OnBoardingState>(
-      listener:(context,state){
+      listener: (context, state) {
         LoggerUtil.logs('login state: $state');
-        if(state is OnBoardingLoadingState){
+        if (state is OnBoardingLoadingState) {
           LoadingDialog.showLoadingDialog(context);
-        }
-        else if(state is OnBoardingUserDataFirstStepSuccessState){
+        } else if (state is OnBoardingUserDataFirstStepSuccessState) {
           LoadingDialog.hideLoadingDialog(context);
           NavigationUtil.push(context, RouteConstants.dobScreen);
         }
       },
       builder: (context, state) {
         return UIScaffold(
-            appBar: AppBarComponent(""),
+            appBar: const AppBarComponent(""),
             removeSafeAreaPadding: false,
             bgColor: themeCubit.backgroundColor,
             widget: setProfileImage());
@@ -120,7 +121,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                     fontFamily: FontConstants.fontProtestStrike),
               ),
               SizedBoxConstants.sizedBoxTwelveH(),
-              TextComponent(
+              const TextComponent(
                 StringConstants.chooseAnyOfTheUplodedImages,
                 style: TextStyle(
                   fontSize: 12,
@@ -134,9 +135,9 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 child: PageView.builder(
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
-                  itemCount: imgList.length,
+                  itemCount: widget.selectedImages.length, // imgList.length,
                   itemBuilder: (context, index) {
-                    final file = imgList[index];
+                    final file = widget.selectedImages[index];
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -145,7 +146,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                           child: Container(
                             width: 200, // Set the width of the oval
                             height: 400, // Set the height of the oval
-                            child: Image.network(
+                            child: Image.file(
                               file,
                               fit: BoxFit
                                   .cover, // Use BoxFit.cover to ensure the image covers the oval area
@@ -157,14 +158,14 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                   },
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(imgList.length, (index) {
+                children: List.generate(widget.selectedImages.length, (index) {
                   return Container(
-                    margin: EdgeInsets.symmetric(horizontal: 3),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
                     height: 4,
                     width: 15,
                     decoration: BoxDecoration(
@@ -176,19 +177,18 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                   );
                 }),
               ),
-              SizedBoxConstants.sizedBoxThirtyH(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextComponent(
+              if (widget.selectedImages.length - 1 != _currentPage)
+                SizedBoxConstants.sizedBoxThirtyH(),
+              if (widget.selectedImages.length - 1 != _currentPage)
+                const Center(
+                  child: TextComponent(
                     StringConstants.scrollLeft,
                     style: TextStyle(
                       fontSize: 12,
                       color: ColorConstants.lightGray,
                     ),
                   ),
-                ],
-              ),
+                ),
             ],
           ),
           SizedBox(
@@ -199,7 +199,6 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 buttonText: StringConstants.confirmProfilePicture,
                 onPressedFunction: () {
                   onBoardingCubit.userDetailFirstStep("selectedImage");
-
                 }),
           )
         ],
