@@ -9,7 +9,7 @@ class ValidationService {
 
   static const _numberPattern = r'^[0-9]*$';
   static const _textPattern = r'^[A-Za-z]+$';
-
+  // static const String _otpPattern = r'^[0-9]{6,}$';
   static bool _isEmailValid(String email) {
     final regexEmail = RegExp(_emailPattern);
     return regexEmail.hasMatch(email);
@@ -48,10 +48,12 @@ class ValidationService {
   }) {
     if (password.isEmpty) {
       return StringConstants.errorThisFieldCantBeEmpty;
-    } else if (password.length < 8) {
-      return StringConstants.errorMinLengthPassword;
-    } else if (!_validate(password, _passwordMinLen8WithNumbers)) {
-      return StringConstants.errorInvalidPasswordFormat;
+    }
+    // else if (password.length < 8) {
+    //   return StringConstants.errorMinLengthPassword;
+    // }
+    else if (!_validate(password, _passwordMinLen8WithNumbers)) {
+      return StringConstants.errorInvalidFormat;
     } else {
       return null;
     }
@@ -141,6 +143,18 @@ class ValidationService {
       return '${StringConstants.errorPleaseEnterYour} $fieldName';
     } else if (!_validate(value, _textPattern)) {
       return StringConstants.errorNameShouldContainOnlyAlphabets;
+    } else {
+      return null;
+    }
+  }
+
+  static String? validateVerfCode(
+      {required String otp,
+      String fieldName = StringConstants.verificationCode}) {
+    if (otp.isEmpty) {
+      return '${StringConstants.errorPleaseEnterYour} $fieldName';
+    } else if (!_validate(otp, _numberPattern)) {
+      return StringConstants.errorInvalidVerfCode;
     } else {
       return null;
     }

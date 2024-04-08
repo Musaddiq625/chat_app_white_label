@@ -1,41 +1,37 @@
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/cubit/signup_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/otp_screen/otp_screen.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-import '../../components/button_component.dart';
-import '../../constants/font_constants.dart';
-import '../../constants/string_constants.dart';
-import '../../utils/loading_dialog.dart';
-import '../../utils/logger_util.dart';
-import '../../utils/theme_cubit/theme_cubit.dart';
-import '../otp_screen/otp_screen.dart';
 
 class SignUpWithNumber extends StatefulWidget {
-  String? routeType;
+  final String? routeType;
 
-  SignUpWithNumber({super.key, this.routeType});
+  const SignUpWithNumber({super.key, this.routeType});
 
   @override
   State<SignUpWithNumber> createState() => _SignUpWithNumberState();
 }
 
 class _SignUpWithNumberState extends State<SignUpWithNumber> {
-  bool _phoneNumberValid = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
@@ -43,6 +39,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
 
   late SignUpCubit signUpCubit = BlocProvider.of<SignUpCubit>(context);
   final _formKey = GlobalKey<FormState>();
+  bool isFieldsValidate = false;
 
   @override
   void initState() {
@@ -118,7 +115,6 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                       setState(() {
                         _phoneNumbercontroller.text =
                             StringConstants.testingPhoneNo;
-                        _phoneNumberValid = true;
                       });
                     }
                   },
@@ -160,11 +156,11 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                         validator: (phone) => ValidationService.validatePhone(
                             phone!.trim(),
                             fieldName: StringConstants.phoneNumber),
-                        onChanged: (value) {
-                          setState(() {
-                            _phoneNumberValid =
-                                _formKey.currentState!.validate();
-                          });
+                        onChanged: (phone) {
+                          handlePhoneOnChange();
+                          // setState(() {
+                          // _phoneNumberValid = _formKey.currentState!.validate();
+                          // });
                         },
                       ),
                     ),
@@ -187,24 +183,39 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
             SizedBox(
               width: MediaQuery.sizeOf(context).width * 0.9,
               child: ButtonComponent(
-                  bgcolor: _phoneNumberValid
-                      ? themeCubit.primaryColor
-                      : ColorConstants.lightGray.withOpacity(0.2),
-                  textColor: _phoneNumberValid
-                      ? ColorConstants.black
-                      : ColorConstants.lightGray,
+                  bgcolor: themeCubit.primaryColor,
+                  textColor: ColorConstants.black,
                   buttonText: StringConstants.continues,
-                  onPressedFunction: () async {
-                    if (_formKey.currentState!.validate()) {
-                      await signUpCubit.loginUser((_countryCodeController.text +
-                              _phoneNumbercontroller.text)
-                          .trim());
-                    }
-                  }),
+                  onPressedFunction:
+                      isFieldsValidate ? onContinuePressed : null),
             )
           ],
         ),
       ),
     );
+  }
+
+  void onContinuePressed() async {
+    if (_formKey.currentState!.validate()) {
+      NavigationUtil.push(
+        context,
+        RouteConstants.otpScreenLocal,
+        args: OtpArg(
+            '0000', // state.verificationId,
+            "${_countryCodeController.text}${_phoneNumbercontroller.text}",
+            _countryCodeController.text,
+            "number"),
+      );
+      // await signUpCubit.loginUser(
+      //   (_countryCodeController.text + _phoneNumbercontroller.text).trim(),
+      // );
+    }
+  }
+
+  void handlePhoneOnChange() {
+    if (isFieldsValidate != _formKey.currentState!.validate()) {
+      isFieldsValidate = _formKey.currentState!.validate();
+      setState(() {});
+    }
   }
 }

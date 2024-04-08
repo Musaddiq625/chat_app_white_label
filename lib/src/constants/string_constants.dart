@@ -2,6 +2,7 @@ class StringConstants {
   static const String errSomethingWentWrong = 'Something Went Wrong';
   static const String testingPhoneNo = '3331111111';
   static const String testingOtp = '123456';
+
   static const String locals = "Locals";
   static const String joined = "Joined";
   static const String phoneNumber = "phone number";
@@ -188,6 +189,7 @@ class StringConstants {
   static const String editCover = "Edit Cover";
   static const String characters = "characters";
   static const String phoneTextFieldHint = "1234 123456";
+  static const String otpTextFieldHint = '000000';
   static const String passwordDoesNotMatch = "Password Does not match";
   static const String errorInvalidEmail = "Invalid email format";
   static const String errorMinLengthPassword =
@@ -196,6 +198,8 @@ class StringConstants {
   static const String errorPleaseEnterYour = "Please enter your";
   static const String errorInvalidPhone = "Invalid phone format";
   static const String pleaseEnterAtLeast = "Please enter at least";
+  static const String errorInvalidFormat = "Invalid format";
+  static const String errorInvalidVerfCode = "Invalid Verification code";
   static const String errorNameShouldContainOnlyAlphabets =
       "Name should contain only alphabets";
   static const String errorLengthTenError =

@@ -4,6 +4,7 @@ class AppConstants {
   static const String httpsSlash = 'https://';
 
   static int phoneNumberMaxLength = 10;
+  static int otpMaxLength = 6;
 
   static bool isKeyboardOpen(BuildContext context) {
     return MediaQuery.of(context).viewInsets.bottom != 0.0;
