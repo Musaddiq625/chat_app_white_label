@@ -78,12 +78,12 @@ class _DOBScreenState extends State<DOBScreen> {
                       ? TextComponent(
                           _dateController.text,
                           style: TextStyle(
-                              color: ColorConstants.lightGray,
+                              color: themeCubit.textColor,
                               fontFamily: FontConstants.fontProtestStrike,
                               fontSize: 30),
                         )
-                      : TextComponent(
-                          "DD   MM   YYYY",
+                      : const TextComponent(
+                          StringConstants.formatDOB,
                           style: TextStyle(
                               color: ColorConstants.lightGray,
                               fontFamily: FontConstants.fontProtestStrike,
@@ -97,7 +97,7 @@ class _DOBScreenState extends State<DOBScreen> {
                 bgcolor: _dateController.value.text.isNotEmpty
                     ? themeCubit.primaryColor
                     : ColorConstants.lightGray.withOpacity(0.2),
-                textColor:_dateController.value.text.isNotEmpty
+                textColor: _dateController.value.text.isNotEmpty
                     ? ColorConstants.black
                     : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,

@@ -142,7 +142,7 @@ class ValidationService {
     if (value.isEmpty) {
       return '${StringConstants.errorPleaseEnterYour} $fieldName';
     } else if (!_validate(value, _textPattern)) {
-      return StringConstants.errorNameShouldContainOnlyAlphabets;
+      return StringConstants.errorInvalid + fieldName;
     } else {
       return null;
     }
