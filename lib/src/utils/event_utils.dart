@@ -1,6 +1,7 @@
 
 
 import 'package:chat_app_white_label/src/models/event_data_model.dart';
+import 'package:chat_app_white_label/src/models/event_request_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +24,18 @@ class EventUtils{
     await eventCollection.doc(docId).set(eventDataModel.toJson());
     LoggerUtil.logs('Event Created');
   }
+
+
+  static Future<void> joinRequestEvent(EventRequestModel eventRequestModel) async {
+    // final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
+
+    final docId = FirebaseUtils.phoneNumber;
+
+    await eventCollection.doc(docId).set(eventRequestModel.toJson());
+    LoggerUtil.logs('Event Created');
+  }
+
+
 
 
 }

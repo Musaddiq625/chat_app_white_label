@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/models/user_detail_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -86,13 +87,13 @@ class FirebaseUtils {
   }
 
 
-  static Future<void> updateUserStepOne(OnBoardingNewModel? onBoardingModel) async {
+  static Future<void> updateUserStepOne(UserDetailModel? userDetailModel) async {
     final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
-      'first_name': onBoardingModel?.firstName,
-      'last_name': onBoardingModel?.lastName,
-      'user_images':onBoardingModel?.userPhotos,
-      'profile_image':onBoardingModel?.profileImage,
+      'first_name': userDetailModel?.firstName,
+      'last_name': userDetailModel?.lastName,
+      'user_images':userDetailModel?.userPhotos,
+      'profile_image':userDetailModel?.profileImage,
     },SetOptions(merge: true));
     LoggerUtil.logs('Updated User Step 1');
   }
@@ -100,18 +101,18 @@ class FirebaseUtils {
 
   static Future<void> updateUserStepTwo(
       // String? dob,String? aboutMe,String? gender,String? bio,MoreAboutMeModel? moreAboutMe,SocialLinkModel? socialLinkModel,List<String>?  hobbies,List<String>? creativity
-      OnBoardingNewModel? onBoardingModel
+      UserDetailModel? userDetailModel
       ) async {
     final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
-      'date_of_birth': onBoardingModel?.dateOfBirth ,
-      'about_me': onBoardingModel?.aboutMe,
-      'gender': onBoardingModel?.gender,
-      'bio':onBoardingModel?.bio,
-      'social_links': onBoardingModel?.socialLink?.toJson(),
-      'more_about_me': onBoardingModel?.moreAbout?.toJson(),
-      'hobbies':onBoardingModel?.hobbie,
-      'creativity':onBoardingModel?.creativity,
+      'date_of_birth': userDetailModel?.dateOfBirth ,
+      'about_me': userDetailModel?.aboutMe,
+      'gender': userDetailModel?.gender,
+      'bio':userDetailModel?.bio,
+      'social_links': userDetailModel?.socialLink?.toJson(),
+      'more_about_me': userDetailModel?.moreAbout?.toJson(),
+      'hobbies':userDetailModel?.hobbies,
+      'creativity':userDetailModel?.creativity,
     },SetOptions(merge: true));
     LoggerUtil.logs('Updated User Step 2');
   }

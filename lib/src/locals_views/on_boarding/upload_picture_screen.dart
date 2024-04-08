@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
+import 'package:chat_app_white_label/src/models/user_detail_model.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +36,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   bool imageUploded = false;
   String? imageUrl;
   List<File> selectedImages = [];
-  OnBoardingNewModel? onBoardingModel;
+  UserDetailModel? userDetailModel;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +194,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.continues,
                 onPressedFunction: () {
-                  onBoardingModel?.userPhotos == selectedImages.toList();
+                  userDetailModel?.userPhotos == selectedImages.toList();
                   NavigationUtil.push(
                       context, RouteConstants.selectProfileScreen);
                 }),

@@ -7,12 +7,14 @@
 /// event_favourite_by : ["123","456"]
 /// event_images : ["img1","img2"]
 /// event_participant : ["11","12"]
+/// event_request : ["11","12"]
 /// is_free : true
 /// is_guest_approved : true
 /// is_questions_required : true
 /// location : "Karachi,Pakistan"
 /// pricing : {"original_price":"100000","discounted_price":"5111","coupon_code":{"code":"0","coupon_discounted_price":"5111","expiry_date":"543666222"}}
 /// questions : {"question_1":{"answer":"answer","is_public":true,"is_required":true,"question":"test"}}
+/// query: {"user_id":{"question":"abc question","answer":"answer pf the question"}}
 /// visibility : {"is_private":false,"is_public":true}
 
 class EventDataModel {
@@ -26,12 +28,14 @@ class EventDataModel {
       this.eventFavouriteBy, 
       this.eventImages, 
       this.eventParticipant, 
-      this.isFree, 
+      this.eventRequestId,
+      this.isFree,
       this.isGuestApproved, 
       this.isQuestionsRequired, 
       this.location, 
       this.pricing, 
       this.questions, 
+      // this.query,
       this.visibility,});
 
   EventDataModel.fromJson(dynamic json) {
@@ -44,12 +48,14 @@ class EventDataModel {
     eventFavouriteBy = json['event_favourite_by'] != null ? json['event_favourite_by'].cast<String>() : [];
     eventImages = json['event_images'] != null ? json['event_images'].cast<String>() : [];
     eventParticipant = json['event_participant'] != null ? json['event_participant'].cast<String>() : [];
+    eventRequestId = json['event_request'] != null ? json['event_request'].cast<String>() : [];
     isFree = json['is_free'];
     isGuestApproved = json['is_guest_approved'];
     isQuestionsRequired = json['is_questions_required'];
     location = json['location'];
     pricing = json['pricing'] != null ? Pricing.fromJson(json['pricing']) : null;
     questions = json['questions'] != null ? Questions.fromJson(json['questions']) : null;
+    // query = json['query'] != null ? Query.fromJson(json['query']) : null;
     visibility = json['visibility'] != null ? Visibility.fromJson(json['visibility']) : null;
   }
   String? id;
@@ -61,12 +67,14 @@ class EventDataModel {
   List<String>? eventFavouriteBy;
   List<String>? eventImages;
   List<String>? eventParticipant;
+  List<String>? eventRequestId;
   bool? isFree;
   bool? isGuestApproved;
   bool? isQuestionsRequired;
   String? location;
   Pricing? pricing;
   Questions? questions;
+  // Query? query;
   Visibility? visibility;
 
   Map<String, dynamic> toJson() {
@@ -80,6 +88,7 @@ class EventDataModel {
     map['event_favourite_by'] = eventFavouriteBy;
     map['event_images'] = eventImages;
     map['event_participant'] = eventParticipant;
+    map['event_request'] = eventRequestId;
     map['is_free'] = isFree;
     map['is_guest_approved'] = isGuestApproved;
     map['is_questions_required'] = isQuestionsRequired;
@@ -90,6 +99,9 @@ class EventDataModel {
     if (questions != null) {
       map['questions'] = questions?.toJson();
     }
+    // if (query != null) {
+    //   map['query'] = query?.toJson();
+    // }
     if (visibility != null) {
       map['visibility'] = visibility?.toJson();
     }
@@ -176,6 +188,53 @@ class Question1 {
   }
 
 }
+
+
+
+// /// user_id : {"question":"abc question","answer":"test answer"}
+//
+// class Query {
+//   Query({
+//     this.userId,});
+//
+//   Query.fromJson(dynamic json) {
+//     userId = json['user_id'] != null ? QueryUserId.fromJson(json['user_id']) : null;
+//   }
+//   QueryUserId? userId;
+//
+//   Map<String, dynamic> toJson() {
+//     final map = <String, dynamic>{};
+//     if (userId != null) {
+//       map['user_id'] = userId?.toJson();
+//     }
+//     return map;
+//   }
+//
+// }
+//
+// /// question : "abc question"
+// /// answer : "test answer"
+//
+// class QueryUserId {
+//   QueryUserId({
+//     this.answer,
+//     this.question,});
+//
+//   QueryUserId.fromJson(dynamic json) {
+//     answer = json['answer'];
+//     question = json['question'];
+//   }
+//   String? answer;
+//   String? question;
+//
+//   Map<String, dynamic> toJson() {
+//     final map = <String, dynamic>{};
+//     map['answer'] = answer;
+//     map['question'] = question;
+//     return map;
+//   }
+//
+// }
 
 /// original_price : "100000"
 /// discounted_price : "5111"

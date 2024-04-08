@@ -12,7 +12,7 @@
 /// bio : "discription"
 /// profile_image : "imageselected"
 /// user_photos : ["img1","img2"]
-/// social_link : {"linkedin":true,"instagram":false}
+/// social_link : {"linkedin":true,"instagram":false,"facebook":true}
 /// more_about : {"diet":{"name":"Diet","value":"yes"},"workout":{"name":"Workout","value":"yes"},"height":{"name":"height","value":"5'6"},"weight":{"name":"weight","value":"60"},"smoking":{"name":"smoking","value":true},"drinking":{"name":"drinking","value":true}}
 /// hobbies : ["cricket","football"]
 /// creativity : ["reading","calligraphy"]
@@ -22,6 +22,9 @@
 /// saved_event : ["event-3"]
 /// report_event : ["event-4"]
 /// friends : ["friend-1-id","friend-2-id","friend-3-id",null]
+/// requestSent : ["friend-1-id","friend-2-id","friend-3-id",null]
+/// requestPending : ["friend-1-id","friend-2-id","friend-3-id",null]
+/// requestReject : ["friend-1-id","friend-2-id","friend-3-id",null]
 /// blocked_friends : ["friend-1-id","friend-2-id",null]
 /// is_email_verified : true
 /// is_phone_verified : true
@@ -56,7 +59,10 @@ class UserDetailModel {
       this.savedEvent, 
       this.reportEvent, 
       this.friends, 
-      this.blockedFriends, 
+      this.requestSent,
+      this.requestPending,
+      this.requestReject,
+      this.blockedFriends,
       this.isEmailVerified, 
       this.isPhoneVerified, 
       this.notificationToken, 
@@ -94,6 +100,9 @@ class UserDetailModel {
     savedEvent = json['saved_event'] != null ? json['saved_event'].cast<String>() : [];
     reportEvent = json['report_event'] != null ? json['report_event'].cast<String>() : [];
     friends = json['friends'] != null ? json['friends'].cast<String>() : [];
+    requestSent = json['request_sent'] != null ? json['request_sent'].cast<String>() : [];
+    requestPending = json['request_pending'] != null ? json['request_pending'].cast<String>() : [];
+    requestReject = json['request_reject'] != null ? json['request_reject'].cast<String>() : [];
     blockedFriends = json['blocked_friends'] != null ? json['blocked_friends'].cast<String>() : [];
     isEmailVerified = json['is_email_verified'];
     isPhoneVerified = json['is_phone_verified'];
@@ -126,6 +135,9 @@ class UserDetailModel {
   List<String>? savedEvent;
   List<String>? reportEvent;
   List<String>? friends;
+  List<String>? requestSent;
+  List<String>? requestPending;
+  List<String>? requestReject;
   List<String>? blockedFriends;
   bool? isEmailVerified;
   bool? isPhoneVerified;
@@ -168,6 +180,9 @@ class UserDetailModel {
     map['saved_event'] = savedEvent;
     map['report_event'] = reportEvent;
     map['friends'] = friends;
+    map['friends'] = requestSent;
+    map['friends'] = requestPending;
+    map['friends'] = requestReject;
     map['blocked_friends'] = blockedFriends;
     map['is_email_verified'] = isEmailVerified;
     map['is_phone_verified'] = isPhoneVerified;
@@ -210,19 +225,24 @@ class CorporateProfile {
 class SocialLogin {
   SocialLogin({
       this.google, 
-      this.apple,});
+      this.apple,
+  this.facebook
+  });
 
   SocialLogin.fromJson(dynamic json) {
     google = json['google'];
     apple = json['apple'];
+    facebook = json['facebook'];
   }
   String? google;
   String? apple;
+  String? facebook;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['google'] = google;
     map['apple'] = apple;
+    map['facebook'] = facebook;
     return map;
   }
 
@@ -251,6 +271,7 @@ class MoreAbout {
     weight = json['weight'] != null ? Weight.fromJson(json['weight']) : null;
     smoking = json['smoking'] != null ? Smoking.fromJson(json['smoking']) : null;
     drinking = json['drinking'] != null ? Drinking.fromJson(json['drinking']) : null;
+    pets = json['pets'] != null ? Pets.fromJson(json['pets']) : null;
   }
   Diet? diet;
   Workout? workout;
@@ -258,6 +279,7 @@ class MoreAbout {
   Weight? weight;
   Smoking? smoking;
   Drinking? drinking;
+  Pets? pets;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -279,6 +301,9 @@ class MoreAbout {
     if (drinking != null) {
       map['drinking'] = drinking?.toJson();
     }
+    if (pets != null) {
+      map['pets'] = pets?.toJson();
+    }
     return map;
   }
 
@@ -293,6 +318,27 @@ class Drinking {
       this.value,});
 
   Drinking.fromJson(dynamic json) {
+    name = json['name'];
+    value = json['value'];
+  }
+  String? name;
+  bool? value;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['name'] = name;
+    map['value'] = value;
+    return map;
+  }
+
+}
+
+class Pets {
+  Pets({
+    this.name,
+    this.value,});
+
+  Pets.fromJson(dynamic json) {
     name = json['name'];
     value = json['value'];
   }
