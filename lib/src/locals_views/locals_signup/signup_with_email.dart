@@ -37,9 +37,13 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late SignUpCubit signupCubit = BlocProvider.of<SignUpCubit>(context);
   final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
   final _formKey = GlobalKey<FormState>();
+  bool isFieldsValidate = false;
+  bool enablePasswordField = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,42 +52,36 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
     //     removeSafeAreaPadding: false,
     //     bgColor: themeCubit.backgroundColor,
     //     widget: continueWithEmail());
-    return BlocConsumer<SignUpCubit,SignUpState>(
+    return BlocConsumer<SignUpCubit, SignUpState>(
         listener: (context, state) async {
-          LoggerUtil.logs('login state: $state');
-          if (state is SignUpLoadingState) {
-            LoadingDialog.showLoadingDialog(context);
-          } else if (state is SignUpSignUpState) {
-            LoadingDialog.hideLoadingDialog(context);
-            if(widget.routeType == "number"){
-              NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-                  args: OtpArg(
-                      "", "","","setPasswordAfterNumber"
-                  ));
-            }
-            else{
-              NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-                  args: OtpArg(
-                      "", "","","setPasswordBeforeNumber"
-                  ));
-            }
-          } else if (state is SignUpSignInState) {
-            LoadingDialog.hideLoadingDialog(context);
-            NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
-          } else if (state is SignUpFailureState) {
-            LoadingDialog.hideLoadingDialog(context);
-          } else if (state is SignUpCancleState) {
-            LoadingDialog.hideLoadingDialog(context);
-          }
-        },
-      builder:(context,state){
-        return UIScaffold(
-            appBar: AppBarComponent(""),
-            removeSafeAreaPadding: false,
-            bgColor: themeCubit.backgroundColor,
-            widget: continueWithEmail());
-      });
-
+      LoggerUtil.logs('login state: $state');
+      if (state is SignUpLoadingState) {
+        LoadingDialog.showLoadingDialog(context);
+      } else if (state is SignUpSignUpState) {
+        LoadingDialog.hideLoadingDialog(context);
+        if (widget.routeType == "number") {
+          NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+              args: OtpArg("", "", "", "setPasswordAfterNumber"));
+        } else {
+          NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+              args: OtpArg("", "", "", "setPasswordBeforeNumber"));
+        }
+      } else if (state is SignUpSignInState) {
+        LoadingDialog.hideLoadingDialog(context);
+        NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
+      } else if (state is SignUpFailureState) {
+        LoadingDialog.hideLoadingDialog(context);
+      } else if (state is SignUpCancleState) {
+        LoadingDialog.hideLoadingDialog(context);
+      }
+    }, builder: (context, state) {
+      return UIScaffold(
+          appBar: const AppBarComponent(""),
+          resizeToAvoidBottomInset: false,
+          // removeSafeAreaPadding: enablePasswordField ? true : false,
+          bgColor: themeCubit.backgroundColor,
+          widget: continueWithEmail());
+    });
   }
 
   Widget continueWithEmail() {
@@ -123,15 +121,43 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                     validator: (email) {
                       return ValidationService.validateEmail(email!);
                     },
-                    hintText: "abc@gmail.com",
+                    hintText: StringConstants.emailTextFieldHint,
+                    title: StringConstants.email,
                     textColor: themeCubit.textColor,
+                    filled: true,
                     onChanged: (value) {
-                      setState(() {
-                        _isEmailValid = value.length >= 8 &&
-                            value.trim().isNotEmpty &&
-                            _formKey.currentState!.validate();
-                      });
+                      handleTextFieldsOnChange();
+                      // setState(() {
+                      //   _isEmailValid = value.length >= 8 &&
+                      //       value.trim().isNotEmpty &&
+                      //       _formKey.currentState!.validate();
+                      // });
                     }),
+
+                if (enablePasswordField)
+                  Column(
+                    children: [
+                      SizedBoxConstants.sizedBoxTwentyH(),
+                      TextFieldComponent(
+                        _passwordController,
+                        title: StringConstants.password,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        filled: true,
+
+                        hintText: "",
+                        // fieldColor: ColorConstants.lightGray.withOpacity(0.5),
+                        textColor: themeCubit.textColor,
+                        onChanged: (value) {
+                          handleTextFieldsOnChange();
+                        },
+
+                        validator: (password) {
+                          return ValidationService.validateEmptyField(
+                              password!);
+                        },
+                      ),
+                    ],
+                  ),
                 SizedBoxConstants.sizedBoxForthyH(),
                 const TextComponent(
                   StringConstants.verificationCodeSentToEmail,
@@ -147,33 +173,41 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
               ],
             ),
             SizedBox(
-              width: MediaQuery.sizeOf(context).width * 0.9,
-              child: ButtonComponent(
-                  bgcolor: _isEmailValid
-                      ? themeCubit.primaryColor
-                      : ColorConstants.lightGray.withOpacity(0.2),
-                  textColor: _isEmailValid
-                      ? ColorConstants.black
-                      : ColorConstants.lightGray,
+                width: MediaQuery.sizeOf(context).width * 0.9,
+                child: ButtonComponent(
+                  bgcolor: themeCubit.primaryColor,
+
+                  textColor: ColorConstants.black,
+
                   buttonText: StringConstants.continues,
-                  onPressedFunction: () {
-                    if (_formKey.currentState!.validate()) {
-                      if (widget.routeType == "number") {
-                        NavigationUtil.push(
-                            context, RouteConstants.otpScreenLocal,
-                            args: OtpArg("", "", "", "setPasswordAfterNumber"));
-                      } else {
-                        NavigationUtil.push(
-                            context, RouteConstants.otpScreenLocal,
-                            args:
-                                OtpArg("", "", "", "setPasswordBeforeNumber"));
-                      }
-                    }
-                  }),
-            )
+                  onPressedFunction:
+                      isFieldsValidate ? onContinuePressed : null,
+                  // onPressedFunction: () {
+
+                  // }),
+                ))
           ],
         ),
       ),
     );
+  }
+
+  void onContinuePressed() {
+    if (_formKey.currentState!.validate()) {
+      if (widget.routeType == "number") {
+        NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+            args: OtpArg("", "", "", "setPasswordAfterNumber"));
+      } else {
+        NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+            args: OtpArg("", "", "", "setPasswordBeforeNumber"));
+      }
+    }
+  }
+
+  void handleTextFieldsOnChange() {
+    if (isFieldsValidate != _formKey.currentState!.validate()) {
+      isFieldsValidate = _formKey.currentState!.validate();
+      setState(() {});
+    }
   }
 }
