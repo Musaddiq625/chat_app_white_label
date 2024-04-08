@@ -146,10 +146,12 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
                   color: ColorConstants.white,
                   fontWeight: FontWeight.normal,
                   fontFamily: FontConstants.inter,
+                  decorationThickness: 0.0,
                   decoration: TextDecoration.none,
                   fontSize: widget.textFieldFontSize)
               : TextStyle(
                   color: ColorConstants.white,
+                  decorationThickness: 0.0,
                   fontFamily: FontConstants.fontProtestStrike,
                   fontSize: widget.textFieldFontSize),
 
