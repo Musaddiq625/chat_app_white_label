@@ -112,7 +112,7 @@ class StringConstants {
       "You can also do this later in your profile section.";
   static const String pickUp4Things =
       "Pick up to 4  things you like. This will help us get the right events for you";
-  static const String scrollLeft = "Scroll left to set other image.";
+  static const String scrollLeft = "Scroll to set other image.";
   static const String chooseAnyOfTheUplodedImages =
       "You can choose any of the uploaded images to be your profile picture. Make sure your face is visible";
   static const String verificationCodeSentToEmail =
@@ -189,6 +189,8 @@ class StringConstants {
   static const String editCover = "Edit Cover";
   static const String characters = "characters";
   static const String phoneTextFieldHint = "1234 123456";
+  static const String emailTextFieldHint = "abc@gmail.com";
+  static const String email = "Email";
   static const String otpTextFieldHint = '000000';
   static const String passwordDoesNotMatch = "Password Does not match";
   static const String errorInvalidEmail = "Invalid email format";
@@ -199,6 +201,8 @@ class StringConstants {
   static const String errorInvalidPhone = "Invalid phone format";
   static const String pleaseEnterAtLeast = "Please enter at least";
   static const String errorInvalidFormat = "Invalid format";
+  static const String errorInvalid = "Invalid ";
+  static const String formatDOB = "DD   MM   YYYY";
   static const String errorInvalidVerfCode = "Invalid Verification code";
   static const String errorNameShouldContainOnlyAlphabets =
       "Name should contain only alphabets";
