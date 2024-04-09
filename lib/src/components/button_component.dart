@@ -9,7 +9,7 @@ class ButtonComponent extends StatelessWidget {
   final Color? textColor;
   final double horizontalLength;
 
-  ButtonComponent(
+  const ButtonComponent(
       {super.key,
       required this.buttonText,
       this.onPressedFunction,
