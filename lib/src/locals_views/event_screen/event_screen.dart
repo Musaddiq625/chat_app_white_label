@@ -1,9 +1,11 @@
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -64,6 +66,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+      // appBar: AppBarComponent(""),
       removeSafeAreaPadding: false,
       bgColor: ColorConstants.backgroundColor,
       widget: SingleChildScrollView(
@@ -155,36 +158,27 @@ class _EventScreenState extends State<EventScreen> {
                       ],
                     ),
                   ),
-                  const TextComponent(
+                  TextComponent(
                     "+1456 ${StringConstants.joined}",
-                    style: TextStyle(fontSize: 16, color: ColorConstants.white),
+                    style: FontStylesConstants.style16(),
                   ),
                 ],
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 10),
-              child: TextComponent(
-                "Property \nnetworking event",
-                style: TextStyle(
-                    fontSize: 30,
-                    fontFamily: FontConstants.fontProtestStrike,
-                    color: ColorConstants.white),
-              ),
+              child: TextComponent("Property \nnetworking event",
+                  style:
+                      FontStylesConstants.style30(color: ColorConstants.white)),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Padding(
+            SizedBoxConstants.sizedBoxTenH(),
+            Padding(
               padding: EdgeInsets.only(left: 10),
-              child: TextComponent(
-                "17 Feb . 11AM - 2PM . Manchester",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
+              child: TextComponent("17 Feb . 11AM - 2PM . Manchester",
+                  style:
+                      FontStylesConstants.style16(color: ColorConstants.white)),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            SizedBoxConstants.sizedBoxTenH(),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Row(
@@ -239,13 +233,9 @@ class _EventScreenState extends State<EventScreen> {
           padding: const EdgeInsets.all(18.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            TextComponent(
-              StringConstants.abouttheEvent,
-              style: TextStyle(
-                  fontFamily: FontConstants.fontProtestStrike,
-                  fontSize: 18,
-                  color: themeCubit.primaryColor),
-            ),
+            TextComponent(StringConstants.abouttheEvent,
+                style: FontStylesConstants.style18(
+                    color: themeCubit.primaryColor)),
             SizedBox(
               height: 10,
             ),
@@ -280,9 +270,7 @@ class _EventScreenState extends State<EventScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            SizedBoxConstants.sizedBoxTwentyH(),
             Container(
               // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
               child: Column(
@@ -299,18 +287,18 @@ class _EventScreenState extends State<EventScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextComponent(
-                            "1456 ${StringConstants.participants}",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: themeCubit.textColor),
-                          ),
-                          TextComponent(
-                            "Elena, Ilsa and more",
-                            style: TextStyle(
-                                fontSize: 14, color: ColorConstants.lightGray),
-                          ),
+                          TextComponent("1456 ${StringConstants.participants}",
+                              style: FontStylesConstants.style16(
+                                  color: ColorConstants.white,
+                                  fontWeight: FontWeight.bold)
+                              // style: TextStyle(
+                              //     fontSize: 16,
+                              //     fontWeight: FontWeight.bold,
+                              //     color: themeCubit.textColor),
+                              ),
+                          TextComponent("Elena, Ilsa and more",
+                              style: FontStylesConstants.style14(
+                                  color: ColorConstants.lightGray)),
                         ],
                       ),
                       const Spacer(),
@@ -348,22 +336,17 @@ class _EventScreenState extends State<EventScreen> {
                         AssetConstants.calendar,
                       ),
                       // ProfileImageComponent(url: ""),
-                      SizedBox(width: 10),
+                      SizedBoxConstants.sizedBoxTenW(),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextComponent(
-                            StringConstants.flexibleDate,
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: themeCubit.textColor),
-                          ),
-                          TextComponent(
-                            StringConstants.dateWillbeDecidelater,
-                            style: TextStyle(
-                                fontSize: 14, color: ColorConstants.lightGray),
-                          ),
+                          TextComponent(StringConstants.flexibleDate,
+                              style: FontStylesConstants.style16(
+                                  color: ColorConstants.white,
+                                  fontWeight: FontWeight.bold)),
+                          TextComponent(StringConstants.dateWillbeDecidelater,
+                              style: FontStylesConstants.style14(
+                                  color: ColorConstants.lightGray)),
                         ],
                       ),
                     ],
@@ -376,21 +359,20 @@ class _EventScreenState extends State<EventScreen> {
                         AssetConstants.marker,
                       ),
                       // ProfileImageComponent(url: ""),
-                      SizedBox(width: 10),
+                      SizedBoxConstants.sizedBoxTenW(),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextComponent(
                             "Manchester",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: themeCubit.textColor),
+                            style: FontStylesConstants.style16(
+                                color: ColorConstants.white,
+                                fontWeight: FontWeight.bold),
                           ),
                           TextComponent(
                             StringConstants.exactLocationAfterJoining,
-                            style: TextStyle(
-                                fontSize: 14, color: ColorConstants.lightGray),
+                            style: FontStylesConstants.style14(
+                                color: ColorConstants.lightGray),
                           ),
                         ],
                       ),
@@ -409,19 +391,13 @@ class _EventScreenState extends State<EventScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextComponent(
-                              "SR 150",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: themeCubit.textColor),
-                            ),
-                            TextComponent(
-                              StringConstants.ticketrequired,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: ColorConstants.lightGray),
-                            ),
+                            TextComponent("SR 150",
+                                style: FontStylesConstants.style16(
+                                    color: ColorConstants.white,
+                                    fontWeight: FontWeight.bold)),
+                            TextComponent(StringConstants.ticketrequired,
+                                style: FontStylesConstants.style14(
+                                    color: ColorConstants.lightGray)),
                           ],
                         ),
                       ],
@@ -438,17 +414,14 @@ class _EventScreenState extends State<EventScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextComponent(
-                            StringConstants.freeToJoin,
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: themeCubit.textColor),
-                          ),
+                          TextComponent(StringConstants.freeToJoin,
+                              style: FontStylesConstants.style16(
+                                  color: ColorConstants.white,
+                                  fontWeight: FontWeight.bold)),
                           TextComponent(
                             StringConstants.noCharityRequired,
-                            style: TextStyle(
-                                fontSize: 14, color: ColorConstants.lightGray),
+                            style: FontStylesConstants.style14(
+                                color: ColorConstants.lightGray),
                           ),
                         ],
                       ),
@@ -492,9 +465,7 @@ class _EventScreenState extends State<EventScreen> {
                     ],
                   ),
                 )),
-            const SizedBox(
-              height: 30,
-            ),
+            SizedBoxConstants.sizedBoxThirtyH(),
             ...List.generate(
                 contacts.length,
                 (index) => ContactCard(
@@ -521,13 +492,9 @@ class _EventScreenState extends State<EventScreen> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
-                    child: TextComponent(
-                      StringConstants.shareEvent,
-                      style: TextStyle(
-                          color: themeCubit.primaryColor,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 18),
-                    ),
+                    child: TextComponent(StringConstants.shareEvent,
+                        style: FontStylesConstants.style18(
+                            color: themeCubit.primaryColor)),
                   ),
                   InkWell(
                     onTap: () => Navigator.pop(context),
@@ -587,9 +554,7 @@ class _EventScreenState extends State<EventScreen> {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              SizedBoxConstants.sizedBoxTenH(),
               const Divider(
                 thickness: 0.5,
               ),
@@ -627,6 +592,7 @@ class _EventScreenState extends State<EventScreen> {
           ),
         ));
   }
+
   _shareWithConnectionBottomSheet(String eventName, String userName) {
     BottomSheetComponent.showBottomSheet(context,
         bgColor: themeCubit.darkBackgroundColor,
@@ -658,7 +624,7 @@ class _EventScreenState extends State<EventScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBoxConstants.sizedBoxTwentyH(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -668,7 +634,7 @@ class _EventScreenState extends State<EventScreen> {
                       StringConstants.goBack,
                       style: TextStyle(color: themeCubit.textColor),
                     )),
-                const SizedBox(width: 30),
+                SizedBoxConstants.sizedBoxThirtyW(),
                 ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
                   textColor: themeCubit.backgroundColor,
@@ -804,13 +770,9 @@ class _EventScreenState extends State<EventScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextComponent(
-                    StringConstants.join,
-                    style: TextStyle(
-                        fontFamily: FontConstants.fontProtestStrike,
-                        color: themeCubit.primaryColor,
-                        fontSize: 18),
-                  ),
+                  TextComponent(StringConstants.join,
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor)),
                   InkWell(
                     onTap: () => Navigator.pop(context),
                     child: IconComponent(
@@ -826,13 +788,9 @@ class _EventScreenState extends State<EventScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextComponent(
-                    "Property \nnetworking event",
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: FontConstants.fontProtestStrike,
-                        color: themeCubit.textColor),
-                  ),
+                  TextComponent("Property \nnetworking event",
+                      style: FontStylesConstants.style28(
+                          color: ColorConstants.white)),
                   Image.asset(
                     AssetConstants.group,
                     width: 100,
@@ -840,13 +798,10 @@ class _EventScreenState extends State<EventScreen> {
                   ),
                 ],
               ),
-              TextComponent(
-                StringConstants.freeToJoin,
-                style: TextStyle(color: themeCubit.textColor),
-              ),
-              SizedBox(
-                height: 20,
-              ),
+              TextComponent(StringConstants.freeToJoin,
+                  style:
+                      FontStylesConstants.style14(color: ColorConstants.white)),
+              SizedBoxConstants.sizedBoxTwentyH(),
               const Divider(
                 thickness: 0.5,
               ),
@@ -968,28 +923,24 @@ class _EventScreenState extends State<EventScreen> {
                 url: "",
                 size: 30,
               ),
-              SizedBox(
-                width: 10,
-              ),
+              SizedBoxConstants.sizedBoxTenW(),
               TextComponent(
                 "Message for Raul",
-                style: TextStyle(
-                    color: themeCubit.primaryColor,
-                    fontFamily: FontConstants.fontProtestStrike,
-                    fontSize: 18),
+                style :FontStylesConstants.style18(color: ColorConstants.primaryColor),
               ),
             ],
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBoxConstants.sizedBoxTenH(),
           TextComponent(
             StringConstants.doYouHaveQuestion,
-            style: TextStyle(color: themeCubit.textColor),
+            style :FontStylesConstants.style14(color: ColorConstants.white),
             maxLines: 4,
           ),
+          SizedBoxConstants.sizedBoxTenH(),
           TextFieldComponent(
             _controller,
+            filled: true,
+            textFieldFontSize: 14,
             hintText: StringConstants.typeYourMessage,
             fieldColor: ColorConstants.lightGray.withOpacity(0.5),
             maxLines: 4,

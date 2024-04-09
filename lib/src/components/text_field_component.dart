@@ -1,8 +1,8 @@
 import 'dart:ui' as dart_ui;
+
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
-import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,6 +43,7 @@ class TextFieldComponent extends StatefulWidget {
 
   final dart_ui.TextDirection? textDirection;
   final bool? changeDirection;
+
   TextFieldComponent(
     this.textEditingController, {
     Key? key,
@@ -79,15 +80,18 @@ class TextFieldComponent extends StatefulWidget {
     this.autoFocus = false,
     this.autovalidateMode = AutovalidateMode.disabled,
   }) : super(key: key);
+
   @override
   State<TextFieldComponent> createState() => _TextFieldComponentState();
 }
 
 class _TextFieldComponentState extends State<TextFieldComponent> {
   bool hidePassword = false;
+
   // List<TextInputFormatter> inputFormatters = [];
 
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+
   @override
   void initState() {
     hidePassword = widget.hidePassword ?? false;
@@ -237,10 +241,18 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
       errorMaxLines: widget.errorMaxLines,
       hintText: widget.hintText,
       counter: const Offstage(),
-      hintStyle: TextStyle(
-          color: ColorConstants.lightGray,
-          fontFamily: FontConstants.fontProtestStrike,
-          fontSize: widget.textFieldFontSize),
+      hintStyle: widget.filled
+          ? TextStyle(
+              color: ColorConstants.lightGray,
+              fontWeight: FontWeight.normal,
+              fontFamily: FontConstants.inter,
+              decorationThickness: 0.0,
+              decoration: TextDecoration.none,
+              fontSize: widget.textFieldFontSize)
+          : TextStyle(
+              color: ColorConstants.lightGray,
+              fontFamily: FontConstants.fontProtestStrike,
+              fontSize: widget.textFieldFontSize),
     );
   }
 
@@ -265,6 +277,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
               widget.fieldColor ?? ColorConstants.blackLight.withOpacity(0.6),
         ),
       );
+
   String _showHintText({
     required String text,
     required bool showAsterisk,
@@ -277,6 +290,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
   }
 
   BoxConstraints _boxConstraints() => const BoxConstraints();
+
   Widget _iconWidget() => GestureDetector(
         onTap: () {
           hidePassword = !hidePassword;

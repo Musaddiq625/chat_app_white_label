@@ -46,6 +46,7 @@ class SizedBoxConstants {
   static SizedBox sizedBoxThirtySix() => SizedBox(height: 36);
 
   static SizedBox sizedBoxThirtyH() => SizedBox(height: 30);
+  static SizedBox sizedBoxThirtyW() => SizedBox(width: 30);
 
   static SizedBox sizedBoxSixtyW() => SizedBox(width: 60);
 

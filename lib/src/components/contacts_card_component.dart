@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../constants/color_constants.dart';
+import '../constants/font_styles.dart';
+import '../constants/size_box_constants.dart';
 
 class ContactCard extends StatelessWidget {
   final ContactModel contact;
@@ -35,22 +37,18 @@ class ContactCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ProfileImageComponent(url: contact.url),
-                SizedBox(width: 10),
+                SizedBoxConstants.sizedBoxTenW(),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextComponent(
                         contact.name,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: themeCubit.textColor),
+                          style :FontStylesConstants.style16(color: ColorConstants.white)
                       ),
                       TextComponent(
                         contact.title,
-                        style: const TextStyle(
-                            fontSize: 14, color: ColorConstants.lightGray),
+                          style :FontStylesConstants.style14(color: ColorConstants.lightGray)
                       ),
                     ],
                   ),
