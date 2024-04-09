@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -48,7 +49,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
               width: 150,
               height: 150,
             ),
-          SizedBox(height: 20),
+          SizedBoxConstants.sizedBoxTwentyH(),
           Container(
             width: 300,
             child: TextComponent(
@@ -61,9 +62,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
               maxLines: 4,
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          SizedBoxConstants.sizedBoxTwentyH(),
           Container(
             width: 300,
             child: TextComponent(
@@ -73,9 +72,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
               maxLines: 4,
             ),
           ),
-          const SizedBox(
-            height: 20,
-          )
+         SizedBoxConstants.sizedBoxTwentyH()
         ],
       ),
     );

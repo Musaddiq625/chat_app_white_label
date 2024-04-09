@@ -22,6 +22,25 @@ class FontStylesConstants {
       decoration:
       underLine ? TextDecoration.underline : TextDecoration.none);
 
+
+
+  static TextStyle style38({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 38,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.fontProtestStrike,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+
   static TextStyle style35({
     final underLine = false,
     final letterSpacing= 0.0,
@@ -124,6 +143,41 @@ class FontStylesConstants {
       decoration:
       underLine ? TextDecoration.underline : TextDecoration.none);
 
+
+
+  static TextStyle style16({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 16,
+      color: color,
+      fontWeight: fontWeight, //add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+
+  static TextStyle style15({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 15,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.inter,//add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+
   static TextStyle style14({
     final underLine = false,
     final letterSpacing= 0.0,
@@ -131,6 +185,22 @@ class FontStylesConstants {
     FontWeight fontWeight = FontWeight.normal,
   }) => TextStyle(
       fontSize: 14,
+      color: color,
+      fontWeight: fontWeight, //add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+
+  static TextStyle style13({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.black,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 13,
       color: color,
       fontWeight: fontWeight, //add inter here,
       fontStyle: FontStyle.normal,
