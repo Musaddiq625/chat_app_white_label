@@ -1,22 +1,19 @@
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/text_field_component.dart';
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/models/user_detail_model.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../components/button_component.dart';
-import '../../components/text_component.dart';
-import '../../components/text_field_component.dart';
-import '../../components/ui_scaffold.dart';
-import '../../constants/app_constants.dart';
-import '../../constants/color_constants.dart';
-import '../../constants/font_constants.dart';
-import '../../constants/route_constants.dart';
-import '../../constants/size_box_constants.dart';
-import '../../constants/string_constants.dart';
-import '../../models/user_detail_model.dart';
-import '../../utils/navigation_util.dart';
-import '../../utils/service/validation_service.dart';
 
 class WhatDoYouDoScreen extends StatefulWidget {
   const WhatDoYouDoScreen({super.key});
@@ -35,6 +32,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBarComponent(
           "",
           action: TextComponent(StringConstants.skip,
@@ -66,9 +64,8 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextComponent(
-                StringConstants.whatDoYouDo,
-                style:FontStylesConstants.style22()),
+              TextComponent(StringConstants.whatDoYouDo,
+                  style: FontStylesConstants.style22()),
               SizedBoxConstants.sizedBoxThirtyH(),
               TextFieldComponent(_aboutMeController,
                   keyboardType: TextInputType.multiline,
@@ -78,8 +75,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                   },
                   validator: (whatDoYouDo) =>
                       ValidationService.validateEmptyField(
-                        _aboutMeController.text
-                      ),
+                          _aboutMeController.text),
                   maxLines: 50),
             ],
           ),
@@ -96,8 +92,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
               buttonText: StringConstants.continues,
               onPressedFunction: () {
                 userDetailModel?.aboutMe = _aboutMeController.text;
-                NavigationUtil.push(
-                    context, RouteConstants.genderScreen);
+                NavigationUtil.push(context, RouteConstants.genderScreen);
               }),
         )
       ],
@@ -109,11 +104,5 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
       isFieldsValidate = _formKey.currentState!.validate();
       setState(() {});
     }
-  }
-
-  void onContinuePressed() {
-    userDetailModel?.aboutMe = _aboutMeController.text;
-    AppConstants.closeKeyboard();
-    NavigationUtil.push(context, RouteConstants.genderScreen);
   }
 }
