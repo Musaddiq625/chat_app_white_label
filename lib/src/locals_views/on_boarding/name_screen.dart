@@ -17,6 +17,8 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../constants/font_styles.dart';
+
 class NameScreen extends StatefulWidget {
   const NameScreen({super.key});
 
@@ -62,10 +64,7 @@ class _NameScreenState extends State<NameScreen> {
             children: [
               TextComponent(
                 StringConstants.whatsYourName,
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
+                style: FontStylesConstants.style22(color: ColorConstants.white)
               ),
               SizedBoxConstants.sizedBoxThirtyH(),
               TextFieldComponent(

@@ -1,4 +1,5 @@
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,34 +68,8 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
             children: [
               TextComponent(
                 StringConstants.whatDoYouDo,
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
-              ),
+                style:FontStylesConstants.style22()),
               SizedBoxConstants.sizedBoxThirtyH(),
-              // TextField(
-              //   controller: _aboutMeController,
-              //   keyboardType: TextInputType.text,
-              //   style: TextStyle(
-              //       color: ColorConstants.white,
-              //       fontFamily: FontConstants.fontProtestStrike,
-              //       fontSize: 30),
-              //   decoration: const InputDecoration(
-              //     border: InputBorder.none,
-              //     hintText: StringConstants.whatDoYouDoHintText,
-              //     hintStyle: TextStyle(
-              //         color: ColorConstants.lightGray,
-              //         fontFamily: FontConstants.fontProtestStrike,
-              //         fontSize: 30),
-              //   ),
-              //   maxLines: 5,
-              //     onChanged: (value) {
-              //       setState(() {
-              //         _isDiscriptionValid=value.length >=4 && value.trim().isNotEmpty;
-              //       });
-              //     }
-              // ),
               TextFieldComponent(_aboutMeController,
                   keyboardType: TextInputType.multiline,
                   hintText: StringConstants.whatDoYouDoHintText,
@@ -122,7 +97,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
               onPressedFunction: () {
                 userDetailModel?.aboutMe = _aboutMeController.text;
                 NavigationUtil.push(
-                    context, RouteConstants.uploadProfileScreen);
+                    context, RouteConstants.genderScreen);
               }),
         )
       ],

@@ -4,13 +4,34 @@ import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:flutter/material.dart';
 
 class FontStylesConstants {
+
+
+
+  static TextStyle style30({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.black,
+    FontWeight fontWeight = FontWeight.bold,
+  }) => TextStyle(
+      fontSize: 30,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.fontProtestStrike,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+
+
   static TextStyle style28({
     final underLine = false,
     final letterSpacing= 0.0,
     Color color = ColorConstants.black,
     FontWeight fontWeight = FontWeight.bold,
   }) => TextStyle(
-          fontSize: 13,
+          fontSize: 28,
           color: color,
           fontWeight: fontWeight,
           fontFamily: FontConstants.inter,//add inter here,
@@ -19,6 +40,38 @@ class FontStylesConstants {
           decorationColor: color,
           decoration:
           underLine ? TextDecoration.underline : TextDecoration.none);
+
+
+  static TextStyle style22({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 22,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.fontProtestStrike,//add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+  static TextStyle style14({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.black,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 14,
+      color: color,
+      fontWeight: fontWeight, //add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
 
   // static TextStyle style33({
   //   Color color = ColorConstants.lightBlack,

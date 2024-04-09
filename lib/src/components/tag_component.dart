@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class TagComponent extends StatelessWidget {
                       SizedBox(width: 5,),
                       Padding(
                         padding: const EdgeInsets.only(right:5.0),
-                        child: Text(
+                        child: TextComponent(
                           customIconText!,
                           style: TextStyle(color: customTextColor),
                         ),

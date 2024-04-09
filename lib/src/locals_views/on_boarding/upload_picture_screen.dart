@@ -22,6 +22,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import '../../constants/font_styles.dart';
 import 'cubit/onboarding_cubit.dart';
 
 class UploadPictureScreen extends StatefulWidget {
@@ -67,18 +68,12 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
           children: [
             TextComponent(
               StringConstants.letsPutAFace,
-              style: TextStyle(
-                  fontSize: 22,
-                  color: themeCubit.textColor,
-                  fontFamily: FontConstants.fontProtestStrike),
+              style: FontStylesConstants.style22(color: ColorConstants.white),
             ),
             SizedBoxConstants.sizedBoxTwelveH(),
-            const TextComponent(
+             TextComponent(
               StringConstants.requiredPictures,
-              style: TextStyle(
-                fontSize: 12,
-                color: ColorConstants.lightGray,
-              ),
+              style: FontStylesConstants.style14(color: ColorConstants.lightGray),
             ),
             const SizedBox(
               height: 40,

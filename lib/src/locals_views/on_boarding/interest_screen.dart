@@ -1,4 +1,5 @@
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import '../../components/tag_component.dart';
 import '../../components/text_component.dart';
 import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
-import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../utils/navigation_util.dart';
@@ -89,10 +89,7 @@ class _InterestScreenState extends State<InterestScreen> {
       appBar: AppBarComponent(
         "",
         action: TextComponent(StringConstants.skip,
-            style: TextStyle(
-              fontSize: 14,
-              color: themeCubit.textColor,
-            )),
+            style: FontStylesConstants.style14(color: themeCubit.textColor)),
       ),
       removeSafeAreaPadding: false,
       bgColor: themeCubit.backgroundColor,
@@ -127,47 +124,17 @@ class _InterestScreenState extends State<InterestScreen> {
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     InkWell(
-            //       onTap:()=> NavigationUtil.pop(context),
-            //       child: IconComponent(
-            //         iconData: Icons.arrow_back_ios_new_outlined,
-            //         borderColor: ColorConstants.transparent,
-            //         backgroundColor: ColorConstants.iconBg,
-            //         iconColor: ColorConstants.white,
-            //         circleSize: 30,
-            //         iconSize: 20,
-            //       ),
-            //     ),
-            //     TextComponent(StringConstants.skip,
-            //         style: TextStyle(
-            //           fontSize: 14,
-            //           color: themeCubit.textColor,
-            //         ))
-            //   ],
-            // ),
-            // SizedBox(
-            //   height: 30,
-            // ),
             TextComponent(
               StringConstants.whatsYourInterest,
-              style: TextStyle(
-                  fontSize: 22,
-                  color: themeCubit.textColor,
-                  fontFamily: FontConstants.fontProtestStrike),
+              style: FontStylesConstants.style22(),
             ),
             SizedBoxConstants.sizedBoxTenH(),
             TextComponent(
               StringConstants.pickUp4Things,
-              style: TextStyle(
-                fontSize: 12,
-                color: ColorConstants.lightGray,
-              ),
-              maxLines: 4,
+              style:
+                  FontStylesConstants.style14(color: ColorConstants.lightGray),
+              maxLines: 5,
             ),
             SizedBoxConstants.sizedBoxTwentyH(),
             hobbies(),
@@ -193,10 +160,7 @@ class _InterestScreenState extends State<InterestScreen> {
       children: [
         TextComponent(
           StringConstants.hobbiesAndInterests,
-          style: TextStyle(
-            fontSize: 14,
-            color: themeCubit.textColor,
-          ),
+          style: FontStylesConstants.style14(color: themeCubit.textColor),
         ),
         SizedBoxConstants.sizedBoxTenH(),
         Wrap(
@@ -227,9 +191,7 @@ class _InterestScreenState extends State<InterestScreen> {
                           });
                         },
                       ),
-                      SizedBox(
-                        width: 5,
-                      )
+                      SizedBoxConstants.sizedBoxFourW()
                     ]))
                 .toList(),
           ],
@@ -243,13 +205,8 @@ class _InterestScreenState extends State<InterestScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextComponent(
-          StringConstants.creativity,
-          style: TextStyle(
-            fontSize: 14,
-            color: themeCubit.textColor,
-          ),
-        ),
+        TextComponent(StringConstants.creativity,
+            style: FontStylesConstants.style14(color: themeCubit.textColor)),
         SizedBoxConstants.sizedBoxTenH(),
         Wrap(
           children: [
@@ -257,12 +214,14 @@ class _InterestScreenState extends State<InterestScreen> {
                 .map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
                       TagComponent(
                         iconData: tag['iconData'],
-                        customTextColor: selectedInterestTagList.contains(tag['name'])
-                            ? ColorConstants.black
-                            : themeCubit.textColor,
-                        backgroundColor: selectedInterestTagList.contains(tag['name'])
-                            ? themeCubit.primaryColor
-                            : ColorConstants.lightGray.withOpacity(0.3),
+                        customTextColor:
+                            selectedInterestTagList.contains(tag['name'])
+                                ? ColorConstants.black
+                                : themeCubit.textColor,
+                        backgroundColor:
+                            selectedInterestTagList.contains(tag['name'])
+                                ? themeCubit.primaryColor
+                                : ColorConstants.lightGray.withOpacity(0.3),
                         iconColor: selectedInterestTagList.contains(tag['name'])
                             ? themeCubit.backgroundColor
                             : themeCubit.primaryColor,
@@ -279,9 +238,7 @@ class _InterestScreenState extends State<InterestScreen> {
                           });
                         },
                       ),
-                      SizedBox(
-                        width: 5,
-                      )
+                      SizedBoxConstants.sizedBoxFourW()
                     ]))
                 .toList(),
           ],

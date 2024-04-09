@@ -9,6 +9,7 @@ import '../../components/button_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/text_component.dart';
 import '../../constants/font_constants.dart';
+import '../../constants/font_styles.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/size_box_constants.dart';
 import '../../constants/string_constants.dart';
@@ -50,26 +51,10 @@ class _DOBScreenState extends State<DOBScreen> {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // InkWell(
-              //   onTap:()=> NavigationUtil.pop(context),
-              //   child: IconComponent(
-              //     iconData: Icons.arrow_back_ios_new_outlined,
-              //     borderColor: Colors.transparent,
-              //     backgroundColor: ColorConstants.iconBg,
-              //     iconColor: Colors.white,
-              //     circleSize: 30,
-              //     iconSize: 20,
-              //   ),
-              // ),
-              // SizedBoxConstants.sizedBoxThirtyH(),
               TextComponent(
                 StringConstants.whensYouDob,
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
+                style:FontStylesConstants.style22(color: ColorConstants.white)
               ),
               SizedBoxConstants.sizedBoxThirtyH(),
               InkWell(
@@ -77,17 +62,11 @@ class _DOBScreenState extends State<DOBScreen> {
                   child: _dateController.value.text.isNotEmpty
                       ? TextComponent(
                           _dateController.text,
-                          style: TextStyle(
-                              color: themeCubit.textColor,
-                              fontFamily: FontConstants.fontProtestStrike,
-                              fontSize: 30),
+                          style:FontStylesConstants.style30(color: themeCubit.textColor,letterSpacing: 0.5)
                         )
-                      : const TextComponent(
+                      :  TextComponent(
                           StringConstants.formatDOB,
-                          style: TextStyle(
-                              color: ColorConstants.lightGray,
-                              fontFamily: FontConstants.fontProtestStrike,
-                              fontSize: 30),
+                          style: FontStylesConstants.style30(color: ColorConstants.lightGray,letterSpacing: 0.8),
                         )),
             ],
           ),

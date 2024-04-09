@@ -112,9 +112,9 @@ class StringConstants {
       "You can also do this later in your profile section.";
   static const String pickUp4Things =
       "Pick up to 4  things you like. This will help us get the right events for you";
-  static const String scrollLeft = "Scroll to set other image.";
+  static const String scrollLeft = "Scroll left to set other image.";
   static const String chooseAnyOfTheUplodedImages =
-      "You can choose any of the uploaded images to be your profile picture. Make sure your face is visible";
+      "You can choose any of the uploaded images to be your profile picture. Make sure your face is visible.";
   static const String verificationCodeSentToEmail =
       "Verification code will be sent on this email.";
   static const String passwordValidation =

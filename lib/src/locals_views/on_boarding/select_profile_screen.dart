@@ -18,6 +18,8 @@ import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 
+import '../../constants/font_styles.dart';
+
 class SelectProfileImageScreen extends StatefulWidget {
   final List<File> selectedImages;
   const SelectProfileImageScreen({super.key, required this.selectedImages});
@@ -99,35 +101,16 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // InkWell(
-              //   onTap:()=> NavigationUtil.pop(context),
-              //   child: IconComponent(
-              //     iconData: Icons.arrow_back_ios_new_outlined,
-              //     borderColor: Colors.transparent,
-              //     backgroundColor: ColorConstants.iconBg,
-              //     iconColor: Colors.white,
-              //     circleSize: 30,
-              //     iconSize: 20,
-              //   ),
-              // ),
-              // SizedBoxConstants.sizedBoxThirtyH(),
               TextComponent(
                 StringConstants.selectYourPicture,
-                style: TextStyle(
-                    fontSize: 22,
-                    color: themeCubit.textColor,
-                    fontFamily: FontConstants.fontProtestStrike),
+                style: FontStylesConstants.style22(color: ColorConstants.white),
               ),
               SizedBoxConstants.sizedBoxTwelveH(),
-              const TextComponent(
+               TextComponent(
                 StringConstants.chooseAnyOfTheUplodedImages,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: ColorConstants.lightGray,
-                ),
-                maxLines: 4,
+                style:FontStylesConstants.style14(color: ColorConstants.lightGray),
+                 maxLines: 6,
               ),
               SizedBoxConstants.sizedBoxForthyH(),
               SizedBox(
@@ -180,13 +163,10 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
               if (widget.selectedImages.length - 1 != _currentPage)
                 SizedBoxConstants.sizedBoxThirtyH(),
               if (widget.selectedImages.length - 1 != _currentPage)
-                const Center(
+                 Center(
                   child: TextComponent(
                     StringConstants.scrollLeft,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: ColorConstants.lightGray,
-                    ),
+                    style:FontStylesConstants.style14(color: ColorConstants.lightGray)
                   ),
                 ),
             ],
