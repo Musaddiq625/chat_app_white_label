@@ -94,18 +94,12 @@ class _NameScreenState extends State<NameScreen> {
           ),
         ),
         SizedBox(
-          width: MediaQuery.sizeOf(context).width * 0.9,
-          child: ButtonComponent(
-              bgcolor: themeCubit.primaryColor,
-              textColor: ColorConstants.black,
-              buttonText: StringConstants.continues,
-              onPressedFunction: () {
-                userDetailModel?.firstName = _firstNameController.text;
-                userDetailModel?.lastName = _secondNameController.text;
-                NavigationUtil.push(
-                    context, RouteConstants.uploadProfileScreen);
-              }),
-        )
+            width: MediaQuery.sizeOf(context).width * 0.9,
+            child: ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                textColor: ColorConstants.black,
+                buttonText: StringConstants.continues,
+                onPressedFunction: isFieldsValidate ? onContinuePressed : null))
       ],
     );
   }
@@ -118,6 +112,7 @@ class _NameScreenState extends State<NameScreen> {
   }
 
   void onContinuePressed() {
+    userDetailModel?.firstName = _firstNameController.text;
     userDetailModel?.lastName = _secondNameController.text;
     AppConstants.closeKeyboard();
     NavigationUtil.push(context, RouteConstants.uploadProfileScreen);
