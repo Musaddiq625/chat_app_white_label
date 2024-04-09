@@ -1,28 +1,23 @@
 import 'dart:io';
 
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/models/user_detail_model.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/constants/app_constants.dart';
-import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
-
-import 'package:chat_app_white_label/src/components/app_bar_component.dart';
-import 'package:chat_app_white_label/src/components/button_component.dart';
-import 'package:chat_app_white_label/src/components/icon_component.dart';
-import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/font_constants.dart';
-import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
-import 'package:chat_app_white_label/src/constants/string_constants.dart';
-import 'package:chat_app_white_label/src/utils/navigation_util.dart';
-import '../../constants/font_styles.dart';
 import 'cubit/onboarding_cubit.dart';
 
 class UploadPictureScreen extends StatefulWidget {
@@ -71,9 +66,10 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
               style: FontStylesConstants.style22(color: ColorConstants.white),
             ),
             SizedBoxConstants.sizedBoxTwelveH(),
-             TextComponent(
+            TextComponent(
               StringConstants.requiredPictures,
-              style: FontStylesConstants.style14(color: ColorConstants.lightGray),
+              style:
+                  FontStylesConstants.style14(color: ColorConstants.lightGray),
             ),
             const SizedBox(
               height: 40,
