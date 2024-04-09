@@ -6,6 +6,37 @@ import 'package:flutter/material.dart';
 class FontStylesConstants {
 
 
+  static TextStyle style47({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.bold,
+  }) => TextStyle(
+      fontSize: 47,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.fontProtestStrike,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+  static TextStyle style35({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.bold,
+  }) => TextStyle(
+      fontSize: 35,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.fontProtestStrike,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
 
   static TextStyle style30({
     final underLine = false,
@@ -49,6 +80,41 @@ class FontStylesConstants {
     FontWeight fontWeight = FontWeight.normal,
   }) => TextStyle(
       fontSize: 22,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.fontProtestStrike,//add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+
+
+  static TextStyle style20({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 20,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.fontProtestStrike,//add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+
+  static TextStyle style18({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 18,
       color: color,
       fontWeight: fontWeight,
       fontFamily: FontConstants.fontProtestStrike,//add inter here,

@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -149,7 +150,7 @@ class IconComponent extends StatelessWidget {
               height: 10,
             ),
           if (customText != null)
-            Text(
+            TextComponent(
               customText!,
               style: TextStyle(
                   fontSize: customTextSize,

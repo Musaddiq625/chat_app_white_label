@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -70,13 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        const Text(
+         TextComponent(
           StringConstants.locals,
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 47,
-              color: Colors.white,
-              fontFamily: FontConstants.fontProtestStrike),
+          style: FontStylesConstants.style47()
         ),
         const Spacer(),
         IconComponent(
@@ -108,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _eventWidget() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -146,24 +143,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   TextComponent(
                     "+1456 ${StringConstants.joined}",
-                    style: TextStyle(fontSize: 15, color: Colors.white),
+                    style: FontStylesConstants.style14(color: ColorConstants.white),
                   ),
                 ],
               ),
-              const TextComponent(
+               TextComponent(
                 "Property \nnetworking event",
-                style: TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontFamily: FontConstants.fontProtestStrike),
+                style: FontStylesConstants.style35(),
+
+                // style: TextStyle(
+                //     fontSize: 38,
+                //     fontWeight: FontWeight.bold,
+                //     color: Colors.white,
+                //     fontFamily: FontConstants.fontProtestStrike),
               ),
               const SizedBox(
                 height: 10,
               ),
               TextComponent(
                 "17 Feb . 11AM - 2PM . Manchester",
-                style: TextStyle(fontSize: 15, color: Colors.white),
+                style:FontStylesConstants.style14(color: ColorConstants.white),
               ),
               const SizedBox(
                 height: 20,
@@ -243,10 +242,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 20,
                     ),
                     TextComponent(StringConstants.saveEvent,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: themeCubit.textColor)),
+                        style: FontStylesConstants.style14(color: ColorConstants.white,fontWeight: FontWeight.bold),
+                        // style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     fontSize: 14,
+                        //     color: themeCubit.textColor)
+
+                    ),
                   ],
                 ),
               ),
@@ -270,10 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 20,
                     ),
                     TextComponent(StringConstants.showLessLikeThis,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: themeCubit.textColor)),
+                      style: FontStylesConstants.style14(color: ColorConstants.white,fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -296,11 +295,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    const TextComponent(StringConstants.reportEvent,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.red)),
+                     TextComponent(StringConstants.reportEvent,
+                      style: FontStylesConstants.style14(color: ColorConstants.red,fontWeight: FontWeight.bold),),
                   ],
                 ),
               ),
@@ -326,10 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
                     child: TextComponent(
                       StringConstants.shareEvent,
-                      style: TextStyle(
-                          color: themeCubit.primaryColor,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 18),
+                      style: FontStylesConstants.style18(color: themeCubit.primaryColor),
                     ),
                   ),
                   InkWell(
@@ -398,10 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
                 child: TextComponent(
                   StringConstants.yourConnections,
-                  style: TextStyle(
-                      color: themeCubit.primaryColor,
-                      fontFamily: FontConstants.fontProtestStrike,
-                      fontSize: 18),
+                  style: FontStylesConstants.style18(color: themeCubit.primaryColor)
                 ),
               ),
               Expanded(
@@ -442,10 +432,11 @@ class _HomeScreenState extends State<HomeScreen> {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: FontConstants.fontProtestStrike,
-                    height: 1.5),
+                style:  FontStylesConstants.style20(),
+                // style: TextStyle(
+                //     fontSize: 20,
+                //     fontFamily: FontConstants.fontProtestStrike,
+                //     height: 1.5),
                 children: <TextSpan>[
                   TextSpan(text: StringConstants.areYouSureYouwantToShare),
                   TextSpan(
