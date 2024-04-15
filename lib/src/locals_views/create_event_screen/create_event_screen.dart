@@ -10,7 +10,6 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/models/event_data_model.dart';
-import 'package:chat_app_white_label/src/utils/event_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';

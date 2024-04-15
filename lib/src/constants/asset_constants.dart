@@ -37,4 +37,5 @@ class AssetConstants {
   static const String garland = "$images/garland.png";
   static const String copyLink = "$images/copy_link.svg";
   static const String instagram = "$images/instagram.png";
+  static const String applePay = "$images/apple_pay.png";
 }

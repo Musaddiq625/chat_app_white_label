@@ -68,8 +68,15 @@ class StringConstants {
   static const String bioHint =
       "Tell the world what you like, why you're here or anything about yourself ";
   static const String showLessLikeThis = "Show less like this";
+  static const String anyQuestionWhenEventCreated = "Any question that is entered when event created*";
   static const String reportEvent = "Report event";
   static const String shareEvent = "Share event";
+  static const String ticket = "Ticket";
+  static const String viewInMap = "View in Map";
+  static const String addToAppleWallet = "Add to apple Wallet";
+  static const String total = "Total";
+  static const String when = "When";
+  static const String where = "Where";
   static const String copyLink = "Copy Link";
   static const String facebook = "Facebook";
   static const String instagram = "Instagram";
@@ -139,6 +146,10 @@ class StringConstants {
       "Once your request is accepted, you can view it in your connections";
   static const String getTicket = "Get Ticket";
   static const String join = "Join";
+  static const String next = "Next";
+  static const String payWithCard = "Pay with Card";
+  static const String pay = "Pay ";
+  static const String selectNumberOfTickets = "Select number of tickets";
   static const String addQuestion = "Add Question";
   static const String abouttheEvent = "About the event";
   static const String aboutMe = "About me";

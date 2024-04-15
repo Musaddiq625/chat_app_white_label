@@ -71,6 +71,7 @@ dependencies:
   flutter_ringtone_player: ^3.2.0
   social_share: ^2.3.1
   flutter_svg: ^2.0.10+1
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

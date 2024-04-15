@@ -13,9 +13,11 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
+import '../../components/circle_button_component.dart';
 import '../../components/contacts_card_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/icons_button_component.dart';
@@ -63,6 +65,10 @@ class _EventScreenState extends State<EventScreen> {
   ];
   double radius = 30;
 
+  int _count = 0;
+  int _price = 100;
+  int _totalAmount = 0;
+
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
@@ -85,7 +91,9 @@ class _EventScreenState extends State<EventScreen> {
           children: [
             ButtonComponent(
               buttonText: StringConstants.getTicket,
-              onPressedFunction: () {},
+              onPressedFunction: () {
+                _paymentSuccessBottomSheet();
+              },
               textColor: ColorConstants.black,
               bgcolor: ColorConstants.btnGradientColor,
             ),
@@ -771,7 +779,8 @@ class _EventScreenState extends State<EventScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ButtonComponent(
-                    horizontalLength:AppConstants.responsiveWidth(context,percentage: 38),
+                    horizontalLength:
+                        AppConstants.responsiveWidth(context, percentage: 38),
                     buttonText: StringConstants.join,
                     textColor: themeCubit.backgroundColor,
                     onPressedFunction: () {
@@ -794,9 +803,7 @@ class _EventScreenState extends State<EventScreen> {
                   )
                 ],
               ),
-              SizedBox(
-                height: 10,
-              )
+              SizedBoxConstants.sizedBoxTenH()
             ],
           ),
         ));
@@ -860,9 +867,7 @@ class _EventScreenState extends State<EventScreen> {
           //     border: InputBorder.none,
           //   ),
           // ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBoxConstants.sizedBoxTenH()
         ],
       ),
     );
@@ -875,5 +880,502 @@ class _EventScreenState extends State<EventScreen> {
         _controller.clear();
       });
     }
+  }
+
+  _getTicketBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+        // padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          // color: themeCubit.darkBackgroundColor,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextComponent(StringConstants.selectNumberOfTickets,
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor)),
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: IconComponent(
+                      iconData: Icons.close,
+                      borderColor: Colors.transparent,
+                      iconColor: themeCubit.textColor,
+                      circleSize: 50,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBoxConstants.sizedBoxTenH(),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Container(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 15, bottom: 10),
+                decoration: BoxDecoration(
+                  color: ColorConstants.iconBg,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  // color: themeCubit.darkBackgroundColor,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextComponent(
+                      StringConstants.ticket,
+                      style: TextStyle(color: ColorConstants.white),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(
+                          "SAR ${_price}",
+                          style: FontStylesConstants.style18(
+                              color: ColorConstants.white),
+                        ),
+                        Row(
+                          children: [
+                            CircleButtonComponent(
+                                icon: Icons.remove,
+                                onPressed: () => onRemovePressed(setState),
+                                backgroundColor: ColorConstants.iconBg),
+                            Container(
+                              // padding: const EdgeInsets.symmetric(horizontal: 25),
+                              width: 30,
+                              alignment: Alignment.center,
+                              child: TextComponent('$_count',
+                                  textScaleFactor: 1.5,
+                                  style: TextStyle(
+                                      color: ColorConstants.white,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                            CircleButtonComponent(
+                                icon: Icons.add,
+                                onPressed: () => onAddPressed(setState),
+                                backgroundColor: ColorConstants.iconBg),
+                          ],
+                        )
+                      ],
+                    ),
+                    SizedBoxConstants.sizedBoxTenH()
+                  ],
+                ),
+              ),
+            ),
+            SizedBoxConstants.sizedBoxEighteenH(),
+            Divider(
+              thickness: 0.1,
+            ),
+            SizedBoxConstants.sizedBoxTenH(),
+            Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextComponent(
+                      StringConstants.total,
+                      style: TextStyle(color: ColorConstants.white),
+                    ),
+                    TextComponent(
+                      "SAR ${_totalAmount}",
+                      style: TextStyle(color: ColorConstants.white),
+                    ),
+                  ],
+                )),
+            Divider(
+              thickness: 0.1,
+            ),
+            SizedBoxConstants.sizedBoxEighteenH(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ButtonComponent(
+                  horizontalLength:
+                      AppConstants.responsiveWidth(context, percentage: 38),
+                  buttonText: StringConstants.next,
+                  textColor: themeCubit.backgroundColor,
+                  onPressedFunction: () {
+                    _sendMessage();
+                    Navigator.pop(context);
+                    _navigateToBack();
+                    BottomSheetComponent.showBottomSheet(
+                      context,
+                      isShowHeader: false,
+                      body: InfoSheetComponent(
+                        heading: StringConstants.requestSent,
+                        body: StringConstants.requestStatus,
+                        image: AssetConstants.paperPlaneImage,
+                        // svg: true,
+                      ),
+                      // whenComplete:_navigateToBack(),
+                    );
+                  },
+                  bgcolor: themeCubit.primaryColor,
+                )
+              ],
+            ),
+            SizedBoxConstants.sizedBoxTenH(),
+          ],
+        ),
+      );
+    }));
+  }
+
+  _getPaymentBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+        // padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          // color: themeCubit.darkBackgroundColor,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 10, top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: IconComponent(
+                      iconData: Icons.close,
+                      borderColor: Colors.transparent,
+                      iconColor: themeCubit.textColor,
+                      circleSize: 50,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Image.network(
+                "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                fit: BoxFit.cover,
+                height: 120,
+                width: 120,
+              ),
+            ),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent(
+              "Fireworks Night",
+              style: FontStylesConstants.style18(color: ColorConstants.white),
+            ),
+            TextComponent("17 Feb . 11AM - 2PM . Manchester",
+                style:
+                    FontStylesConstants.style14(color: ColorConstants.white)),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Column(
+                children: [
+                  SizedBoxConstants.sizedBoxEighteenH(),
+                  Container(
+                    padding: const EdgeInsets.only(
+                        left: 15, right: 15, top: 15, bottom: 10),
+                    decoration: BoxDecoration(
+                      color: ColorConstants.iconBg,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      // color: themeCubit.darkBackgroundColor,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(
+                          StringConstants.ticket,
+                          style: TextStyle(color: ColorConstants.white),
+                        ),
+                        TextComponent(
+                          "${_count}",
+                          style: TextStyle(color: ColorConstants.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBoxConstants.sizedBoxEighteenH(),
+                  TextComponent(
+                    StringConstants.anyQuestionWhenEventCreated,
+                    style: TextStyle(color: ColorConstants.white),
+                    maxLines: 3,
+                  ),
+                  SizedBoxConstants.sizedBoxTenH(),
+                  TextFieldComponent(
+                    _controller,
+                    filled: true,
+                    textFieldFontSize: 12,
+                    hintText:
+                        "There could be multiple questions aligned so they will come here",
+                    fieldColor: ColorConstants.lightGray.withOpacity(0.5),
+                    maxLines: 4,
+                    minLines: 4,
+                  ),
+                  SizedBoxConstants.sizedBoxSixtyH(),
+                ],
+              ),
+            ),
+            Divider(
+              thickness: 0.1,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextComponent(
+                        StringConstants.total,
+                        style: TextStyle(color: ColorConstants.white),
+                      ),
+                      TextComponent(
+                        "SAR ${_totalAmount}",
+                        style: FontStylesConstants.style30(
+                            color: ColorConstants.white),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 150,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 9.5),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: ColorConstants.white),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.apple,
+                          color: ColorConstants.black,
+                        ),
+                        TextComponent(
+                          StringConstants.pay,
+                          style: FontStylesConstants.style16(
+                              color: ColorConstants.black,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                  // ButtonComponent(
+                  //   horizontalLength:
+                  //   AppConstants.responsiveWidth(context, percentage: 18),
+                  //   buttonText: StringConstants.pay,
+                  //   textColor: themeCubit.backgroundColor,
+                  //   onPressedFunction: () {
+                  //     _sendMessage();
+                  //     Navigator.pop(context);
+                  //     _navigateToBack();
+                  //     BottomSheetComponent.showBottomSheet(
+                  //       context,
+                  //       isShowHeader: false,
+                  //       body: InfoSheetComponent(
+                  //         heading: StringConstants.requestSent,
+                  //         body: StringConstants.requestStatus,
+                  //         image: AssetConstants.paperPlaneImage,
+                  //         // svg: true,
+                  //       ),
+                  //       // whenComplete:_navigateToBack(),
+                  //     );
+                  //   },
+                  //   bgcolor: ColorConstants.white,
+                  // ),
+                  ButtonComponent(
+                    horizontalLength:
+                        AppConstants.responsiveWidth(context, percentage: 10),
+                    buttonText: StringConstants.payWithCard,
+                    textColor: themeCubit.backgroundColor,
+                    onPressedFunction: () {
+                      _sendMessage();
+                      Navigator.pop(context);
+                      _navigateToBack();
+                      BottomSheetComponent.showBottomSheet(
+                        context,
+                        isShowHeader: false,
+                        body: InfoSheetComponent(
+                          heading: StringConstants.requestSent,
+                          body: StringConstants.requestStatus,
+                          image: AssetConstants.paperPlaneImage,
+                          // svg: true,
+                        ),
+                        // whenComplete:_navigateToBack(),
+                      );
+                    },
+                    bgcolor: themeCubit.primaryColor,
+                  )
+                ],
+              ),
+            ),
+            SizedBoxConstants.sizedBoxTenH(),
+          ],
+        ),
+      );
+    }));
+  }
+
+  _paymentSuccessBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+        // padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          // color: themeCubit.darkBackgroundColor,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 10, top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: IconComponent(
+                      iconData: Icons.close,
+                      borderColor: Colors.transparent,
+                      iconColor: themeCubit.textColor,
+                      circleSize: 50,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              color: ColorConstants.white,
+              child: QrImageView(
+                data: '1234567890',
+                version: QrVersions.auto,
+                size: 150.0,
+              ),
+            ),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent(
+              "Fireworks Night",
+              style: FontStylesConstants.style18(color: ColorConstants.white),
+            ),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent(StringConstants.when,
+                style:
+                    FontStylesConstants.style14(color: ColorConstants.lightGray)),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent("17 Feb . 11AM - 2PM ",
+                style:
+                    FontStylesConstants.style14(color: ColorConstants.white)),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent(StringConstants.where,
+                style:
+                    FontStylesConstants.style14(color: ColorConstants.lightGray)),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            Padding(
+              padding: const EdgeInsets.only(left:70,right: 70),
+              child: TextComponent("Pique Cafe\n Al-Semairi, Yanbu Al Bahir 46455 Riyadh Saudia Arabia",
+                  style:
+                      FontStylesConstants.style14(color: ColorConstants.white),
+              maxLines: 4,textAlign: TextAlign.center,),
+            ),
+            SizedBoxConstants.sizedBoxEighteenH(),
+            Container(
+              width: 150,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(
+                  left: 15, right: 15, top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: ColorConstants.iconBg.withOpacity(0.2),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                // color: themeCubit.darkBackgroundColor,
+              ),
+              child: TextComponent(
+                StringConstants.viewInMap,
+                style: TextStyle(color: ColorConstants.white),
+                  textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBoxConstants.sizedBoxSixtyH(),
+            Container(
+              width: 250,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(
+                  left: 15, right: 15, top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: ColorConstants.black,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                // color: themeCubit.darkBackgroundColor,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconComponent(
+                    // iconData: Icons.facebook,
+                    svgDataCheck: false,
+                    svgData: AssetConstants.applePay,
+                    // borderColor: Colors.red,
+                    backgroundColor: ColorConstants.transparent,
+                    iconSize: 100,
+                    borderSize: 0,
+                    // circleSize: 30,
+                    // circleHeight: 30,
+                  ),
+                  // Icon(
+                  //   Icons.apple,
+                  //   color: ColorConstants.white,
+                  // ),
+                  SizedBoxConstants.sizedBoxTenW(),
+                  TextComponent(
+                    StringConstants.addToAppleWallet,
+                    style: TextStyle(color: ColorConstants.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            SizedBoxConstants.sizedBoxEighteenH(),
+          ],
+        ),
+      );
+    }));
+  }
+
+  onRemovePressed(StateSetter stateSetter) {
+    if (_count > 0) {
+      stateSetter(() {
+        _count--;
+        _totalAmount -= _price; // Subtract the fixed amount
+      });
+    }
+  }
+
+  onAddPressed(StateSetter stateSetter) {
+    stateSetter(() {
+      _count++;
+      _totalAmount += _price; // Add the fixed amount
+    });
   }
 }

@@ -45,7 +45,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
             ):
             Image.asset(
               // AssetConstants.group,
-              widget.image,
+              widget.image!,
               width: 150,
               height: 150,
             ),
