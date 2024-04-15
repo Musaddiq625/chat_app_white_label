@@ -46,4 +46,6 @@ class AssetConstants {
   static const String smoking = "$icons/smoking.svg";
   static const String drinking = "$icons/drinking.svg";
   static const String pets = "$icons/pets.svg";
+  static const String instagram = "$images/instagram.png";
+  static const String applePay = "$images/apple_pay.png";
 }

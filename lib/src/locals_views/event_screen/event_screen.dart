@@ -13,9 +13,11 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
+import '../../components/circle_button_component.dart';
 import '../../components/contacts_card_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/icons_button_component.dart';
@@ -63,6 +65,10 @@ class _EventScreenState extends State<EventScreen> {
   ];
   double radius = 30;
 
+  int _count = 0;
+  int _price = 100;
+  int _totalAmount = 0;
+
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
@@ -85,7 +91,9 @@ class _EventScreenState extends State<EventScreen> {
           children: [
             ButtonComponent(
               buttonText: StringConstants.getTicket,
-              onPressed: () {},
+              onPressedFunction: () {
+                _paymentSuccessBottomSheet();
+              },
               textColor: ColorConstants.black,
               bgcolor: ColorConstants.btnGradientColor,
             ),
@@ -230,44 +238,52 @@ class _EventScreenState extends State<EventScreen> {
         color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            TextComponent(StringConstants.abouttheEvent,
-                style: FontStylesConstants.style18(
-                    color: themeCubit.primaryColor)),
-            SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _showFullText = !_showFullText;
-                });
-              },
-              child: RichText(
-                text: TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: _showFullText
-                          ? _fullText
-                          : (_fullText.length > 150
-                                  ? _fullText.substring(0, 150)
-                                  : _fullText) ??
-                              "No description available",
-                      style: TextStyle(color: themeCubit.textColor),
-                    ),
-                    if (_fullText.length > 150)
-                      TextSpan(
-                        text: _showFullText
-                            ? ' ${StringConstants.showLess}'
-                            : ' ...${StringConstants.readMore}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: themeCubit.textColor),
+            Padding(
+              padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextComponent(StringConstants.abouttheEvent,
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showFullText = !_showFullText;
+                      });
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: _showFullText
+                                ? _fullText
+                                : (_fullText.length > 150
+                                        ? _fullText.substring(0, 150)
+                                        : _fullText) ??
+                                    "No description available",
+                            style: TextStyle(color: themeCubit.textColor),
+                          ),
+                          if (_fullText.length > 150)
+                            TextSpan(
+                              text: _showFullText
+                                  ? ' ${StringConstants.showLess}'
+                                  : ' ...${StringConstants.readMore}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: themeCubit.textColor),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBoxConstants.sizedBoxTwentyH(),
@@ -275,158 +291,36 @@ class _EventScreenState extends State<EventScreen> {
               // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SvgPicture.asset(
-                        height: 35,
-                        AssetConstants.happy,
-                      ),
-                      // const ProfileImageComponent(url: AssetConstants.happy,assetImage: true,),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextComponent("1456 ${StringConstants.participants}",
-                              style: FontStylesConstants.style16(
-                                  color: ColorConstants.white,
-                                  fontWeight: FontWeight.bold)
-                              // style: TextStyle(
-                              //     fontSize: 16,
-                              //     fontWeight: FontWeight.bold,
-                              //     color: themeCubit.textColor),
-                              ),
-                          TextComponent("Elena, Ilsa and more",
-                              style: FontStylesConstants.style14(
-                                  color: ColorConstants.lightGray)),
-                        ],
-                      ),
-                      const Spacer(),
-                      SizedBox(
-                        width: radius * images.length.toDouble(),
-                        // Calculate the total width of images
-                        height: radius,
-                        // Set the height to match the image size
-                        child: Stack(
-                          children: [
-                            for (int i = 0; i < images.length; i++)
-                              Positioned(
-                                left: i * radius / 1.5,
-                                // Adjust the left offset
-                                child: ClipOval(
-                                  child: Image(
-                                    // color: Colors.red,
-                                    image: images[i],
-                                    width: radius,
-                                    height: radius,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  AboutEventComponent(
+                    name: "1456 ${StringConstants.participants}",
+                    detail: "Elena, Ilsa and more",
+                    icon: AssetConstants.happy,
+                    showPersonIcon: true,
+                    selectedImages: images,
                   ),
-                  const Divider(thickness: 0.2),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        height: 35,
-                        AssetConstants.calendar,
-                      ),
-                      // ProfileImageComponent(url: ""),
-                      SizedBoxConstants.sizedBoxTenW(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextComponent(StringConstants.flexibleDate,
-                              style: FontStylesConstants.style16(
-                                  color: ColorConstants.white,
-                                  fontWeight: FontWeight.bold)),
-                          TextComponent(StringConstants.dateWillbeDecidelater,
-                              style: FontStylesConstants.style14(
-                                  color: ColorConstants.lightGray)),
-                        ],
-                      ),
-                    ],
+                  AboutEventComponent(
+                    name: StringConstants.flexibleDate,
+                    detail: StringConstants.dateWillbeDecidelater,
+                    icon: AssetConstants.calendar,
                   ),
-                  const Divider(thickness: 0.2),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        height: 35,
-                        AssetConstants.marker,
-                      ),
-                      // ProfileImageComponent(url: ""),
-                      SizedBoxConstants.sizedBoxTenW(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextComponent(
-                            "Manchester",
-                            style: FontStylesConstants.style16(
-                                color: ColorConstants.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          TextComponent(
-                            StringConstants.exactLocationAfterJoining,
-                            style: FontStylesConstants.style14(
-                                color: ColorConstants.lightGray),
-                          ),
-                        ],
-                      ),
-                    ],
+                  AboutEventComponent(
+                    name: "Manchester",
+                    detail: StringConstants.exactLocationAfterJoining,
+                    icon: AssetConstants.marker,
                   ),
-                  if (ticketRequired == true) Divider(thickness: 0.2),
                   if (ticketRequired == true)
-                    Row(
-                      children: [
-                        SvgPicture.asset(
-                          height: 35,
-                          AssetConstants.ticket,
-                        ),
-                        // ProfileImageComponent(url: ""),
-                        SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextComponent("SR 150",
-                                style: FontStylesConstants.style16(
-                                    color: ColorConstants.white,
-                                    fontWeight: FontWeight.bold)),
-                            TextComponent(StringConstants.ticketrequired,
-                                style: FontStylesConstants.style14(
-                                    color: ColorConstants.lightGray)),
-                          ],
-                        ),
-                      ],
+                    AboutEventComponent(
+                      name: "SR 150",
+                      detail: StringConstants.ticketrequired,
+                      icon: AssetConstants.ticket,
                     ),
-                  Divider(thickness: 0.2),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        height: 35,
-                        AssetConstants.tag,
-                      ),
-                      // ProfileImageComponent(url: ""),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextComponent(StringConstants.freeToJoin,
-                              style: FontStylesConstants.style16(
-                                  color: ColorConstants.white,
-                                  fontWeight: FontWeight.bold)),
-                          TextComponent(
-                            StringConstants.noCharityRequired,
-                            style: FontStylesConstants.style14(
-                                color: ColorConstants.lightGray),
-                          ),
-                        ],
-                      ),
-                    ],
+                  AboutEventComponent(
+                    divider: false,
+                    name: StringConstants.freeToJoin,
+                    detail: StringConstants.noCharityRequired,
+                    icon: AssetConstants.tag,
                   ),
+                  SizedBoxConstants.sizedBoxTenH()
                 ],
               ),
             ),
@@ -639,7 +533,7 @@ class _EventScreenState extends State<EventScreen> {
                   bgcolor: themeCubit.primaryColor,
                   textColor: themeCubit.backgroundColor,
                   buttonText: StringConstants.yesShareIt,
-                  onPressed: () {
+                  onPressedFunction: () {
                     Navigator.pop(context);
                     _yesShareItBottomSheet();
                   },
@@ -763,145 +657,153 @@ class _EventScreenState extends State<EventScreen> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             // color: themeCubit.darkBackgroundColor,
           ),
-          padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
+          // padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextComponent(StringConstants.join,
-                      style: FontStylesConstants.style18(
-                          color: themeCubit.primaryColor)),
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: IconComponent(
-                      iconData: Icons.close,
-                      borderColor: Colors.transparent,
-                      iconColor: themeCubit.textColor,
-                      circleSize: 50,
-                      backgroundColor: Colors.transparent,
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(StringConstants.join,
+                            style: FontStylesConstants.style18(
+                                color: themeCubit.primaryColor)),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: IconComponent(
+                            iconData: Icons.close,
+                            borderColor: Colors.transparent,
+                            iconColor: themeCubit.textColor,
+                            circleSize: 50,
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent("Property \nnetworking event",
+                            style: FontStylesConstants.style28(
+                                color: ColorConstants.white)),
+                        Image.asset(
+                          AssetConstants.group,
+                          width: 100,
+                          height: 80,
+                        ),
+                      ],
+                    ),
+                    TextComponent(StringConstants.freeToJoin,
+                        style: FontStylesConstants.style14(
+                            color: ColorConstants.white)),
+                    SizedBoxConstants.sizedBoxTwentyH(),
+                  ],
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextComponent("Property \nnetworking event",
-                      style: FontStylesConstants.style28(
-                          color: ColorConstants.white)),
-                  Image.asset(
-                    AssetConstants.group,
-                    width: 100,
-                    height: 80,
-                  ),
-                ],
-              ),
-              TextComponent(StringConstants.freeToJoin,
-                  style:
-                      FontStylesConstants.style14(color: ColorConstants.white)),
-              SizedBoxConstants.sizedBoxTwentyH(),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.1,
               ),
               _messageComponent(),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.1,
               ),
-              TextComponent(
-                StringConstants.somethingToKnow,
-                style: TextStyle(
-                    color: themeCubit.primaryColor,
-                    fontFamily: FontConstants.fontProtestStrike,
-                    fontSize: 18),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    height: 35,
-                    AssetConstants.chatMsg,
-                  ),
-                  // ProfileImageComponent(
-                  //   url: "",
-                  //   size: 30,
-                  // ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  TextComponent(
-                    StringConstants.whenYouJoinYoureInTheGame,
-                    style: TextStyle(color: themeCubit.textColor),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextComponent(
+                      StringConstants.somethingToKnow,
+                      style: TextStyle(
+                          color: themeCubit.primaryColor,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 18),
+                    ),
+                    SizedBoxConstants.sizedBoxTenH(),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          height: 35,
+                          AssetConstants.chatMsg,
+                        ),
+                        // ProfileImageComponent(
+                        //   url: "",
+                        //   size: 30,
+                        // ),
+                        SizedBoxConstants.sizedBoxEighteenW(),
+                        TextComponent(
+                          StringConstants.whenYouJoinYoureInTheGame,
+                          style: TextStyle(color: themeCubit.textColor),
+                        ),
+                      ],
+                    ),
+                    SizedBoxConstants.sizedBoxTenH(),
+                  ],
+                ),
               ),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.1,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    height: 35,
-                    AssetConstants.clock,
-                  ),
-                  // ProfileImageComponent(
-                  //   url: "",
-                  //   size: 30,
-                  // ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  TextComponent(
-                    StringConstants.whenYouJoinYoureInTheGame,
-                    style: TextStyle(color: themeCubit.textColor),
-                    maxLines: 4,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 50,
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  children: [
+                    SizedBoxConstants.sizedBoxTenH(),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          height: 35,
+                          AssetConstants.clock,
+                        ),
+                        // ProfileImageComponent(
+                        //   url: "",
+                        //   size: 30,
+                        // ),
+                        SizedBoxConstants.sizedBoxEighteenW(),
+                        TextComponent(
+                          StringConstants.whenYouJoinYoureInTheGame,
+                          style: TextStyle(color: themeCubit.textColor),
+                          maxLines: 4,
+                        ),
+                      ],
+                    ),
+                    SizedBoxConstants.sizedBoxForthyH(),
+                  ],
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.8,
-                    child: ButtonComponent(
-                      buttonText: StringConstants.join,
-                      textColor: themeCubit.backgroundColor,
-                      onPressed: () {
-                        _sendMessage();
-                        Navigator.pop(context);
-                        _navigateToBack();
-                        BottomSheetComponent.showBottomSheet(
-                          context,
-                          isShowHeader: false,
-                          body: InfoSheetComponent(
-                            heading: StringConstants.requestSent,
-                            body: StringConstants.requestStatus,
-                            image: AssetConstants.paperPlaneImage,
-                            // svg: true,
-                          ),
-                          // whenComplete:_navigateToBack(),
-                        );
-                      },
-                      bgcolor: themeCubit.primaryColor,
-                    ),
+                  ButtonComponent(
+                    horizontalLength:
+                        AppConstants.responsiveWidth(context, percentage: 38),
+                    buttonText: StringConstants.join,
+                    textColor: themeCubit.backgroundColor,
+                    onPressedFunction: () {
+                      _sendMessage();
+                      Navigator.pop(context);
+                      _navigateToBack();
+                      BottomSheetComponent.showBottomSheet(
+                        context,
+                        isShowHeader: false,
+                        body: InfoSheetComponent(
+                          heading: StringConstants.requestSent,
+                          body: StringConstants.requestStatus,
+                          image: AssetConstants.paperPlaneImage,
+                          // svg: true,
+                        ),
+                        // whenComplete:_navigateToBack(),
+                      );
+                    },
+                    bgcolor: themeCubit.primaryColor,
                   )
                 ],
               ),
-              SizedBox(
-                height: 10,
-              )
+              SizedBoxConstants.sizedBoxTenH()
             ],
           ),
         ));
@@ -915,6 +817,7 @@ class _EventScreenState extends State<EventScreen> {
 
   _messageComponent() {
     return Container(
+      padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
           Row(
@@ -926,25 +829,25 @@ class _EventScreenState extends State<EventScreen> {
               SizedBoxConstants.sizedBoxTenW(),
               TextComponent(
                 "Message for Raul",
-                style: FontStylesConstants.style18(
-                    color: ColorConstants.primaryColor),
+                style :FontStylesConstants.style18(color: ColorConstants.primaryColor),
               ),
             ],
           ),
           SizedBoxConstants.sizedBoxTenH(),
           TextComponent(
             StringConstants.doYouHaveQuestion,
-            style: FontStylesConstants.style14(color: ColorConstants.white),
+            style :FontStylesConstants.style14(color: ColorConstants.white),
             maxLines: 4,
           ),
           SizedBoxConstants.sizedBoxTenH(),
           TextFieldComponent(
             _controller,
             filled: true,
-            textFieldFontSize: 14,
+            textFieldFontSize: 12,
             hintText: StringConstants.typeYourMessage,
             fieldColor: ColorConstants.lightGray.withOpacity(0.5),
             maxLines: 4,
+            minLines: 4,
           ),
           // TextField(
           //   controller: _controller,
@@ -963,9 +866,7 @@ class _EventScreenState extends State<EventScreen> {
           //     border: InputBorder.none,
           //   ),
           // ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBoxConstants.sizedBoxTenH()
         ],
       ),
     );
@@ -978,5 +879,502 @@ class _EventScreenState extends State<EventScreen> {
         _controller.clear();
       });
     }
+  }
+
+  _getTicketBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+        // padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          // color: themeCubit.darkBackgroundColor,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextComponent(StringConstants.selectNumberOfTickets,
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor)),
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: IconComponent(
+                      iconData: Icons.close,
+                      borderColor: Colors.transparent,
+                      iconColor: themeCubit.textColor,
+                      circleSize: 50,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBoxConstants.sizedBoxTenH(),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Container(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 15, bottom: 10),
+                decoration: BoxDecoration(
+                  color: ColorConstants.iconBg,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  // color: themeCubit.darkBackgroundColor,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextComponent(
+                      StringConstants.ticket,
+                      style: TextStyle(color: ColorConstants.white),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(
+                          "SAR ${_price}",
+                          style: FontStylesConstants.style18(
+                              color: ColorConstants.white),
+                        ),
+                        Row(
+                          children: [
+                            CircleButtonComponent(
+                                icon: Icons.remove,
+                                onPressed: () => onRemovePressed(setState),
+                                backgroundColor: ColorConstants.iconBg),
+                            Container(
+                              // padding: const EdgeInsets.symmetric(horizontal: 25),
+                              width: 30,
+                              alignment: Alignment.center,
+                              child: TextComponent('$_count',
+                                  textScaleFactor: 1.5,
+                                  style: TextStyle(
+                                      color: ColorConstants.white,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                            CircleButtonComponent(
+                                icon: Icons.add,
+                                onPressed: () => onAddPressed(setState),
+                                backgroundColor: ColorConstants.iconBg),
+                          ],
+                        )
+                      ],
+                    ),
+                    SizedBoxConstants.sizedBoxTenH()
+                  ],
+                ),
+              ),
+            ),
+            SizedBoxConstants.sizedBoxEighteenH(),
+            Divider(
+              thickness: 0.1,
+            ),
+            SizedBoxConstants.sizedBoxTenH(),
+            Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextComponent(
+                      StringConstants.total,
+                      style: TextStyle(color: ColorConstants.white),
+                    ),
+                    TextComponent(
+                      "SAR ${_totalAmount}",
+                      style: TextStyle(color: ColorConstants.white),
+                    ),
+                  ],
+                )),
+            Divider(
+              thickness: 0.1,
+            ),
+            SizedBoxConstants.sizedBoxEighteenH(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ButtonComponent(
+                  horizontalLength:
+                      AppConstants.responsiveWidth(context, percentage: 38),
+                  buttonText: StringConstants.next,
+                  textColor: themeCubit.backgroundColor,
+                  onPressedFunction: () {
+                    _sendMessage();
+                    Navigator.pop(context);
+                    _navigateToBack();
+                    BottomSheetComponent.showBottomSheet(
+                      context,
+                      isShowHeader: false,
+                      body: InfoSheetComponent(
+                        heading: StringConstants.requestSent,
+                        body: StringConstants.requestStatus,
+                        image: AssetConstants.paperPlaneImage,
+                        // svg: true,
+                      ),
+                      // whenComplete:_navigateToBack(),
+                    );
+                  },
+                  bgcolor: themeCubit.primaryColor,
+                )
+              ],
+            ),
+            SizedBoxConstants.sizedBoxTenH(),
+          ],
+        ),
+      );
+    }));
+  }
+
+  _getPaymentBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+        // padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          // color: themeCubit.darkBackgroundColor,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 10, top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: IconComponent(
+                      iconData: Icons.close,
+                      borderColor: Colors.transparent,
+                      iconColor: themeCubit.textColor,
+                      circleSize: 50,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Image.network(
+                "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                fit: BoxFit.cover,
+                height: 120,
+                width: 120,
+              ),
+            ),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent(
+              "Fireworks Night",
+              style: FontStylesConstants.style18(color: ColorConstants.white),
+            ),
+            TextComponent("17 Feb . 11AM - 2PM . Manchester",
+                style:
+                    FontStylesConstants.style14(color: ColorConstants.white)),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Column(
+                children: [
+                  SizedBoxConstants.sizedBoxEighteenH(),
+                  Container(
+                    padding: const EdgeInsets.only(
+                        left: 15, right: 15, top: 15, bottom: 10),
+                    decoration: BoxDecoration(
+                      color: ColorConstants.iconBg,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      // color: themeCubit.darkBackgroundColor,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(
+                          StringConstants.ticket,
+                          style: TextStyle(color: ColorConstants.white),
+                        ),
+                        TextComponent(
+                          "${_count}",
+                          style: TextStyle(color: ColorConstants.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBoxConstants.sizedBoxEighteenH(),
+                  TextComponent(
+                    StringConstants.anyQuestionWhenEventCreated,
+                    style: TextStyle(color: ColorConstants.white),
+                    maxLines: 3,
+                  ),
+                  SizedBoxConstants.sizedBoxTenH(),
+                  TextFieldComponent(
+                    _controller,
+                    filled: true,
+                    textFieldFontSize: 12,
+                    hintText:
+                        "There could be multiple questions aligned so they will come here",
+                    fieldColor: ColorConstants.lightGray.withOpacity(0.5),
+                    maxLines: 4,
+                    minLines: 4,
+                  ),
+                  SizedBoxConstants.sizedBoxSixtyH(),
+                ],
+              ),
+            ),
+            Divider(
+              thickness: 0.1,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextComponent(
+                        StringConstants.total,
+                        style: TextStyle(color: ColorConstants.white),
+                      ),
+                      TextComponent(
+                        "SAR ${_totalAmount}",
+                        style: FontStylesConstants.style30(
+                            color: ColorConstants.white),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 150,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 9.5),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: ColorConstants.white),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.apple,
+                          color: ColorConstants.black,
+                        ),
+                        TextComponent(
+                          StringConstants.pay,
+                          style: FontStylesConstants.style16(
+                              color: ColorConstants.black,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                  // ButtonComponent(
+                  //   horizontalLength:
+                  //   AppConstants.responsiveWidth(context, percentage: 18),
+                  //   buttonText: StringConstants.pay,
+                  //   textColor: themeCubit.backgroundColor,
+                  //   onPressedFunction: () {
+                  //     _sendMessage();
+                  //     Navigator.pop(context);
+                  //     _navigateToBack();
+                  //     BottomSheetComponent.showBottomSheet(
+                  //       context,
+                  //       isShowHeader: false,
+                  //       body: InfoSheetComponent(
+                  //         heading: StringConstants.requestSent,
+                  //         body: StringConstants.requestStatus,
+                  //         image: AssetConstants.paperPlaneImage,
+                  //         // svg: true,
+                  //       ),
+                  //       // whenComplete:_navigateToBack(),
+                  //     );
+                  //   },
+                  //   bgcolor: ColorConstants.white,
+                  // ),
+                  ButtonComponent(
+                    horizontalLength:
+                        AppConstants.responsiveWidth(context, percentage: 10),
+                    buttonText: StringConstants.payWithCard,
+                    textColor: themeCubit.backgroundColor,
+                    onPressedFunction: () {
+                      _sendMessage();
+                      Navigator.pop(context);
+                      _navigateToBack();
+                      BottomSheetComponent.showBottomSheet(
+                        context,
+                        isShowHeader: false,
+                        body: InfoSheetComponent(
+                          heading: StringConstants.requestSent,
+                          body: StringConstants.requestStatus,
+                          image: AssetConstants.paperPlaneImage,
+                          // svg: true,
+                        ),
+                        // whenComplete:_navigateToBack(),
+                      );
+                    },
+                    bgcolor: themeCubit.primaryColor,
+                  )
+                ],
+              ),
+            ),
+            SizedBoxConstants.sizedBoxTenH(),
+          ],
+        ),
+      );
+    }));
+  }
+
+  _paymentSuccessBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+        // padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          // color: themeCubit.darkBackgroundColor,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 10, top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: IconComponent(
+                      iconData: Icons.close,
+                      borderColor: Colors.transparent,
+                      iconColor: themeCubit.textColor,
+                      circleSize: 50,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              color: ColorConstants.white,
+              child: QrImageView(
+                data: '1234567890',
+                version: QrVersions.auto,
+                size: 150.0,
+              ),
+            ),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent(
+              "Fireworks Night",
+              style: FontStylesConstants.style18(color: ColorConstants.white),
+            ),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent(StringConstants.when,
+                style:
+                    FontStylesConstants.style14(color: ColorConstants.lightGray)),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent("17 Feb . 11AM - 2PM ",
+                style:
+                    FontStylesConstants.style14(color: ColorConstants.white)),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            TextComponent(StringConstants.where,
+                style:
+                    FontStylesConstants.style14(color: ColorConstants.lightGray)),
+            SizedBoxConstants.sizedBoxSixteenH(),
+            Padding(
+              padding: const EdgeInsets.only(left:70,right: 70),
+              child: TextComponent("Pique Cafe\n Al-Semairi, Yanbu Al Bahir 46455 Riyadh Saudia Arabia",
+                  style:
+                      FontStylesConstants.style14(color: ColorConstants.white),
+              maxLines: 4,textAlign: TextAlign.center,),
+            ),
+            SizedBoxConstants.sizedBoxEighteenH(),
+            Container(
+              width: 150,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(
+                  left: 15, right: 15, top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: ColorConstants.iconBg.withOpacity(0.2),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                // color: themeCubit.darkBackgroundColor,
+              ),
+              child: TextComponent(
+                StringConstants.viewInMap,
+                style: TextStyle(color: ColorConstants.white),
+                  textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBoxConstants.sizedBoxSixtyH(),
+            Container(
+              width: 250,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(
+                  left: 15, right: 15, top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                color: ColorConstants.black,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                // color: themeCubit.darkBackgroundColor,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconComponent(
+                    // iconData: Icons.facebook,
+                    svgDataCheck: false,
+                    svgData: AssetConstants.applePay,
+                    // borderColor: Colors.red,
+                    backgroundColor: ColorConstants.transparent,
+                    iconSize: 100,
+                    borderSize: 0,
+                    // circleSize: 30,
+                    // circleHeight: 30,
+                  ),
+                  // Icon(
+                  //   Icons.apple,
+                  //   color: ColorConstants.white,
+                  // ),
+                  SizedBoxConstants.sizedBoxTenW(),
+                  TextComponent(
+                    StringConstants.addToAppleWallet,
+                    style: TextStyle(color: ColorConstants.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            SizedBoxConstants.sizedBoxEighteenH(),
+          ],
+        ),
+      );
+    }));
+  }
+
+  onRemovePressed(StateSetter stateSetter) {
+    if (_count > 0) {
+      stateSetter(() {
+        _count--;
+        _totalAmount -= _price; // Subtract the fixed amount
+      });
+    }
+  }
+
+  onAddPressed(StateSetter stateSetter) {
+    stateSetter(() {
+      _count++;
+      _totalAmount += _price; // Add the fixed amount
+    });
   }
 }
