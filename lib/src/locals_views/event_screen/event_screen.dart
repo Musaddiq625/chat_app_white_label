@@ -1,4 +1,4 @@
-import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/about_event_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
@@ -230,44 +230,52 @@ class _EventScreenState extends State<EventScreen> {
         color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            TextComponent(StringConstants.abouttheEvent,
-                style: FontStylesConstants.style18(
-                    color: themeCubit.primaryColor)),
-            SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _showFullText = !_showFullText;
-                });
-              },
-              child: RichText(
-                text: TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: _showFullText
-                          ? _fullText
-                          : (_fullText.length > 150
-                                  ? _fullText.substring(0, 150)
-                                  : _fullText) ??
-                              "No description available",
-                      style: TextStyle(color: themeCubit.textColor),
-                    ),
-                    if (_fullText.length > 150)
-                      TextSpan(
-                        text: _showFullText
-                            ? ' ${StringConstants.showLess}'
-                            : ' ...${StringConstants.readMore}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: themeCubit.textColor),
+            Padding(
+              padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextComponent(StringConstants.abouttheEvent,
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showFullText = !_showFullText;
+                      });
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: _showFullText
+                                ? _fullText
+                                : (_fullText.length > 150
+                                        ? _fullText.substring(0, 150)
+                                        : _fullText) ??
+                                    "No description available",
+                            style: TextStyle(color: themeCubit.textColor),
+                          ),
+                          if (_fullText.length > 150)
+                            TextSpan(
+                              text: _showFullText
+                                  ? ' ${StringConstants.showLess}'
+                                  : ' ...${StringConstants.readMore}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: themeCubit.textColor),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBoxConstants.sizedBoxTwentyH(),
@@ -275,158 +283,36 @@ class _EventScreenState extends State<EventScreen> {
               // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SvgPicture.asset(
-                        height: 35,
-                        AssetConstants.happy,
-                      ),
-                      // const ProfileImageComponent(url: AssetConstants.happy,assetImage: true,),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextComponent("1456 ${StringConstants.participants}",
-                              style: FontStylesConstants.style16(
-                                  color: ColorConstants.white,
-                                  fontWeight: FontWeight.bold)
-                              // style: TextStyle(
-                              //     fontSize: 16,
-                              //     fontWeight: FontWeight.bold,
-                              //     color: themeCubit.textColor),
-                              ),
-                          TextComponent("Elena, Ilsa and more",
-                              style: FontStylesConstants.style14(
-                                  color: ColorConstants.lightGray)),
-                        ],
-                      ),
-                      const Spacer(),
-                      SizedBox(
-                        width: radius * images.length.toDouble(),
-                        // Calculate the total width of images
-                        height: radius,
-                        // Set the height to match the image size
-                        child: Stack(
-                          children: [
-                            for (int i = 0; i < images.length; i++)
-                              Positioned(
-                                left: i * radius / 1.5,
-                                // Adjust the left offset
-                                child: ClipOval(
-                                  child: Image(
-                                    // color: Colors.red,
-                                    image: images[i],
-                                    width: radius,
-                                    height: radius,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  AboutEventComponent(
+                    name: "1456 ${StringConstants.participants}",
+                    detail: "Elena, Ilsa and more",
+                    icon: AssetConstants.happy,
+                    showPersonIcon: true,
+                    selectedImages: images,
                   ),
-                  const Divider(thickness: 0.2),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        height: 35,
-                        AssetConstants.calendar,
-                      ),
-                      // ProfileImageComponent(url: ""),
-                      SizedBoxConstants.sizedBoxTenW(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextComponent(StringConstants.flexibleDate,
-                              style: FontStylesConstants.style16(
-                                  color: ColorConstants.white,
-                                  fontWeight: FontWeight.bold)),
-                          TextComponent(StringConstants.dateWillbeDecidelater,
-                              style: FontStylesConstants.style14(
-                                  color: ColorConstants.lightGray)),
-                        ],
-                      ),
-                    ],
+                  AboutEventComponent(
+                    name: StringConstants.flexibleDate,
+                    detail: StringConstants.dateWillbeDecidelater,
+                    icon: AssetConstants.calendar,
                   ),
-                  const Divider(thickness: 0.2),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        height: 35,
-                        AssetConstants.marker,
-                      ),
-                      // ProfileImageComponent(url: ""),
-                      SizedBoxConstants.sizedBoxTenW(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextComponent(
-                            "Manchester",
-                            style: FontStylesConstants.style16(
-                                color: ColorConstants.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          TextComponent(
-                            StringConstants.exactLocationAfterJoining,
-                            style: FontStylesConstants.style14(
-                                color: ColorConstants.lightGray),
-                          ),
-                        ],
-                      ),
-                    ],
+                  AboutEventComponent(
+                    name: "Manchester",
+                    detail: StringConstants.exactLocationAfterJoining,
+                    icon: AssetConstants.marker,
                   ),
-                  if (ticketRequired == true) Divider(thickness: 0.2),
                   if (ticketRequired == true)
-                    Row(
-                      children: [
-                        SvgPicture.asset(
-                          height: 35,
-                          AssetConstants.ticket,
-                        ),
-                        // ProfileImageComponent(url: ""),
-                        SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextComponent("SR 150",
-                                style: FontStylesConstants.style16(
-                                    color: ColorConstants.white,
-                                    fontWeight: FontWeight.bold)),
-                            TextComponent(StringConstants.ticketrequired,
-                                style: FontStylesConstants.style14(
-                                    color: ColorConstants.lightGray)),
-                          ],
-                        ),
-                      ],
+                    AboutEventComponent(
+                      name: "SR 150",
+                      detail: StringConstants.ticketrequired,
+                      icon: AssetConstants.ticket,
                     ),
-                  Divider(thickness: 0.2),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        height: 35,
-                        AssetConstants.tag,
-                      ),
-                      // ProfileImageComponent(url: ""),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextComponent(StringConstants.freeToJoin,
-                              style: FontStylesConstants.style16(
-                                  color: ColorConstants.white,
-                                  fontWeight: FontWeight.bold)),
-                          TextComponent(
-                            StringConstants.noCharityRequired,
-                            style: FontStylesConstants.style14(
-                                color: ColorConstants.lightGray),
-                          ),
-                        ],
-                      ),
-                    ],
+                  AboutEventComponent(
+                    divider: false,
+                    name: StringConstants.freeToJoin,
+                    detail: StringConstants.noCharityRequired,
+                    icon: AssetConstants.tag,
                   ),
+                  SizedBoxConstants.sizedBoxTenH()
                 ],
               ),
             ),
@@ -763,139 +649,148 @@ class _EventScreenState extends State<EventScreen> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             // color: themeCubit.darkBackgroundColor,
           ),
-          padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
+          // padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextComponent(StringConstants.join,
-                      style: FontStylesConstants.style18(
-                          color: themeCubit.primaryColor)),
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: IconComponent(
-                      iconData: Icons.close,
-                      borderColor: Colors.transparent,
-                      iconColor: themeCubit.textColor,
-                      circleSize: 50,
-                      backgroundColor: Colors.transparent,
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0, left: 20, right: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(StringConstants.join,
+                            style: FontStylesConstants.style18(
+                                color: themeCubit.primaryColor)),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: IconComponent(
+                            iconData: Icons.close,
+                            borderColor: Colors.transparent,
+                            iconColor: themeCubit.textColor,
+                            circleSize: 50,
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent("Property \nnetworking event",
+                            style: FontStylesConstants.style28(
+                                color: ColorConstants.white)),
+                        Image.asset(
+                          AssetConstants.group,
+                          width: 100,
+                          height: 80,
+                        ),
+                      ],
+                    ),
+                    TextComponent(StringConstants.freeToJoin,
+                        style: FontStylesConstants.style14(
+                            color: ColorConstants.white)),
+                    SizedBoxConstants.sizedBoxTwentyH(),
+                  ],
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextComponent("Property \nnetworking event",
-                      style: FontStylesConstants.style28(
-                          color: ColorConstants.white)),
-                  Image.asset(
-                    AssetConstants.group,
-                    width: 100,
-                    height: 80,
-                  ),
-                ],
-              ),
-              TextComponent(StringConstants.freeToJoin,
-                  style:
-                      FontStylesConstants.style14(color: ColorConstants.white)),
-              SizedBoxConstants.sizedBoxTwentyH(),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.1,
               ),
               _messageComponent(),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.1,
               ),
-              TextComponent(
-                StringConstants.somethingToKnow,
-                style: TextStyle(
-                    color: themeCubit.primaryColor,
-                    fontFamily: FontConstants.fontProtestStrike,
-                    fontSize: 18),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    height: 35,
-                    AssetConstants.chatMsg,
-                  ),
-                  // ProfileImageComponent(
-                  //   url: "",
-                  //   size: 30,
-                  // ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  TextComponent(
-                    StringConstants.whenYouJoinYoureInTheGame,
-                    style: TextStyle(color: themeCubit.textColor),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextComponent(
+                      StringConstants.somethingToKnow,
+                      style: TextStyle(
+                          color: themeCubit.primaryColor,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 18),
+                    ),
+                    SizedBoxConstants.sizedBoxTenH(),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          height: 35,
+                          AssetConstants.chatMsg,
+                        ),
+                        // ProfileImageComponent(
+                        //   url: "",
+                        //   size: 30,
+                        // ),
+                        SizedBoxConstants.sizedBoxEighteenW(),
+                        TextComponent(
+                          StringConstants.whenYouJoinYoureInTheGame,
+                          style: TextStyle(color: themeCubit.textColor),
+                        ),
+                      ],
+                    ),
+                    SizedBoxConstants.sizedBoxTenH(),
+                  ],
+                ),
               ),
               const Divider(
-                thickness: 0.5,
+                thickness: 0.1,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    height: 35,
-                    AssetConstants.clock,
-                  ),
-                  // ProfileImageComponent(
-                  //   url: "",
-                  //   size: 30,
-                  // ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  TextComponent(
-                    StringConstants.whenYouJoinYoureInTheGame,
-                    style: TextStyle(color: themeCubit.textColor),
-                    maxLines: 4,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 50,
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  children: [
+                    SizedBoxConstants.sizedBoxTenH(),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          height: 35,
+                          AssetConstants.clock,
+                        ),
+                        // ProfileImageComponent(
+                        //   url: "",
+                        //   size: 30,
+                        // ),
+                        SizedBoxConstants.sizedBoxEighteenW(),
+                        TextComponent(
+                          StringConstants.whenYouJoinYoureInTheGame,
+                          style: TextStyle(color: themeCubit.textColor),
+                          maxLines: 4,
+                        ),
+                      ],
+                    ),
+                    SizedBoxConstants.sizedBoxForthyH(),
+                  ],
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.8,
-                    child: ButtonComponent(
-                      buttonText: StringConstants.join,
-                      textColor: themeCubit.backgroundColor,
-                      onPressedFunction: () {
-                        _sendMessage();
-                        Navigator.pop(context);
-                        _navigateToBack();
-                        BottomSheetComponent.showBottomSheet(
-                          context,
-                          isShowHeader: false,
-                          body: InfoSheetComponent(
-                            heading: StringConstants.requestSent,
-                            body: StringConstants.requestStatus,
-                            image: AssetConstants.paperPlaneImage,
-                            // svg: true,
-                          ),
-                          // whenComplete:_navigateToBack(),
-                        );
-                      },
-                      bgcolor: themeCubit.primaryColor,
-                    ),
+                  ButtonComponent(
+                    horizontalLength:AppConstants.responsiveWidth(context,percentage: 38),
+                    buttonText: StringConstants.join,
+                    textColor: themeCubit.backgroundColor,
+                    onPressedFunction: () {
+                      _sendMessage();
+                      Navigator.pop(context);
+                      _navigateToBack();
+                      BottomSheetComponent.showBottomSheet(
+                        context,
+                        isShowHeader: false,
+                        body: InfoSheetComponent(
+                          heading: StringConstants.requestSent,
+                          body: StringConstants.requestStatus,
+                          image: AssetConstants.paperPlaneImage,
+                          // svg: true,
+                        ),
+                        // whenComplete:_navigateToBack(),
+                      );
+                    },
+                    bgcolor: themeCubit.primaryColor,
                   )
                 ],
               ),
@@ -915,6 +810,7 @@ class _EventScreenState extends State<EventScreen> {
 
   _messageComponent() {
     return Container(
+      padding: const EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: [
           Row(
@@ -926,24 +822,26 @@ class _EventScreenState extends State<EventScreen> {
               SizedBoxConstants.sizedBoxTenW(),
               TextComponent(
                 "Message for Raul",
-                style :FontStylesConstants.style18(color: ColorConstants.primaryColor),
+                style: FontStylesConstants.style18(
+                    color: ColorConstants.primaryColor),
               ),
             ],
           ),
           SizedBoxConstants.sizedBoxTenH(),
           TextComponent(
             StringConstants.doYouHaveQuestion,
-            style :FontStylesConstants.style14(color: ColorConstants.white),
+            style: FontStylesConstants.style14(color: ColorConstants.white),
             maxLines: 4,
           ),
           SizedBoxConstants.sizedBoxTenH(),
           TextFieldComponent(
             _controller,
             filled: true,
-            textFieldFontSize: 14,
+            textFieldFontSize: 12,
             hintText: StringConstants.typeYourMessage,
             fieldColor: ColorConstants.lightGray.withOpacity(0.5),
             maxLines: 4,
+            minLines: 4,
           ),
           // TextField(
           //   controller: _controller,
