@@ -85,7 +85,7 @@ class _EventScreenState extends State<EventScreen> {
           children: [
             ButtonComponent(
               buttonText: StringConstants.getTicket,
-              onPressedFunction: () {},
+              onPressed: () {},
               textColor: ColorConstants.black,
               bgcolor: ColorConstants.btnGradientColor,
             ),
@@ -639,7 +639,7 @@ class _EventScreenState extends State<EventScreen> {
                   bgcolor: themeCubit.primaryColor,
                   textColor: themeCubit.backgroundColor,
                   buttonText: StringConstants.yesShareIt,
-                  onPressedFunction: () {
+                  onPressed: () {
                     Navigator.pop(context);
                     _yesShareItBottomSheet();
                   },
@@ -878,7 +878,7 @@ class _EventScreenState extends State<EventScreen> {
                     child: ButtonComponent(
                       buttonText: StringConstants.join,
                       textColor: themeCubit.backgroundColor,
-                      onPressedFunction: () {
+                      onPressed: () {
                         _sendMessage();
                         Navigator.pop(context);
                         _navigateToBack();
@@ -926,14 +926,15 @@ class _EventScreenState extends State<EventScreen> {
               SizedBoxConstants.sizedBoxTenW(),
               TextComponent(
                 "Message for Raul",
-                style :FontStylesConstants.style18(color: ColorConstants.primaryColor),
+                style: FontStylesConstants.style18(
+                    color: ColorConstants.primaryColor),
               ),
             ],
           ),
           SizedBoxConstants.sizedBoxTenH(),
           TextComponent(
             StringConstants.doYouHaveQuestion,
-            style :FontStylesConstants.style14(color: ColorConstants.white),
+            style: FontStylesConstants.style14(color: ColorConstants.white),
             maxLines: 4,
           ),
           SizedBoxConstants.sizedBoxTenH(),

@@ -62,8 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bgImage:
           "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
       widget: _eventWidget(),
-      bottomNavigationBar: Container(
-          child: const BottomNavBar()),
+      bottomNavigationBar: Container(child: const BottomNavBar()),
     );
   }
 
@@ -71,10 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-         TextComponent(
-          StringConstants.locals,
-          style: FontStylesConstants.style47()
-        ),
+        TextComponent(StringConstants.locals,
+            style: FontStylesConstants.style47()),
         const Spacer(),
         IconComponent(
           iconData: Icons.notifications,
@@ -143,11 +140,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   TextComponent(
                     "+1456 ${StringConstants.joined}",
-                    style: FontStylesConstants.style14(color: ColorConstants.white),
+                    style: FontStylesConstants.style14(
+                        color: ColorConstants.white),
                   ),
                 ],
               ),
-               TextComponent(
+              TextComponent(
                 "Property \nnetworking event",
                 style: FontStylesConstants.style35(),
 
@@ -162,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               TextComponent(
                 "17 Feb . 11AM - 2PM . Manchester",
-                style:FontStylesConstants.style14(color: ColorConstants.white),
+                style: FontStylesConstants.style14(color: ColorConstants.white),
               ),
               const SizedBox(
                 height: 20,
@@ -174,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       bgcolor: themeCubit.primaryColor,
                       textColor: themeCubit.backgroundColor,
                       buttonText: StringConstants.viewEvent,
-                      onPressedFunction: () {
+                      onPressed: () {
                         NavigationUtil.push(
                             context, RouteConstants.eventScreen);
                       }),
@@ -241,13 +239,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                    TextComponent(StringConstants.saveEvent,
-                        style: FontStylesConstants.style14(color: ColorConstants.white,fontWeight: FontWeight.bold),
-                        // style: TextStyle(
-                        //     fontWeight: FontWeight.bold,
-                        //     fontSize: 14,
-                        //     color: themeCubit.textColor)
-
+                    TextComponent(
+                      StringConstants.saveEvent,
+                      style: FontStylesConstants.style14(
+                          color: ColorConstants.white,
+                          fontWeight: FontWeight.bold),
+                      // style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 14,
+                      //     color: themeCubit.textColor)
                     ),
                   ],
                 ),
@@ -272,7 +272,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 20,
                     ),
                     TextComponent(StringConstants.showLessLikeThis,
-                      style: FontStylesConstants.style14(color: ColorConstants.white,fontWeight: FontWeight.bold)),
+                        style: FontStylesConstants.style14(
+                            color: ColorConstants.white,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -295,8 +297,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       width: 20,
                     ),
-                     TextComponent(StringConstants.reportEvent,
-                      style: FontStylesConstants.style14(color: ColorConstants.red,fontWeight: FontWeight.bold),),
+                    TextComponent(
+                      StringConstants.reportEvent,
+                      style: FontStylesConstants.style14(
+                          color: ColorConstants.red,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
               ),
@@ -322,7 +328,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
                     child: TextComponent(
                       StringConstants.shareEvent,
-                      style: FontStylesConstants.style18(color: themeCubit.primaryColor),
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor),
                     ),
                   ),
                   InkWell(
@@ -389,10 +396,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
-                child: TextComponent(
-                  StringConstants.yourConnections,
-                  style: FontStylesConstants.style18(color: themeCubit.primaryColor)
-                ),
+                child: TextComponent(StringConstants.yourConnections,
+                    style: FontStylesConstants.style18(
+                        color: themeCubit.primaryColor)),
               ),
               Expanded(
                 child: ListView.builder(
@@ -432,7 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style:  FontStylesConstants.style20(),
+                style: FontStylesConstants.style20(),
                 // style: TextStyle(
                 //     fontSize: 20,
                 //     fontFamily: FontConstants.fontProtestStrike,
@@ -466,7 +472,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   bgcolor: themeCubit.primaryColor,
                   textColor: themeCubit.backgroundColor,
                   buttonText: StringConstants.yesShareIt,
-                  onPressedFunction: () {
+                  onPressed: () {
                     Navigator.pop(context);
                     _yesShareItBottomSheet();
                   },
@@ -489,6 +495,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
   _navigateToBack() async {
     Future.delayed(const Duration(milliseconds: 1800), () async {
       NavigationUtil.pop(context);

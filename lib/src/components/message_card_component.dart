@@ -76,7 +76,7 @@ class _MessageCardState extends State<MessageCard> {
       children: [
         ButtonComponent(
           buttonText: "Yes, share it",
-          onPressedFunction: () {},
+          onPressed: () {},
           bgcolor: ColorConstants.yellow,
         )
       ],

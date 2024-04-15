@@ -90,7 +90,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                   ? ColorConstants.black
                   : ColorConstants.lightGray,
               buttonText: StringConstants.continues,
-              onPressedFunction: () {
+              onPressed: () {
                 userDetailModel?.aboutMe = _aboutMeController.text;
                 NavigationUtil.push(context, RouteConstants.genderScreen);
               }),

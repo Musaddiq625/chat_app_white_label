@@ -146,7 +146,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     ),
                     ButtonComponent(
                         buttonText: "Create Group",
-                        onPressedFunction: () async {
+                        onPressed: () async {
                           if (nameController.text.isEmpty) {
                             ToastComponent.showToast(
                               'Name cannot be empty',

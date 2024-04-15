@@ -8,19 +8,22 @@ import 'rounded_checkbox_component.dart';
 
 class CheckboxListTileComponent extends StatelessWidget {
   final bool isChecked;
-  final String title;
+  final String leadingText;
   final String subTitle;
   final Function onPressed;
   final bool withBgColor;
   final bool enablePadding;
+  final bool isFilled;
 
-  const CheckboxListTileComponent(this.title,
-      {this.isChecked = false,
+  const CheckboxListTileComponent(
+      {required this.leadingText,
+      this.isChecked = false,
       this.subTitle = '',
       required this.onPressed,
       this.withBgColor = true,
       Key? key,
-      this.enablePadding = true})
+      this.enablePadding = true,
+      this.isFilled = false})
       : super(key: key);
 
   @override
@@ -31,8 +34,14 @@ class CheckboxListTileComponent extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => onPressed(),
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.all(12.0),
+        decoration: isFilled
+            ? BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                color: themeCubit.darkBackgroundColor,
+              )
+            : null,
         child: Row(
           children: [
             Expanded(
@@ -44,7 +53,7 @@ class CheckboxListTileComponent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextComponent(
-                      title,
+                      leadingText,
                       style: TextStyle(
                           fontSize: 30,
                           color: themeCubit.textColor,

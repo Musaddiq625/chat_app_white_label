@@ -16,6 +16,14 @@ class StringConstants {
   static const String howDoYouIdentify = "How do you\nidentify?";
   static const String tellUsABitAboutYourSelf = "Tell us a bit\nabout yourself";
   static const String whatsYourInterest = "What's your\ninterest?";
+  static const String whatsYourLinkedin = "What's your Linkedin\nProfile Link?";
+  static const String whatsYourFacebook = "What's your Facebook\nProfile Link?";
+  static const String whatsYourInstagram =
+      "What's your Instagram\nProfile Link?";
+  static const String linkedinHintText =
+      "https://www.linkedin.com/in/profile-link/";
+  static const String facebookHintText = "https://www.facebook.com/profile/";
+  static const String instagramHintText = "https://www.instagram.com/profile";
   static const String haveFunExlporing = "Have fun\nexploring!";
   static const String letsGetYouStarted =
       "Let's get you started and finds events.";
@@ -54,6 +62,7 @@ class StringConstants {
   static const String eventDescription = "Event Description";
   static const String otherOptions = "Other Options";
   static const String connect = "Connect";
+  static const String connected = "Connected";
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
   static const String skip = "Skip";

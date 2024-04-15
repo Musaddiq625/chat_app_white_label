@@ -113,7 +113,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                           bgcolor: themeCubit.primaryColor,
                           textColor: ColorConstants.black,
                           buttonText: StringConstants.continues,
-                          onPressedFunction:
+                          onPressed:
                               isFieldsValidate ? onContinuePressed : null))
                 ],
               )),

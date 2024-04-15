@@ -180,8 +180,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                   textColor: ColorConstants.black,
 
                   buttonText: StringConstants.continues,
-                  onPressedFunction:
-                      isFieldsValidate ? onContinuePressed : null,
+                  onPressed: isFieldsValidate ? onContinuePressed : null,
                   // onPressedFunction: () {
 
                   // }),

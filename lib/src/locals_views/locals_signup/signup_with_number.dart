@@ -186,8 +186,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                   bgcolor: themeCubit.primaryColor,
                   textColor: ColorConstants.black,
                   buttonText: StringConstants.continues,
-                  onPressedFunction:
-                      isFieldsValidate ? onContinuePressed : null),
+                  onPressed: isFieldsValidate ? onContinuePressed : null),
             )
           ],
         ),

@@ -49,7 +49,7 @@ class BottomSheetComponent {
                       child: Container(
                     // width: 400,
                     // height: 800,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       // gradient: LinearGradient(colors: [
                       //   Color(0xff7c7c7c),

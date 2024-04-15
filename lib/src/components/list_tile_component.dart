@@ -1,6 +1,5 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
-import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,17 +8,24 @@ import '../constants/color_constants.dart';
 import '../utils/theme_cubit/theme_cubit.dart';
 import 'icon_component.dart';
 
-class CreateEventTileComponent extends StatelessWidget {
-  final String? svg;
+class ListTileComponent extends StatelessWidget {
+  final String? leadingIcon;
   final String iconText;
   final String subText;
+  final double? subTextSize;
+  final double? trailingIconSize;
   final IconData subIcon;
   final Color iconColor, subIconColor, subTextColor;
   final Function()? onTap;
+  final bool isSocial;
+  final bool isLeadingImageCircular;
+  final bool isLeadingImageSVG;
 
-  const CreateEventTileComponent({
+  final double? overrideLeadingIconSize;
+
+  const ListTileComponent({
     super.key,
-    this.svg,
+    this.leadingIcon,
     required this.iconText,
     required this.subText,
     required this.onTap,
@@ -27,6 +33,12 @@ class CreateEventTileComponent extends StatelessWidget {
     this.iconColor = ColorConstants.black,
     this.subIconColor = ColorConstants.lightGray,
     this.subTextColor = ColorConstants.white,
+    this.subTextSize,
+    this.trailingIconSize,
+    this.isSocial = false,
+    this.isLeadingImageCircular = false,
+    this.isLeadingImageSVG = false,
+    this.overrideLeadingIconSize,
   });
 
   @override
@@ -37,7 +49,7 @@ class CreateEventTileComponent extends StatelessWidget {
       child: Container(
         width: AppConstants.responsiveWidth(context),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           color: themeCubit.darkBackgroundColor,
         ),
         child: Padding(
@@ -47,33 +59,50 @@ class CreateEventTileComponent extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  if (svg != null)
-                    SvgPicture.asset(
-                      height: 20,
-                      svg!,
-                    ),
-                  if (svg != null)
-                    SizedBox(
+                  if (leadingIcon != null)
+                    ClipRRect(
+                        borderRadius: isLeadingImageCircular
+                            ? BorderRadius.circular(32)
+                            : BorderRadius.zero,
+                        child: isLeadingImageSVG
+                            ? SvgPicture.asset(
+                                height: overrideLeadingIconSize ?? 30,
+                                width: overrideLeadingIconSize ?? 30,
+                                leadingIcon!,
+                                // alignment: Alignment.center,
+                                fit: BoxFit.fitHeight,
+                              )
+                            : Image.asset(
+                                leadingIcon!,
+                                height: 30,
+                                width: 30,
+                              )),
+                  if (leadingIcon != null)
+                    const SizedBox(
                       width: 10,
                     ),
                   TextComponent(
                     iconText,
                     style: TextStyle(fontSize: 15, color: themeCubit.textColor),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   TextComponent(
                     subText,
                     style: TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                         color: subTextColor),
                   ),
+                  if (isSocial)
+                    const SizedBox(
+                      width: 15,
+                    ),
                   IconComponent(
                     iconData: subIcon,
                     borderColor: ColorConstants.transparent,
                     backgroundColor: ColorConstants.transparent,
-                    circleSize: 20,
-                    iconSize: 20,
+                    circleSize: trailingIconSize ?? 22,
+                    iconSize: trailingIconSize ?? 22,
                     iconColor: subIconColor,
                   ),
                 ],

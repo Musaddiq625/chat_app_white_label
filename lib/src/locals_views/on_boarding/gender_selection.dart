@@ -81,13 +81,14 @@ class _GenderSelectionState extends State<GenderSelection> {
                   // print('IDENTITY: ${identity}');
                   bool isSelected = (identity == _selectedOption);
                   return CheckboxListTileComponent(
+                      leadingText: identity,
                       enablePadding: false,
                       isChecked: isSelected,
-                      identity, onPressed: () {
-                    setState(() {
-                      _selectedOption = (identity);
-                    });
-                  });
+                      onPressed: () {
+                        setState(() {
+                          _selectedOption = (identity);
+                        });
+                      });
                 },
               ),
             ],
@@ -96,13 +97,11 @@ class _GenderSelectionState extends State<GenderSelection> {
               bgcolor: _selectedOption != null
                   ? themeCubit.primaryColor
                   : ColorConstants.lightGray.withOpacity(0.2),
-              horizontalLength:
-                  AppConstants.responsiveWidth(context, percentage: 35),
               textColor: _selectedOption != null
                   ? ColorConstants.black
                   : ColorConstants.lightGray,
               buttonText: StringConstants.continues,
-              onPressedFunction: () {
+              onPressed: () {
                 NavigationUtil.push(context, RouteConstants.aboutYouScreen);
               })
         ],

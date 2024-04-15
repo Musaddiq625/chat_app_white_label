@@ -52,21 +52,21 @@ class _DOBScreenState extends State<DOBScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextComponent(
-                StringConstants.whensYouDob,
-                style:FontStylesConstants.style22(color: ColorConstants.white)
-              ),
+              TextComponent(StringConstants.whensYouDob,
+                  style:
+                      FontStylesConstants.style22(color: ColorConstants.white)),
               SizedBoxConstants.sizedBoxThirtyH(),
               InkWell(
                   onTap: () => _selectDate(context),
                   child: _dateController.value.text.isNotEmpty
-                      ? TextComponent(
-                          _dateController.text,
-                          style:FontStylesConstants.style30(color: themeCubit.textColor,letterSpacing: 0.5)
-                        )
-                      :  TextComponent(
+                      ? TextComponent(_dateController.text,
+                          style: FontStylesConstants.style30(
+                              color: themeCubit.textColor, letterSpacing: 0.5))
+                      : TextComponent(
                           StringConstants.formatDOB,
-                          style: FontStylesConstants.style30(color: ColorConstants.lightGray,letterSpacing: 0.8),
+                          style: FontStylesConstants.style30(
+                              color: ColorConstants.lightGray,
+                              letterSpacing: 0.8),
                         )),
             ],
           ),
@@ -80,7 +80,7 @@ class _DOBScreenState extends State<DOBScreen> {
                     ? ColorConstants.black
                     : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {
+                onPressed: () {
                   NavigationUtil.push(
                       context, RouteConstants.whatDoYouDoScreen);
                 }),

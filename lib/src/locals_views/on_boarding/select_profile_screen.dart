@@ -107,10 +107,11 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 style: FontStylesConstants.style22(color: ColorConstants.white),
               ),
               SizedBoxConstants.sizedBoxTwelveH(),
-               TextComponent(
+              TextComponent(
                 StringConstants.chooseAnyOfTheUplodedImages,
-                style:FontStylesConstants.style14(color: ColorConstants.lightGray),
-                 maxLines: 6,
+                style: FontStylesConstants.style14(
+                    color: ColorConstants.lightGray),
+                maxLines: 6,
               ),
               SizedBoxConstants.sizedBoxForthyH(),
               SizedBox(
@@ -163,11 +164,10 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
               if (widget.selectedImages.length - 1 != _currentPage)
                 SizedBoxConstants.sizedBoxThirtyH(),
               if (widget.selectedImages.length - 1 != _currentPage)
-                 Center(
-                  child: TextComponent(
-                    StringConstants.scrollLeft,
-                    style:FontStylesConstants.style14(color: ColorConstants.lightGray)
-                  ),
+                Center(
+                  child: TextComponent(StringConstants.scrollLeft,
+                      style: FontStylesConstants.style14(
+                          color: ColorConstants.lightGray)),
                 ),
             ],
           ),
@@ -177,7 +177,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 bgcolor: themeCubit.primaryColor,
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.confirmProfilePicture,
-                onPressedFunction: () {
+                onPressed: () {
                   onBoardingCubit.userDetailFirstStep("selectedImage");
                 }),
           )

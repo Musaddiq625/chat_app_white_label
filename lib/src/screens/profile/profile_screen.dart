@@ -159,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 ButtonComponent(
                     buttonText: widget.isEdit == true ? 'Update' : ' Complete',
-                    onPressedFunction: () async {
+                    onPressed: () async {
                       if (nameController.text.isEmpty) {
                         Fluttertoast.showToast(
                             msg: "Please enter the name",

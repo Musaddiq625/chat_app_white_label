@@ -36,5 +36,14 @@ class AssetConstants {
   static const String confetti = "$images/confetti.png";
   static const String garland = "$images/garland.png";
   static const String copyLink = "$images/copy_link.svg";
-  static const String instagram = "$images/instagram.png";
+  static const String linkedin = "$icons/linkedin.svg";
+  static const String instagram = "$icons/instagram.svg";
+
+  static const String facebook = "$icons/facebook.png";
+  static const String diet = "$icons/diet.svg";
+  static const String workout = "$icons/workout.svg";
+  static const String height = "$icons/height.svg";
+  static const String smoking = "$icons/smoking.svg";
+  static const String drinking = "$icons/drinking.svg";
+  static const String pets = "$icons/pets.svg";
 }

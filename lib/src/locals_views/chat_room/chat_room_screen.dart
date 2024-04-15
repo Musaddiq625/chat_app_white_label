@@ -360,7 +360,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       buttonText: StringConstants.addPeopleToGroup,
                       bgcolor: themeCubit.primaryColor,
                       textColor: themeCubit.backgroundColor,
-                      onPressedFunction: () {}),
+                      onPressed: () {}),
                 ),
               ],
             )
@@ -419,7 +419,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ButtonComponent(
                   buttonText: StringConstants.yesPleaseLeave,
                   textColor: themeCubit.textColor,
-                  onPressedFunction: () {
+                  onPressed: () {
                     Navigator.pop(context);
                   },
                   bgcolor: ColorConstants.red,
@@ -472,7 +472,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 ButtonComponent(
                   buttonText: StringConstants.yesDeleteIt,
                   textColor: themeCubit.textColor,
-                  onPressedFunction: () {
+                  onPressed: () {
                     Navigator.pop(context);
                   },
                   bgcolor: ColorConstants.red,
@@ -510,7 +510,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 child: ButtonComponent(
                   buttonText: StringConstants.save,
                   textColor: themeCubit.backgroundColor,
-                  onPressedFunction: () {
+                  onPressed: () {
                     Navigator.pop(context);
                   },
                   bgcolor: themeCubit.primaryColor,

@@ -136,7 +136,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
               bgcolor: ColorConstants.lightGray.withOpacity(0.2),
               textColor: ColorConstants.white,
               buttonText: StringConstants.addPhotoFromGallery,
-              onPressedFunction: () async {
+              onPressed: () async {
                 if (selectedImage == null) {
                   final XFile? image = await ImagePicker()
                       .pickImage(source: ImageSource.gallery);
@@ -165,7 +165,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                   ? ColorConstants.white
                   : ColorConstants.black,
               buttonText: StringConstants.takeASelfie,
-              onPressedFunction: () async {
+              onPressed: () async {
                 List<File> files = [];
                 final XFile? cameraImage =
                     await ImagePicker().pickImage(source: ImageSource.camera);
@@ -187,7 +187,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 bgcolor: themeCubit.primaryColor,
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {
+                onPressed: () {
                   userDetailModel?.userPhotos == selectedImages.toList();
                   NavigationUtil.push(
                       context, RouteConstants.selectProfileScreen,

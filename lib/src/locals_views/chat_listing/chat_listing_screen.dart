@@ -146,7 +146,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                               buttonText: StringConstants.startChat,
                               bgcolor: themeCubit.primaryColor,
                               textColor: themeCubit.backgroundColor,
-                              onPressedFunction: () {})
+                              onPressed: () {})
                         ],
                       ),
               )
@@ -234,7 +234,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                   child: ButtonComponent(
                       buttonText: StringConstants.startChatting,
                       bgcolor: themeCubit.primaryColor,
-                      onPressedFunction: () {}),
+                      onPressed: () {}),
                 ),
               ],
             )

@@ -193,22 +193,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       )),
       floatingActionButton: connectSend
           ? ButtonComponent(
-              horizontalLength: AppConstants.responsiveWidth(context,percentage: 38)  ,
               bgcolor: themeCubit.primaryColor,
               buttonText: StringConstants.connectSent,
               textColor: themeCubit.backgroundColor,
-              onPressedFunction: () {
+              onPressed: () {
                 _yesShareItBottomSheet();
                 // NavigationUtil.push(
                 //     context, RouteConstants.localsEventScreen);
               },
             )
           : ButtonComponent(
-              horizontalLength: AppConstants.responsiveWidth(context,percentage: 38),
               bgcolor: themeCubit.primaryColor,
               buttonText: StringConstants.connect,
               textColor: themeCubit.backgroundColor,
-              onPressedFunction: () {
+              onPressed: () {
                 setState(() {
                   connectSend = true;
                 });

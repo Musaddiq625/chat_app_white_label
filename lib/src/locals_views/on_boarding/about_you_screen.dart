@@ -1,20 +1,22 @@
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/connect_social_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/list_tile_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../components/app_bar_component.dart';
-import '../../components/button_component.dart';
-import '../../components/create_event_tile_component.dart';
-import '../../components/icon_component.dart';
-import '../../components/text_component.dart';
-import '../../components/ui_scaffold.dart';
-import '../../constants/color_constants.dart';
-import '../../constants/font_constants.dart';
-import '../../constants/route_constants.dart';
-import '../../constants/size_box_constants.dart';
-import '../../constants/string_constants.dart';
-import '../../utils/navigation_util.dart';
 
 class AboutYouScreen extends StatefulWidget {
   const AboutYouScreen({super.key});
@@ -98,10 +100,10 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                         color: themeCubit.textColor,
                         fontFamily: FontConstants.fontProtestStrike),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
-                  TextComponent(
+                  const TextComponent(
                     StringConstants.alsoDoThisLaterInProfile,
                     style: TextStyle(
                       fontSize: 12,
@@ -119,29 +121,33 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                   SizedBoxConstants.sizedBoxSixH(),
                   TextFieldComponent(
                     _bioController,
+                    filled: true,
                     hintText: StringConstants.bioHint,
-                    maxLines: 5,
+                    maxLines: 15,
+                    minLines: 4,
                     textColor: themeCubit.textColor,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                 ],
               ),
             ),
 
-            Divider(
+            const Divider(
               thickness: 0.1,
             ),
             socials(),
             SizedBoxConstants.sizedBoxTenH(),
-            Divider(
+            const Divider(
               thickness: 0.1,
             ),
             moreAboutYou(),
           ],
         ),
-        SizedBox(height: 30,),
+        const SizedBox(
+          height: 30,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
           child: SizedBox(
@@ -150,7 +156,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                 bgcolor: themeCubit.primaryColor,
                 textColor: themeCubit.backgroundColor,
                 buttonText: StringConstants.continues,
-                onPressedFunction: () {
+                onPressed: () {
                   NavigationUtil.push(context, RouteConstants.interestScreen);
                 }),
           ),
@@ -166,93 +172,167 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          TextComponent(StringConstants.socials,
+          const TextComponent(StringConstants.socials,
               style: TextStyle(
                 fontSize: 14,
                 color: ColorConstants.lightGray,
               )),
           SizedBoxConstants.sizedBoxTenH(),
-          CreateEventTileComponent(
+          ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
               iconText: StringConstants.linkedIn,
               subIcon: Icons.add_circle,
+              trailingIconSize: 30,
+              leadingIcon: AssetConstants.linkedin,
+              isLeadingImageCircular: true,
+              isLeadingImageSVG: true,
               subIconColor: themeCubit.textColor,
               subText: "",
-              onTap: () {}),
-          SizedBox(height: 10,),
-          CreateEventTileComponent(
+              onTap: () {
+                BottomSheetComponent.showBottomSheet(
+                  context,
+                  isShowHeader: false,
+                  body: const SocialSheetComponent(
+                    heading: StringConstants.whatsYourLinkedin,
+                    isSvg: true,
+                    textfieldHint: StringConstants.linkedinHintText,
+                    image: AssetConstants.linkedin,
+                  ),
+                );
+              }),
+          const SizedBox(
+            height: 10,
+          ),
+          ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
+              leadingIcon: AssetConstants.instagram,
+              isSocial: true,
               iconText: StringConstants.instagram,
-              subIcon: Icons.check_circle,
               subIconColor: themeCubit.primaryColor,
-              subText: "Connected",
+              trailingIconSize: 30,
+              subIcon: Icons.check_circle,
+              subText: StringConstants.connected,
               subTextColor: themeCubit.primaryColor,
-              onTap: () {}),
+              isLeadingImageCircular: true,
+              isLeadingImageSVG: true,
+              onTap: () {
+                BottomSheetComponent.showBottomSheet(
+                  context,
+                  isShowHeader: false,
+                  body: const SocialSheetComponent(
+                    heading: StringConstants.whatsYourInstagram,
+                    isSvg: true,
+                    textfieldHint: StringConstants.instagramHintText,
+                    image: AssetConstants.instagram,
+                  ),
+                );
+              }),
+          const SizedBox(
+            height: 10,
+          ),
+          ListTileComponent(
+              // icon: Icons.location_on,
+              // iconColor: ColorConstants.white,
+              leadingIcon: AssetConstants.facebook,
+              isSocial: true,
+              iconText: StringConstants.facebook,
+              subIconColor: themeCubit.primaryColor,
+              trailingIconSize: 30,
+              subIcon: Icons.check_circle,
+              subText: StringConstants.connected,
+              subTextColor: themeCubit.primaryColor,
+              onTap: () {
+                BottomSheetComponent.showBottomSheet(
+                  context,
+                  isShowHeader: false,
+                  body: const SocialSheetComponent(
+                    heading: StringConstants.whatsYourFacebook,
+                    textfieldHint: StringConstants.facebookHintText,
+                    image: AssetConstants.facebook,
+                  ),
+                );
+              }),
         ],
       ),
     );
   }
 
-  moreAboutYou(){
+  moreAboutYou() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          TextComponent(StringConstants.moreAboutYou,
+          const TextComponent(StringConstants.moreAboutYou,
               style: TextStyle(
                 fontSize: 14,
                 color: ColorConstants.lightGray,
               )),
           SizedBoxConstants.sizedBoxTenH(),
-          CreateEventTileComponent(
-            // icon: Icons.location_on,
-            // iconColor: ColorConstants.white,
+          ListTileComponent(
+              // icon: Icons.location_on,
+              // iconColor: ColorConstants.white,
               iconText: StringConstants.diet,
-              subIconColor:  ColorConstants.iconBg,
+              subIconColor: ColorConstants.iconBg,
+              leadingIcon: AssetConstants.diet,
+              overrideLeadingIconSize: 15,
+              isLeadingImageSVG: true,
               subText: "Love Meat",
               onTap: () {}),
-          SizedBox(height: 10,),
-          CreateEventTileComponent(
-            // icon: Icons.location_on,
-            // iconColor: ColorConstants.white,
+          const SizedBox(
+            height: 10,
+          ),
+          ListTileComponent(
+              // icon: Icons.location_on,
+              // iconColor: ColorConstants.white,
               iconText: StringConstants.workout,
-              subIconColor:  ColorConstants.iconBg,
+              // leadingIcon: AssetConstants.workout,
+              overrideLeadingIconSize: 15,
+              subIconColor: ColorConstants.iconBg,
               subText: "Very Active",
               onTap: () {}),
-          SizedBox(height: 10,),
-          CreateEventTileComponent(
-            // icon: Icons.location_on,
-            // iconColor: ColorConstants.white,
+          const SizedBox(
+            height: 10,
+          ),
+          ListTileComponent(
+              // icon: Icons.location_on,
+              // iconColor: ColorConstants.white,
               iconText: StringConstants.height,
-              subIconColor:  ColorConstants.iconBg,
+              // leadingIcon: AssetConstants.height,
+              subIconColor: ColorConstants.iconBg,
               subText: "5'8",
               onTap: () {}),
-          SizedBox(height: 10,),
-          CreateEventTileComponent(
-            // icon: Icons.location_on,
-            // iconColor: ColorConstants.white,
+          const SizedBox(
+            height: 10,
+          ),
+          ListTileComponent(
+              // icon: Icons.location_on,
+              // iconColor: ColorConstants.white,
               iconText: StringConstants.weight,
-              subIconColor:  ColorConstants.iconBg,
+              subIconColor: ColorConstants.iconBg,
               subText: "",
               subTextColor: themeCubit.textColor,
               onTap: () {}),
-          SizedBox(height: 10,),
-          CreateEventTileComponent(
-            // icon: Icons.location_on,
-            // iconColor: ColorConstants.white,
+          const SizedBox(
+            height: 10,
+          ),
+          ListTileComponent(
+              // icon: Icons.location_on,
+              // iconColor: ColorConstants.white,
               iconText: StringConstants.smoking,
               subIconColor: ColorConstants.iconBg,
               subText: "No",
               subTextColor: themeCubit.textColor,
               onTap: () {}),
-          SizedBox(height: 10,),
-          CreateEventTileComponent(
-            // icon: Icons.location_on,
-            // iconColor: ColorConstants.white,
+          const SizedBox(
+            height: 10,
+          ),
+          ListTileComponent(
+              // icon: Icons.location_on,
+              // iconColor: ColorConstants.white,
               iconText: StringConstants.drinking,
               subIconColor: ColorConstants.iconBg,
               subText: "No",

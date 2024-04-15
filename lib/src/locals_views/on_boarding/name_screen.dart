@@ -62,10 +62,9 @@ class _NameScreenState extends State<NameScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextComponent(
-                StringConstants.whatsYourName,
-                style: FontStylesConstants.style22(color: ColorConstants.white)
-              ),
+              TextComponent(StringConstants.whatsYourName,
+                  style:
+                      FontStylesConstants.style22(color: ColorConstants.white)),
               SizedBoxConstants.sizedBoxThirtyH(),
               TextFieldComponent(
                 _firstNameController,
@@ -98,7 +97,7 @@ class _NameScreenState extends State<NameScreen> {
                 bgcolor: themeCubit.primaryColor,
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.continues,
-                onPressedFunction: isFieldsValidate ? onContinuePressed : null))
+                onPressed: isFieldsValidate ? onContinuePressed : null))
       ],
     );
   }

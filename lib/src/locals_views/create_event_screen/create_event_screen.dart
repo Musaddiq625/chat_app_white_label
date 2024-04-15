@@ -1,4 +1,4 @@
-import 'package:chat_app_white_label/src/components/create_event_tile_component.dart';
+import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
@@ -399,8 +399,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  CreateEventTileComponent(
-                    svg: AssetConstants.marker,
+                  ListTileComponent(
+                    leadingIcon: AssetConstants.marker,
                     iconText: StringConstants.location,
                     subText: "Manchester",
                     onTap: _selectLocation,
@@ -409,8 +409,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  CreateEventTileComponent(
-                    svg: AssetConstants.ticket,
+                  ListTileComponent(
+                    leadingIcon: AssetConstants.ticket,
                     iconText: StringConstants.price,
                     subText: "Free",
                     onTap: _selectPrice,
@@ -419,8 +419,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  CreateEventTileComponent(
-                    svg: AssetConstants.happy,
+                  ListTileComponent(
+                    leadingIcon: AssetConstants.happy,
                     iconText: StringConstants.capacity,
                     subText: "60",
                     onTap: _selectCapacity,
@@ -481,8 +481,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  CreateEventTileComponent(
-                    svg: AssetConstants.marker,
+                  ListTileComponent(
+                    leadingIcon: AssetConstants.marker,
                     iconText: StringConstants.visibility,
                     subText: "Public",
                     onTap: () {},
@@ -659,7 +659,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.createEvent,
                       textColor: themeCubit.backgroundColor,
-                      onPressedFunction: () {
+                      onPressed: () {
                         // EventUtils.createEvent(_eventDataModel!);
                         _createBottomSheet();
                         // NavigationUtil.push(
@@ -989,7 +989,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 const SizedBox(width: 30),
                 ButtonComponent(
                   buttonText: "Yes, share it",
-                  onPressedFunction: () {
+                  onPressed: () {
                     Navigator.pop(context);
                     _yesShareItBottomSheet();
                   },
@@ -1036,7 +1036,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   bgcolor: ColorConstants.red,
                   textColor: themeCubit.textColor,
                   buttonText: StringConstants.yesExit,
-                  onPressedFunction: () {
+                  onPressed: () {
                     NavigationUtil.popAllAndPush(
                         context, RouteConstants.homeScreenLocal);
                   },
@@ -1308,7 +1308,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         bgcolor: themeCubit.primaryColor,
                         textColor: ColorConstants.black,
                         buttonText: StringConstants.done,
-                        onPressedFunction: () {
+                        onPressed: () {
                           // _yesShareItBottomSheet();
                           // NavigationUtil.push(
                           //     context, RouteConstants.localsEventScreen);
@@ -1419,7 +1419,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     child: ButtonComponent(
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.done,
-                      onPressedFunction: () {
+                      onPressed: () {
                         // _yesShareItBottomSheet();
                         // NavigationUtil.push(
                         //     context, RouteConstants.localsEventScreen);
@@ -1501,7 +1501,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       bgcolor: ColorConstants.primaryColor,
                       textColor: ColorConstants.black,
                       buttonText: StringConstants.done,
-                      onPressedFunction: () {},
+                      onPressed: () {},
                     ),
                   ],
                 ),

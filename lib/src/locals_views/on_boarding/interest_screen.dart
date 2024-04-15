@@ -101,7 +101,7 @@ class _InterestScreenState extends State<InterestScreen> {
             bgcolor: themeCubit.primaryColor,
             textColor: themeCubit.backgroundColor,
             buttonText: StringConstants.continues,
-            onPressedFunction: () {
+            onPressed: () {
               NavigationUtil.push(context, RouteConstants.doneScreen);
             }),
       ),

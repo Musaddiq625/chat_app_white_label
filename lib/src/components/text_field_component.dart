@@ -140,6 +140,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
           minLines: widget.minLines,
           maxLines: widget.maxLines,
           enabled: widget.enabled,
+
           keyboardType: widget.keyboardType,
           focusNode: widget.focusNode,
           onFieldSubmitted: widget.onFieldSubmitted,
@@ -271,7 +272,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
   }
 
   OutlineInputBorder _outLineBorder() => OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(
           color:
               widget.fieldColor ?? ColorConstants.blackLight.withOpacity(0.6),
