@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/about_event_component.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
@@ -91,7 +92,7 @@ class _EventScreenState extends State<EventScreen> {
           children: [
             ButtonComponent(
               buttonText: StringConstants.getTicket,
-              onPressedFunction: () {
+              onPressed: () {
                 _paymentSuccessBottomSheet();
               },
               textColor: ColorConstants.black,
@@ -533,7 +534,7 @@ class _EventScreenState extends State<EventScreen> {
                   bgcolor: themeCubit.primaryColor,
                   textColor: themeCubit.backgroundColor,
                   buttonText: StringConstants.yesShareIt,
-                  onPressedFunction: () {
+                  onPressed: () {
                     Navigator.pop(context);
                     _yesShareItBottomSheet();
                   },
@@ -779,11 +780,10 @@ class _EventScreenState extends State<EventScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ButtonComponent(
-                    horizontalLength:
-                        AppConstants.responsiveWidth(context, percentage: 38),
+
                     buttonText: StringConstants.join,
                     textColor: themeCubit.backgroundColor,
-                    onPressedFunction: () {
+                    onPressed: () {
                       _sendMessage();
                       Navigator.pop(context);
                       _navigateToBack();
@@ -998,11 +998,10 @@ class _EventScreenState extends State<EventScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ButtonComponent(
-                  horizontalLength:
-                      AppConstants.responsiveWidth(context, percentage: 38),
+
                   buttonText: StringConstants.next,
                   textColor: themeCubit.backgroundColor,
-                  onPressedFunction: () {
+                  onPressed: () {
                     _sendMessage();
                     Navigator.pop(context);
                     _navigateToBack();
@@ -1203,11 +1202,10 @@ class _EventScreenState extends State<EventScreen> {
                   //   bgcolor: ColorConstants.white,
                   // ),
                   ButtonComponent(
-                    horizontalLength:
-                        AppConstants.responsiveWidth(context, percentage: 10),
+
                     buttonText: StringConstants.payWithCard,
                     textColor: themeCubit.backgroundColor,
-                    onPressedFunction: () {
+                    onPressed: () {
                       _sendMessage();
                       Navigator.pop(context);
                       _navigateToBack();

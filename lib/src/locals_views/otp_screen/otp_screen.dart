@@ -221,7 +221,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   bgcolor: themeCubit.primaryColor,
                   textColor: themeCubit.backgroundColor,
                   buttonText: StringConstants.continues,
-                  onPressedFunction:
+                  onPressed:
                       isFieldsValidate ? handleOTPResponse : null,
                 ))
           ],

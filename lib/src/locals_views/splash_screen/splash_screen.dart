@@ -90,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     bgcolor: themeCubit.backgroundColor,
                     textColor: themeCubit.primaryColor,
                     buttonText: StringConstants.getStarted,
-                    onPressedFunction: () {
+                    onPressed: () {
                       _showJoinBottomSheet();
                     }),
               )
@@ -184,12 +184,12 @@ class _SplashScreenState extends State<SplashScreen> {
                               bgcolor: ColorConstants.transparent,
                               textColor: ColorConstants.black,
                               buttonText: StringConstants.continueWithPhone,
-                              onPressedFunction: () {
+                              onPressed: () {
                                 NavigationUtil.push(
-                                    context, RouteConstants.signUpNumber
-                                    // context,
-                                    // RouteConstants.signUpNumber,
-                                    );
+                                  // context, RouteConstants.genderScreen
+                                  context,
+                                  RouteConstants.signUpNumber,
+                                );
                               }),
                         ),
                         const SizedBox(
@@ -201,7 +201,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               bgcolor: ColorConstants.lightGray,
                               textColor: themeCubit.textColor,
                               buttonText: StringConstants.continueWithEmail,
-                              onPressedFunction: () {
+                              onPressed: () {
                                 NavigationUtil.push(
                                     context, RouteConstants.signUpEmail);
                               }),
