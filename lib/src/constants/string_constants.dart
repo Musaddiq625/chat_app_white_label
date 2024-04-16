@@ -13,6 +13,7 @@ class StringConstants {
   static const String whensYouDob = "When is your\nbirthday?";
   static const String whatDoYouDo = "What do you do\nfor living?";
   static const String whatsYourName = "What's your\nname?";
+  static const String whatIsYour = "What's your ";
   static const String howDoYouIdentify = "How do you\nidentify?";
   static const String tellUsABitAboutYourSelf = "Tell us a bit\nabout yourself";
   static const String whatsYourInterest = "What's your\ninterest?";
@@ -30,6 +31,9 @@ class StringConstants {
   static const String whatDoYouDoHintText = "Project Manager at ABC agency";
   static const String whenYouJoinYoureInTheGame =
       "When you join, you're in the game!\n Chat's open and ready for you";
+  static const String howIsYour = "How is your ";
+  static const String doYou = "Do you ";
+  static const String doYouHave = "Do you have ";
   static const String firstName = "First Name";
   static const String lastName = "Last Name";
   static const String password = "Password";
@@ -75,12 +79,15 @@ class StringConstants {
   static const String height = "Height";
   static const String weight = "Weight";
   static const String smoking = "Smoking";
+  static const String smoke = "Smoke";
   static const String drinking = "Drinking";
+  static const String drink = "Drink";
   static const String moreAboutYou = "More about you";
   static const String bioHint =
       "Tell the world what you like, why you're here or anything about yourself ";
   static const String showLessLikeThis = "Show less like this";
-  static const String anyQuestionWhenEventCreated = "Any question that is entered when event created*";
+  static const String anyQuestionWhenEventCreated =
+      "Any question that is entered when event created*";
   static const String reportEvent = "Report event";
   static const String shareEvent = "Share event";
   static const String ticket = "Ticket";
@@ -183,6 +190,7 @@ class StringConstants {
   static const String clubs = "Clubs";
   static const String somethingToKnow = "Something to know";
   static const String requestSent = "Request Sent!";
+  static const String pets = "Pets";
   static const String requestStatus =
       "You will be notifiy when your request is accepted";
   static const String typeYourMessage = "Type your message here...";
