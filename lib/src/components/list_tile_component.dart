@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,14 @@ class ListTileComponent extends StatelessWidget {
   final String subText;
   final double? subTextSize;
   final double? trailingIconSize;
+  final double leadingIconWidth;
+  final double leadingIconHeight;
   final IconData subIcon;
   final Color iconColor, subIconColor, subTextColor;
   final Function()? onTap;
-  final bool isSocial;
   final bool isLeadingImageCircular;
   final bool isLeadingImageSVG;
+  final bool isSocialConnected;
 
   final double? overrideLeadingIconSize;
 
@@ -35,10 +38,12 @@ class ListTileComponent extends StatelessWidget {
     this.subTextColor = ColorConstants.white,
     this.subTextSize,
     this.trailingIconSize,
-    this.isSocial = false,
     this.isLeadingImageCircular = false,
     this.isLeadingImageSVG = false,
     this.overrideLeadingIconSize,
+    this.leadingIconWidth = 15,
+    this.leadingIconHeight = 15,
+    this.isSocialConnected = false,
   });
 
   @override
@@ -64,19 +69,12 @@ class ListTileComponent extends StatelessWidget {
                         borderRadius: isLeadingImageCircular
                             ? BorderRadius.circular(32)
                             : BorderRadius.zero,
-                        child: isLeadingImageSVG
-                            ? SvgPicture.asset(
-                                height: overrideLeadingIconSize ?? 30,
-                                width: overrideLeadingIconSize ?? 30,
-                                leadingIcon!,
-                                // alignment: Alignment.center,
-                                fit: BoxFit.fitHeight,
-                              )
-                            : Image.asset(
-                                leadingIcon!,
-                                height: 30,
-                                width: 30,
-                              )),
+                        child: ImageComponent(
+                          imgUrl: leadingIcon!,
+                          imgProviderCallback: (imgProvider) {},
+                          width: isSocialConnected ? 30 : leadingIconWidth,
+                          height: isSocialConnected ? 30 : leadingIconHeight,
+                        )),
                   if (leadingIcon != null)
                     const SizedBox(
                       width: 10,
@@ -90,13 +88,12 @@ class ListTileComponent extends StatelessWidget {
                     subText,
                     style: TextStyle(
                         fontSize: 15,
-                        // fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                         color: subTextColor),
                   ),
-                  if (isSocial)
-                    const SizedBox(
-                      width: 15,
-                    ),
+                  SizedBox(
+                    width: isSocialConnected ? 15 : 5,
+                  ),
                   IconComponent(
                     iconData: subIcon,
                     borderColor: ColorConstants.transparent,
