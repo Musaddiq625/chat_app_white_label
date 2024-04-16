@@ -2,7 +2,7 @@ import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/connect_social_sheet_component.dart';
-import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
@@ -146,38 +146,38 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ],
         ),
         const SizedBox(
-          height: 30,
+          height: 10,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-          child: SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.9,
-            child: ButtonComponent(
-                bgcolor: themeCubit.primaryColor,
-                textColor: themeCubit.backgroundColor,
-                buttonText: StringConstants.continues,
-                onPressed: () {
-                  NavigationUtil.push(context, RouteConstants.interestScreen);
-                }),
-          ),
+          padding: const EdgeInsets.all(20.0),
+          child: ButtonComponent(
+              bgcolor: themeCubit.primaryColor,
+              textColor: themeCubit.backgroundColor,
+              buttonText: StringConstants.continues,
+              onPressed: () {
+                NavigationUtil.push(context, RouteConstants.interestScreen);
+              }),
         )
       ],
     );
   }
 
-  socials() {
+  Widget socials() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const TextComponent(StringConstants.socials,
-              style: TextStyle(
-                fontSize: 14,
-                color: ColorConstants.lightGray,
-              )),
-          SizedBoxConstants.sizedBoxTenH(),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+            child: TextComponent(StringConstants.socials,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: ColorConstants.lightGray,
+                )),
+          ),
+          // SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -187,6 +187,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               leadingIcon: AssetConstants.linkedin,
               isLeadingImageCircular: true,
               isLeadingImageSVG: true,
+              isSocialConnected: true,
               subIconColor: themeCubit.textColor,
               subText: "",
               onTap: () {
@@ -208,7 +209,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
               leadingIcon: AssetConstants.instagram,
-              isSocial: true,
+              isSocialConnected: true,
               iconText: StringConstants.instagram,
               subIconColor: themeCubit.primaryColor,
               trailingIconSize: 30,
@@ -236,7 +237,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
               leadingIcon: AssetConstants.facebook,
-              isSocial: true,
+              isSocialConnected: true,
               iconText: StringConstants.facebook,
               subIconColor: themeCubit.primaryColor,
               trailingIconSize: 30,
@@ -266,12 +267,15 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const TextComponent(StringConstants.moreAboutYou,
-              style: TextStyle(
-                fontSize: 14,
-                color: ColorConstants.lightGray,
-              )),
-          SizedBoxConstants.sizedBoxTenH(),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+            child: TextComponent(StringConstants.moreAboutYou,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: ColorConstants.lightGray,
+                )),
+          ),
+          // SizedBoxConstants.sizedBoxEightH(),
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -289,7 +293,8 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
               iconText: StringConstants.workout,
-              // leadingIcon: AssetConstants.workout,
+              leadingIcon: AssetConstants.workout,
+              isLeadingImageSVG: true,
               overrideLeadingIconSize: 15,
               subIconColor: ColorConstants.iconBg,
               subText: "Very Active",
@@ -301,7 +306,9 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
               iconText: StringConstants.height,
-              // leadingIcon: AssetConstants.height,
+              leadingIcon: AssetConstants.height,
+              isLeadingImageSVG: true,
+              overrideLeadingIconSize: 15,
               subIconColor: ColorConstants.iconBg,
               subText: "5'8",
               onTap: () {}),
@@ -311,18 +318,8 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.weight,
-              subIconColor: ColorConstants.iconBg,
-              subText: "",
-              subTextColor: themeCubit.textColor,
-              onTap: () {}),
-          const SizedBox(
-            height: 10,
-          ),
-          ListTileComponent(
-              // icon: Icons.location_on,
-              // iconColor: ColorConstants.white,
               iconText: StringConstants.smoking,
+              leadingIcon: AssetConstants.smoking,
               subIconColor: ColorConstants.iconBg,
               subText: "No",
               subTextColor: themeCubit.textColor,
@@ -334,6 +331,19 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
               iconText: StringConstants.drinking,
+              leadingIcon: AssetConstants.drinking,
+              subIconColor: ColorConstants.iconBg,
+              subText: "No",
+              subTextColor: themeCubit.textColor,
+              onTap: () {}),
+          const SizedBox(
+            height: 10,
+          ),
+          ListTileComponent(
+              // icon: Icons.location_on,
+              // iconColor: ColorConstants.white,
+              iconText: StringConstants.pets,
+              leadingIcon: AssetConstants.pets,
               subIconColor: ColorConstants.iconBg,
               subText: "No",
               subTextColor: themeCubit.textColor,
@@ -341,5 +351,17 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
         ],
       ),
     );
+  }
+
+  moreAboutYouSelection(String image, String title) {
+    return BottomSheetComponent.showBottomSheet(context,
+        body: Column(
+          children: [
+            ImageComponent(
+              imgUrl: image,
+              imgProviderCallback: (imgProvider) {},
+            )
+          ],
+        ));
   }
 }
