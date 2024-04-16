@@ -96,6 +96,7 @@ class StringConstants {
   static const String capacity = "Capacity";
   static const String questions = "Questions";
   static const String visibility = "Visibility";
+  static const String pets = "Pets";
   static const String linkedIn = "LinkedIn";
   static const String editQuestions = "Edit Questions";
   static const String participants = "Participants";
@@ -103,6 +104,7 @@ class StringConstants {
   static const String typeYourQuestion = "Type your question here";
   static const String inviteYourFriend =
       "You can invite your friend or share it with them.";
+
   static const String setOtherAmount =
       "You can also set other amount. If ticket is above £1000, please send contact our support at hello@locals.com";
   static const String choseToAskQuestion =
