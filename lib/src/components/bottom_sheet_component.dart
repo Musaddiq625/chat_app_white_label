@@ -63,7 +63,7 @@ class BottomSheetComponent {
                   )),
                   Center(
                     child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
+                      borderRadius: const BorderRadius.all(Radius.circular(25)),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
                         child: Container(
