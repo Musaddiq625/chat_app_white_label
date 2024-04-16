@@ -8,6 +8,7 @@ class SearchTextField extends StatelessWidget {
   final String title;
   final String hintText;
   final Widget? action;
+  final Color filledColor;
   final Function(String)? onSearch;
   final TextEditingController? textEditingController;
 
@@ -15,6 +16,7 @@ class SearchTextField extends StatelessWidget {
     required this.title,
     required this.hintText,
     this.action,
+    this.filledColor= ColorConstants.darkBackgrounddColor,
     required this.onSearch,
     required this.textEditingController,
   });
@@ -54,7 +56,7 @@ class SearchTextField extends StatelessWidget {
               hintText: hintText,
               hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
               filled: true,
-              fillColor: ColorConstants.backgroundColor.withOpacity(0.3),
+              fillColor:filledColor,
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                   borderSide: BorderSide(
