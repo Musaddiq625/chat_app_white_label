@@ -44,6 +44,8 @@ class StringConstants {
   static const String verificationCode = "verification code";
   static const String didntReciveCode = "Didnt receive the code? Resend in";
   static const String createEvent = "Create Event";
+  static const String account = "Account";
+  static const String earnings = "Earnings";
   static const String viewEvent = "View Event";
   static const String getStarted = "Get Started";
   static const String continueWithEmail = "Continue with Email";
@@ -63,6 +65,7 @@ class StringConstants {
   static const String otherOptions = "Other Options";
   static const String connect = "Connect";
   static const String connected = "Connected";
+  static const String connections = "Connections";
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
   static const String skip = "Skip";

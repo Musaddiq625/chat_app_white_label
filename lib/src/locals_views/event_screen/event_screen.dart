@@ -91,6 +91,7 @@ class _EventScreenState extends State<EventScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ButtonComponent(
+              isSmallBtn: true,
               buttonText: StringConstants.getTicket,
               onPressed: () {
                 _paymentSuccessBottomSheet();

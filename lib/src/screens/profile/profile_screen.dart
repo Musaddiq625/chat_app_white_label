@@ -73,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? FileImage(selectedImage!)
                               : widget.isEdit == true && imageUrl != null
                                   ? NetworkImage(imageUrl ?? '')
-                                  : const AssetImage(AssetConstants.profile))
+                                  : const AssetImage(AssetConstants.profileDummy))
                           as ImageProvider,
                     ),
                     Positioned(

@@ -27,7 +27,7 @@ class ButtonComponent extends StatelessWidget {
     Key? key,
     required this.buttonText,
     this.onPressed,
-    this.bgcolor = ColorConstants.bgcolorbutton,
+    this.bgcolor = ColorConstants.primaryColor,
     this.overrideTextColor,
     this.overrideBorderColor,
     this.invertBtnColor = false,
@@ -56,7 +56,7 @@ class ButtonComponent extends StatelessWidget {
               vertical: 12,
             ),
             width: isSmallBtn
-                ? AppConstants.responsiveWidth(context, percentage: 20)
+                ? AppConstants.responsiveWidth(context, percentage: 30)
                 : MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 borderRadius: overrideBorderRadius ?? borderRadius(),
