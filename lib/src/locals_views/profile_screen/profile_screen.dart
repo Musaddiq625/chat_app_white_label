@@ -758,7 +758,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               ...eventList
                   .map(
-                    (tag) => Padding(
+                    (tag) =>
+                        Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Container(
                         decoration: const BoxDecoration(

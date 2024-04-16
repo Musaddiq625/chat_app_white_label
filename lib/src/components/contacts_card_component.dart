@@ -16,12 +16,23 @@ class ContactCard extends StatelessWidget {
   final Function()? onShareTap;
   final Function()? onProfileTap;
   final bool showShareIcon;
+  final bool iconGradient;
+  final Color iconColor;
+  final Color iconBgColor;
+  final String icon;
+  final double iconSize;
 
   const ContactCard(
       {Key? key,
       required this.contact,
+      this.iconGradient = true,
+      this.icon = AssetConstants.share,
+      this.iconColor = ColorConstants.black,
+      this.iconBgColor = ColorConstants.darkBackgrounddColor,
+      this.iconSize = 18,
       this.onShareTap,
-      this.showShareIcon = true, this.onProfileTap})
+      this.showShareIcon = true,
+      this.onProfileTap})
       : super(key: key);
 
   @override
@@ -32,7 +43,7 @@ class ContactCard extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 0, right: 20),
           child: InkWell(
-            onTap: onProfileTap ,
+            onTap: onProfileTap,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -42,14 +53,12 @@ class ContactCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextComponent(
-                        contact.name,
-                          style :FontStylesConstants.style16(color: ColorConstants.white)
-                      ),
-                      TextComponent(
-                        contact.title,
-                          style :FontStylesConstants.style14(color: ColorConstants.lightGray)
-                      ),
+                      TextComponent(contact.name,
+                          style: FontStylesConstants.style16(
+                              color: ColorConstants.white)),
+                      TextComponent(contact.title,
+                          style: FontStylesConstants.style14(
+                              color: ColorConstants.lightGray)),
                     ],
                   ),
                 ),
@@ -57,21 +66,24 @@ class ContactCard extends StatelessWidget {
                 if (showShareIcon)
                   Container(
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          ColorConstants.btnGradientColor,
-                          Color.fromARGB(255, 220, 210, 210)
-                        ],
-                      ),
+                      gradient: iconGradient
+                          ? LinearGradient(
+                              colors: [
+                                ColorConstants.btnGradientColor,
+                                Color.fromARGB(255, 220, 210, 210)
+                              ],
+                            )
+                          : null,
+                      color: iconBgColor,
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: IconComponent(
-                      svgData: AssetConstants.share,
+                      svgData: icon,
                       borderColor: Colors.transparent,
                       backgroundColor: ColorConstants.transparent,
                       circleSize: 40,
-                      iconSize: 18,
-                      iconColor: ColorConstants.black,
+                      iconSize: iconSize,
+                      iconColor: iconColor,
                       onTap: onShareTap,
                     ),
                   )

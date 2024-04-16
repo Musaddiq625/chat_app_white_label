@@ -143,6 +143,7 @@ class IconComponent extends StatelessWidget {
                             svgData!,
                             width: iconSize,
                             height: iconSize,
+              color: iconColor,
                           ),
           ),
           if (customText != null)

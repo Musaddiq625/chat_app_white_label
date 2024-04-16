@@ -68,6 +68,8 @@ class StringConstants {
   static const String connections = "Connections";
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
+  static const String createANewEvent = "Create a new event";
+  static const String createANewGroup = "Create a new group";
   static const String skip = "Skip";
   static const String socials = "Socials";
   static const String diet = "Diet";
@@ -84,11 +86,14 @@ class StringConstants {
   static const String reportEvent = "Report event";
   static const String shareEvent = "Share event";
   static const String ticket = "Ticket";
+  static const String viewTicket = "View Ticket";
   static const String viewInMap = "View in Map";
   static const String addToAppleWallet = "Add to apple Wallet";
   static const String total = "Total";
   static const String when = "When";
   static const String where = "Where";
+  static const String earned = "Earned";
+  static const String visible = "Visible";
   static const String copyLink = "Copy Link";
   static const String facebook = "Facebook";
   static const String instagram = "Instagram";
@@ -180,6 +185,9 @@ class StringConstants {
   static const String noCharityRequired = "No charity support required";
   static const String members = "Members";
   static const String events = "Events";
+  static const String yourEvents = "Your Events";
+  static const String groups = "Groups";
+  static const String eventsYouGoingTo = "Events you'e going to";
   static const String clubs = "Clubs";
   static const String somethingToKnow = "Something to know";
   static const String requestSent = "Request Sent!";

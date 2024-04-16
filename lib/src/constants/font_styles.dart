@@ -126,7 +126,6 @@ class FontStylesConstants {
       decoration:
       underLine ? TextDecoration.underline : TextDecoration.none);
 
-
   static TextStyle style18({
     final underLine = false,
     final letterSpacing= 0.0,
@@ -137,6 +136,22 @@ class FontStylesConstants {
       color: color,
       fontWeight: fontWeight,
       fontFamily: FontConstants.fontProtestStrike,//add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+  static TextStyle style18defaultFamily({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 18,
+      color: color,
+      fontWeight: fontWeight,
+      fontFamily: FontConstants.inter,//add inter here,
       fontStyle: FontStyle.normal,
       letterSpacing: letterSpacing,
       decorationColor: color,
@@ -154,6 +169,24 @@ class FontStylesConstants {
       fontSize: 16,
       color: color,
       fontWeight: fontWeight, //add inter here,
+      fontStyle: FontStyle.normal,
+      letterSpacing: letterSpacing,
+      decorationColor: color,
+      decoration:
+      underLine ? TextDecoration.underline : TextDecoration.none);
+
+
+
+  static TextStyle style16defaultFamily({
+    final underLine = false,
+    final letterSpacing= 0.0,
+    Color color = ColorConstants.white,
+    FontWeight fontWeight = FontWeight.normal,
+  }) => TextStyle(
+      fontSize: 16,
+      color: color,
+      fontWeight: fontWeight, //add
+      fontFamily: FontConstants.inter,//// inter here,
       fontStyle: FontStyle.normal,
       letterSpacing: letterSpacing,
       decorationColor: color,

@@ -316,7 +316,8 @@ class _HomeScreenState extends State<HomeScreen> {
         bgColor: themeCubit.darkBackgroundColor,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: Container(
+        body:
+        Container(
           constraints: const BoxConstraints(maxHeight: 600),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
