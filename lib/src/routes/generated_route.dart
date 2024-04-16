@@ -15,6 +15,7 @@ import 'package:chat_app_white_label/src/locals_views/on_boarding/select_profile
 import 'package:chat_app_white_label/src/locals_views/on_boarding/upload_picture_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/what_do_you_do_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/otp_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
@@ -178,6 +179,9 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.uploadProfileScreen:
       return materialRoute(const UploadPictureScreen());
+
+    case RouteConstants.userProfileScreen:
+      return materialRoute(const UserProfile());
 
     case RouteConstants.selectProfileScreen:
       final arg = settings.arguments as List<File>;
