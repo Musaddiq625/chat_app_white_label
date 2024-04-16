@@ -10,6 +10,7 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
@@ -29,6 +30,43 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _secondNameController = TextEditingController();
+
+  final Map<String, dynamic> _moreAboutYou = {
+    StringConstants.diet: {
+      "Love Meat": true,
+      "vegeterian": false,
+      "vegan": false,
+      "Everything is fine": false,
+      "i'd rather not say ": false
+    },
+    StringConstants.workout: {
+      "Active": true,
+      "Sometimes": false,
+      "Almost Never": false,
+      "i'd rather not say": false
+    },
+    StringConstants.height: {"initial_value": 2.3, "final_value": 6.3},
+    StringConstants.smoking: {
+      "Socially": true,
+      "Regularly": false,
+      "Never": false,
+      "i'd rather not say ": false
+    },
+    StringConstants.drinking: {
+      "Socially": true,
+      "Regularly": false,
+      "Never": false,
+      "i'd rather not say ": false
+    },
+    StringConstants.pets: {
+      "Cat": true,
+      "Dog": false,
+      "Other": false,
+      "i'd rather not say ": false
+    },
+  };
+
+  final Map<String, dynamic> _tempmoreAboutValue = {};
 
   @override
   Widget build(BuildContext context) {
@@ -93,13 +131,15 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextComponent(
-                    StringConstants.tellUsABitAboutYourSelf,
-                    style: TextStyle(
-                        fontSize: 22,
+                  TextComponent(StringConstants.tellUsABitAboutYourSelf,
+                      style: FontStylesConstants.style22(
                         color: themeCubit.textColor,
-                        fontFamily: FontConstants.fontProtestStrike),
-                  ),
+                      )
+                      //  TextStyle(
+                      //     fontSize: 22,
+
+                      //     fontFamily: FontConstants.fontProtestStrike),
+                      ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -276,6 +316,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                 )),
           ),
           // SizedBoxConstants.sizedBoxEightH(),
+
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -284,8 +325,14 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               leadingIcon: AssetConstants.diet,
               overrideLeadingIconSize: 15,
               isLeadingImageSVG: true,
-              subText: "Love Meat",
-              onTap: () {}),
+              subText: _tempmoreAboutValue[StringConstants.diet],
+              onTap: () {
+                moreAboutYouSelection(
+                    AssetConstants.diet,
+                    "${StringConstants.whatIsYour + StringConstants.diet} ?",
+                    StringConstants.diet,
+                    _moreAboutYou[StringConstants.diet]);
+              }),
           const SizedBox(
             height: 10,
           ),
@@ -297,8 +344,14 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               isLeadingImageSVG: true,
               overrideLeadingIconSize: 15,
               subIconColor: ColorConstants.iconBg,
-              subText: "Very Active",
-              onTap: () {}),
+              subText: _tempmoreAboutValue[StringConstants.workout],
+              onTap: () {
+                moreAboutYouSelection(
+                    AssetConstants.workout,
+                    "${StringConstants.doYou + StringConstants.workout} ?",
+                    StringConstants.workout,
+                    _moreAboutYou[StringConstants.workout]);
+              }),
           const SizedBox(
             height: 10,
           ),
@@ -321,9 +374,15 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               iconText: StringConstants.smoking,
               leadingIcon: AssetConstants.smoking,
               subIconColor: ColorConstants.iconBg,
-              subText: "No",
+              subText: _tempmoreAboutValue[StringConstants.smoking],
               subTextColor: themeCubit.textColor,
-              onTap: () {}),
+              onTap: () {
+                moreAboutYouSelection(
+                    AssetConstants.smoking,
+                    "${StringConstants.doYou + StringConstants.smoke} ?",
+                    StringConstants.smoking,
+                    _moreAboutYou[StringConstants.smoking]);
+              }),
           const SizedBox(
             height: 10,
           ),
@@ -333,9 +392,15 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               iconText: StringConstants.drinking,
               leadingIcon: AssetConstants.drinking,
               subIconColor: ColorConstants.iconBg,
-              subText: "No",
+              subText: _tempmoreAboutValue[StringConstants.drinking],
               subTextColor: themeCubit.textColor,
-              onTap: () {}),
+              onTap: () {
+                moreAboutYouSelection(
+                    AssetConstants.drinking,
+                    "${StringConstants.doYou + StringConstants.drink} ?",
+                    StringConstants.drinking,
+                    _moreAboutYou[StringConstants.drinking]);
+              }),
           const SizedBox(
             height: 10,
           ),
@@ -345,23 +410,120 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               iconText: StringConstants.pets,
               leadingIcon: AssetConstants.pets,
               subIconColor: ColorConstants.iconBg,
-              subText: "No",
+              subText: _tempmoreAboutValue[StringConstants.pets],
               subTextColor: themeCubit.textColor,
-              onTap: () {}),
+              onTap: () {
+                moreAboutYouSelection(
+                    AssetConstants.pets,
+                    "${StringConstants.doYouHave + StringConstants.pets} ?",
+                    StringConstants.pets,
+                    _moreAboutYou[StringConstants.pets]);
+              }),
         ],
       ),
     );
   }
 
-  moreAboutYouSelection(String image, String title) {
+  Future<void> moreAboutYouSelection(
+      String image, String title, String key, Map<String, dynamic> data) {
+    String? selectedValue = "";
+    bool selection = false;
+    selectedValue =
+        _tempmoreAboutValue[key]; // _tempmoreaboutvalue[key] = "vegan"
+
+    void addSelection(String key) {
+      selectedValue = "";
+      selectedValue = key;
+      selection = true;
+    }
+
+    void removeSelection() {
+      selectedValue = "";
+      selection = false;
+    }
+
     return BottomSheetComponent.showBottomSheet(context,
-        body: Column(
-          children: [
-            ImageComponent(
-              imgUrl: image,
-              imgProviderCallback: (imgProvider) {},
-            )
-          ],
+        isShowHeader: false,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: StatefulBuilder(
+            builder: (context, setState1) => Column(
+              children: [
+                SizedBoxConstants.sizedBoxTwentyH(),
+                ImageComponent(
+                  imgUrl: image,
+                  height: 35,
+                  width: 35,
+                  imgProviderCallback: (imgProvider) {},
+                ),
+                SizedBoxConstants.sizedBoxTwelveH(),
+                TextComponent(
+                  title,
+                  style: FontStylesConstants.style22(
+                    color: themeCubit.textColor,
+                  ),
+                ),
+                SizedBoxConstants.sizedBoxTwelveH(),
+                Column(
+                    children: data.entries.map((e) {
+                  if (e.key == selectedValue) {
+                    setState1(() {
+                      selection = true;
+                    });
+                  }
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    child: ListTileComponent(
+                      title: e.key,
+                      onTap: () {
+                        setState1(() {
+                          if (selectedValue == e.key) {
+                            removeSelection();
+                          } else {
+                            addSelection(e.key);
+                          }
+                        });
+                      },
+                      backgroundColor: selectedValue == e.key
+                          ? themeCubit.primaryColor
+                          : themeCubit.darkBackgroundColor100,
+                      titleColor: selectedValue == e.key
+                          ? themeCubit.backgroundColor
+                          : null,
+                      subIcon: null,
+                    ),
+                  );
+                }).toList()),
+                SizedBoxConstants.sizedBoxTwelveH(),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ButtonComponent(
+                    buttonText: StringConstants.save,
+                    bgcolor: themeCubit.primaryColor,
+                    onPressed: selection == false
+                        ? null
+                        : () {
+                            // _tempmoreAboutValue.clear();
+
+                            // if (selectedValue != null && selectedValue != "")
+                            if (selection) {
+                              _moreAboutYou[key][selectedValue] = selection;
+
+                              _tempmoreAboutValue.addAll(
+                                  {key: selectedValue}); //"Diet":"vegan"
+                              setState(() {});
+                              NavigationUtil.pop(context);
+                            }
+
+                            // _tempmoreAboutValue
+                            //     .addAll({selectedMoreAboutValue: selection});
+                            // print(_tempmoreAboutValue);
+                          },
+                  ),
+                )
+              ],
+            ),
+          ),
         ));
   }
 }
