@@ -89,7 +89,7 @@ class EventCard extends StatelessWidget {
                           ),
                           TextComponent(
                             "+1456 ${StringConstants.joined}",
-                            style: FontStylesConstants.style14(
+                            style: FontStylesConstants.style12(
                                 color: ColorConstants.white),
                           ),
                         ],
@@ -100,7 +100,7 @@ class EventCard extends StatelessWidget {
                       child: TextComponent(
                         "Property networking event",
                         style:
-                            FontStylesConstants.style20(color: ColorConstants.white),
+                            FontStylesConstants.style20(color: ColorConstants.white,),
                         maxLines: 6,
                       ),
                     ),

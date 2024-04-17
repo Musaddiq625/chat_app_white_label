@@ -35,6 +35,7 @@ class TextComponent extends StatelessWidget {
         maxLines: maxLines,
         softWrap: softwrap,
         overflow: overFlow,
+        textHeightBehavior: TextHeightBehavior(),
         textAlign: textAlign,
         style: style,
       );

@@ -52,7 +52,7 @@ class ButtonComponent extends StatelessWidget {
           borderRadius: borderRadius(),
           child: Container(
             padding:  EdgeInsets.symmetric(
-                vertical: 12, horizontal: isSmallBtn ? 20 : 0),
+                vertical: 10, horizontal: isSmallBtn ? 30 : 0),
             width: isSmallBtn ? null : MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 borderRadius: overrideBorderRadius ?? borderRadius(),

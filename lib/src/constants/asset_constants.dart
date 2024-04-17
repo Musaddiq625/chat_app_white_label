@@ -54,4 +54,5 @@ class AssetConstants {
   static const String delete = "$images/delete.png";
   static const String contactUs = "$images/contactus.png";
   static const String coins = "$images/coins.png";
+  static const String earnedCoins = "$images/earned_coins.png";
 }

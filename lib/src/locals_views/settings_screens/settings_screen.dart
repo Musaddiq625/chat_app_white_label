@@ -1,16 +1,22 @@
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../utils/dialogs.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -21,11 +27,15 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-
+  Uri gmailUrl = Uri.parse('mailto:test@example.org?subject=Greetings&body=Hello%20World');
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-        appBar: appBar(),
+        appBar: AppBarComponent(
+          StringConstants.settings,
+          centerTitle: false,
+          isBackBtnCircular: false,
+        ),
         appBarHeight: 500,
         removeSafeAreaPadding: false,
         bgColor: ColorConstants.black,
@@ -87,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leadingIconWidth: 20,
               leadingIcon: AssetConstants.contactUs,
               isLeadingImageSVG: true,
-              onTap: () {}),
+              onTap: () { _launch(gmailUrl);}),
           SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(
               // iconColor: ColorConstants.white,
@@ -120,7 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leadingIconWidth: 20,
               leadingIcon: AssetConstants.logout,
               isLeadingImageSVG: true,
-              onTap: () {}),
+              onTap: () {_askToLogoutBottomSheet();}),
           Spacer(),
           ListTileComponent(
               // iconColor: ColorConstants.white,
@@ -132,10 +142,130 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leadingIconWidth: 20,
               leadingIcon: AssetConstants.delete,
               isLeadingImageSVG: true,
-              onTap: () {}),
+              onTap: () {
+                _askToDeleteBottomSheet();
+              }),
           SizedBoxConstants.sizedBoxTenH()
         ],
       ),
     );
+  }
+
+  _askToLogoutBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            const SizedBox(height: 25),
+            Image.asset(
+              AssetConstants.warning,
+              width: 60,
+              height: 60,
+            ),
+            const SizedBox(height: 20),
+            const TextComponent(StringConstants.areYouSureYouWantToLogout,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: ColorConstants.white,
+                    fontSize: 20,
+                    fontFamily: FontConstants.fontProtestStrike)),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: TextComponent(
+                      StringConstants.goBack,
+                      style: TextStyle(color: themeCubit.textColor),
+                    )),
+                const SizedBox(width: 30),
+                ButtonComponent(
+                  isSmallBtn: true,
+                  bgcolor: ColorConstants.red,
+                  textColor: themeCubit.textColor,
+                  buttonText: StringConstants.yesPlease,
+                  onPressed: () {
+                    // NavigationUtil.pop(context);
+                    // _connectionRemovedBottomSheet();
+                    // NavigationUtil.popAllAndPush(
+                    //     context, RouteConstants.homeScreenLocal);
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ));
+  }
+
+  _askToDeleteBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            const SizedBox(height: 25),
+            Image.asset(
+              AssetConstants.warning,
+              width: 60,
+              height: 60,
+            ),
+            SizedBoxConstants.sizedBoxTwentyH(),
+            const TextComponent(StringConstants.areYouSureYouWantToDelete,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: ColorConstants.white,
+                    fontSize: 20,
+                    fontFamily: FontConstants.fontProtestStrike)),
+            SizedBoxConstants.sizedBoxTenH(),
+             TextComponent(StringConstants.allYourDataWillBeLost,
+                textAlign: TextAlign.center,
+                style: FontStylesConstants.style16()),
+            SizedBoxConstants.sizedBoxTwentyH(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: TextComponent(
+                      StringConstants.goBack,
+                      style: TextStyle(color: themeCubit.textColor),
+                    )),
+                const SizedBox(width: 30),
+                ButtonComponent(
+                  isSmallBtn: true,
+                  bgcolor: ColorConstants.red,
+                  textColor: themeCubit.textColor,
+                  buttonText: StringConstants.yesPlease,
+                  onPressed: () {
+                    // NavigationUtil.pop(context);
+                    // _connectionRemovedBottomSheet();
+                    // NavigationUtil.popAllAndPush(
+                    //     context, RouteConstants.homeScreenLocal);
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ));
+  }
+
+  Future<void> _launch(Uri url) async {
+    try {
+      final canLaunchUrlResult = await canLaunchUrl(url);
+      if (canLaunchUrlResult) {
+        await launchUrl(url);
+      } else {
+        Dialogs.showSnackbar(context, 'Could not launch this app');
+      }
+    } catch (e) {
+      print('Error launching URL: $e');
+      Dialogs.showSnackbar(context, 'An error occurred while launching the URL');
+    }
   }
 }

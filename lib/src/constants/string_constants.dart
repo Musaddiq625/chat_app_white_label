@@ -49,7 +49,6 @@ class StringConstants {
   static const String didntReciveCode = "Didnt receive the code? Resend in";
   static const String createEvent = "Create Event";
   static const String account = "Account";
-  static const String earnings = "Earnings";
   static const String viewEvent = "View Event";
   static const String getStarted = "Get Started";
   static const String continueWithEmail = "Continue with Email";
@@ -81,6 +80,7 @@ class StringConstants {
   static const String notifications = "Notifications";
   static const String contactUs = "Contact Us";
   static const String termsOfService = "Terms of service";
+  static const String termsOfuse = "Terms of use";
   static const String privacyPolicy = "Privacy Policy";
   static const String logOut = "Log out";
   static const String deleteYourAccount = "Delete your account";
@@ -109,6 +109,9 @@ class StringConstants {
   static const String earned = "Earned";
   static const String visible = "Visible";
   static const String copyLink = "Copy Link";
+  static const String totalMoneyEarnedForFar = "Total Money earned for far";
+  static const String introduction = "Introduction";
+  static const String pushNotifications = "Push Notifications";
   static const String facebook = "Facebook";
   static const String instagram = "Instagram";
   static const String location = "Location";
@@ -167,6 +170,11 @@ class StringConstants {
   static const String yourConnections = "Your Connections";
   static const String connectionRemoved = "Connection Removed";
   static const String fireWorks = "FireWorks";
+  static const String allYourDataWillBeLost = "All your data will be lost.";
+  static const String areYouSureYouWantToLogout =
+      "Are you sure you want to \nlog out? ";
+  static const String areYouSureYouWantToDelete =
+      "Are you sure you want to \ndelete your account? ";
   static const String areYouSureYouwantToShare =
       "Are you sure you want to share \nEvent ";
   static const String areYouSureYouwantToExit =
@@ -175,7 +183,8 @@ class StringConstants {
       "Are you sure you want to  \n remove from connections? ";
   static const String goBack = "Go back";
   static const String yesExit = "Yes, please exit";
-  static const String yesRemove= "Yes, please remove";
+  static const String yesPlease = "Yes, please ";
+  static const String yesRemove = "Yes, please remove";
   static const String eventShared = "Event Shared !";
   static const String eventCreatedSuccessfully =
       "Yay! Your event has been  created successfully!";
@@ -206,6 +215,8 @@ class StringConstants {
   static const String events = "Events";
   static const String yourEvents = "Your Events";
   static const String groups = "Groups";
+  static const String earnings = "Earnings";
+  static const String withDraw = "Withdraw";
   static const String eventsYouGoingTo = "Events you'e going to";
   static const String clubs = "Clubs";
   static const String somethingToKnow = "Something to know";
