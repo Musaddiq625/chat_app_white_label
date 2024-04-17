@@ -1,5 +1,4 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
@@ -52,12 +51,9 @@ class ButtonComponent extends StatelessWidget {
           onTap: onPressed,
           borderRadius: borderRadius(),
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 12,
-            ),
-            width: isSmallBtn
-                ? AppConstants.responsiveWidth(context, percentage: 30)
-                : MediaQuery.of(context).size.width,
+            padding:  EdgeInsets.symmetric(
+                vertical: 12, horizontal: isSmallBtn ? 20 : 0),
+            width: isSmallBtn ? null : MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 borderRadius: overrideBorderRadius ?? borderRadius(),
                 border: overrideBorderColor != null

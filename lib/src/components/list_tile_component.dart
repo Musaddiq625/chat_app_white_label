@@ -5,7 +5,6 @@ import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/color_constants.dart';
 import '../utils/theme_cubit/theme_cubit.dart';
@@ -17,9 +16,11 @@ class ListTileComponent extends StatelessWidget {
   final String? subText;
   final String? title;
   final double? subTextSize;
+  final IconData? iconData;
   final double? trailingIconSize;
   final double leadingIconWidth;
   final double leadingIconHeight;
+
   final IconData? subIcon;
   final Color iconColor, subIconColor, subTextColor;
   Color? backgroundColor;
@@ -28,12 +29,14 @@ class ListTileComponent extends StatelessWidget {
   final bool isLeadingImageCircular;
   final bool isLeadingImageSVG;
   final bool isSocialConnected;
+  final bool isIconValue;
 
   final double? overrideLeadingIconSize;
 
   ListTileComponent({
     super.key,
     this.leadingIcon,
+    this.iconData,
     this.iconText,
     this.subText,
     this.onTap,
@@ -50,6 +53,7 @@ class ListTileComponent extends StatelessWidget {
     this.leadingIconWidth = 15,
     this.leadingIconHeight = 15,
     this.isSocialConnected = false,
+    this.isIconValue = false,
     this.title,
     this.titleColor,
   });
@@ -94,6 +98,14 @@ class ListTileComponent extends StatelessWidget {
                           width: isSocialConnected ? 30 : leadingIconWidth,
                           height: isSocialConnected ? 30 : leadingIconHeight,
                         )),
+                  if (isIconValue == true && iconData != null)
+                    IconComponent(
+                      iconData: iconData!,
+                      borderColor: Colors.transparent,
+                      backgroundColor: ColorConstants.transparent,
+                      iconColor: Colors.white,
+                      circleSize: 40,
+                    ),
                   if (leadingIcon != null)
                     const SizedBox(
                       width: 10,

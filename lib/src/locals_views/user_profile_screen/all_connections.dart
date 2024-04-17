@@ -1,19 +1,21 @@
-import 'package:chat_app_white_label/src/components/back_button_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../components/bottom_sheet_component.dart';
+import '../../components/button_component.dart';
 import '../../components/contacts_card_component.dart';
 import '../../components/search_text_field_component.dart';
 import '../../components/text_component.dart';
-import '../../components/text_field_component.dart';
 import '../../components/ui_scaffold.dart';
 import '../../constants/color_constants.dart';
+import '../../constants/font_constants.dart';
 import '../../constants/string_constants.dart';
 import '../../models/contact.dart';
 
@@ -36,9 +38,19 @@ class _AllConnectionsState extends State<AllConnections> {
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     // ... other contacts
   ];
   TextEditingController searchController = TextEditingController();
+
+  void _showPopupMenu() {
+    _key.currentState?.showButtonMenu();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,21 +76,10 @@ class _AllConnectionsState extends State<AllConnections> {
               svgData: AssetConstants.backArrow,
               svgDataCheck: false,
               iconColor: ColorConstants.lightGray,
-              iconSize:40,
+              iconSize: 40,
               circleHeight: 40,
             ),
           ),
-          // BackButtonComponent(
-          //     image: AssetConstants.backArrow,
-          //     //! pass your asset here
-          //     bgColor: ColorConstants.transparent,
-          //     enableDark: false,
-          //     isImage: true,
-          //     isCircular: true,
-          //     overrideSize:40 ,
-          //     onTap: () {
-          //
-          //     }),
           TextComponent(
             StringConstants.connections,
             style: FontStylesConstants.style28(color: themeCubit.primaryColor),
@@ -88,7 +89,6 @@ class _AllConnectionsState extends State<AllConnections> {
             "134",
             style: FontStylesConstants.style28(color: ColorConstants.lightGray),
           ),
-
         ],
       ),
     );
@@ -102,7 +102,7 @@ class _AllConnectionsState extends State<AllConnections> {
         children: [
           SizedBoxConstants.sizedBoxTenH(),
           Padding(
-            padding:EdgeInsets.symmetric(horizontal: 15),
+            padding: EdgeInsets.symmetric(horizontal: 15),
             child: SearchTextField(
               title: "Search",
               hintText: "Search name, postcode..",
@@ -119,26 +119,67 @@ class _AllConnectionsState extends State<AllConnections> {
               itemCount: contacts.length,
               itemBuilder: (ctx, index) {
                 return ContactCard(
-                  // actions:[
-                  //   PopupMenuButton<int>(
-                  //     key: _key,
-                  //     itemBuilder: (context) {
-                  //       return <PopupMenuEntry<int>>[
-                  //         PopupMenuItem(child: Text('0'), value: 0),
-                  //         PopupMenuItem(child: Text('1'), value: 1),
-                  //       ];
-                  //     },
-                  //   ),
-                  // ],
+                  showShareIcon: true,
                   iconGradient: false,
+                  popUpMenu: true,
                   icon: AssetConstants.more,
                   iconColor: ColorConstants.lightGray,
                   contact: contacts[index],
-                  iconSize: 6,
-                  onShareTap: () {
-                    // _key.currentState.showButtonMenu(),
-                  },
+                  iconSize: 30,
+                  onShareTap: () {},
                   onProfileTap: () {},
+                  popupMenuItems: [
+                    PopupMenuItem(
+                      child: Row(children: [
+                        IconComponent(
+                          svgData: AssetConstants.message,
+                          iconColor: ColorConstants.lightGray,
+                        ),
+                        TextComponent(
+                          'Message',
+                          style: FontStylesConstants.style14(
+                              color: ColorConstants.white),
+                        ),
+                      ]),
+                      height: 0,
+                      value: 'message',
+                    ),
+                    PopupMenuItem(
+                      padding: EdgeInsets.all(0),
+                      height: 0,
+                      child: DividerCosntants.divider1,
+                      value: 'remove_connection',
+                    ),
+                    PopupMenuItem(
+                      height: 0,
+                      child: Row(children: [
+                        IconComponent(
+                          iconData: Icons.close,
+                          iconColor: ColorConstants.red,
+                        ),
+                        TextComponent(
+                          'Remove Connection',
+                          style: FontStylesConstants.style14(
+                              color: ColorConstants.red),
+                        ),
+                      ]),
+                      value: 'remove_connection',
+                    ),
+                    // Add more PopupMenuItems as needed
+                  ],
+                  onMenuItemSelected: (String value) {
+                    switch (value) {
+                      case 'message':
+                        // Handle share action
+                        break;
+                      case 'remove_connection':
+                        _askToRemoveConnectionBottomSheet();
+                        break;
+                      default:
+                        // Handle default case or additional cases
+                        break;
+                    }
+                  },
                 );
               },
             ),
@@ -147,19 +188,90 @@ class _AllConnectionsState extends State<AllConnections> {
       ),
     );
   }
-  _showPopupMenu(Offset offset) async {
-    double left = offset.dx;
-    double top = offset.dy;
-    await showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(left, top, 0, 0),
-      items: [
-        PopupMenuItem<String>(
-            child: const Text('Doge'), value: 'Doge'),
-        PopupMenuItem<String>(
-            child: const Text('Lion'), value: 'Lion'),
-      ],
-      elevation: 8.0,
-    );
+
+  _askToRemoveConnectionBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            const SizedBox(height: 25),
+            Image.asset(
+              AssetConstants.warning,
+              width: 60,
+              height: 60,
+            ),
+            const SizedBox(height: 20),
+            const TextComponent(
+                StringConstants.areYouSureYouwantToRemoveFromConnection,
+                style: TextStyle(
+                    color: ColorConstants.white,
+                    fontSize: 20,
+                    fontFamily: FontConstants.fontProtestStrike)),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: TextComponent(
+                      StringConstants.goBack,
+                      style: TextStyle(color: themeCubit.textColor),
+                    )),
+                const SizedBox(width: 30),
+                ButtonComponent(
+                  isSmallBtn: true,
+                  bgcolor: ColorConstants.red,
+                  textColor: themeCubit.textColor,
+                  buttonText: StringConstants.yesRemove,
+                  onPressed: () {
+                    NavigationUtil.pop(context);
+                    _connectionRemovedBottomSheet();
+                    // NavigationUtil.popAllAndPush(
+                    //     context, RouteConstants.homeScreenLocal);
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ));
+  }
+
+  _connectionRemovedBottomSheet() {
+    _navigateToBack();
+    BottomSheetComponent.showBottomSheet(context,
+        bgColor: themeCubit.darkBackgroundColor,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: Column(
+          children: [
+            SizedBoxConstants.sizedBoxTwentyH(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconComponent(
+                  iconData: Icons.check_circle,
+                  iconColor: themeCubit.primaryColor,
+                  iconSize: 25,
+                ),
+                SizedBoxConstants.sizedBoxSixW(),
+                const TextComponent(StringConstants.connectionRemoved,
+                    style: TextStyle(
+                        color: ColorConstants.white,
+                        fontSize: 20,
+                        fontFamily: FontConstants.fontProtestStrike)),
+              ],
+            ),
+            SizedBoxConstants.sizedBoxTwentyH(),
+          ],
+        ));
+  }
+
+  _navigateToBack() async {
+    Future.delayed(const Duration(milliseconds: 1800), () async {
+      NavigationUtil.pop(context);
+    });
   }
 }

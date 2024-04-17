@@ -70,6 +70,7 @@ class StringConstants {
   static const String connect = "Connect";
   static const String connected = "Connected";
   static const String connections = "Connections";
+  static const String settings = "Settings";
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
   static const String createANewEvent = "Create a new event";
@@ -77,6 +78,12 @@ class StringConstants {
   static const String skip = "Skip";
   static const String socials = "Socials";
   static const String diet = "Diet";
+  static const String notifications = "Notifications";
+  static const String contactUs = "Contact Us";
+  static const String termsOfService = "Terms of service";
+  static const String privacyPolicy = "Privacy Policy";
+  static const String logOut = "Log out";
+  static const String deleteYourAccount = "Delete your account";
   static const String workout = "Workout";
   static const String height = "Height";
   static const String weight = "Weight";
@@ -157,13 +164,17 @@ class StringConstants {
   static const String selectLocation = "Select Location";
   static const String pricing = "Pricing";
   static const String yourConnections = "Your Connections";
+  static const String connectionRemoved = "Connection Removed";
   static const String fireWorks = "FireWorks";
   static const String areYouSureYouwantToShare =
       "Are you sure you want to share \nEvent ";
   static const String areYouSureYouwantToExit =
       "Are you sure you want to exit \nYour event will be deleted ";
+  static const String areYouSureYouwantToRemoveFromConnection =
+      "Are you sure you want to  \n remove from connections? ";
   static const String goBack = "Go back";
   static const String yesExit = "Yes, please exit";
+  static const String yesRemove= "Yes, please remove";
   static const String eventShared = "Event Shared !";
   static const String eventCreatedSuccessfully =
       "Yay! Your event has been  created successfully!";
