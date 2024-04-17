@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
-import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/choose_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
-import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
@@ -18,6 +16,7 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'cubit/onboarding_cubit.dart';
 
 class UploadPictureScreen extends StatefulWidget {
@@ -74,59 +73,9 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
             const SizedBox(
               height: 40,
             ),
-            selectedImages.isNotEmpty
-                ? SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      child: Row(
-                        children: selectedImages.map((image) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: ColorConstants.white,
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  width: AppConstants.responsiveWidth(context,
-                                      percentage: 60),
-                                  height: 250,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    child: Image.file(
-                                      image,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  )
-                : Container(
-                    width: MediaQuery.sizeOf(context).width * 0.6,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      color: ColorConstants.lightGray.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconComponent(
-                            iconData: Icons.add_circle,
-                            iconSize: 60,
-                            iconColor: ColorConstants.white,
-                            circleSize: 60,
-                            backgroundColor: ColorConstants.transparent,
-                          ),
-                        ]),
-                  )
+            ChooseImageComponent(
+              selectedImages: selectedImages,
+            )
           ],
         ),
         const Spacer(),

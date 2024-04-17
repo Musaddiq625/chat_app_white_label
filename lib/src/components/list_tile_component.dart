@@ -110,7 +110,7 @@ class ListTileComponent extends StatelessWidget {
                       subText!,
                       style: TextStyle(
                           fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                          // fontWeight: FontWeight.bold,
                           color: subTextColor),
                     ),
                   if (subText != null)
