@@ -146,20 +146,22 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-        appBar: widget.comingFromEditProfile
-            ? null
-            : AppBarComponent(
-                "",
-                action: TextComponent(StringConstants.skip,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: themeCubit.textColor,
-                    )),
-              ),
-        removeSafeAreaPadding: false,
-        bgColor: themeCubit.backgroundColor,
-        widget: onBoarding());
+    return widget.comingFromEditProfile
+        ? onBoarding()
+        : UIScaffold(
+            appBar: widget.comingFromEditProfile
+                ? null
+                : AppBarComponent(
+                    "",
+                    action: TextComponent(StringConstants.skip,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: themeCubit.textColor,
+                        )),
+                  ),
+            removeSafeAreaPadding: false,
+            bgColor: themeCubit.backgroundColor,
+            widget: onBoarding());
   }
 
   Widget onBoarding() {
@@ -209,25 +211,32 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextComponent(StringConstants.tellUsABitAboutYourSelf,
-                      style: FontStylesConstants.style22(
-                        color: themeCubit.textColor,
-                      )
-                      //  TextStyle(
-                      //     fontSize: 22,
-
-                      //     fontFamily: FontConstants.fontProtestStrike),
-                      ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const TextComponent(
-                    StringConstants.alsoDoThisLaterInProfile,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: ColorConstants.lightGray,
+                  if (widget.comingFromEditProfile)
+                    TextComponent(StringConstants.aboutMe,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: themeCubit.textSecondaryColor,
+                        ))
+                  else
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextComponent(StringConstants.tellUsABitAboutYourSelf,
+                            style: FontStylesConstants.style22(
+                              color: themeCubit.textColor,
+                            )),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const TextComponent(
+                          StringConstants.alsoDoThisLaterInProfile,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: ColorConstants.lightGray,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
                   SizedBoxConstants.sizedBoxTwentyH(),
                   TextComponent(
                     StringConstants.bio,
@@ -263,19 +272,20 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
             moreAboutYou(),
           ],
         ),
-        const SizedBox(
-          height: 10,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: ButtonComponent(
-              bgcolor: themeCubit.primaryColor,
-              textColor: themeCubit.backgroundColor,
-              buttonText: StringConstants.continues,
-              onPressed: () {
-                NavigationUtil.push(context, RouteConstants.interestScreen);
-              }),
-        )
+        // const SizedBox(
+        //   height: 10,
+        // ),
+        if (!widget.comingFromEditProfile)
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                textColor: themeCubit.backgroundColor,
+                buttonText: StringConstants.continues,
+                onPressed: () {
+                  NavigationUtil.push(context, RouteConstants.interestScreen);
+                }),
+          )
       ],
     );
   }
