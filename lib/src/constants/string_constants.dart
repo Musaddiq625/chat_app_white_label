@@ -133,6 +133,7 @@ class StringConstants {
       "You could collect information here and ask questions.";
 
   static const String save = "Save";
+  static const String saveChanges = "Save Changes";
   static const String end = "End";
   static const String start = "Start";
   static const String bio = "Bio";
@@ -227,6 +228,7 @@ class StringConstants {
   static const String addPeople = "Add People";
   static const String addPeopleToGroup = "Add People to Group";
   static const String editCover = "Edit Cover";
+  static const String editProfile = "Edit Profile";
   static const String characters = "characters";
   static const String phoneTextFieldHint = "1234 123456";
   static const String emailTextFieldHint = "abc@gmail.com";

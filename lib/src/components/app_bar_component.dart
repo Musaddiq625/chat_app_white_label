@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:chat_app_white_label/src/components/back_button_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppBarComponent extends StatelessWidget {
   final Function()? overrideBackPressed;
@@ -13,6 +16,8 @@ class AppBarComponent extends StatelessWidget {
   final bool enableDark;
   final bool enablePadding;
   final bool showBackbutton;
+  final bool isBackBtnCircular;
+  final bool centerTitle;
   final Widget? action;
 
   const AppBarComponent(
@@ -24,10 +29,14 @@ class AppBarComponent extends StatelessWidget {
     this.enablePadding = false,
     this.showBackbutton = true,
     this.action,
+    this.centerTitle = true,
+    this.isBackBtnCircular = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final themeCubit = BlocProvider.of<ThemeCubit>(context);
+
     return Container(
       height: kToolbarHeight +
           (Platform.isIOS ? MediaQuery.of(context).viewPadding.top : 10),
@@ -55,7 +64,7 @@ class AppBarComponent extends StatelessWidget {
                 //! pass your asset here
                 enableDark: enableDark,
                 isImage: true,
-                isCircular: true,
+                isCircular: isBackBtnCircular,
                 onTap: () {
                   if (showBackbutton) {
                     overrideBackPressed == null
@@ -73,12 +82,15 @@ class AppBarComponent extends StatelessWidget {
               children: [
                 Expanded(
                   child: Center(
-                    child: TextComponent(
-                      text!,
-                      textAlign: TextAlign.center,
-                      maxLines: 3,
-                      //! style: FontStyles.font19(
-                      //!     fontWeight: FontWeight.w200, bold: false),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: TextComponent(
+                        text!,
+                        textAlign: TextAlign.center,
+                        maxLines: 3,
+                        style: FontStylesConstants.style22(
+                            color: themeCubit.primaryColor),
+                      ),
                     ),
                   ),
                 ),
@@ -104,6 +116,7 @@ class AppBarComponent extends StatelessWidget {
           //             : overrideBackPressed!();
           //       }),
           // ),
+          if (centerTitle == false) const Spacer(),
           if (action != null)
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
