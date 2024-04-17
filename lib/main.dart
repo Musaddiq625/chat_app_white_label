@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
               fontFamily: FontConstants.fontNunitoSans,
               useMaterial3: true,
             ),
-            initialRoute: RouteConstants.allConnectionScreen,
+            initialRoute: RouteConstants.splashScreenLocal,
             onGenerateRoute: generateRoute,
             debugShowCheckedModeBanner: false,
           );
