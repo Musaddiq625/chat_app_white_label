@@ -485,7 +485,7 @@ class _UserProfileState extends State<UserProfile> {
                                         TextComponent(
                                           "4 Tickets Sold ",
                                           style: FontStylesConstants
-                                              .style16defaultFamily(
+                                              .style16(
                                                   color: ColorConstants.white),
                                         ),
                                         SizedBoxConstants.sizedBoxForthyH(),
@@ -534,7 +534,7 @@ class _UserProfileState extends State<UserProfile> {
                                           child: TextComponent(
                                             StringConstants.earned,
                                             style: FontStylesConstants
-                                                .style16defaultFamily(
+                                                .style16(
                                                     color:
                                                         ColorConstants.white),
                                           ),

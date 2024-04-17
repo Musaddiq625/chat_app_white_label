@@ -198,7 +198,6 @@ class StringConstants {
   static const String clubs = "Clubs";
   static const String somethingToKnow = "Something to know";
   static const String requestSent = "Request Sent!";
-  static const String pets = "Pets";
   static const String requestStatus =
       "You will be notifiy when your request is accepted";
   static const String typeYourMessage = "Type your message here...";
