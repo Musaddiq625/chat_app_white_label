@@ -6,9 +6,9 @@ class DividerComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Divider(
-      thickness: 0.75,
-      endIndent: 10,
-      indent: 60,
+      thickness: 0.2,
+      endIndent: 1,
+      indent: 0,
     );
   }
 }

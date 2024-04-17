@@ -85,6 +85,7 @@ class StringConstants {
   static const String drinking = "Drinking";
   static const String drink = "Drink";
   static const String moreAboutYou = "More about you";
+  static const String dragAndHold = "drag and hold to reorder";
   static const String bioHint =
       "Tell the world what you like, why you're here or anything about yourself ";
   static const String showLessLikeThis = "Show less like this";
