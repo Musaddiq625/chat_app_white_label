@@ -82,6 +82,7 @@ class StringConstants {
   static const String termsOfService = "Terms of service";
   static const String termsOfuse = "Terms of use";
   static const String privacyPolicy = "Privacy Policy";
+  static const String addBankDetails = "Add Bank Details";
   static const String logOut = "Log out";
   static const String deleteYourAccount = "Delete your account";
   static const String workout = "Workout";
@@ -101,6 +102,7 @@ class StringConstants {
   static const String reportEvent = "Report event";
   static const String shareEvent = "Share event";
   static const String ticket = "Ticket";
+  static const String creator = "Creator";
   static const String viewTicket = "View Ticket";
   static const String viewInMap = "View in Map";
   static const String addToAppleWallet = "Add to apple Wallet";
@@ -110,6 +112,11 @@ class StringConstants {
   static const String earned = "Earned";
   static const String visible = "Visible";
   static const String copyLink = "Copy Link";
+  static const String createAEvent = "Create event";
+  static const String createAGroup = "Make a group";
+  static const String accountNumber = "Account Number";
+  static const String accountTitle = "Account Title";
+  static const String bankCode = "Bank Code";
   static const String totalMoneyEarnedForFar = "Total Money earned for far";
   static const String introduction = "Introduction";
   static const String pushNotifications = "Push Notifications";
@@ -187,6 +194,7 @@ class StringConstants {
   static const String yesPlease = "Yes, please ";
   static const String yesRemove = "Yes, please remove";
   static const String eventShared = "Event Shared !";
+  static const String amountToWithDraw = "Enter the amount you would like to withdraw ";
   static const String eventCreatedSuccessfully =
       "Yay! Your event has been  created successfully!";
   static const String requestSend = "Your request has already been sent to ";
@@ -212,18 +220,25 @@ class StringConstants {
   static const String ticketrequired = "Ticket required to attend event";
   static const String freeToJoin = "Free to join";
   static const String noCharityRequired = "No charity support required";
+  static const String capacityOf = "Capacity of";
+  static const String people = "People";
+  static const String limitedGuests = "Limited guests";
   static const String members = "Members";
   static const String events = "Events";
   static const String yourEvents = "Your Events";
   static const String groups = "Groups";
   static const String earnings = "Earnings";
   static const String withDraw = "Withdraw";
+  static const String earningDetails = "Earning Details";
   static const String eventsYouGoingTo = "Events you'e going to";
   static const String clubs = "Clubs";
   static const String somethingToKnow = "Something to know";
   static const String requestSent = "Request Sent!";
+  static const String transactionComplete = "Transaction Complete!";
   static const String requestStatus =
       "You will be notifiy when your request is accepted";
+  static const String transactionStatus =
+      "The money will be in transferred to your bank account in 3-5 working days.";
   static const String typeYourMessage = "Type your message here...";
   static const String typeYourDescription =
       "Provide a brief description about the event here";

@@ -1,5 +1,7 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +27,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
   Widget build(BuildContext context) {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
     return Container(
+      width: AppConstants.responsiveWidth(context),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
@@ -32,36 +35,31 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
       ),
       child: Column(
         children: [
-          const SizedBox(
-            height: 70,
-            width: double.infinity,
-          ),
+         SizedBoxConstants.sizedBoxTwelveH(),
           if (widget.image != null)
             widget.svg?
             SvgPicture.asset(
               // height: 25.55,
               widget.image,
-              height: 150,
+              height: 100,
             ):
             Image.asset(
               // AssetConstants.group,
               widget.image!,
-              width: 150,
-              height: 150,
+              width: 100,
+              height: 100,
             ),
           SizedBoxConstants.sizedBoxTwentyH(),
           Container(
-            width: 300,
+            width: AppConstants.responsiveWidth(context,percentage: 70),
             child: TextComponent(
               widget.heading,
-              style: TextStyle(
-                  fontSize: 25,
-                  fontFamily: FontConstants.fontProtestStrike,
-                  color: themeCubit.textColor),
+              style: FontStylesConstants.style24(color: CupertinoColors.white),
               textAlign: TextAlign.center,
               maxLines: 4,
             ),
           ),
+          if(widget.body!=null)
           SizedBoxConstants.sizedBoxTwentyH(),
           Container(
             width: 300,
@@ -72,7 +70,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
               maxLines: 4,
             ),
           ),
-         SizedBoxConstants.sizedBoxTwentyH()
+         SizedBoxConstants.sizedBoxThirtyH()
         ],
       ),
     );

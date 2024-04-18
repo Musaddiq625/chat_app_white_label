@@ -24,6 +24,7 @@ class ContactCard extends StatelessWidget {
   final List<PopupMenuEntry<String>>? popupMenuItems;
   final Function(String)? onMenuItemSelected;
   final bool popUpMenu;
+  final bool dividerValue;
 
   const ContactCard(
       {Key? key,
@@ -38,6 +39,7 @@ class ContactCard extends StatelessWidget {
       this.popupMenuItems,
       this.onMenuItemSelected,
       this.popUpMenu = false,
+      this.dividerValue = true,
       this.onProfileTap})
       : super(key: key);
 
@@ -69,6 +71,7 @@ class ContactCard extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (showShareIcon)
                 const Spacer(),
                 if (showShareIcon)
                   Container(
@@ -135,6 +138,7 @@ class ContactCard extends StatelessWidget {
             ),
           ),
         ),
+        if(dividerValue)
         const Divider(thickness: 0.1),
       ],
     );

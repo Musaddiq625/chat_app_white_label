@@ -94,7 +94,7 @@ class _EventScreenState extends State<EventScreen> {
               isSmallBtn: true,
               buttonText: StringConstants.getTicket,
               onPressed: () {
-                _paymentSuccessBottomSheet();
+                _getTicketBottomSheet();
               },
               textColor: ColorConstants.black,
               bgcolor: ColorConstants.btnGradientColor,
@@ -1003,20 +1003,21 @@ class _EventScreenState extends State<EventScreen> {
                   buttonText: StringConstants.next,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
-                    _sendMessage();
+                    // _sendMessage();
                     Navigator.pop(context);
-                    _navigateToBack();
-                    BottomSheetComponent.showBottomSheet(
-                      context,
-                      isShowHeader: false,
-                      body: InfoSheetComponent(
-                        heading: StringConstants.requestSent,
-                        body: StringConstants.requestStatus,
-                        image: AssetConstants.paperPlaneImage,
-                        // svg: true,
-                      ),
-                      // whenComplete:_navigateToBack(),
-                    );
+                    _getPaymentBottomSheet();
+                    // _navigateToBack();
+                    // BottomSheetComponent.showBottomSheet(
+                    //   context,
+                    //   isShowHeader: false,
+                    //   body: InfoSheetComponent(
+                    //     heading: StringConstants.requestSent,
+                    //     body: StringConstants.requestStatus,
+                    //     image: AssetConstants.paperPlaneImage,
+                    //     // svg: true,
+                    //   ),
+                    //   // whenComplete:_navigateToBack(),
+                    // );
                   },
                   bgcolor: themeCubit.primaryColor,
                 )

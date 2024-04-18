@@ -100,8 +100,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+
         bgColor: themeCubit.backgroundColor,
-        removeSafeAreaPadding: false,
+        removeSafeAreaPadding: true,
         // appBar:_appBar(),
         widget: _createEvent());
   }
@@ -1035,6 +1036,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   bgcolor: ColorConstants.red,
                   textColor: themeCubit.textColor,
                   buttonText: StringConstants.yesExit,
+                  isSmallBtn: true,
                   onPressed: () {
                     NavigationUtil.popAllAndPush(
                         context, RouteConstants.homeScreenLocal);

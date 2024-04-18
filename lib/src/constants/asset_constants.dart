@@ -55,4 +55,7 @@ class AssetConstants {
   static const String contactUs = "$images/contactus.png";
   static const String coins = "$images/coins.png";
   static const String earnedCoins = "$images/earned_coins.png";
+  static const String bank = "$images/bank.png";
+  static const String withDraw = "$images/with_draw.png";
+  static const String transectionComplete = "$images/transection_complete.png";
 }

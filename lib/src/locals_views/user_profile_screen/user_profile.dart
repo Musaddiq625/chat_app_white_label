@@ -4,7 +4,6 @@ import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/event_card.dart';
 import 'package:chat_app_white_label/src/components/group_card.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
-import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
@@ -15,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../components/event_summary_component.dart';
 import '../../components/filter_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/profile_image_component.dart';
@@ -144,7 +144,7 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     return UIScaffold(
         appBar: topBar(),
-        removeSafeAreaPadding: false,
+        removeSafeAreaPadding: true,
         bgColor: ColorConstants.black,
         // bgImage:
         //     "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
@@ -356,7 +356,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget yourEvents() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       child: Column(
         children: [
           Row(
@@ -407,173 +407,186 @@ class _UserProfileState extends State<UserProfile> {
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: [
-                ...eventDetailList.map((tag) => Padding(
+                ...eventDetailList.map(
+                  (tag) => Padding(
                       padding: const EdgeInsets.only(right: 10.0),
-                      child: Container(
-                        width: AppConstants.responsiveWidth(context,
-                            percentage: 80),
-                        // padding: const EdgeInsets.only(
-                        //     left: 12, right: 12, top: 5, bottom: 5),
-                        decoration: BoxDecoration(
-                          color: ColorConstants.darkBackgrounddColor,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          // color: themeCubit.darkBackgroundColor,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 15, right: 15, top: 10, bottom: 5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextComponent(
-                                    "Meet & Mingle in Riyadh Season",
-                                    style: FontStylesConstants.style16(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  TextComponent(
-                                    "SAR 150",
-                                    style: FontStylesConstants.style16(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            DividerCosntants.divider1,
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 8.0, left: 15, right: 15, bottom: 8),
-                              child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: radius *
-                                              imagesUserInEvent.length
-                                                  .toDouble(),
-                                          // Calculate the total width of images
-                                          height: radius,
-                                          // Set the height to match the image size
-                                          child: Stack(
-                                            children: [
-                                              for (int i = 0;
-                                                  i < imagesUserInEvent.length;
-                                                  i++)
-                                                Positioned(
-                                                  left: i * radius / 1.5,
-                                                  // Adjust the left offset
-                                                  child: ClipOval(
-                                                    child: Image(
-                                                      image:
-                                                          imagesUserInEvent[i],
-                                                      width: radius,
-                                                      height: radius,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBoxConstants.sizedBoxTenH(),
-                                        TextComponent(
-                                          "4 Tickets Sold ",
-                                          style: FontStylesConstants
-                                              .style16(
-                                                  color: ColorConstants.white),
-                                        ),
-                                        SizedBoxConstants.sizedBoxForthyH(),
-                                        SizedBox(
-                                          width: 150,
-                                          height: 10,
-                                          child: LinearProgressIndicator(
-                                            value: 0.2,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(20)),
-                                            backgroundColor: ColorConstants
-                                                .lightGray
-                                                .withOpacity(0.3),
-                                            color: ColorConstants.primaryColor,
-                                          ),
-                                        ),
-                                        SizedBoxConstants.sizedBoxSixH(),
-                                        TextComponent(
-                                          "96 Remaning ",
-                                          style: FontStylesConstants.style16(
-                                              color: ColorConstants.white),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  // SizedBoxConstants.sizedBoxSixtyW(),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 3.0),
-                                          child: TextComponent(
-                                            "SAR 600 ",
-                                            style: FontStylesConstants.style22(
-                                                color: ColorConstants
-                                                    .primaryColor),
-                                          ),
-                                        ),
-                                        SizedBoxConstants.sizedBoxSixH(),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 3.0),
-                                          child: TextComponent(
-                                            StringConstants.earned,
-                                            style: FontStylesConstants
-                                                .style16(
-                                                    color:
-                                                        ColorConstants.white),
-                                          ),
-                                        ),
-                                        SizedBoxConstants.sizedBoxTwentyH(),
-                                        Transform.scale(
-                                          scale: 0.8,
-                                          // Adjust the scale factor as needed
-                                          child: Switch(
-                                            value: eventActive,
-                                            activeColor: ColorConstants.white,
-                                            activeTrackColor:
-                                                themeCubit.primaryColor,
-                                            onChanged: (bool value) {
-                                              setState(() {
-                                                eventActive = value;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 6.0),
-                                          child: TextComponent(
-                                            StringConstants.visible,
-                                            style: FontStylesConstants.style16(
-                                                color: ColorConstants.white),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ))
+                      child: EventSummary(
+                        eventTitle: "Meet & Mingle in Riyadh Season",
+                        price: "SAR 150",
+                        ticketsSold: 4,
+                        remainingTickets: 96,
+                        eventActive: true,
+                        imagesUserInEvent: images,
+                        // imagesUserInEvent: [
+                        //   // Your list of ImageProvider objects
+                        // ],
+                      )),
+                  // Container(
+                  //   width: AppConstants.responsiveWidth(context,
+                  //       percentage: 80),
+                  //   // padding: const EdgeInsets.only(
+                  //   //     left: 12, right: 12, top: 5, bottom: 5),
+                  //   decoration: BoxDecoration(
+                  //     color: ColorConstants.darkBackgrounddColor,
+                  //     borderRadius: BorderRadius.all(Radius.circular(10)),
+                  //     // color: themeCubit.darkBackgroundColor,
+                  //   ),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(
+                  //             left: 15, right: 15, top: 10, bottom: 5),
+                  //         child: Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             TextComponent(
+                  //               "Meet & Mingle in Riyadh Season",
+                  //               style: FontStylesConstants.style16(
+                  //                   fontWeight: FontWeight.bold),
+                  //             ),
+                  //             TextComponent(
+                  //               "SAR 150",
+                  //               style: FontStylesConstants.style16(),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //       DividerCosntants.divider1,
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(
+                  //             top: 8.0, left: 15, right: 15, bottom: 8),
+                  //         child: Row(
+                  //           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //           children: [
+                  //             Expanded(
+                  //               flex: 2,
+                  //               child: Column(
+                  //                 crossAxisAlignment:
+                  //                     CrossAxisAlignment.start,
+                  //                 children: [
+                  //                   SizedBox(
+                  //                     width: radius *
+                  //                         imagesUserInEvent.length
+                  //                             .toDouble(),
+                  //                     // Calculate the total width of images
+                  //                     height: radius,
+                  //                     // Set the height to match the image size
+                  //                     child: Stack(
+                  //                       children: [
+                  //                         for (int i = 0;
+                  //                             i < imagesUserInEvent.length;
+                  //                             i++)
+                  //                           Positioned(
+                  //                             left: i * radius / 1.5,
+                  //                             // Adjust the left offset
+                  //                             child: ClipOval(
+                  //                               child: Image(
+                  //                                 image:
+                  //                                     imagesUserInEvent[i],
+                  //                                 width: radius,
+                  //                                 height: radius,
+                  //                                 fit: BoxFit.cover,
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                       ],
+                  //                     ),
+                  //                   ),
+                  //                   SizedBoxConstants.sizedBoxTenH(),
+                  //                   TextComponent(
+                  //                     "4 Tickets Sold ",
+                  //                     style: FontStylesConstants
+                  //                         .style16(
+                  //                             color: ColorConstants.white),
+                  //                   ),
+                  //                   SizedBoxConstants.sizedBoxForthyH(),
+                  //                   SizedBox(
+                  //                     width: 150,
+                  //                     height: 10,
+                  //                     child: LinearProgressIndicator(
+                  //                       value: 0.2,
+                  //                       borderRadius: BorderRadius.all(
+                  //                           Radius.circular(20)),
+                  //                       backgroundColor: ColorConstants
+                  //                           .lightGray
+                  //                           .withOpacity(0.3),
+                  //                       color: ColorConstants.primaryColor,
+                  //                     ),
+                  //                   ),
+                  //                   SizedBoxConstants.sizedBoxSixH(),
+                  //                   TextComponent(
+                  //                     "96 Remaning ",
+                  //                     style: FontStylesConstants.style16(
+                  //                         color: ColorConstants.white),
+                  //                   )
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //             // SizedBoxConstants.sizedBoxSixtyW(),
+                  //             Expanded(
+                  //               child: Column(
+                  //                 crossAxisAlignment:
+                  //                     CrossAxisAlignment.start,
+                  //                 children: [
+                  //                   Padding(
+                  //                     padding:
+                  //                         const EdgeInsets.only(left: 3.0),
+                  //                     child: TextComponent(
+                  //                       "SAR 600 ",
+                  //                       style: FontStylesConstants.style22(
+                  //                           color: ColorConstants
+                  //                               .primaryColor),
+                  //                     ),
+                  //                   ),
+                  //                   SizedBoxConstants.sizedBoxSixH(),
+                  //                   Padding(
+                  //                     padding:
+                  //                         const EdgeInsets.only(left: 3.0),
+                  //                     child: TextComponent(
+                  //                       StringConstants.earned,
+                  //                       style: FontStylesConstants
+                  //                           .style16(
+                  //                               color:
+                  //                                   ColorConstants.white),
+                  //                     ),
+                  //                   ),
+                  //                   SizedBoxConstants.sizedBoxTwentyH(),
+                  //                   Transform.scale(
+                  //                     scale: 0.8,
+                  //                     // Adjust the scale factor as needed
+                  //                     child: Switch(
+                  //                       value: eventActive,
+                  //                       activeColor: ColorConstants.white,
+                  //                       activeTrackColor:
+                  //                           themeCubit.primaryColor,
+                  //                       onChanged: (bool value) {
+                  //                         setState(() {
+                  //                           eventActive = value;
+                  //                         });
+                  //                       },
+                  //                     ),
+                  //                   ),
+                  //                   Padding(
+                  //                     padding:
+                  //                         const EdgeInsets.only(left: 6.0),
+                  //                     child: TextComponent(
+                  //                       StringConstants.visible,
+                  //                       style: FontStylesConstants.style16(
+                  //                           color: ColorConstants.white),
+                  //                     ),
+                  //                   )
+                  //                 ],
+                  //               ),
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // )
+                )
               ],
             ),
           ),
@@ -591,7 +604,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget eventsGoingTo() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       child: Column(
         children: [
           Row(
@@ -662,7 +675,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget groups() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       child: Column(
         children: [
           Row(

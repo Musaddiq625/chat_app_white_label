@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
@@ -12,11 +13,9 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../components/bottom_nav_componenet.dart';
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
 import '../../components/contacts_card_component.dart';
-import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../models/contact.dart';
 import '../../utils/navigation_util.dart';
@@ -54,15 +53,25 @@ class _HomeScreenState extends State<HomeScreen> {
     // ... other contacts
   ];
   double radius = 30;
+  final GlobalKey<PopupMenuButtonState<int>> _key = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-      removeSafeAreaPadding: false,
-      bgImage:
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+        image: CachedNetworkImageProvider(
           "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-      widget: _eventWidget(),
-      bottomNavigationBar: Container(child: const BottomNavBar()),
+        ),
+        fit: BoxFit.cover,
+      )),
+      child: _eventWidget(),
+      // child: UIScaffold(
+      //   bgImage:
+      //       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+      //   widget: _eventWidget(),
+      //   // bottomNavigationBar: Container(child: const BottomNavBar()),
+      // ),
     );
   }
 
@@ -102,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _eventWidget() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,6 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       bgcolor: themeCubit.primaryColor,
                       textColor: themeCubit.backgroundColor,
                       buttonText: StringConstants.viewEvent,
+                      isSmallBtn: true,
                       onPressed: () {
                         NavigationUtil.push(
                             context, RouteConstants.eventScreen);
@@ -196,21 +206,109 @@ class _HomeScreenState extends State<HomeScreen> {
                       iconSize: 15,
                       onTap: _shareEventBottomSheet),
                   const SizedBox(width: 10),
-                  IconComponent(
-                    svgData: AssetConstants.more,
-                    borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.iconBg,
-                    iconColor: Colors.white,
-                    circleSize: 35,
-                    iconSize: 15,
-                    onTap: _showMoreBottomSheet,
-                  )
+                  showMore(),
+                  //    IconComponent(
+                  //       svgData: AssetConstants.more,
+                  //       borderColor: Colors.transparent,
+                  //       backgroundColor: ColorConstants.iconBg,
+                  //       iconColor: Colors.white,
+                  //       circleSize: 35,
+                  //       iconSize: 15,
+                  //
+                  //   ),
                 ],
               )
             ],
           )
         ],
       ),
+    );
+  }
+
+  Widget showMore() {
+    return PopupMenuButton(
+      offset: Offset(0, -140),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10), // Set the border radius
+      ),
+      color: ColorConstants.darkBackgrounddColor,
+      key: _key,
+      icon: IconComponent(
+        svgData: AssetConstants.more,
+        borderColor: Colors.transparent,
+        backgroundColor: ColorConstants.iconBg,
+        iconColor: Colors.white,
+        circleSize: 35,
+        iconSize: 15,
+      ),
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          child: Row(children: [
+            IconComponent(
+              iconData: Icons.bookmark,
+              iconColor: ColorConstants.lightGray,
+            ),
+            SizedBoxConstants.sizedBoxSixW(),
+            TextComponent(
+              StringConstants.saveEvent,
+              style: FontStylesConstants.style14(color: ColorConstants.white),
+            ),
+          ]),
+          height: 0,
+          value: 'message',
+        ),
+        PopupMenuItem(
+          padding: EdgeInsets.all(0),
+          height: 0,
+          child: DividerCosntants.divider1,
+          value: 'remove_connection',
+        ),
+        PopupMenuItem(
+          height: 0,
+          child: Row(children: [
+            IconComponent(
+              iconData: Icons.thumb_down,
+              iconColor: ColorConstants.lightGray,
+            ),
+            SizedBoxConstants.sizedBoxSixW(),
+            TextComponent(
+              StringConstants.showLessLikeThis,
+              style: FontStylesConstants.style14(color: ColorConstants.white),
+            ),
+          ]),
+          value: 'remove_connection',
+        ),
+        PopupMenuItem(
+          padding: EdgeInsets.all(0),
+          height: 0,
+          child: DividerCosntants.divider1,
+          value: 'remove_connection',
+        ),
+        PopupMenuItem(
+          height: 0,
+          child: Row(children: [
+            IconComponent(
+              iconData: Icons.remove_circle_sharp,
+              iconColor: ColorConstants.red,
+            ),
+            SizedBoxConstants.sizedBoxSixW(),
+            TextComponent(
+              StringConstants.reportEvent,
+              style: FontStylesConstants.style14(color: ColorConstants.red),
+            ),
+          ]),
+          value: 'remove_connection',
+        ),
+      ],
+      // onSelected: onMenuItemSelected,
+      onSelected: (value) {
+        if (value == 'share') {
+          // Handle share action
+        } else if (value == 'something_else') {
+          // Handle something else action
+        }
+        // Add more conditions as needed
+      },
     );
   }
 
@@ -316,8 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
         bgColor: themeCubit.darkBackgroundColor,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body:
-        Container(
+        body: Container(
           constraints: const BoxConstraints(maxHeight: 600),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

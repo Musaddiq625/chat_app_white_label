@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/event_screen/all_event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/password_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/signup_with_email.dart';
+import 'package:chat_app_white_label/src/locals_views/main_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/dob_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/gender_selection.dart';
@@ -15,9 +17,13 @@ import 'package:chat_app_white_label/src/locals_views/on_boarding/select_profile
 import 'package:chat_app_white_label/src/locals_views/on_boarding/upload_picture_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/what_do_you_do_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/otp_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/settings_screens/notification_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/settings_screens/privacy_policy_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/settings_screens/settings_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/settings_screens/terms_of_use_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/all_connections.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
+import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/view_your_event_screen.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
@@ -25,7 +31,7 @@ import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_
 import 'package:chat_app_white_label/src/screens/group_chat_room/group_chat_room.dart';
 import 'package:chat_app_white_label/src/screens/login/login_screen.dart';
 import 'package:chat_app_white_label/src/screens/otp/otp_screen.dart';
-import 'package:chat_app_white_label/src/screens/profile/edit_profile_screen.dart';
+// import 'package:chat_app_white_label/src/screens/profile/edit_profile_screen.dart';
 
 // import 'package:chat_app_white_label/src/screens/splash/splash_screen.dart';
 import 'package:chat_app_white_label/src/screens/view_profile_screen/view_user_profile_screen.dart';
@@ -36,6 +42,7 @@ import '../constants/route_constants.dart';
 import '../locals_views/create_event_screen/create_event_screen.dart';
 
 // import 'package:chat_app_white_label/src/screens/home_screen.dart';
+import '../locals_views/earnings_screen/earning_screen.dart';
 import '../locals_views/home_screen/home_screen.dart';
 import '../locals_views/locals_signup/signup_with_number.dart';
 
@@ -69,9 +76,9 @@ Route generateRoute(RouteSettings settings) {
       // final arg = settings.arguments! as String;
       return materialRoute(const EventScreen());
 
-    case RouteConstants.editProfileScreen:
-      // final arg = settings.arguments as bool;
-      return materialRoute(const EditProfileScreen());
+    // case RouteConstants.editProfileScreen:
+    //   // final arg = settings.arguments as bool;
+    //   return materialRoute(const EditProfileScreen());
 
     // case RouteConstants.splashScreen:
     //   return materialRoute(const SplashScreen());
@@ -189,6 +196,25 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.settingsScreen:
       return materialRoute(const SettingsScreen());
+
+    case RouteConstants.notificationScreen:
+      return materialRoute(const NotificationScreen());
+    case RouteConstants.termsOfUseScreen:
+      return materialRoute(const TermsOfUseScreen());
+    case RouteConstants.privacyPolicyScreen:
+      return materialRoute(const PrivacyPolicyScreen());
+
+    case RouteConstants.allEventScreen:
+      return materialRoute(const AllEventScreen());
+
+    case RouteConstants.earningScreen:
+      return materialRoute(const EarningScreen());
+
+    case RouteConstants.mainScreen:
+      return materialRoute(MainScreen());
+
+    case RouteConstants.viewYourEventScreen:
+      return materialRoute(ViewYourEventScreen());
 
     case RouteConstants.selectProfileScreen:
       final arg = settings.arguments as List<File>;

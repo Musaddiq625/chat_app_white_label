@@ -50,5 +50,7 @@ class RouteConstants {
   static const String privacyPolicyScreen = 'privacyPolicyScreen';
   static const String allEventScreen = 'allEventScreen';
   static const String earningScreen = 'earningScreen';
+  static const String mainScreen = 'mainScreen';
+  static const String viewYourEventScreen = 'viewYourEventScreen';
 
 }

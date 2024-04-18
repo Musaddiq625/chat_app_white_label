@@ -89,6 +89,24 @@ class FontStylesConstants {
           decoration:
               underLine ? TextDecoration.underline : TextDecoration.none);
 
+  static TextStyle style24({
+    final underLine = false,
+    final letterSpacing = 0.0,
+    Color color = ColorConstants.black,
+    FontWeight fontWeight = FontWeight.normal,
+  }) =>
+      TextStyle(
+          fontSize: 24,
+          color: color,
+          fontWeight: fontWeight,
+          fontFamily: FontConstants.fontProtestStrike,
+          //add inter here,
+          fontStyle: FontStyle.normal,
+          letterSpacing: letterSpacing,
+          decorationColor: color,
+          decoration:
+          underLine ? TextDecoration.underline : TextDecoration.none);
+
   static TextStyle style22({
     final underLine = false,
     final letterSpacing = 0.0,
