@@ -41,14 +41,14 @@ class EventSummary extends StatelessWidget {
           //MediaQuery.of(context).size.width * 0.8, // Adjust the width as needed
       decoration: BoxDecoration(
         color: ColorConstants.darkBackgrounddColor,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding:
-                const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 5),
+                const EdgeInsets.only(left: 15, right: 15, top: 20, bottom: 5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -78,7 +78,7 @@ class EventSummary extends StatelessWidget {
 
           Padding(
             padding:
-                const EdgeInsets.only(top: 8.0, left: 15, right: 15, bottom: 8),
+                const EdgeInsets.only(top: 8.0, left: 15, right: 15, bottom: 18),
             child: Row(
               children: [
                 Expanded(

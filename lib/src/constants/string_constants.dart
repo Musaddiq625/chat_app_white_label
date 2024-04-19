@@ -72,6 +72,7 @@ class StringConstants {
   static const String settings = "Settings";
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
+  static const String messageForYou = "Message for you";
   static const String createANewEvent = "Create a new event";
   static const String createANewGroup = "Create a new group";
   static const String skip = "Skip";

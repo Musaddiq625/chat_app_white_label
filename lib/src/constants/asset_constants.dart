@@ -38,6 +38,7 @@ class AssetConstants {
   static const String copyLink = "$images/copy_link.svg";
   static const String linkedin = "$icons/linkedin.svg";
   static const String instagram = "$icons/instagram.svg";
+  static const String instagramNoSVg = "$images/instagram.png";
 
   static const String facebook = "$icons/facebook.png";
   static const String diet = "$icons/diet.svg";

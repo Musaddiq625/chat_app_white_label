@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/event_card.dart';
 import 'package:chat_app_white_label/src/components/group_card.dart';
@@ -7,8 +8,10 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,26 +43,26 @@ class _UserProfileState extends State<UserProfile> {
       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg";
 
   final List<ImageProvider> images2 = [
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
   ];
 
   final List<ImageProvider> images = [
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
   ];
 
@@ -125,14 +128,14 @@ class _UserProfileState extends State<UserProfile> {
   ];
 
   final List<ImageProvider> imagesUserInEvent = [
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
     // Replace with your image URL
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
     // Replace with your asset path
     // Add more image providers as needed
@@ -181,35 +184,36 @@ class _UserProfileState extends State<UserProfile> {
           ),
           Row(
             children: [
-              Container(
-                  padding: const EdgeInsets.only(
-                      left: 12, right: 12, top: 5, bottom: 5),
-                  decoration: BoxDecoration(
-                    color: ColorConstants.iconBg,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    // color: themeCubit.darkBackgroundColor,
-                  ),
-                  child: Row(
-                    children: [
-                      IconComponent(
-                        // iconData: Icons.facebook,
-                        svgDataCheck: false,
-                        svgData: AssetConstants.applePay,
-                        // borderColor: Colors.red,
-                        backgroundColor: ColorConstants.transparent,
-                        iconSize: 100,
-                        borderSize: 0,
-                        // circleSize: 30,
-                        // circleHeight: 30,
-                      ),
-                      SizedBoxConstants.sizedBoxTenW(),
-                      TextComponent(
-                        StringConstants.earnings,
-                        style: FontStylesConstants.style16(
-                            color: ColorConstants.white),
-                      ),
-                    ],
-                  )),
+              GestureDetector(
+                onTap: (){
+                  NavigationUtil.push(context, RouteConstants.earningScreen);
+                },
+                child: Container(
+                    padding: const EdgeInsets.only(
+                        left: 12, right: 12, top: 5, bottom: 5),
+                    decoration: BoxDecoration(
+                      color: ColorConstants.iconBg,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      // color: themeCubit.darkBackgroundColor,
+                    ),
+                    child: Row(
+                      children: [
+                        IconComponent(
+                          svgDataCheck: false,
+                          svgData: AssetConstants.applePay,
+                          backgroundColor: ColorConstants.transparent,
+                          iconSize: 100,
+                          borderSize: 0,
+                        ),
+                        SizedBoxConstants.sizedBoxTenW(),
+                        TextComponent(
+                          StringConstants.earnings,
+                          style: FontStylesConstants.style16(
+                              color: ColorConstants.white),
+                        ),
+                      ],
+                    )),
+              ),
               SizedBoxConstants.sizedBoxTenW(),
               IconComponent(
                 iconData: Icons.settings,
@@ -220,6 +224,9 @@ class _UserProfileState extends State<UserProfile> {
                 iconSize: 20,
                 borderSize: 0,
                 circleSize: 35,
+                onTap: (){
+                  NavigationUtil.push(context, RouteConstants.settingsScreen);
+                },
                 // circleHeight: 30,
               ),
             ],
@@ -306,25 +313,30 @@ class _UserProfileState extends State<UserProfile> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextComponent(
-                    "See all",
-                    style: FontStylesConstants.style15(
-                        color: ColorConstants.lightGray.withOpacity(0.8)),
-                  ),
-                  SizedBoxConstants.sizedBoxTenW(),
-                  IconComponent(
-                    iconData: Icons.arrow_forward_ios,
-                    backgroundColor: ColorConstants.transparent,
-                    borderColor: ColorConstants.transparent,
-                    iconSize: 18,
-                    borderSize: 0,
-                    circleSize: 18,
-                    iconColor: ColorConstants.lightGray,
-                  )
-                ],
+              GestureDetector(
+                onTap: (){
+                  NavigationUtil.push(context, RouteConstants.allConnectionScreen);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextComponent(
+                      "See all",
+                      style: FontStylesConstants.style15(
+                          color: ColorConstants.lightGray.withOpacity(0.8)),
+                    ),
+                    SizedBoxConstants.sizedBoxTenW(),
+                    IconComponent(
+                      iconData: Icons.arrow_forward_ios,
+                      backgroundColor: ColorConstants.transparent,
+                      borderColor: ColorConstants.transparent,
+                      iconSize: 18,
+                      borderSize: 0,
+                      circleSize: 18,
+                      iconColor: ColorConstants.lightGray,
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -379,25 +391,30 @@ class _UserProfileState extends State<UserProfile> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextComponent(
-                    "See all",
-                    style: FontStylesConstants.style15(
-                        color: ColorConstants.lightGray.withOpacity(0.8)),
-                  ),
-                  SizedBoxConstants.sizedBoxTenW(),
-                  IconComponent(
-                    iconData: Icons.arrow_forward_ios,
-                    backgroundColor: ColorConstants.transparent,
-                    borderColor: ColorConstants.transparent,
-                    iconSize: 18,
-                    borderSize: 0,
-                    circleSize: 18,
-                    iconColor: ColorConstants.lightGray,
-                  )
-                ],
+              GestureDetector(
+                onTap: (){
+                  NavigationUtil.push(context, RouteConstants.allEventScreen);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextComponent(
+                      "See all",
+                      style: FontStylesConstants.style15(
+                          color: ColorConstants.lightGray.withOpacity(0.8)),
+                    ),
+                    SizedBoxConstants.sizedBoxTenW(),
+                    IconComponent(
+                      iconData: Icons.arrow_forward_ios,
+                      backgroundColor: ColorConstants.transparent,
+                      borderColor: ColorConstants.transparent,
+                      iconSize: 18,
+                      borderSize: 0,
+                      circleSize: 18,
+                      iconColor: ColorConstants.lightGray,
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -410,16 +427,21 @@ class _UserProfileState extends State<UserProfile> {
                 ...eventDetailList.map(
                   (tag) => Padding(
                       padding: const EdgeInsets.only(right: 10.0),
-                      child: EventSummary(
-                        eventTitle: "Meet & Mingle in Riyadh Season",
-                        price: "SAR 150",
-                        ticketsSold: 4,
-                        remainingTickets: 96,
-                        eventActive: true,
-                        imagesUserInEvent: images,
-                        // imagesUserInEvent: [
-                        //   // Your list of ImageProvider objects
-                        // ],
+                      child: GestureDetector(
+                        onTap: (){
+                          NavigationUtil.push(context, RouteConstants.viewYourEventScreen);
+                        },
+                        child: EventSummary(
+                          eventTitle: "Meet & Mingle in Riyadh Season",
+                          price: "SAR 150",
+                          ticketsSold: 4,
+                          remainingTickets: 96,
+                          eventActive: true,
+                          imagesUserInEvent: images,
+                          // imagesUserInEvent: [
+                          //   // Your list of ImageProvider objects
+                          // ],
+                        ),
                       )),
                   // Container(
                   //   width: AppConstants.responsiveWidth(context,
@@ -595,7 +617,8 @@ class _UserProfileState extends State<UserProfile> {
             buttonText: StringConstants.createANewEvent,
             bgcolor: ColorConstants.darkBackgrounddColor,
             textColor: ColorConstants.white,
-            onPressed: () => {},
+            onPressed: () => {
+              NavigationUtil.push(context, RouteConstants.createEventScreen)},
           )
         ],
       ),
@@ -615,25 +638,31 @@ class _UserProfileState extends State<UserProfile> {
                 style:
                     FontStylesConstants.style20(color: themeCubit.primaryColor),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextComponent(
-                    "See all",
-                    style: FontStylesConstants.style15(
-                        color: ColorConstants.lightGray.withOpacity(0.8)),
-                  ),
-                  SizedBoxConstants.sizedBoxTenW(),
-                  IconComponent(
-                    iconData: Icons.arrow_forward_ios,
-                    backgroundColor: ColorConstants.transparent,
-                    borderColor: ColorConstants.transparent,
-                    iconSize: 18,
-                    borderSize: 0,
-                    circleSize: 18,
-                    iconColor: ColorConstants.lightGray,
-                  )
-                ],
+              GestureDetector(
+                onTap: () => {
+                  NavigationUtil.push(
+                      context, RouteConstants.allEventScreen),
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextComponent(
+                      "See all",
+                      style: FontStylesConstants.style15(
+                          color: ColorConstants.lightGray.withOpacity(0.8)),
+                    ),
+                    SizedBoxConstants.sizedBoxTenW(),
+                    IconComponent(
+                      iconData: Icons.arrow_forward_ios,
+                      backgroundColor: ColorConstants.transparent,
+                      borderColor: ColorConstants.transparent,
+                      iconSize: 18,
+                      borderSize: 0,
+                      circleSize: 18,
+                      iconColor: ColorConstants.lightGray,
+                    )
+                  ],
+                ),
               ),
             ],
           ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat_app_white_label/src/components/back_button_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -13,6 +14,7 @@ class AppBarComponent extends StatelessWidget {
   final Function()? overrideBackPressed;
   final String? text;
   final String? subtitleText;
+  final Color iconBgColor;
   final bool enableDark;
   final bool enablePadding;
   final bool showBackbutton;
@@ -20,12 +22,12 @@ class AppBarComponent extends StatelessWidget {
   final bool centerTitle;
   final Widget? action;
 
-  const AppBarComponent(
-    this.text, {
+  const AppBarComponent(this.text, {
     Key? key,
     this.overrideBackPressed,
     this.enableDark = false,
     this.subtitleText,
+    this.iconBgColor = ColorConstants.blackLight,
     this.enablePadding = false,
     this.showBackbutton = true,
     this.action,
@@ -39,7 +41,10 @@ class AppBarComponent extends StatelessWidget {
 
     return Container(
       height: kToolbarHeight +
-          (Platform.isIOS ? MediaQuery.of(context).viewPadding.top : 10),
+          (Platform.isIOS ? MediaQuery
+              .of(context)
+              .viewPadding
+              .top : 10),
       margin: text != null
           ? EdgeInsets.only(top: Platform.isIOS ? 2 : 5, left: 8)
           : null,
@@ -60,6 +65,7 @@ class AppBarComponent extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 6.0),
             child: BackButtonComponent(
+                bgColor:iconBgColor,
                 image: AssetConstants.backArrow,
                 //! pass your asset here
                 enableDark: enableDark,

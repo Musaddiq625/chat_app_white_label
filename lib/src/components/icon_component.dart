@@ -108,12 +108,17 @@ class IconComponent extends StatelessWidget {
                               size: iconSize,
                               color: iconColor,
                             )
-                          : SvgPicture.asset(
-                              height: iconSize,
-                              svgData!,
-                              colorFilter:
-                                  ColorFilter.mode(iconColor, BlendMode.srcIn),
-                            ),
+                          : svgDataCheck
+                              ? SvgPicture.asset(
+                                  height: iconSize,
+                                  svgData!,
+                                )
+                              : Image.asset(
+                                  svgData!,
+                                  width: iconSize,
+                                  height: iconSize,
+                                  color: iconColor,
+                                ),
                       SizedBox(
                         width: 5,
                       ),
@@ -143,7 +148,7 @@ class IconComponent extends StatelessWidget {
                             svgData!,
                             width: iconSize,
                             height: iconSize,
-              color: iconColor,
+                            color: iconColor,
                           ),
           ),
           if (customText != null)

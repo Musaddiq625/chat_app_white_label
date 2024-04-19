@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
@@ -31,10 +33,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _currentPage = 0;
   late PageController _pageController;
   final List<ImageProvider> images = [
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
     // Replace with your image URL
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
     // Replace with your asset path
     // Add more image providers as needed
@@ -454,17 +456,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     circleSize: 30,
                   ),
                   SizedBoxConstants.sizedBoxTenW(),
-                  IconComponent(
-                    // iconData: Icons.facebook,
-                    svgDataCheck: false,
-                    svgData: AssetConstants.instagram,
-                    // borderColor: Colors.red,
-                    backgroundColor: ColorConstants.transparent,
-                    iconSize: 100,
-                    borderSize: 0,
-                    // circleSize: 30,
-                    // circleHeight: 30,
-                  ),
+                  ImageComponent(height: 30,width: 30,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
+                  // IconComponent(
+                  //   // iconData: Icons.facebook,
+                  //   svgDataCheck: false,
+                  //   svgData: AssetConstants.instagramNoSVg,
+                  //   // borderColor: Colors.red,
+                  //   backgroundColor: ColorConstants.transparent,
+                  //   iconSize: 100,
+                  //   borderSize: 0,
+                  //   // circleSize: 30,
+                  //   // circleHeight: 30,
+                  // ),
                   SizedBoxConstants.sizedBoxTenW(),
                   ...tagList
                       .map((tag) =>

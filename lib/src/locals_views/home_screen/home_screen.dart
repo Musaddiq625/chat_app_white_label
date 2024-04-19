@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -30,12 +31,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<ImageProvider> images = [
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
     // Replace with your image URL
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
     // Replace with your asset path
     // Add more image providers as needed
@@ -467,16 +468,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     customText: StringConstants.facebook,
                     customTextColor: themeCubit.textColor,
                   ),
-                  IconComponent(
-                    svgDataCheck: false,
-                    svgData: AssetConstants.instagram,
-                    backgroundColor: Colors.transparent,
-                    borderColor: Colors.transparent,
-                    circleSize: 60,
-                    customText: StringConstants.instagram,
-                    customTextColor: themeCubit.textColor,
-                    iconSize: 60,
-                  ),
+                  Column(children: [
+                    ImageComponent(height: 60,width: 60,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
+                    SizedBoxConstants.sizedBoxTenH(),
+                    TextComponent(StringConstants.instagram,style: FontStylesConstants.style12(color: ColorConstants.white),)
+                  ],),
+                  // IconComponent(
+                  //   svgDataCheck: true,
+                  //   svgData: AssetConstants.instagram,
+                  //   backgroundColor: Colors.transparent,
+                  //   borderColor: Colors.transparent,
+                  //   circleSize: 60,
+                  //   customText: StringConstants.instagram,
+                  //   customTextColor: themeCubit.textColor,
+                  //   iconSize: 60,
+                  // ),
                   IconComponent(
                     svgData: AssetConstants.share,
                     iconColor: ColorConstants.black,
@@ -504,7 +510,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: contacts.length,
                   itemBuilder: (ctx, index) {
                     return ContactCard(
-                      contact: contacts[index],
+                      name: contacts[index].name,
+                      title: contacts[index].title,
+                      url: contacts[index].url,
+                      // contact: contacts[index],
                       onShareTap: () {
                         Navigator.pop(context);
                         _shareWithConnectionBottomSheet(

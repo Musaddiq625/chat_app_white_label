@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -55,11 +56,11 @@ class _EventScreenState extends State<EventScreen> {
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
   ];
   final List<ImageProvider> images = [
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
     // Replace with your asset path
     // Add more image providers as needed
@@ -365,7 +366,11 @@ class _EventScreenState extends State<EventScreen> {
             ...List.generate(
                 contacts.length,
                 (index) => ContactCard(
-                    contact: contacts[index], showShareIcon: false)),
+                    name: contacts[index].name,
+                    title: contacts[index].title,
+                    url: contacts[index].url,
+                    // contact: contacts[index],
+                    showShareIcon: false)),
             SizedBoxConstants.sizedBoxSixtyH(),
           ],
         ),
@@ -470,7 +475,10 @@ class _EventScreenState extends State<EventScreen> {
                   itemCount: contacts.length,
                   itemBuilder: (ctx, index) {
                     return ContactCard(
-                      contact: contacts[index],
+                      name: contacts[index].name,
+                      title: contacts[index].title,
+                      url: contacts[index].url,
+                      // contact: contacts[index],
                       onShareTap: () {
                         Navigator.pop(context);
                         _shareWithConnectionBottomSheet(
@@ -1204,24 +1212,13 @@ class _EventScreenState extends State<EventScreen> {
                   //   bgcolor: ColorConstants.white,
                   // ),
                   ButtonComponent(
-
+                    isSmallBtn: true,
                     buttonText: StringConstants.payWithCard,
                     textColor: themeCubit.backgroundColor,
                     onPressed: () {
-                      _sendMessage();
+
                       Navigator.pop(context);
-                      _navigateToBack();
-                      BottomSheetComponent.showBottomSheet(
-                        context,
-                        isShowHeader: false,
-                        body: InfoSheetComponent(
-                          heading: StringConstants.requestSent,
-                          body: StringConstants.requestStatus,
-                          image: AssetConstants.paperPlaneImage,
-                          // svg: true,
-                        ),
-                        // whenComplete:_navigateToBack(),
-                      );
+                      _paymentSuccessBottomSheet();
                     },
                     bgcolor: themeCubit.primaryColor,
                   )

@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -148,35 +150,37 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, left: 5),
-              child: Row(
-                children: [
-                  SizedBox(
-                      child: GestureDetector(
-                    onTap: _goBackBottomSheet,
-                    child: IconComponent(
-                      iconData: Icons.arrow_back_ios_new,
-                      iconSize: 20,
-                      circleHeight: 30,
-                      backgroundColor: ColorConstants.transparent,
-                      borderColor: ColorConstants.transparent,
-                      iconColor: ColorConstants.lightGray,
-                    ),
-                  )),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  TextComponent(
-                    StringConstants.createEvent,
-                    style: TextStyle(
-                        fontFamily: FontConstants.fontProtestStrike,
-                        fontSize: 20,
-                        color: themeCubit.primaryColor),
-                  )
-                ],
-              ),
-            ),
+            SizedBoxConstants.sizedBoxTenH(),
+            AppBarComponent( StringConstants.createEvent,centerTitle: false,isBackBtnCircular: false),
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 20.0, left: 5),
+            //   child: Row(
+            //     children: [
+            //       SizedBox(
+            //           child: GestureDetector(
+            //         onTap: _goBackBottomSheet,
+            //         child: IconComponent(
+            //           iconData: Icons.arrow_back_ios_new,
+            //           iconSize: 20,
+            //           circleHeight: 30,
+            //           backgroundColor: ColorConstants.transparent,
+            //           borderColor: ColorConstants.transparent,
+            //           iconColor: ColorConstants.lightGray,
+            //         ),
+            //       )),
+            //       const SizedBox(
+            //         width: 20,
+            //       ),
+            //       TextComponent(
+            //         StringConstants.createEvent,
+            //         style: TextStyle(
+            //             fontFamily: FontConstants.fontProtestStrike,
+            //             fontSize: 20,
+            //             color: themeCubit.primaryColor),
+            //       )
+            //     ],
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -188,7 +192,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(30.0)),
                           image: DecorationImage(
-                            image: NetworkImage(
+                            image: CachedNetworkImageProvider(
                               "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
                             ),
                             fit: BoxFit.cover,
@@ -932,7 +936,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   itemCount: contacts.length,
                   itemBuilder: (ctx, index) {
                     return ContactCard(
-                      contact: contacts[index],
+                      name: contacts[index].name,
+                      title: contacts[index].title,
+                      url: contacts[index].url,
+                      // contact: contacts[index],
                       onShareTap: () {
                         Navigator.pop(context);
                         _shareWithConnectionBottomSheet(
@@ -1039,7 +1046,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   isSmallBtn: true,
                   onPressed: () {
                     NavigationUtil.popAllAndPush(
-                        context, RouteConstants.homeScreenLocal);
+                        context, RouteConstants.mainScreen);
                   },
                 ),
               ],

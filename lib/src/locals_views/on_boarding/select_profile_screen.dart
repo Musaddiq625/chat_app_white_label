@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
@@ -48,12 +49,12 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
   int _currentPage = 0;
   late PageController _pageController;
   final List<ImageProvider> images = [
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
     // Replace with your image URL
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const NetworkImage(
+    const CachedNetworkImageProvider(
         "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
     // Replace with your asset path
     // Add more image providers as needed

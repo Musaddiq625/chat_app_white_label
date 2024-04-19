@@ -70,14 +70,19 @@ class _AllConnectionsState extends State<AllConnections> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 0.0),
-            child: IconComponent(
-              svgData: AssetConstants.backArrow,
-              svgDataCheck: false,
-              iconColor: ColorConstants.lightGray,
-              iconSize: 40,
-              circleHeight: 40,
+          GestureDetector(
+            onTap: (){
+              NavigationUtil.pop(context);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 0.0),
+              child: IconComponent(
+                svgData: AssetConstants.backArrow,
+                svgDataCheck: false,
+                iconColor: ColorConstants.lightGray,
+                iconSize: 40,
+                circleHeight: 40,
+              ),
             ),
           ),
           TextComponent(
@@ -124,7 +129,10 @@ class _AllConnectionsState extends State<AllConnections> {
                   popUpMenu: true,
                   icon: AssetConstants.more,
                   iconColor: ColorConstants.lightGray,
-                  contact: contacts[index],
+                  name: contacts[index].name,
+                  title: contacts[index].title,
+                  url: contacts[index].url,
+                  // contact: contacts[index],
                   iconSize: 30,
                   onShareTap: () {},
                   onProfileTap: () {},

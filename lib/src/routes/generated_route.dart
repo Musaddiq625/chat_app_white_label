@@ -194,6 +194,9 @@ Route generateRoute(RouteSettings settings) {
     case RouteConstants.allConnectionScreen:
       return materialRoute(const AllConnections());
 
+    case RouteConstants.viewYourEventScreen:
+      return materialRoute(const ViewYourEventScreen());
+
     case RouteConstants.settingsScreen:
       return materialRoute(const SettingsScreen());
 

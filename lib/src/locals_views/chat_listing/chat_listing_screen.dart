@@ -31,6 +31,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
+        removeSafeAreaPadding: true,
         bgColor: themeCubit.backgroundColor,
         widget: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),

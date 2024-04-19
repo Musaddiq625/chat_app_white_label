@@ -83,7 +83,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              height: 35,
+              width: 25,
+              height: 30,
               AssetConstants.notifications,
               color:
               widget.selectedIndex == 3 ? themeCubit.primaryColor : Colors.grey,
@@ -137,7 +138,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
           ]),
           height: 0,
-          value: 'message',
+          value: 'createEvent',
         ),
         PopupMenuItem(
           padding: EdgeInsets.all(0),
@@ -158,14 +159,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   color: ColorConstants.white),
             ),
           ]),
-          value: 'remove_connection',
+          value: 'makeAGroup',
         ),
       ],
       // onSelected: onMenuItemSelected,
       onSelected: (value) {
-        if (value == 'share') {
+        if (value == 'createEvent') {
+          NavigationUtil.push(context, RouteConstants.createEventScreen);
           // Handle share action
-        } else if (value == 'something_else') {
+        } else if (value == 'makeAGroup') {
           // Handle something else action
         }
         // Add more conditions as needed

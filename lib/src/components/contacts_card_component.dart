@@ -12,7 +12,7 @@ import '../constants/font_styles.dart';
 import '../constants/size_box_constants.dart';
 
 class ContactCard extends StatelessWidget {
-  final ContactModel contact;
+  final ContactModel? contact;
   final Function()? onShareTap;
   final Function()? onProfileTap;
   final bool showShareIcon;
@@ -20,7 +20,11 @@ class ContactCard extends StatelessWidget {
   final Color iconColor;
   final Color iconBgColor;
   final String icon;
+  final String name;
+  final String url;
+  final String title;
   final double iconSize;
+  final double imageSize;
   final List<PopupMenuEntry<String>>? popupMenuItems;
   final Function(String)? onMenuItemSelected;
   final bool popUpMenu;
@@ -28,13 +32,17 @@ class ContactCard extends StatelessWidget {
 
   const ContactCard(
       {Key? key,
-      required this.contact,
+       this.contact,
       this.iconGradient = true,
       this.icon = AssetConstants.share,
       this.iconColor = ColorConstants.black,
       this.iconBgColor = ColorConstants.darkBackgrounddColor,
       this.iconSize = 18,
+      this.imageSize = 55,
       this.onShareTap,
+      required this.name,
+      required this.url,
+      required this.title,
       this.showShareIcon = true,
       this.popupMenuItems,
       this.onMenuItemSelected,
@@ -56,16 +64,16 @@ class ContactCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ProfileImageComponent(url: contact.url),
+                ProfileImageComponent(url: url,size: imageSize,),
                 SizedBoxConstants.sizedBoxTenW(),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextComponent(contact.name,
+                      TextComponent(name,
                           style: FontStylesConstants.style16(
                               color: ColorConstants.white)),
-                      TextComponent(contact.title,
+                      TextComponent(title,
                           style: FontStylesConstants.style14(
                               color: ColorConstants.lightGray)),
                     ],
