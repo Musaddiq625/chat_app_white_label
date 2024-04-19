@@ -73,9 +73,16 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
             const SizedBox(
               height: 40,
             ),
-            ChooseImageComponent(
-              selectedImages: selectedImages,
-            )
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                  children: selectedImages
+                      .map((e) => ChooseImageComponent(selectedImages: e.path))
+                      .toList()),
+            ),
+            // ChooseImageComponent(
+            //   selectedImages: selectedImages,
+            // )
           ],
         ),
         const Spacer(),

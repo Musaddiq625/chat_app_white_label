@@ -1,48 +1,57 @@
 import 'dart:io';
 
+import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:flutter/material.dart';
 
-class ChooseImageComponent extends StatelessWidget {
-  final List<File>? selectedImages;
+class ChooseImageComponent extends StatefulWidget {
+  final String? selectedImages;
 
-  const ChooseImageComponent({super.key, this.selectedImages});
+  const ChooseImageComponent({
+    super.key,
+    this.selectedImages,
+  });
+
+  @override
+  State<ChooseImageComponent> createState() => _ChooseImageComponentState();
+}
+
+class _ChooseImageComponentState extends State<ChooseImageComponent> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return (selectedImages ?? []).isNotEmpty
-        ? SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: (selectedImages ?? []).map((image) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: ColorConstants.white,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        width: AppConstants.responsiveWidth(context,
-                            percentage: 60),
-                        height: 250,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Image.file(
-                            image,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                    ],
+    return widget.selectedImages != null
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: ColorConstants.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              // width: AppConstants.responsiveWidth(context, percentage: 20),
+              height: 250,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: ImageComponent(
+                    imgUrl: widget.selectedImages!,
+                    imgProviderCallback: (imgProvider) {
+                      return Container(
+                        color: Colors.red,
+                      );
+                    },
+                  )
+                  // Image.file(
+                  //   image,
+                  //   fit: BoxFit.cover,
+                  // ),
                   ),
-                );
-              }).toList(),
             ),
           )
         : Container(

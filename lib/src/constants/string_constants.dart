@@ -5,7 +5,7 @@ class StringConstants {
 
   static const String locals = "Locals";
   static const String joined = "Joined";
-  static const String phoneNumber = "phone number";
+  static const String phoneNumber = "Phone Number";
   static const String whatsYourPhoneNumber = "What's your\nphone number?";
   static const String whatsYourEmailAddress = "What's your\nemail address?";
   static const String letsPutAFace = "Let's put a face to\nthe name!";
@@ -21,6 +21,7 @@ class StringConstants {
   static const String whatsYourFacebook = "What's your Facebook\nProfile Link?";
   static const String whatsYourInstagram =
       "What's your Instagram\nProfile Link?";
+  static const String gender = "Gender";
   static const String linkedinHintText =
       "https://www.linkedin.com/in/profile-link/";
   static const String facebookHintText = "https://www.facebook.com/profile/";
@@ -94,6 +95,7 @@ class StringConstants {
   static const String drinking = "Drinking";
   static const String drink = "Drink";
   static const String moreAboutYou = "More about you";
+  static const String personalInfo = "Personal info";
   static const String dragAndHold = "drag and hold to reorder";
   static const String bioHint =
       "Tell the world what you like, why you're here or anything about yourself ";
@@ -101,6 +103,7 @@ class StringConstants {
   static const String anyQuestionWhenEventCreated =
       "Any question that is entered when event created*";
   static const String reportEvent = "Report event";
+  static const String dateofBirth = "Date of Birth";
   static const String shareEvent = "Share event";
   static const String ticket = "Ticket";
   static const String creator = "Creator";
@@ -195,7 +198,8 @@ class StringConstants {
   static const String yesPlease = "Yes, please ";
   static const String yesRemove = "Yes, please remove";
   static const String eventShared = "Event Shared !";
-  static const String amountToWithDraw = "Enter the amount you would like to withdraw ";
+  static const String amountToWithDraw =
+      "Enter the amount you would like to withdraw ";
   static const String eventCreatedSuccessfully =
       "Yay! Your event has been  created successfully!";
   static const String requestSend = "Your request has already been sent to ";

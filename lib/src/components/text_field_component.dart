@@ -36,6 +36,7 @@ class TextFieldComponent extends StatefulWidget {
   final Function()? onTrailingPressed;
   final FocusNode? focusNode;
   final bool capitalizeText;
+  final double titlePaddingFromLeft;
   final bool digitsOnly;
   final bool filled;
   final Color textColor;
@@ -79,6 +80,7 @@ class TextFieldComponent extends StatefulWidget {
     this.textFieldFontSize = 30,
     this.autoFocus = false,
     this.autovalidateMode = AutovalidateMode.disabled,
+    this.titlePaddingFromLeft = 0.0,
   }) : super(key: key);
 
   @override
@@ -108,7 +110,8 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
       children: [
         if (widget.title != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 6),
+            padding:
+                EdgeInsets.only(bottom: 8, left: widget.titlePaddingFromLeft),
             child: Row(
               children: [
                 TextComponent(
@@ -200,15 +203,15 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
           // focusedBorder: _outLineBorder(),
           // disabledBorder: _outLineBorder(),
           //   errorMaxLines: 2,
-          //   prefixIcon: widget.prefixWidget != null
-          //       ? Padding(
-          //           padding: EdgeInsets.only(left: 15, bottom: 1),
-          //           child: SizedBox(
-          //             width: 35,
-          //             child: widget.prefixWidget,
-          //           ),
-          //         )
-          //       : null,
+          // prefixIcon: widget.prefixWidget != null
+          //     ? Padding(
+          //         padding: EdgeInsets.only(left: 15, bottom: 1),
+          //         child: SizedBox(
+          //           width: 35,
+          //           child: widget.prefixWidget,
+          //         ),
+          //       )
+          //     : null,
           //   prefixIconConstraints: _boxConstraints(),
           //   suffixIconConstraints: _boxConstraints(),
           //   contentPadding: EdgeInsets.fromLTRB(16, 10, 16, 16),
@@ -242,6 +245,26 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
       errorMaxLines: widget.errorMaxLines,
       hintText: widget.hintText,
       counter: const Offstage(),
+      suffixIcon: widget.suffixIcon,
+      suffixIconConstraints: _boxConstraints(),
+      prefixIconConstraints: _boxConstraints(),
+      //     BoxConstraints(maxHeight: double.infinity, maxWidth: double.infinity,),
+      prefixIcon: widget.prefixWidget != null
+          ?
+
+          //  Icon(
+          //     Icons.room,
+          //     color: Colors.lightBlue,
+          //   ) // widget.prefixWidget
+          Container(
+              padding: EdgeInsets.zero, // add padding to adjust icon
+
+              // color: Colors.red,
+              width: 100,
+              height: 45,
+              child: widget.prefixWidget,
+            )
+          : null,
       hintStyle: widget.filled
           ? TextStyle(
               color: ColorConstants.lightGray,
