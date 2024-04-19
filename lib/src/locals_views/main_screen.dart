@@ -34,9 +34,13 @@ class _MainScreenState extends State<MainScreen> {
 
 
   void _onItemTapped(int index) {
+    if(index == 1){
+      return;
+    }
     setState(() {
       _selectedIndex = index;
     });
+
   }
 
   @override
