@@ -8,7 +8,7 @@ class ValidationService {
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
   static const _numberPattern = r'^[0-9]*$';
-  static const _textPattern = r'^[A-Za-z]+$';
+  static const _textPattern = r'^[A-Za-z ]+$';
   // static const String _otpPattern = r'^[0-9]{6,}$';
   static bool _isEmailValid(String email) {
     final regexEmail = RegExp(_emailPattern);
@@ -141,7 +141,7 @@ class ValidationService {
   }) {
     if (value.isEmpty) {
       return '${StringConstants.errorPleaseEnterYour} $fieldName';
-    } else if (!_validate(value, _textPattern)) {
+    } else if (!_validate(value.trim(), _textPattern)) {
       return StringConstants.errorInvalid + fieldName;
     } else {
       return null;

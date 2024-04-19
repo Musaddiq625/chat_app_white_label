@@ -22,6 +22,7 @@ import 'package:chat_app_white_label/src/locals_views/settings_screens/privacy_p
 import 'package:chat_app_white_label/src/locals_views/settings_screens/settings_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/settings_screens/terms_of_use_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/all_connections.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/edit_profile_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/view_your_event_screen.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
@@ -76,9 +77,9 @@ Route generateRoute(RouteSettings settings) {
       // final arg = settings.arguments! as String;
       return materialRoute(const EventScreen());
 
-    // case RouteConstants.editProfileScreen:
-    //   // final arg = settings.arguments as bool;
-    //   return materialRoute(const EditProfileScreen());
+    case RouteConstants.editProfileScreen:
+      // final arg = settings.arguments as bool;
+      return materialRoute(const EditProfileScreen());
 
     // case RouteConstants.splashScreen:
     //   return materialRoute(const SplashScreen());
