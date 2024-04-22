@@ -8,6 +8,7 @@ import 'package:chat_app_white_label/src/components/choose_image_component.dart'
 import 'package:chat_app_white_label/src/components/country_code_picker_component.dart';
 import 'package:chat_app_white_label/src/components/divider.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
@@ -39,8 +40,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final imageData = [
     "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-    "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-    "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShf6r59Iskob6vNPOaLwRSjGmMq-DitcL5GE5DVoaSmA&s",
+    "https://images.squarespace-cdn.com/content/v1/5b7ecf012971149e09426bbb/be54bc83-b281-4691-a4be-3fa08420fb08/duggly+2+Screenshot+2021-11-05+094856.png",
   ];
 
   List<String> tempImageData = [];
@@ -52,6 +53,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     tempImageData.addAll(imageData);
     tempEmptyImageData.addAll(List.filled(6 - imageData.length, ""));
+
     // tempImageData.addAll(imageData.where((element) => element.isEmpty));
     // setState(() {});
     // tempImageData = List.filled(6, null, growable: true);
@@ -170,13 +172,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: tempImageData
                   .map(
                     (image) => ChooseImageComponent(
-                      isMainImage: image == tempImageData.first,
+                      isCurrentProfilePic: image == tempImageData.first,
 
                       image:
                           image, // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
                       key: ValueKey('value ${Random().nextInt(1000)}'),
                       onImagePick: (pickedImage) {
-                        tempEmptyImageData.add(pickedImage?.path);
+                        tempEmptyImageData.add(pickedImage.path);
                       },
                     ),
                   )
@@ -289,6 +291,26 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
     StringConstants.nonBinary: false,
     StringConstants.ratherNotSay: false
   };
+  String selectedGender = "";
+  bool selection = false;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedGender = genderList.keys.first;
+    setState(() {});
+  }
+
+  void addSelection(String key) {
+    selectedGender = "";
+    selectedGender = key;
+    selection = true;
+  }
+
+  void removeSelection() {
+    selectedGender = "";
+    selection = false;
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -421,21 +443,105 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                 SizedBoxConstants.sizedBoxTenH(),
                 GestureDetector(
                   onTap: () {
-                    BottomSheetComponent.showBottomSheet(
+                    BottomSheetComponent.showBottomSheet(context,
                         isShowHeader: false,
-                        context, body: Builder(builder: (context) {
-                      return Column(
-                        children: [
-                          //todo: add gender list
-                        ],
-                      );
-                    }));
+                        body: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: StatefulBuilder(
+                            builder: (context, setState1) {
+                              return Column(
+                                children: [
+                                  SizedBoxConstants.sizedBoxTwentyH(),
+                                  TextComponent(
+                                    StringConstants.selectYourGender,
+                                    style: FontStylesConstants.style22(
+                                      color: themeCubit.textColor,
+                                    ),
+                                  ),
+                                  SizedBoxConstants.sizedBoxTwelveH(),
+                                  Column(
+                                      children: genderList.entries.map((e) {
+                                    if (e.key == selectedGender) {
+                                      setState1(() {
+                                        selection = true;
+                                      });
+                                    }
+                                    return Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: ListTileComponent(
+                                        title: e.key,
+                                        onTap: () {
+                                          setState1(() {
+                                            if (selectedGender == e.key) {
+                                              removeSelection();
+                                            } else {
+                                              addSelection(e.key);
+                                            }
+                                          });
+                                        },
+                                        backgroundColor: selectedGender == e.key
+                                            ? themeCubit.primaryColor
+                                            : themeCubit.darkBackgroundColor100,
+                                        titleColor: selectedGender == e.key
+                                            ? themeCubit.backgroundColor
+                                            : null,
+                                        subIcon: null,
+                                      ),
+                                    );
+                                  }).toList()),
+                                  SizedBoxConstants.sizedBoxTwelveH(),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: ButtonComponent(
+                                      buttonText: StringConstants.save,
+                                      bgcolor: themeCubit.primaryColor,
+                                      textColor: selection == true
+                                          ? themeCubit.backgroundColor
+                                          : themeCubit.textColor,
+                                      onPressed: selection == false
+                                          ? null
+                                          : () {
+                                              // _tempmoreAboutValue.clear();
+
+                                              // if (selectedValue != null && selectedValue != "")
+                                              if (selection) {
+                                                // _tempmoreAboutValue.addAll({
+                                                //   key: selectedValue
+                                                // }); //"Diet":"vegan"
+                                                _genderController.text =
+                                                    selectedGender;
+                                                setState(() {});
+                                                NavigationUtil.pop(context);
+                                              }
+
+                                              // _tempmoreAboutValue
+                                              //     .addAll({selectedMoreAboutValue: selection});
+                                              // print(_tempmoreAboutValue);
+                                            },
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ));
+
+                    // BottomSheetComponent.showBottomSheet(
+                    //     isShowHeader: false,
+                    //     context, body: Builder(builder: (context) {
+                    //   return Column(
+                    //     children: [
+
+                    //     ],
+                    //   );
+                    // }));
                   },
                   child: TextFieldComponent(
                     _genderController,
                     title: StringConstants.gender,
                     filled: true,
-                    hintText: "",
+                    hintText: _genderController.text,
                     titlePaddingFromLeft: 15,
                     enabled: false,
                     textColor: themeCubit.textColor,

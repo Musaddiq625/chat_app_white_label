@@ -105,7 +105,7 @@ class FontStylesConstants {
           letterSpacing: letterSpacing,
           decorationColor: color,
           decoration:
-          underLine ? TextDecoration.underline : TextDecoration.none);
+              underLine ? TextDecoration.underline : TextDecoration.none);
 
   static TextStyle style22({
     final underLine = false,
@@ -149,10 +149,11 @@ class FontStylesConstants {
           {final underLine = false,
           final letterSpacing = 0.0,
           Color color = ColorConstants.white,
+          double fontSize = 18,
           FontWeight fontWeight = FontWeight.normal,
           String fontFamily = FontConstants.fontProtestStrike}) =>
       TextStyle(
-          fontSize: 18,
+          fontSize: fontSize,
           color: color,
           fontWeight: fontWeight,
           fontFamily: fontFamily,

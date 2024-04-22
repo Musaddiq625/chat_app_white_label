@@ -230,7 +230,7 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(ViewYourEventScreen());
 
     case RouteConstants.selectProfileScreen:
-      final arg = settings.arguments as List<File>;
+      final arg = settings.arguments as List<String>;
 
       return materialRoute(SelectProfileImageScreen(
         selectedImages: arg,

@@ -16,6 +16,7 @@ class ListTileComponent extends StatelessWidget {
   final String? subText;
   final String? title;
   final double? subTextSize;
+  final double? titleSize;
   final IconData? iconData;
   final double? trailingIconSize;
   final double leadingIconWidth;
@@ -58,6 +59,7 @@ class ListTileComponent extends StatelessWidget {
     this.isLeadingIconAsset = false,
     this.title,
     this.titleColor,
+    this.titleSize,
   });
 
   @override
@@ -84,6 +86,7 @@ class ListTileComponent extends StatelessWidget {
                       child: TextComponent(
                         title!,
                         style: FontStylesConstants.style18(
+                          fontSize: titleSize ?? 18,
                           fontFamily: FontConstants.inter,
                           color: titleColor ?? themeCubit.textColor,
                         ),

@@ -22,7 +22,7 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import '../../constants/font_styles.dart';
 
 class SelectProfileImageScreen extends StatefulWidget {
-  final List<File> selectedImages;
+  final List<String> selectedImages;
   const SelectProfileImageScreen({super.key, required this.selectedImages});
 
   @override
@@ -132,7 +132,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                             width: 200, // Set the width of the oval
                             height: 400, // Set the height of the oval
                             child: Image.file(
-                              file,
+                              File(file),
                               fit: BoxFit
                                   .cover, // Use BoxFit.cover to ensure the image covers the oval area
                             ),

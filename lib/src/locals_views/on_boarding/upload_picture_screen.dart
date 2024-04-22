@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/choose_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
@@ -33,8 +34,15 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   File? selectedCameraImage;
   bool imageUploded = false;
   String? imageUrl;
-  List<File> selectedImages = [];
+  List<String> selectedImages = [];
   UserDetailModel? userDetailModel;
+  // List tempEmptyImageData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedImages.addAll(List.filled(2 - selectedImages.length, ""));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,15 +81,90 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
             const SizedBox(
               height: 40,
             ),
+
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                  children: selectedImages
-                      .map((e) => ChooseImageComponent(
-                            image: e.path,
-                            onImagePick: (image) {},
-                          ))
-                      .toList()),
+              child:
+
+                  //  tempEmptyImageData.isEmpty
+                  //     ? Row(
+                  //         children: List.generate(
+                  //           2,
+                  //           (index) => Container(
+                  //             // color: Colors.red,
+                  //             height: 250,
+                  //             width: AppConstants.responsiveWidth(context,
+                  //                 percentage: 60),
+                  // margin: const EdgeInsets.only(right: 20),
+                  //             child: ChooseImageComponent(
+                  //               image: "",
+                  //               showImageSelectionBottomSheet: false,
+                  //               onImagePick: (image) {
+                  //                 setState(() {
+                  //                   tempEmptyImageData.add(File(image.path));
+                  //                 });
+                  //               },
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       )
+                  //     :
+                  Row(
+                      children: selectedImages.map((e) {
+                // if (tempEmptyImageData.length == 1) {
+                //   return Row(
+                //     children: [
+                //       Container(
+                //         // color: Colors.red,
+                //         // height: 250,
+                //         width: AppConstants.responsiveWidth(context,
+                //             percentage: 60),
+                //         margin: const EdgeInsets.only(right: 20),
+                //         child: ChooseImageComponent(
+                //           image: e.path,
+                //           onImagePick: (image) {
+                //             setState(() {
+                //               tempEmptyImageData.add(File(image.path));
+                //             });
+                //           },
+                //         ),
+                //       ),
+                //       Container(
+                //         height: 250,
+                //         width: AppConstants.responsiveWidth(context,
+                //             percentage: 60),
+                //         child: ChooseImageComponent(
+                //           image: "",
+                //           showImageSelectionBottomSheet: false,
+                //           onImagePick: (image) {
+                //             setState(() {
+                //               tempEmptyImageData.add(File(image.path));
+                //             });
+                //           },
+                //         ),
+                //       ),
+                //     ],
+                //   );
+                // }
+
+                return Container(
+                  height: 250,
+                  width: AppConstants.responsiveWidth(context, percentage: 60),
+                  margin: const EdgeInsets.only(right: 20),
+                  child: ChooseImageComponent(
+                    image: e,
+                    showImageSelectionBottomSheet: false,
+                    onImagePick: (image) {
+                      setState(() {
+                        selectedImages.insert(0, image.path);
+                        // selectedImages = tempEmptyImageData;
+
+                        selectedImages.removeLast();
+                      });
+                    },
+                  ),
+                );
+              }).toList()),
             ),
             // ChooseImageComponent(
             //   selectedImages: selectedImages,
@@ -100,9 +183,13 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                   final XFile? image = await ImagePicker()
                       .pickImage(source: ImageSource.gallery);
                   if (image != null) {
-                    setState(() {
-                      selectedImages.add(File(image.path));
-                    });
+                    // setState(() {
+                    //   selectedImages.add(File(image.path));
+                    // });
+                    selectedImages.insert(0, image.path);
+                    // selectedImages = tempEmptyImageData;
+
+                    selectedImages.removeLast();
                   }
                 } else {
                   setState(() {
@@ -117,10 +204,10 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
-              bgcolor: selectedImages.length >= 2
+              bgcolor: selectedImages.any((element) => element.isNotEmpty)
                   ? ColorConstants.lightGray.withOpacity(0.2)
                   : ColorConstants.white,
-              textColor: selectedImages.length >= 2
+              textColor: selectedImages.any((element) => element.isNotEmpty)
                   ? ColorConstants.white
                   : ColorConstants.black,
               buttonText: StringConstants.takeASelfie,
@@ -130,29 +217,38 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                     await ImagePicker().pickImage(source: ImageSource.camera);
                 if (cameraImage != null) {
                   // files.add(File(cameraImage.path));
-                  setState(() {
-                    selectedImages.add(File(cameraImage.path));
-                  });
+                  // setState(() {
+                  //   selectedImages.add(File(cameraImage.path));
+                  // });
+
+                  selectedImages.insert(0, cameraImage.path);
+                  // selectedImages = tempEmptyImageData;
+
+                  selectedImages.removeLast();
+
+                  setState(() {});
                 }
               }),
         ),
         const SizedBox(
           height: 10,
         ),
-        if (selectedImages.length >= 2)
+        if (selectedImages.every((element) => element.isNotEmpty))
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
-                bgcolor: themeCubit.primaryColor,
-                textColor: ColorConstants.black,
-                buttonText: StringConstants.continues,
-                onPressed: () {
-                  userDetailModel?.userPhotos == selectedImages.toList();
-                  NavigationUtil.push(
-                      context, RouteConstants.selectProfileScreen,
-                      args: selectedImages);
-                }),
-          )
+              bgcolor: themeCubit.primaryColor,
+              textColor: ColorConstants.black,
+              buttonText: StringConstants.continues,
+              onPressed: () {
+                userDetailModel?.userPhotos = selectedImages.toList();
+                NavigationUtil.push(context, RouteConstants.selectProfileScreen,
+                    args: selectedImages);
+              },
+            ),
+          ),
+
+        // }))
       ],
     );
   }

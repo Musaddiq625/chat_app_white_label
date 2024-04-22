@@ -23,6 +23,7 @@ class StringConstants {
   static const String whatsYourInstagram =
       "What's your Instagram\nProfile Link?";
   static const String gender = "Gender";
+  static const String selectYourGender = "Gender";
   static const String linkedinHintText =
       "https://www.linkedin.com/in/profile-link/";
   static const String facebookHintText = "https://www.facebook.com/profile/";

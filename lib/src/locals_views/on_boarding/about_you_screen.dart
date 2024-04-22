@@ -238,6 +238,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                       ],
                     ),
                   SizedBoxConstants.sizedBoxTwentyH(),
+                  SizedBoxConstants.sizedBoxSixH(),
                   TextComponent(
                     StringConstants.bio,
                     style: TextStyle(
@@ -639,6 +640,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                         margin: const EdgeInsets.symmetric(vertical: 5),
                         child: ListTileComponent(
                           title: e.key,
+                          titleSize: 14,
                           onTap: () {
                             setState1(() {
                               if (selectedValue == e.key) {
@@ -665,6 +667,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                       buttonText: isHeight
                           ? StringConstants.done
                           : StringConstants.save,
+                      textColor: themeCubit.backgroundColor,
                       bgcolor: themeCubit.primaryColor,
                       onPressed: selection == false
                           ? null
