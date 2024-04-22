@@ -26,6 +26,7 @@ class RouteConstants {
   static const String chatListingScreen = 'chatListingScreen';
   static const String chatRoomScreen = 'chatRoomScreen';
   static const String createEventScreen = 'createEventScreen';
+  static const String createGroupScreenLocals = 'createGroupScreenLocals';
   static const String chatListing = 'chatListing';
   static const String doneScreen = 'doneScreen';
   static const String homeScreenLocal = 'homeScreenLocal';
@@ -52,5 +53,6 @@ class RouteConstants {
   static const String earningScreen = 'earningScreen';
   static const String mainScreen = 'mainScreen';
   static const String viewYourEventScreen = 'viewYourEventScreen';
+  static const String viewGroupScreen = 'viewGroupScreen';
 
 }

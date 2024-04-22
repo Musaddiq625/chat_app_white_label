@@ -5,6 +5,7 @@ class StringConstants {
 
   static const String locals = "Locals";
   static const String joined = "Joined";
+  static const String invitedBy = "You were invited by ";
   static const String phoneNumber = "Phone Number";
   static const String whatsYourPhoneNumber = "What's your\nphone number?";
   static const String whatsYourEmailAddress = "What's your\nemail address?";
@@ -49,6 +50,9 @@ class StringConstants {
   static const String verificationCode = "verification code";
   static const String didntReciveCode = "Didnt receive the code? Resend in";
   static const String createEvent = "Create Event";
+  static const String createGroup = "Create Group";
+  static const String private = "Private";
+  static const String makeAGroup = "Make a group";
   static const String account = "Account";
   static const String viewEvent = "View Event";
   static const String getStarted = "Get Started";
@@ -65,7 +69,9 @@ class StringConstants {
   static const String termsAndConditions = "Terms & Conditions";
   static const String connectWithPeople = "Connect with people";
   static const String eventDetail = "Event Details";
+  static const String groupDetail = "Group Details";
   static const String eventDescription = "Event Description";
+  static const String groupDescription = "Group Description";
   static const String otherOptions = "Other Options";
   static const String connect = "Connect";
   static const String connected = "Connected";
@@ -202,6 +208,8 @@ class StringConstants {
       "Enter the amount you would like to withdraw ";
   static const String eventCreatedSuccessfully =
       "Yay! Your event has been  created successfully!";
+  static const String groupCreatedSuccessfully =
+      "Yay! Your group has been  created successfully!";
   static const String requestSend = "Your request has already been sent to ";
   static const String connectSendBody =
       "Once your request is accepted, you can view it in your connections";

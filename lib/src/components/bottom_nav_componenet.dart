@@ -168,6 +168,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           NavigationUtil.push(context, RouteConstants.createEventScreen);
           // Handle share action
         } else if (value == 'makeAGroup') {
+          NavigationUtil.push(context, RouteConstants.createGroupScreenLocals);
           // Handle something else action
         }
         // Add more conditions as needed

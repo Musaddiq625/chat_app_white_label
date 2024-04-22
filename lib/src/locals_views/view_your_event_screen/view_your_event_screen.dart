@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
+import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/contacts_card_component.dart';
 import 'package:chat_app_white_label/src/components/event_summary_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
@@ -205,15 +206,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 15, left: 10, bottom: 80),
-              child: IconComponent(
-                iconData: Icons.arrow_back_ios_new_outlined,
-                borderColor: Colors.transparent,
-                backgroundColor: ColorConstants.iconBg,
-                iconColor: ColorConstants.white,
-                iconSize: 20,
-                circleSize: 40,
-                onTap: () => Navigator.pop(context),
-              ),
+              child:   AppBarComponent("",iconBgColor: ColorConstants.iconBg,),
             ),
             SizedBoxConstants.sizedBoxEightyH(),
             Padding(

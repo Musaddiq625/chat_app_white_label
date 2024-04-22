@@ -1,16 +1,26 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
-import 'package:chat_app_white_label/src/components/list_tile_component.dart';
+import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/contacts_card_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/icons_button_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
+import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/list_tile_component.dart';
+import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/search_text_field_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/models/contact.dart';
 import 'package:chat_app_white_label/src/models/event_data_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -18,23 +28,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../components/bottom_sheet_component.dart';
-import '../../components/button_component.dart';
-import '../../components/contacts_card_component.dart';
-import '../../components/icons_button_component.dart';
-import '../../components/info_sheet_component.dart';
-import '../../components/profile_image_component.dart';
-import '../../components/search_text_field_component.dart';
-import '../../models/contact.dart';
-
-class CreateEventScreen extends StatefulWidget {
-  const CreateEventScreen({super.key});
+class CreateGroupScreens extends StatefulWidget {
+  const CreateGroupScreens({super.key});
 
   @override
-  State<CreateEventScreen> createState() => _CreateEventScreenState();
+  State<CreateGroupScreens> createState() => _CreateGroupScreensState();
 }
 
-class _CreateEventScreenState extends State<CreateEventScreen> {
+class _CreateGroupScreensState extends State<CreateGroupScreens> {
   EventDataModel? _eventDataModel;
   final TextEditingController _controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
@@ -46,6 +47,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
   String _selectedQuestionRequired = 'Required';
   String _selectedQuestionPublic = 'Public';
+  String groupName = 'xyz Group';
   int? selectedIndexPrice;
   int? _draggingIndex;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
@@ -67,23 +69,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       []; // Initialize with one question
   final TextEditingController _controllerQuestions = TextEditingController();
 
-  //
-  // void _addQuestion() {
-  //   setState(() {
-  //     questions.add('Question ${questions.length + 1}'); // Add a new question
-  //   });
-  // }
-  //
-  // void _onReorder(int oldIndex, int newIndex) {
-  //   setState(() {
-  //     if (newIndex > oldIndex) {
-  //       newIndex -= 1;
-  //     }
-  //     final String item = questions.removeAt(oldIndex);
-  //     questions.insert(newIndex, item);
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -102,11 +87,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-
         bgColor: themeCubit.backgroundColor,
         removeSafeAreaPadding: true,
         // appBar:_appBar(),
-        widget: _createEvent());
+        widget: _createGroup());
   }
 
   toggleTaped() {
@@ -144,43 +128,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  Widget _createEvent() {
+  Widget _createGroup() {
     return Container(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBoxConstants.sizedBoxTenH(),
-            AppBarComponent( StringConstants.createEvent,centerTitle: false,isBackBtnCircular: false),
-            // Padding(
-            //   padding: const EdgeInsets.only(top: 20.0, left: 5),
-            //   child: Row(
-            //     children: [
-            //       SizedBox(
-            //           child: GestureDetector(
-            //         onTap: _goBackBottomSheet,
-            //         child: IconComponent(
-            //           iconData: Icons.arrow_back_ios_new,
-            //           iconSize: 20,
-            //           circleHeight: 30,
-            //           backgroundColor: ColorConstants.transparent,
-            //           borderColor: ColorConstants.transparent,
-            //           iconColor: ColorConstants.lightGray,
-            //         ),
-            //       )),
-            //       const SizedBox(
-            //         width: 20,
-            //       ),
-            //       TextComponent(
-            //         StringConstants.createEvent,
-            //         style: TextStyle(
-            //             fontFamily: FontConstants.fontProtestStrike,
-            //             fontSize: 20,
-            //             color: themeCubit.primaryColor),
-            //       )
-            //     ],
-            //   ),
-            // ),
+            AppBarComponent(StringConstants.makeAGroup,
+                centerTitle: false, isBackBtnCircular: false),
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -228,10 +184,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   )
                                 ],
                               ),
-                              const Padding(
+                              Padding(
                                 padding: EdgeInsets.only(left: 20),
                                 child: TextComponent(
-                                  "xyz Event",
+                                  groupName,
                                   style: TextStyle(
                                       fontSize: 38,
                                       fontFamily:
@@ -250,7 +206,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: TextComponent(
-                      StringConstants.eventDetail,
+                      StringConstants.groupDetail,
                       style: TextStyle(
                           fontFamily: FontConstants.fontProtestStrike,
                           fontSize: 20,
@@ -260,154 +216,155 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   const SizedBox(
                     height: 13,
                   ),
-                  Container(
-                    width: AppConstants.responsiveWidth(context),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20.0)),
-                      color: themeCubit.darkBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              SvgPicture.asset(
-                                height: 20,
-                                AssetConstants.calendar,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              TextComponent(
-                                StringConstants.start,
-                                style: TextStyle(
-                                    fontSize: 15, color: themeCubit.textColor),
-                              ),
-                              const Spacer(),
-                              TextComponent(
-                                "17 Feb at 11 am",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: themeCubit.textColor),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: List.generate(6, (index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 2.0, left: 6),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      height: 3,
-                                      width: 3,
-                                    ),
-                                  );
-                                }),
-                              ),
-
-                              // Column(
-                              //   children: [
-                              //     IconComponent(
-                              //       iconData: Icons.circle_rounded,
-                              //       circleSize: 3,
-                              //       iconSize: 3,
-                              //       backgroundColor: ColorConstants.transparent,
-                              //       borderColor: ColorConstants.transparent,
-                              //     ),
-                              //     IconComponent(
-                              //       iconData: Icons.circle_rounded,
-                              //       circleSize: 5,
-                              //       iconSize: 5,
-                              //       backgroundColor: ColorConstants.transparent,
-                              //       borderColor: ColorConstants.transparent,
-                              //     ),
-                              //     IconComponent(
-                              //       iconData: Icons.circle_rounded,
-                              //       circleSize: 5,
-                              //       iconSize: 5,
-                              //       backgroundColor: ColorConstants.transparent,
-                              //       borderColor: ColorConstants.transparent,
-                              //     ),
-                              //     IconComponent(
-                              //       iconData: Icons.circle_rounded,
-                              //       circleSize: 5,
-                              //       iconSize: 5,
-                              //       backgroundColor: ColorConstants.transparent,
-                              //       borderColor: ColorConstants.transparent,
-                              //     ),
-                              //   ],
-                              // ),
-
-                              // IconComponent(
-                              //   iconData: Icons.straight,
-                              //   circleSize: 25,
-                              //   iconSize: 25,
-                              //   backgroundColor: ColorConstants.transparent,
-                              //   borderColor: ColorConstants.transparent,
-                              // ),
-                              const Spacer(),
-                              SizedBox(
-                                  width: AppConstants.responsiveWidth(context) /
-                                      1.5,
-                                  child: const Divider(
-                                    thickness: 0.1,
-                                  ))
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              SvgPicture.asset(
-                                height: 20,
-                                AssetConstants.end,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              TextComponent(
-                                StringConstants.end,
-                                style: TextStyle(
-                                    fontSize: 15, color: themeCubit.textColor),
-                              ),
-                              const Spacer(),
-                              TextComponent(
-                                "2 pm",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: themeCubit.textColor),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  // Container(
+                  //   width: AppConstants.responsiveWidth(context),
+                  //   decoration: BoxDecoration(
+                  //     borderRadius:
+                  //     const BorderRadius.all(Radius.circular(20.0)),
+                  //     color: themeCubit.darkBackgroundColor,
+                  //   ),
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(20.0),
+                  //     child: Column(
+                  //       children: [
+                  //         Row(
+                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //           children: [
+                  //             SvgPicture.asset(
+                  //               height: 20,
+                  //               AssetConstants.calendar,
+                  //             ),
+                  //             const SizedBox(
+                  //               width: 20,
+                  //             ),
+                  //             TextComponent(
+                  //               StringConstants.start,
+                  //               style: TextStyle(
+                  //                   fontSize: 15, color: themeCubit.textColor),
+                  //             ),
+                  //             const Spacer(),
+                  //             TextComponent(
+                  //               "17 Feb at 11 am",
+                  //               style: TextStyle(
+                  //                   fontSize: 15,
+                  //                   fontWeight: FontWeight.bold,
+                  //                   color: themeCubit.textColor),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         const SizedBox(
+                  //           height: 10,
+                  //         ),
+                  //         Row(
+                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //           children: [
+                  //             Column(
+                  //               children: List.generate(6, (index) {
+                  //                 return Padding(
+                  //                   padding: const EdgeInsets.only(
+                  //                       top: 2.0, left: 6),
+                  //                   child: Container(
+                  //                     decoration: BoxDecoration(
+                  //                       color: Colors.white,
+                  //                       borderRadius: BorderRadius.circular(15),
+                  //                     ),
+                  //                     height: 3,
+                  //                     width: 3,
+                  //                   ),
+                  //                 );
+                  //               }),
+                  //             ),
+                  //
+                  //             // Column(
+                  //             //   children: [
+                  //             //     IconComponent(
+                  //             //       iconData: Icons.circle_rounded,
+                  //             //       circleSize: 3,
+                  //             //       iconSize: 3,
+                  //             //       backgroundColor: ColorConstants.transparent,
+                  //             //       borderColor: ColorConstants.transparent,
+                  //             //     ),
+                  //             //     IconComponent(
+                  //             //       iconData: Icons.circle_rounded,
+                  //             //       circleSize: 5,
+                  //             //       iconSize: 5,
+                  //             //       backgroundColor: ColorConstants.transparent,
+                  //             //       borderColor: ColorConstants.transparent,
+                  //             //     ),
+                  //             //     IconComponent(
+                  //             //       iconData: Icons.circle_rounded,
+                  //             //       circleSize: 5,
+                  //             //       iconSize: 5,
+                  //             //       backgroundColor: ColorConstants.transparent,
+                  //             //       borderColor: ColorConstants.transparent,
+                  //             //     ),
+                  //             //     IconComponent(
+                  //             //       iconData: Icons.circle_rounded,
+                  //             //       circleSize: 5,
+                  //             //       iconSize: 5,
+                  //             //       backgroundColor: ColorConstants.transparent,
+                  //             //       borderColor: ColorConstants.transparent,
+                  //             //     ),
+                  //             //   ],
+                  //             // ),
+                  //
+                  //             // IconComponent(
+                  //             //   iconData: Icons.straight,
+                  //             //   circleSize: 25,
+                  //             //   iconSize: 25,
+                  //             //   backgroundColor: ColorConstants.transparent,
+                  //             //   borderColor: ColorConstants.transparent,
+                  //             // ),
+                  //             const Spacer(),
+                  //             SizedBox(
+                  //                 width: AppConstants.responsiveWidth(context) /
+                  //                     1.5,
+                  //                 child: const Divider(
+                  //                   thickness: 0.1,
+                  //                 ))
+                  //           ],
+                  //         ),
+                  //         const SizedBox(
+                  //           height: 10,
+                  //         ),
+                  //         Row(
+                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //           children: [
+                  //             SvgPicture.asset(
+                  //               height: 20,
+                  //               AssetConstants.end,
+                  //             ),
+                  //             const SizedBox(
+                  //               width: 20,
+                  //             ),
+                  //             TextComponent(
+                  //               StringConstants.end,
+                  //               style: TextStyle(
+                  //                   fontSize: 15, color: themeCubit.textColor),
+                  //             ),
+                  //             const Spacer(),
+                  //             TextComponent(
+                  //               "2 pm",
+                  //               style: TextStyle(
+                  //                   fontSize: 15,
+                  //                   fontWeight: FontWeight.bold,
+                  //                   color: themeCubit.textColor),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
                   ListTileComponent(
                     leadingIcon: AssetConstants.marker,
                     iconText: StringConstants.location,
+                    leadingIconWidth:25,
+                    leadingIconHeight: 25,
                     subText: "Manchester",
-                    onTap: _selectLocation,
                     subTextColor: themeCubit.textColor,
                   ),
                   const SizedBox(
@@ -416,6 +373,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ListTileComponent(
                     leadingIcon: AssetConstants.ticket,
                     iconText: StringConstants.price,
+                    leadingIconWidth:25,
+                    leadingIconHeight: 25,
                     subText: "Free",
                     onTap: _selectPrice,
                     subTextColor: themeCubit.textColor,
@@ -426,6 +385,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ListTileComponent(
                     leadingIcon: AssetConstants.happy,
                     iconText: StringConstants.capacity,
+                    leadingIconWidth:25,
+                    leadingIconHeight: 25,
                     subText: "60",
                     onTap: _selectCapacity,
                     subTextColor: themeCubit.textColor,
@@ -434,7 +395,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: TextComponent(
-                      StringConstants.eventDescription,
+                      StringConstants.groupDescription,
                       style: TextStyle(
                           fontFamily: FontConstants.fontProtestStrike,
                           fontSize: 20,
@@ -488,6 +449,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   ListTileComponent(
                     leadingIcon: AssetConstants.marker,
                     iconText: StringConstants.visibility,
+                    leadingIconWidth:25,
+                    leadingIconHeight: 25,
                     subText: "Public",
                     onTap: () {},
                     subTextColor: themeCubit.textColor,
@@ -532,7 +495,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                       child: const TextComponent(
                                           StringConstants
                                               .requireGuestsApprovalBody,
-                                          maxLines:6,
+                                          maxLines: 6,
                                           style: TextStyle(
                                               fontSize: 13,
                                               color: ColorConstants.lightGray),
@@ -665,11 +628,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     width: AppConstants.responsiveWidth(context),
                     child: ButtonComponent(
                       bgcolor: themeCubit.primaryColor,
-                      buttonText: StringConstants.createEvent,
+                      buttonText: StringConstants.createGroup,
                       textColor: themeCubit.backgroundColor,
                       onPressed: () {
                         // EventUtils.createEvent(_eventDataModel!);
-                        _createBottomSheet();
+                        // _createBottomSheet();
+                        _createEventBottomSheet();
                         // NavigationUtil.push(
                         //     context, RouteConstants.localsEventScreen);
                       },
@@ -699,95 +663,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     });
   }
 
-  _selectLocation() {
-    BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false, isShowHeader: false,
-        body: StatefulBuilder(builder: (context, setState) {
-      return Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-            color: themeCubit.darkBackgroundColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextComponent(
-                      StringConstants.selectLocation,
-                      style: TextStyle(
-                          color: themeCubit.primaryColor,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 18),
-                    ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: IconComponent(
-                        iconData: Icons.close,
-                        borderColor: Colors.transparent,
-                        iconColor: themeCubit.textColor,
-                        circleSize: 20,
-                        backgroundColor: Colors.transparent,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SearchTextField(
-                  title: "Search",
-                  hintText: "Search name, postcode..",
-                  onSearch: (text) {
-                    // widget.viewModel.onSearchStories(text);
-                  },
-                  textEditingController: searchController,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: TextComponent(
-                        StringConstants.exactLocationApproval,
-                        style: TextStyle(
-                            fontSize: 15, color: themeCubit.textColor),
-                        maxLines: 4,
-                      ),
-                    ),
-                    const Spacer(),
-                    Switch(
-                      // This bool value toggles the switch.
-                      value: locationVisible,
-                      activeColor: ColorConstants.white,
-                      activeTrackColor: themeCubit.primaryColor,
-                      onChanged: (bool value) {
-                        // This is called when the user toggles the switch.
-                        setState(() {
-                          locationVisible = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const Divider(
-                  thickness: 1,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-              ],
-            ),
-          ));
-    }));
-  }
-
   _createEventBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
@@ -807,7 +682,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 40.0, top: 15),
                       child: IconComponent(
@@ -832,10 +707,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 100,
                   ),
                   Container(
-                    width: 300,
+                    width:
+                        AppConstants.responsiveWidth(context, percentage: 60),
                     padding: const EdgeInsets.only(top: 10),
                     child: TextComponent(
-                      StringConstants.eventCreatedSuccessfully,
+                      StringConstants.groupCreatedSuccessfully,
+                      maxLines: 6,
                       style: TextStyle(
                           fontSize: 20,
                           fontFamily: FontConstants.fontProtestStrike,
@@ -847,9 +724,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 20,
                   ),
                   Container(
-                    width: 300,
+                    width:
+                        AppConstants.responsiveWidth(context, percentage: 60),
                     child: TextComponent(
                       StringConstants.inviteYourFriend,
+                      maxLines: 6,
                       style:
                           TextStyle(fontSize: 15, color: themeCubit.textColor),
                       textAlign: TextAlign.center,
@@ -882,16 +761,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     customText: StringConstants.facebook,
                     customTextColor: themeCubit.textColor,
                   ),
-                  IconComponent(
-                    svgDataCheck: false,
-                    svgData: AssetConstants.instagram,
-                    backgroundColor: Colors.transparent,
-                    borderColor: Colors.transparent,
-                    circleSize: 60,
-                    customText: StringConstants.instagram,
-                    customTextColor: themeCubit.textColor,
-                    iconSize: 60,
-                  ),
+                  // IconComponent(
+                  //   svgDataCheck: false,
+                  //   svgData: AssetConstants.instagram,
+                  //   backgroundColor: Colors.transparent,
+                  //   borderColor: Colors.transparent,
+                  //   circleSize: 60,
+                  //   customText: StringConstants.instagram,
+                  //   customTextColor: themeCubit.textColor,
+                  //   iconSize: 60,
+                  // ),
+                  Column(children: [
+                    ImageComponent(height: 60,width: 60,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
+                    SizedBoxConstants.sizedBoxTenH(),
+                    TextComponent(StringConstants.instagram,style: FontStylesConstants.style12(color: ColorConstants.white),)
+                  ],),
                   IconComponent(
                     svgData: AssetConstants.share,
                     iconColor: ColorConstants.black,
@@ -926,6 +810,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 padding: const EdgeInsets.only(
                     left: 18.0, top: 10, bottom: 16, right: 18),
                 child: SearchTextField(
+                  filledColor:  ColorConstants.backgroundColor.withOpacity(0.3),
                   title: "Search",
                   hintText: "Search name, postcode..",
                   onSearch: (text) {
@@ -1862,304 +1747,3 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 }
-
-// return ListView.builder(
-//     shrinkWrap: true,
-//     itemCount: questions.length,
-//     itemBuilder: (context, index) {
-//       return Container(
-//         child: Column(children: [
-//           Row(
-//             children: [
-//               TextComponent(
-//                 questions[index],
-//                 style: TextStyle(color: themeCubit.textColor),
-//               ),
-//               SizedBox(
-//                 width: 10,
-//               ),
-//               GestureDetector(
-//                 onTap: () => {
-//                   setStateBottomSheet(() {
-//                     questions.removeAt(index); // Remove the question
-//                   })
-//                 },
-//                 child: IconComponent(
-//                   iconData: Icons.delete,
-//                   borderColor: ColorConstants.red,
-//                   backgroundColor: ColorConstants.red,
-//                   iconColor: ColorConstants.white,
-//                   iconSize: 15,
-//                   circleSize: 20,
-//                 ),
-//               ),
-//             ],
-//           ),
-//           SizedBox(
-//             height: 10,
-//           ),
-//           TextField(
-//             controller: _controller,
-//             decoration: InputDecoration(
-//               contentPadding:
-//                   EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-//               hintText: StringConstants.typeYourQuestion,
-//               filled: true,
-//               fillColor: ColorConstants.lightGray.withOpacity(0.3),
-//               suffixIcon: GestureDetector(
-//                 child: Padding(
-//                     padding: EdgeInsets.only(right: 20, top: 8),
-//                     child: IconComponent(
-//                       iconData: Icons.menu,
-//                       borderColor: ColorConstants.transparent,
-//                       backgroundColor: ColorConstants.transparent,
-//                       iconColor: ColorConstants.lightGray.withOpacity(0.4),
-//                       iconSize: 25,
-//                       circleSize: 25,
-//                     )),
-//               ),
-//               border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(15.0),
-//                   borderSide: BorderSide(
-//                     color: ColorConstants.transparent,
-//                   )),
-//               hintStyle:
-//                   TextStyle(color: ColorConstants.lightGray, fontSize: 14),
-//               enabledBorder: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(15.0),
-//                   borderSide:
-//                       BorderSide(color: ColorConstants.transparent)),
-//               focusedBorder: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(15.0),
-//                   borderSide:
-//                       BorderSide(color: ColorConstants.transparent)),
-//             ),
-//           ),
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.end,
-//             children: [
-//               IconComponent(
-//                 iconData: Icons.arrow_downward_outlined,
-//                 borderColor: ColorConstants.transparent,
-//                 backgroundColor: ColorConstants.transparent,
-//                 iconColor: ColorConstants.lightGray,
-//                 iconSize: 25,
-//                 circleSize: 25,
-//               ),
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: <Widget>[
-//                   MenuAnchor(
-//                     style: MenuStyle(
-//                       backgroundColor: MaterialStatePropertyAll<Color>(
-//                           themeCubit.backgroundColor),
-//                     ),
-//                     childFocusNode: _buttonFocusNode,
-//                     menuChildren: <Widget>[
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                             value: _selectedQuestionRequired == 'Required',
-//                             onChanged: (bool? value) {
-//                               if (value != null) {
-//                                 setState(() {
-//                                   _selectedQuestionRequired = 'Required';
-//                                 });
-//                               }
-//                             },
-//                             shape: CircleBorder(),
-//                             // Makes the checkbox circular
-//                             activeColor: ColorConstants.primaryColor,
-//                             // Sets the color of the checkbox when selected
-//                             checkColor: Colors.black,
-//                           ),
-//                           TextComponent(
-//                             "Required",
-//                             style: TextStyle(color: themeCubit.textColor),
-//                           ),
-//                           SizedBox(
-//                             width: 10,
-//                           )
-//                         ],
-//                       ),
-//                       Divider(
-//                         thickness: 0.1,
-//                       ),
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                             value: _selectedQuestionRequired == 'Optional',
-//                             onChanged: (bool? value) {
-//                               if (value != null) {
-//                                 setState(() {
-//                                   _selectedQuestionRequired = 'Optional';
-//                                 });
-//                               }
-//                             },
-//                             shape: CircleBorder(),
-//                             // Makes the checkbox circular
-//                             activeColor: ColorConstants.primaryColor,
-//                             // Sets the color of the checkbox when selected
-//                             checkColor: Colors.black,
-//                           ),
-//                           TextComponent(
-//                             "Optional",
-//                             style: TextStyle(color: themeCubit.textColor),
-//                           ),
-//                           SizedBox(
-//                             width: 10,
-//                           )
-//                         ],
-//                       ),
-//                     ],
-//                     builder: (BuildContext context,
-//                         MenuController controller, Widget? child) {
-//                       return TextButton(
-//                         focusNode: _buttonFocusNode,
-//                         onPressed: () {
-//                           if (controller.isOpen) {
-//                             controller.close();
-//                           } else {
-//                             controller.open();
-//                           }
-//                         },
-//                         child: TextComponent(
-//                           _selectedQuestionRequired,
-//                           style: TextStyle(color: ColorConstants.lightGray),
-//                         ), // Use the selected option as the label
-//                       );
-//                     },
-//                   ),
-//                 ],
-//               ),
-//               SizedBox(
-//                 width: 10,
-//               ),
-//               IconComponent(
-//                 iconData: Icons.arrow_downward_outlined,
-//                 borderColor: ColorConstants.transparent,
-//                 backgroundColor: ColorConstants.transparent,
-//                 iconColor: ColorConstants.lightGray,
-//                 iconSize: 25,
-//                 circleSize: 25,
-//               ),
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: <Widget>[
-//                   MenuAnchor(
-//                     alignmentOffset: Offset(-250, 0),
-//                     style: MenuStyle(
-//                       backgroundColor: MaterialStatePropertyAll<Color>(
-//                           themeCubit.backgroundColor),
-//                     ),
-//                     childFocusNode: _buttonFocusNode,
-//                     menuChildren: <Widget>[
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                             value: _selectedQuestionPublic == 'Public',
-//                             onChanged: (bool? value) {
-//                               if (value != null) {
-//                                 setState(() {
-//                                   _selectedQuestionPublic = 'Public';
-//                                 });
-//                               }
-//                             },
-//                             shape: CircleBorder(),
-//                             // Makes the checkbox circular
-//                             activeColor: ColorConstants.primaryColor,
-//                             // Sets the color of the checkbox when selected
-//                             checkColor: Colors.black,
-//                           ),
-//                           Column(
-//                             mainAxisSize: MainAxisSize.min,
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               TextComponent(
-//                                 'Public',
-//                                 style:
-//                                     TextStyle(color: themeCubit.textColor),
-//                               ),
-//                               TextComponent(
-//                                 'Responses can be seen by everyone',
-//                                 style:
-//                                     TextStyle(color: themeCubit.textColor),
-//                               ),
-//                             ],
-//                           ),
-//                           SizedBox(
-//                             width: 20,
-//                           )
-//                         ],
-//                       ),
-//                       Divider(
-//                         thickness: 0.1,
-//                       ),
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                             value: _selectedQuestionPublic == 'Private',
-//                             onChanged: (bool? value) {
-//                               if (value != null) {
-//                                 setState(() {
-//                                   _selectedQuestionPublic = 'Private';
-//                                 });
-//                               }
-//                             },
-//                             shape: CircleBorder(),
-//                             // Makes the checkbox circular
-//                             activeColor: ColorConstants.primaryColor,
-//                             // Sets the color of the checkbox when selected
-//                             checkColor: Colors.black,
-//                           ),
-//                           Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               TextComponent(
-//                                 'Private',
-//                                 style:
-//                                     TextStyle(color: themeCubit.textColor),
-//                               ),
-//                               TextComponent(
-//                                 'Only host can see the responses',
-//                                 style:
-//                                     TextStyle(color: themeCubit.textColor),
-//                               ),
-//                             ],
-//                           ),
-//                           SizedBox(
-//                             width: 20,
-//                           )
-//                         ],
-//                       )
-//                     ],
-//                     builder: (BuildContext context,
-//                         MenuController controller, Widget? child) {
-//                       return TextButton(
-//                         focusNode: _buttonFocusNode,
-//                         onPressed: () {
-//                           if (controller.isOpen) {
-//                             controller.close();
-//                           } else {
-//                             controller.open();
-//                           }
-//                         },
-//                         child: Column(
-//                           children: [
-//                             TextComponent(
-//                               _selectedQuestionPublic,
-//                               style: TextStyle(
-//                                   color: ColorConstants.lightGray),
-//                             ),
-//                           ],
-//                         ), // Use the selected option as the label
-//                       );
-//                     },
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ]),
-//       );
-//     });
