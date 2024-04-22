@@ -14,6 +14,7 @@ class TagComponent extends StatelessWidget {
   final double borderSize;
   final Color borderColor;
   final double? circleHeight;
+  final double? width;
   final Function()? onTap; // New parameter to control the circle size
   final String? customText;
   final String? customIconText;
@@ -29,6 +30,7 @@ class TagComponent extends StatelessWidget {
     this.borderSize = 2.0, // Default border size
     this.borderColor = Colors.transparent, // Default border color
     this.circleHeight,
+    this.width,
     this.backgroundColor = ColorConstants.lightGray,
     this.onTap, // Default circle size
     this.customText,
@@ -46,6 +48,8 @@ class TagComponent extends StatelessWidget {
       child: Column(
         children: [
           Container(
+            alignment: Alignment.center,
+            width: width,
               height: circleHeight,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),

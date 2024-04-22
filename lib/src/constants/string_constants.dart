@@ -59,6 +59,7 @@ class StringConstants {
   static const String getStarted = "Get Started";
   static const String continueWithEmail = "Continue with Email";
   static const String continueWithPhone = "Continue with Phone";
+  static const String inviteFriends = "Invite Friends";
   static const String continues = "Continue";
   static const String confirmProfilePicture = "Confirm profile picture";
   static const String addPhotoFromGallery = "Add photo from gallery";
@@ -81,6 +82,7 @@ class StringConstants {
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
   static const String messageForYou = "Message for you";
+  static const String questionsFromCreator = "Questions from creator";
   static const String createANewEvent = "Create a new event";
   static const String createANewGroup = "Create a new group";
   static const String skip = "Skip";
@@ -211,17 +213,22 @@ class StringConstants {
       "Yay! Your event has been  created successfully!";
   static const String groupCreatedSuccessfully =
       "Yay! Your group has been  created successfully!";
+  static const String joinTheGroupSuccessfully =
+      "Yay! You have join the group.";
   static const String requestSend = "Your request has already been sent to ";
   static const String connectSendBody =
       "Once your request is accepted, you can view it in your connections";
   static const String getTicket = "Get Ticket";
   static const String join = "Join";
+  static const String decline = "Decline";
+  static const String accept = "Accept";
   static const String next = "Next";
   static const String payWithCard = "Pay with Card";
   static const String pay = "Pay ";
   static const String selectNumberOfTickets = "Select number of tickets";
   static const String addQuestion = "Add Question";
   static const String abouttheEvent = "About the event";
+  static const String aboutTheGroup = "About the group";
   static const String aboutMe = "About me";
   static const String myInterests = "My Interests";
   static const String showLess = "Show less";
@@ -241,6 +248,7 @@ class StringConstants {
   static const String events = "Events";
   static const String yourEvents = "Your Events";
   static const String groups = "Groups";
+  static const String group = "Group";
   static const String earnings = "Earnings";
   static const String withDraw = "Withdraw";
   static const String earningDetails = "Earning Details";
@@ -254,6 +262,7 @@ class StringConstants {
   static const String transactionStatus =
       "The money will be in transferred to your bank account in 3-5 working days.";
   static const String typeYourMessage = "Type your message here...";
+  static const String typeYourAnswer = "Type your answer here...";
   static const String typeYourDescription =
       "Provide a brief description about the event here";
   static const String doYouHaveQuestion =
