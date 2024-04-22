@@ -34,6 +34,7 @@ class StringConstants {
       "When you join, you're in the game!\n Chat's open and ready for you";
   static const String howIsYour = "How is your ";
   static const String doYou = "Do you ";
+  static const String main = "Main";
   static const String doYouHave = "Do you have ";
   static const String firstName = "First Name";
   static const String lastName = "Last Name";

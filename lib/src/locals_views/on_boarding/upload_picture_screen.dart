@@ -77,7 +77,10 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
               scrollDirection: Axis.horizontal,
               child: Row(
                   children: selectedImages
-                      .map((e) => ChooseImageComponent(selectedImages: e.path))
+                      .map((e) => ChooseImageComponent(
+                            image: e.path,
+                            onImagePick: (image) {},
+                          ))
                       .toList()),
             ),
             // ChooseImageComponent(
