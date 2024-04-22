@@ -41,11 +41,14 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   @override
   void initState() {
     super.initState();
-    selectedImages.addAll(List.filled(2 - selectedImages.length, ""));
+    selectedImages.addAll(List.filled(6 - selectedImages.length, ""));
   }
 
   @override
   Widget build(BuildContext context) {
+    // print(
+    //     'SELECTEDIMAGES.MAP((E) => E.ISNOTEMPTY).TOLIST().LENGTH: ${selectedImages.where((e) => e.isNotEmpty).toList().length}');
+
     return UIScaffold(
         appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
@@ -82,89 +85,35 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
               height: 40,
             ),
 
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child:
+            Container(
+              height: 250,
+              width: AppConstants.responsiveWidth(context),
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return Container(
+                    height: 250,
+                    width:
+                        AppConstants.responsiveWidth(context, percentage: 60),
+                    margin: const EdgeInsets.only(right: 20),
+                    child: ChooseImageComponent(
+                      image: selectedImages[index],
+                      showImageSelectionBottomSheet: false,
+                      onImagePick: (image) {
+                        setState(() {
+                          insertImage(image, index: index);
+                          // selectedImages.insert(0, image.path);
+                          // selectedImages = tempEmptyImageData;
 
-                  //  tempEmptyImageData.isEmpty
-                  //     ? Row(
-                  //         children: List.generate(
-                  //           2,
-                  //           (index) => Container(
-                  //             // color: Colors.red,
-                  //             height: 250,
-                  //             width: AppConstants.responsiveWidth(context,
-                  //                 percentage: 60),
-                  // margin: const EdgeInsets.only(right: 20),
-                  //             child: ChooseImageComponent(
-                  //               image: "",
-                  //               showImageSelectionBottomSheet: false,
-                  //               onImagePick: (image) {
-                  //                 setState(() {
-                  //                   tempEmptyImageData.add(File(image.path));
-                  //                 });
-                  //               },
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       )
-                  //     :
-                  Row(
-                      children: selectedImages.map((e) {
-                // if (tempEmptyImageData.length == 1) {
-                //   return Row(
-                //     children: [
-                //       Container(
-                //         // color: Colors.red,
-                //         // height: 250,
-                //         width: AppConstants.responsiveWidth(context,
-                //             percentage: 60),
-                //         margin: const EdgeInsets.only(right: 20),
-                //         child: ChooseImageComponent(
-                //           image: e.path,
-                //           onImagePick: (image) {
-                //             setState(() {
-                //               tempEmptyImageData.add(File(image.path));
-                //             });
-                //           },
-                //         ),
-                //       ),
-                //       Container(
-                //         height: 250,
-                //         width: AppConstants.responsiveWidth(context,
-                //             percentage: 60),
-                //         child: ChooseImageComponent(
-                //           image: "",
-                //           showImageSelectionBottomSheet: false,
-                //           onImagePick: (image) {
-                //             setState(() {
-                //               tempEmptyImageData.add(File(image.path));
-                //             });
-                //           },
-                //         ),
-                //       ),
-                //     ],
-                //   );
-                // }
-
-                return Container(
-                  height: 250,
-                  width: AppConstants.responsiveWidth(context, percentage: 60),
-                  margin: const EdgeInsets.only(right: 20),
-                  child: ChooseImageComponent(
-                    image: e,
-                    showImageSelectionBottomSheet: false,
-                    onImagePick: (image) {
-                      setState(() {
-                        selectedImages.insert(0, image.path);
-                        // selectedImages = tempEmptyImageData;
-
-                        selectedImages.removeLast();
-                      });
-                    },
-                  ),
-                );
-              }).toList()),
+                          // selectedImages.removeLast();
+                        });
+                      },
+                    ),
+                  );
+                },
+                itemCount: selectedImages.length,
+              ),
             ),
             // ChooseImageComponent(
             //   selectedImages: selectedImages,
@@ -186,16 +135,15 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                     // setState(() {
                     //   selectedImages.add(File(image.path));
                     // });
-                    selectedImages.insert(0, image.path);
+                    insertImage(image);
                     // selectedImages = tempEmptyImageData;
 
-                    selectedImages.removeLast();
+                    // selectedImages.removeLast();
                   }
                 } else {
-                  setState(() {
-                    selectedImage = null;
-                  });
+                  selectedImage = null;
                 }
+                setState(() {});
               }),
         ),
         const SizedBox(
@@ -204,12 +152,14 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
-              bgcolor: selectedImages.any((element) => element.isNotEmpty)
-                  ? ColorConstants.lightGray.withOpacity(0.2)
-                  : ColorConstants.white,
-              textColor: selectedImages.any((element) => element.isNotEmpty)
-                  ? ColorConstants.white
-                  : ColorConstants.black,
+              bgcolor:
+                  selectedImages.map((e) => e.isNotEmpty).toList().length > 3
+                      ? ColorConstants.lightGray.withOpacity(0.2)
+                      : ColorConstants.white,
+              textColor:
+                  selectedImages.map((e) => e.isNotEmpty).toList().length > 3
+                      ? ColorConstants.white
+                      : const Color.fromRGBO(0, 0, 0, 1),
               buttonText: StringConstants.takeASelfie,
               onPressed: () async {
                 List<File> files = [];
@@ -221,10 +171,12 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                   //   selectedImages.add(File(cameraImage.path));
                   // });
 
-                  selectedImages.insert(0, cameraImage.path);
+                  insertImage(cameraImage);
+
+                  // selectedImages.insert(0, cameraImage.path);
                   // selectedImages = tempEmptyImageData;
 
-                  selectedImages.removeLast();
+                  // selectedImages.removeLast();
 
                   setState(() {});
                 }
@@ -233,7 +185,10 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
         const SizedBox(
           height: 10,
         ),
-        if (selectedImages.every((element) => element.isNotEmpty))
+
+        // if (selectedImages.every((element) => element.isNotEmpty))
+
+        if (selectedImages.where((e) => e.isNotEmpty).toList().length >= 2)
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
@@ -252,4 +207,39 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
       ],
     );
   }
+
+  void insertImage(XFile image, {int? index}) {
+    // var i = {selectedImages[selectedImages.indexOf("")]};
+
+    // print('Iss: ${i}');
+
+    bool isListEmpty = selectedImages.every((element) => element.isNotEmpty);
+    if (index == null && isListEmpty) {
+      selectedImages.insert(0, image.path);
+    }
+    // if (index != null) {
+    if (isListEmpty) {
+      selectedImages.insert(0, image.path);
+
+      // selectedImages.firstWhere((element) => element == "");
+    } else if (selectedImages.any((element) => element == '')) {
+      if (index != null) {
+        selectedImages[index] = image.path;
+      } else {
+        if (selectedImages[selectedImages.indexOf("")] == "") {
+          selectedImages[selectedImages.indexOf("")] = image.path;
+        }
+      }
+    } else if (index != null) {
+      selectedImages[index] = image.path;
+      // selectedImages[selectedImages.indexOf("")] = image.path;
+      // print('SELECTEDIMAGES[SELECTEDIMAGES.INDEXOF("")]: ${selectedImages[selectedImages.indexOf("")]}');
+
+      // if (selectedImages.every((element) => element.isNotEmpty) == false) {
+      //   selectedImages[0] = image.path;
+      // }
+      // selectedImages.insert(index, image.path);
+    }
+  }
+  // }
 }
