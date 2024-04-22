@@ -243,14 +243,17 @@ class _UserProfileState extends State<UserProfile> {
         children: [
           Stack(
             children: [
-              CircleAvatar(
-                radius: 65,
-                backgroundImage: (selectedImage != null
-                        ? FileImage(selectedImage!)
-                        : isEdit == true && imageUrl != null
-                            ? NetworkImage(imageUrl ?? '')
-                            : const AssetImage(AssetConstants.profileDummy))
-                    as ImageProvider,
+              GestureDetector(
+                onTap:()=> NavigationUtil.push(context, RouteConstants.editProfileScreen),
+                child: CircleAvatar(
+                  radius: 65,
+                  backgroundImage: (selectedImage != null
+                          ? FileImage(selectedImage!)
+                          : isEdit == true && imageUrl != null
+                              ? NetworkImage(imageUrl ?? '')
+                              : const AssetImage(AssetConstants.profileDummy))
+                      as ImageProvider,
+                ),
               ),
               Positioned(
                   right: 5,

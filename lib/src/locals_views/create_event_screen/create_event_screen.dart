@@ -404,6 +404,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   ListTileComponent(
+                    leadingIconWidth: 25,
+                    leadingIconHeight: 25,
                     leadingIcon: AssetConstants.marker,
                     iconText: StringConstants.location,
                     subText: "Manchester",
@@ -414,6 +416,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   ListTileComponent(
+                    leadingIconWidth: 25,
+                    leadingIconHeight: 25,
                     leadingIcon: AssetConstants.ticket,
                     iconText: StringConstants.price,
                     subText: "Free",
@@ -424,6 +428,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   ListTileComponent(
+                    leadingIconWidth: 25,
+                    leadingIconHeight: 25,
                     leadingIcon: AssetConstants.happy,
                     iconText: StringConstants.capacity,
                     subText: "60",
@@ -486,6 +492,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     height: 10,
                   ),
                   ListTileComponent(
+                    leadingIconWidth: 25,
+                    leadingIconHeight: 25,
                     leadingIcon: AssetConstants.marker,
                     iconText: StringConstants.visibility,
                     subText: "Public",
@@ -1429,6 +1437,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   Container(
                     width: AppConstants.responsiveWidth(context),
                     child: ButtonComponent(
+                      textColor: themeCubit.backgroundColor,
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.done,
                       onPressed: () {
@@ -1510,6 +1519,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       },
                     ),
                     ButtonComponent(
+                      isSmallBtn: true,
                       bgcolor: ColorConstants.primaryColor,
                       textColor: ColorConstants.black,
                       buttonText: StringConstants.done,

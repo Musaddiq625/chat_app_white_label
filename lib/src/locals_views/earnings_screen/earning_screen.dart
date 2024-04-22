@@ -122,6 +122,7 @@ class _EarningScreenState extends State<EarningScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         ImageComponent(
+                          isAsset: true,
                           imgUrl: AssetConstants.earnedCoins,
                           height: 100,
                           width: 100,
@@ -136,6 +137,7 @@ class _EarningScreenState extends State<EarningScreen> {
           ),
           SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(
+
               // iconColor: ColorConstants.white,
               iconText: StringConstants.addBankDetails,
               subIconColor: ColorConstants.iconBg,
@@ -144,6 +146,7 @@ class _EarningScreenState extends State<EarningScreen> {
               leadingIconWidth: 20,
               leadingIcon: AssetConstants.bank,
               isLeadingImageSVG: true,
+              isLeadingIconAsset:true,
               onTap: () {
                 _addBankDetailsBottomSheet();
               }),

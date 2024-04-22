@@ -577,6 +577,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 30),
                 ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
+                  isSmallBtn: true,
                   textColor: themeCubit.backgroundColor,
                   buttonText: StringConstants.yesShareIt,
                   onPressed: () {

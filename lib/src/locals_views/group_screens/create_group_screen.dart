@@ -1395,6 +1395,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                       },
                     ),
                     ButtonComponent(
+                      isSmallBtn: true,
                       bgcolor: ColorConstants.primaryColor,
                       textColor: ColorConstants.black,
                       buttonText: StringConstants.done,

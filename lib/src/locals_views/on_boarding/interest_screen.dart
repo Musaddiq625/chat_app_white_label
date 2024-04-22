@@ -167,31 +167,34 @@ class _InterestScreenState extends State<InterestScreen> {
           children: [
             ...tagList
                 .map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
-                      TagComponent(
-                        iconData: tag['iconData'],
-                        customTextColor: selectedTags.contains(tag['name'])
-                            ? ColorConstants.black
-                            : themeCubit.textColor,
-                        backgroundColor: selectedTags.contains(tag['name'])
-                            ? themeCubit.primaryColor
-                            : ColorConstants.lightGray.withOpacity(0.3),
-                        iconColor: selectedTags.contains(tag['name'])
-                            ? themeCubit.backgroundColor
-                            : themeCubit.primaryColor,
-                        customIconText: tag['name'],
-                        circleHeight: 35,
-                        iconSize: 20,
-                        onTap: () {
-                          setState(() {
-                            if (selectedTags.contains(tag['name'])) {
-                              selectedTags.remove(tag['name']);
-                            } else if (selectedTags.length < 4) {
-                              selectedTags.add(tag['name']);
-                            }
-                          });
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: TagComponent(
+                          iconData: tag['iconData'],
+                          customTextColor: selectedTags.contains(tag['name'])
+                              ? ColorConstants.black
+                              : themeCubit.textColor,
+                          backgroundColor: selectedTags.contains(tag['name'])
+                              ? themeCubit.primaryColor
+                              : ColorConstants.lightGray.withOpacity(0.3),
+                          iconColor: selectedTags.contains(tag['name'])
+                              ? themeCubit.backgroundColor
+                              : themeCubit.primaryColor,
+                          customIconText: tag['name'],
+                          circleHeight: 35,
+                          iconSize: 20,
+                          onTap: () {
+                            setState(() {
+                              if (selectedTags.contains(tag['name'])) {
+                                selectedTags.remove(tag['name']);
+                              } else if (selectedTags.length < 4) {
+                                selectedTags.add(tag['name']);
+                              }
+                            });
+                          },
+                        ),
                       ),
-                      SizedBoxConstants.sizedBoxFourW()
+                      SizedBoxConstants.sizedBoxTenW()
                     ]))
                 .toList(),
           ],
@@ -212,33 +215,36 @@ class _InterestScreenState extends State<InterestScreen> {
           children: [
             ...interestTagList
                 .map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
-                      TagComponent(
-                        iconData: tag['iconData'],
-                        customTextColor:
-                            selectedInterestTagList.contains(tag['name'])
-                                ? ColorConstants.black
-                                : themeCubit.textColor,
-                        backgroundColor:
-                            selectedInterestTagList.contains(tag['name'])
-                                ? themeCubit.primaryColor
-                                : ColorConstants.lightGray.withOpacity(0.3),
-                        iconColor: selectedInterestTagList.contains(tag['name'])
-                            ? themeCubit.backgroundColor
-                            : themeCubit.primaryColor,
-                        customIconText: tag['name'],
-                        circleHeight: 35,
-                        iconSize: 20,
-                        onTap: () {
-                          setState(() {
-                            if (selectedInterestTagList.contains(tag['name'])) {
-                              selectedInterestTagList.remove(tag['name']);
-                            } else if (selectedInterestTagList.length < 4) {
-                              selectedInterestTagList.add(tag['name']);
-                            }
-                          });
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: TagComponent(
+                          iconData: tag['iconData'],
+                          customTextColor:
+                              selectedInterestTagList.contains(tag['name'])
+                                  ? ColorConstants.black
+                                  : themeCubit.textColor,
+                          backgroundColor:
+                              selectedInterestTagList.contains(tag['name'])
+                                  ? themeCubit.primaryColor
+                                  : ColorConstants.lightGray.withOpacity(0.3),
+                          iconColor: selectedInterestTagList.contains(tag['name'])
+                              ? themeCubit.backgroundColor
+                              : themeCubit.primaryColor,
+                          customIconText: tag['name'],
+                          circleHeight: 35,
+                          iconSize: 20,
+                          onTap: () {
+                            setState(() {
+                              if (selectedInterestTagList.contains(tag['name'])) {
+                                selectedInterestTagList.remove(tag['name']);
+                              } else if (selectedInterestTagList.length < 4) {
+                                selectedInterestTagList.add(tag['name']);
+                              }
+                            });
+                          },
+                        ),
                       ),
-                      SizedBoxConstants.sizedBoxFourW()
+                      SizedBoxConstants.sizedBoxTenW()
                     ]))
                 .toList(),
           ],
