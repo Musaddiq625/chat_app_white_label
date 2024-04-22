@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
@@ -17,10 +18,12 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -34,13 +37,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final _formKey = GlobalKey<FormState>();
 
-  final data = [
-    "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-    "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
+  final imageData = [
     "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
     "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
     "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
   ];
+
+  List<String> tempImageData = [];
+  List tempEmptyImageData = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    tempImageData.addAll(imageData);
+    tempEmptyImageData.addAll(List.filled(6 - imageData.length, ""));
+    // tempImageData.addAll(imageData.where((element) => element.isEmpty));
+    // setState(() {});
+    // tempImageData = List.filled(6, null, growable: true);
+    // tempImageData.insertAll(0, imageData.take(min(imageData.length, 6)));
+  }
 
   List<Map<String, dynamic>> interestTagList = [
     {
@@ -103,28 +119,65 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               mainAxisSpacing: 15,
               padding: const EdgeInsets.all(16),
               childAspectRatio: 0.85,
+
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
+              footer: tempEmptyImageData
+                  .map(
+                    (image) => ChooseImageComponent(
+                      image:
+                          image, // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
+                      key: ValueKey('value ${Random().nextInt(1000)}'),
+                      onImagePick: (pickedImage) {
+                        NavigationUtil.pop(context);
+
+                        tempEmptyImageData.removeLast();
+                        tempImageData.add(pickedImage.path);
+
+                        setState(() {});
+                      },
+                    ),
+                  )
+                  .toList(),
+              // dragWidgetBuilderV2: DragWidgetBuilderV2(
+              //   builder: (index, child, screenshot) {
+              //     if (screenshot.toString() == "") return ;
+              //     return Text(screenshot.toString());
+              //   },
+              // ),
+              onDragStart: (dragIndex) {
+                if (tempImageData[dragIndex].isEmpty) {
+                  return; // Don't allow drag if the item is empty
+                }
+              },
               onReorder: (oldIndex, newIndex) {
+                if (tempImageData[oldIndex].isEmpty) {
+                  return;
+                }
                 setState(() {
-                  final element = data.removeAt(oldIndex);
-                  data.insert(newIndex, element);
-                  // data.add(newIndex.toString());
+                  final element = tempImageData.removeAt(oldIndex);
+                  tempImageData.insert(newIndex, element);
                 });
               },
-              children: data
+
+              // onReorder: (oldIndex, newIndex) {
+              //   setState(() {
+              //     final element = tempImageData.removeAt(oldIndex);
+              //     tempImageData.insert(newIndex, element);
+              //     // data.add(newIndex.toString());
+              //   });
+              // },
+              children: tempImageData
                   .map(
-                    (e) =>
+                    (image) => ChooseImageComponent(
+                      isMainImage: image == tempImageData.first,
 
-                        //  Container(
-                        //           key: ValueKey('value ${Random().nextInt(1000)}'),
-                        //           color: Colors.red,
-                        //         )
-
-                        ChooseImageComponent(
-                      selectedImages:
-                          e, // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
+                      image:
+                          image, // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
                       key: ValueKey('value ${Random().nextInt(1000)}'),
+                      onImagePick: (pickedImage) {
+                        tempEmptyImageData.add(pickedImage?.path);
+                      },
                     ),
                   )
                   .toList(),

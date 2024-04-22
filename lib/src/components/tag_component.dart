@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../utils/theme_cubit/theme_cubit.dart';
 
 class TagComponent extends StatelessWidget {
-  final IconData iconData;
+  final IconData? iconData;
   final double iconSize;
   final Color iconColor;
   final Color backgroundColor;
@@ -23,13 +23,13 @@ class TagComponent extends StatelessWidget {
 
   // Constructor to initialize the icon data, size, color, border size, border color, and circle size
   TagComponent({
-    required this.iconData,
+    this.iconData,
     this.iconSize = 24.0, // Default icon size
     this.iconColor = Colors.black, // Default icon color
     this.borderSize = 2.0, // Default border size
     this.borderColor = Colors.transparent, // Default border color
     this.circleHeight,
-    this.backgroundColor =ColorConstants.lightGray,
+    this.backgroundColor = ColorConstants.lightGray,
     this.onTap, // Default circle size
     this.customText,
     this.customIconText,
@@ -46,37 +46,48 @@ class TagComponent extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            height:
-                circleHeight ,
-            decoration:  BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: backgroundColor,
-                    // shape: BoxShape.circle,
-                    border: Border.all(
-                      color: borderColor,
-                      width: borderSize,
-                    ),
-                  ),
-            child:  Row(
-                    children: [
-                      SizedBox(width: 5,),
-                      Icon(
-                        iconData,
-                        size: iconSize,
-                        color: iconColor,
+              height: circleHeight,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: backgroundColor,
+                // shape: BoxShape.circle,
+                border: Border.all(
+                  color: borderColor,
+                  width: borderSize,
+                ),
+              ),
+              child: iconData == null
+                  ? Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
+                      child: TextComponent(
+                        customIconText ?? '',
+                        style: TextStyle(
+                            color: customTextColor,
+                            fontWeight: customFontWeight),
                       ),
-                      SizedBox(width: 5,),
-                      Padding(
-                        padding: const EdgeInsets.only(right:5.0),
-                        child: TextComponent(
-                          customIconText!,
-                          style: TextStyle(color: customTextColor),
+                    )
+                  : Row(
+                      children: [
+                        SizedBox(
+                          width: 5,
                         ),
-                      ),
-                    ],
-                  )
-
-          ),
+                        Icon(
+                          iconData,
+                          size: iconSize,
+                          color: iconColor,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5.0),
+                          child: TextComponent(
+                            customIconText ?? '',
+                            style: TextStyle(color: customTextColor),
+                          ),
+                        ),
+                      ],
+                    )),
           SizedBox(height: 5),
         ],
       ),
