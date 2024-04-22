@@ -256,7 +256,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                   url: "",
                   title: "Group Creator",
                   showShareIcon: false,
-                  dividerValue: false,
+                  showDivider: false,
                   imageSize: 40,
                 ),
               ),
@@ -430,7 +430,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                       url: "",
                       title: "Graphic Designer",
                       showShareIcon: false,
-                      dividerValue: false,
+                      showDivider: false,
                       imageSize: 45,
                     )),
                 TagComponent(

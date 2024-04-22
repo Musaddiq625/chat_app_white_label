@@ -197,8 +197,10 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
               buttonText: StringConstants.continues,
               onPressed: () {
                 userDetailModel?.userPhotos = selectedImages.toList();
+                selectedImages.removeWhere((element) => element.isEmpty);
+
                 NavigationUtil.push(context, RouteConstants.selectProfileScreen,
-                    args: selectedImages);
+                    args:selectedImages );
               },
             ),
           ),

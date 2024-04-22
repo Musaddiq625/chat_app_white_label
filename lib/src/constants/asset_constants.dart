@@ -40,7 +40,7 @@ class AssetConstants {
   static const String instagram = "$icons/instagram.svg";
   static const String instagramNoSVg = "$images/instagram.png";
 
-  static const String facebook = "$icons/facebook.png";
+  static const String facebook = "$icons/facebook.svg";
   static const String diet = "$icons/diet.svg";
   static const String workout = "$icons/workout.svg";
   static const String height = "$icons/height.svg";

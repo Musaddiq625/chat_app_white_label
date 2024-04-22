@@ -68,7 +68,7 @@ class StringConstants {
   static const String resendCode = "Resend Code";
   static const String registerCreateManageEvents =
       "Register,create and manage events.";
-  static const String agreeToOur = "By continuing,you agree to our ";
+  static const String agreeToOur = "By continuing,you agree to our";
   static const String termsAndConditions = "Terms & Conditions";
   static const String connectWithPeople = "Connect with people";
   static const String eventDetail = "Event Details";

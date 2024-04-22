@@ -42,7 +42,7 @@ class MemberResponseComponent extends StatelessWidget {
           title: title,
           // contact: contact,
           showShareIcon: showShareIcon,
-          dividerValue: dividerValue,
+          showDivider: dividerValue,
           imageSize: 40,
         ),
         SizedBoxConstants.sizedBoxTenH(),

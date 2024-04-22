@@ -791,32 +791,30 @@ class _EventScreenState extends State<EventScreen> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ButtonComponent(
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0,right: 10,bottom: 10 ),
+                child: ButtonComponent(
 
-                    buttonText: StringConstants.join,
-                    textColor: themeCubit.backgroundColor,
-                    onPressed: () {
-                      _sendMessage();
-                      Navigator.pop(context);
-                      _navigateToBack();
-                      BottomSheetComponent.showBottomSheet(
-                        context,
-                        isShowHeader: false,
-                        body: InfoSheetComponent(
-                          heading: StringConstants.requestSent,
-                          body: StringConstants.requestStatus,
-                          image: AssetConstants.paperPlaneImage,
-                          // svg: true,
-                        ),
-                        // whenComplete:_navigateToBack(),
-                      );
-                    },
-                    bgcolor: themeCubit.primaryColor,
-                  )
-                ],
+                  buttonText: StringConstants.join,
+                  textColor: themeCubit.backgroundColor,
+                  onPressed: () {
+                    _sendMessage();
+                    Navigator.pop(context);
+                    _navigateToBack();
+                    BottomSheetComponent.showBottomSheet(
+                      context,
+                      isShowHeader: false,
+                      body: InfoSheetComponent(
+                        heading: StringConstants.requestSent,
+                        body: StringConstants.requestStatus,
+                        image: AssetConstants.paperPlaneImage,
+                        // svg: true,
+                      ),
+                      // whenComplete:_navigateToBack(),
+                    );
+                  },
+                  bgcolor: themeCubit.primaryColor,
+                ),
               ),
               SizedBoxConstants.sizedBoxTenH()
             ],

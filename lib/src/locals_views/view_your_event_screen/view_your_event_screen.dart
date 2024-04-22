@@ -403,7 +403,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                       url: "",
                       title: "Graphic Designer",
                       showShareIcon: false,
-                      dividerValue: false,
+                      showDivider: false,
                       imageSize: 40,
                     )),
                 Container(

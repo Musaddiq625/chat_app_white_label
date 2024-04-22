@@ -508,8 +508,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: contacts.length,
+
                   itemBuilder: (ctx, index) {
+                    bool isLast = index == contacts!.length - 1;
                     return ContactCard(
+                      showDivider: (!isLast),
                       name: contacts[index].name,
                       title: contacts[index].title,
                       url: contacts[index].url,

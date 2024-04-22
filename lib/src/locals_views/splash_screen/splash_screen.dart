@@ -4,7 +4,9 @@ import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -192,9 +194,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                 );
                               }),
                         ),
-                        const SizedBox(
-                          height: 5,
-                        ),
+                        SizedBoxConstants.sizedBoxTenH(),
                         SizedBox(
                           width: MediaQuery.sizeOf(context).width,
                           child: ButtonComponent(
@@ -206,9 +206,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                     context, RouteConstants.signUpEmail);
                               }),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        SizedBoxConstants.sizedBoxTenH(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -270,39 +268,48 @@ class _SplashScreenState extends State<SplashScreen> {
                             )
                           ],
                         ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        // const TextComponent(
-                        //   listOfText: [
-                        //     StringConstants.agreeToOur,
-                        //     StringConstants.termsAndConditions,
-                        //   ],
-                        // ),
+                        SizedBoxConstants.sizedBoxThirtyH(),
 
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: const TextSpan(
-                            children: [
-                              TextSpan(
-                                text: StringConstants.agreeToOur,
-                                style: TextStyle(
-                                    color: ColorConstants.lightGray,
-                                    fontSize: 15), // Change the color here
-                              ),
-                              TextSpan(
-                                text: StringConstants.termsAndConditions,
-                                style: TextStyle(
-                                    color: ColorConstants.lightGray,
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 15), // Change the color here
-                              ),
-                            ],
-                          ),
+                        TextComponent(
+                          "",
+                          listOfText: [
+                            StringConstants.agreeToOur,
+                            StringConstants.termsAndConditions,
+                          ],
+                          listOfTextStyle: [
+                            FontStylesConstants.style14(
+                                color: ColorConstants.lightGray),
+                            FontStylesConstants.style14(
+                                color: ColorConstants.lightGray,
+                                underLine: true),
+                          ],
+                          listOfOnPressedFunction: [
+                            null,
+                            navigateToTerms,
+                          ],
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+
+                        // RichText(
+                        //   textAlign: TextAlign.center,
+                        //   text: const TextSpan(
+                        //     children: [
+                        //       TextSpan(
+                        //         text: StringConstants.agreeToOur,
+                        //         style: TextStyle(
+                        //             color: ColorConstants.lightGray,
+                        //             fontSize: 15), // Change the color here
+                        //       ),
+                        //       TextSpan(
+                        //         text: StringConstants.termsAndConditions,
+                        //         style: TextStyle(
+                        //             color: ColorConstants.lightGray,
+                        //             decoration: TextDecoration.underline,
+                        //             fontSize: 15), // Change the color here
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        SizedBoxConstants.sizedBoxTwentyH(),
                       ],
                     ),
                   ),
@@ -311,5 +318,9 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ],
         ));
+  }
+
+  navigateToTerms() {
+    NavigationUtil.push(context, RouteConstants.termsOfUseScreen);
   }
 }
