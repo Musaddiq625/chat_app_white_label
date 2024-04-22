@@ -200,7 +200,8 @@ class _UserProfileState extends State<UserProfile> {
                       children: [
                         IconComponent(
                           svgDataCheck: false,
-                          svgData: AssetConstants.applePay,
+                          iconColor: ColorConstants.primaryColor,
+                          svgData: AssetConstants.coins,
                           backgroundColor: ColorConstants.transparent,
                           iconSize: 100,
                           borderSize: 0,

@@ -1,4 +1,5 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -100,7 +101,7 @@ class IconComponent extends StatelessWidget {
                 ? Row(
                     children: [
                       SizedBox(
-                        width: 5,
+                        width: 10,
                       ),
                       iconData != null
                           ? Icon(
@@ -123,7 +124,7 @@ class IconComponent extends StatelessWidget {
                         width: 5,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
+                        padding: const EdgeInsets.only(right: 15.0,left: 5),
                         child: Text(
                           customIconText!,
                           style: TextStyle(color: customTextColor),
@@ -152,9 +153,7 @@ class IconComponent extends StatelessWidget {
                           ),
           ),
           if (customText != null)
-            const SizedBox(
-              height: 10,
-            ),
+            SizedBoxConstants.sizedBoxTenH(),
           if (customText != null)
             TextComponent(
               customText!,
@@ -163,6 +162,7 @@ class IconComponent extends StatelessWidget {
                   color: customTextColor,
                   fontWeight: customFontWeight),
             ),
+          SizedBoxConstants.sizedBoxTenW(),
         ],
       ),
     );

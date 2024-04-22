@@ -204,10 +204,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15, left: 10, bottom: 80),
-              child:   AppBarComponent("",iconBgColor: ColorConstants.iconBg,),
-            ),
+            AppBarComponent("",iconBgColor: ColorConstants.iconBg,),
             SizedBoxConstants.sizedBoxEightyH(),
             Padding(
               padding: EdgeInsets.only(left: 15),
@@ -241,7 +238,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                     iconData: Icons.edit,
                     backgroundColor: ColorConstants.lightGray,
                     iconColor: ColorConstants.primaryColor,
-                    customIconText: " Edit",
+                    customIconText: "Edit",
                     circleSize: 60,
                     circleHeight: 35,
                     iconSize: 20,

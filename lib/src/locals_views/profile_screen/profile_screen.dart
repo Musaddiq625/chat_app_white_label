@@ -268,7 +268,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       enableDark: false,
                       isImage: true,
                       isCircular: true,
-                      onTap: () {}),
+                      onTap: () {NavigationUtil.pop(context);}),
                 ),
               ),
               _infoWidget(),

@@ -35,7 +35,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
       ),
       child: Column(
         children: [
-         SizedBoxConstants.sizedBoxTwelveH(),
+         SizedBoxConstants.sizedBoxThirtyH(),
           if (widget.image != null)
             widget.svg?
             SvgPicture.asset(

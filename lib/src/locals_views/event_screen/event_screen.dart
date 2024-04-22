@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
@@ -434,16 +435,21 @@ class _EventScreenState extends State<EventScreen> {
                     customText: StringConstants.facebook,
                     customTextColor: themeCubit.textColor,
                   ),
-                  IconComponent(
-                    svgDataCheck: false,
-                    svgData: AssetConstants.instagram,
-                    backgroundColor: Colors.transparent,
-                    borderColor: Colors.transparent,
-                    circleSize: 60,
-                    customText: StringConstants.instagram,
-                    customTextColor: themeCubit.textColor,
-                    iconSize: 60,
-                  ),
+                  // IconComponent(
+                  //   svgDataCheck: false,
+                  //   svgData: AssetConstants.instagram,
+                  //   backgroundColor: Colors.transparent,
+                  //   borderColor: Colors.transparent,
+                  //   circleSize: 60,
+                  //   customText: StringConstants.instagram,
+                  //   customTextColor: themeCubit.textColor,
+                  //   iconSize: 60,
+                  // ),
+                  Column(children: [
+                    ImageComponent(height: 60,width: 60,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
+                    SizedBoxConstants.sizedBoxTenH(),
+                    TextComponent(StringConstants.instagram,style: FontStylesConstants.style12(color: ColorConstants.white),)
+                  ],),
                   IconComponent(
                     svgData: AssetConstants.share,
                     iconColor: ColorConstants.black,

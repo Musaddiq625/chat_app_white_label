@@ -569,7 +569,10 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 InkWell(
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => {
+                      Navigator.pop(context),
+                      _shareEventBottomSheet(),
+                      },
                     child: TextComponent(
                       StringConstants.goBack,
                       style: TextStyle(color: themeCubit.textColor),
