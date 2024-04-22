@@ -5,6 +5,8 @@ import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen
 import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/all_event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/create_group_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/view_group_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/password_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/signup_with_email.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen.dart';
@@ -121,6 +123,7 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(CreateGroupScreen(
         contactsList: arg,
       ));
+
     case RouteConstants.groupChatRoomScreen:
       final arg = settings.arguments as ChatModel;
       return materialRoute(GroupChatRoomScreen(
@@ -145,6 +148,9 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.createEventScreen:
       return materialRoute(const CreateEventScreen());
+
+    case RouteConstants.createGroupScreenLocals:
+      return materialRoute(const CreateGroupScreens());
 
     case RouteConstants.homeScreenLocal:
       return materialRoute(const HomeScreen());
@@ -197,6 +203,9 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.viewYourEventScreen:
       return materialRoute(const ViewYourEventScreen());
+
+    case RouteConstants.viewGroupScreen:
+      return materialRoute(const ViewGroupScreen());
 
     case RouteConstants.settingsScreen:
       return materialRoute(const SettingsScreen());
