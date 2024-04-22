@@ -30,6 +30,7 @@ class ListTileComponent extends StatelessWidget {
   final bool isLeadingImageSVG;
   final bool isSocialConnected;
   final bool isIconValue;
+  final bool isLeadingIconAsset;
 
   final double? overrideLeadingIconSize;
 
@@ -54,6 +55,7 @@ class ListTileComponent extends StatelessWidget {
     this.leadingIconHeight = 15,
     this.isSocialConnected = false,
     this.isIconValue = false,
+    this.isLeadingIconAsset = false,
     this.title,
     this.titleColor,
   });
@@ -97,6 +99,7 @@ class ListTileComponent extends StatelessWidget {
                           imgProviderCallback: (imgProvider) {},
                           width: isSocialConnected ? 30 : leadingIconWidth,
                           height: isSocialConnected ? 30 : leadingIconHeight,
+                          isAsset: isLeadingIconAsset,
                         )),
                   if (isIconValue == true && iconData != null)
                     IconComponent(

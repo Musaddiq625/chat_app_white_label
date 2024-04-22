@@ -95,7 +95,9 @@ class _NameScreenState extends State<NameScreen> {
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
                 bgcolor: themeCubit.primaryColor,
-                textColor: ColorConstants.black,
+                textColor: isFieldsValidate?
+                ColorConstants.black:ColorConstants.grey1,
+
                 buttonText: StringConstants.continues,
                 onPressed: isFieldsValidate ? onContinuePressed : null))
       ],

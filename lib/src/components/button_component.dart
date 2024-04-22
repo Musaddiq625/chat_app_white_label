@@ -11,7 +11,8 @@ class ButtonComponent extends StatelessWidget {
   final String buttonText;
   final Function()? onPressed;
   final Color bgcolor;
-  final Color? textColor;
+  final Color emptybgcolor;
+  final Color textColor;
   final Color? overrideTextColor;
   final Color? overrideBorderColor;
   final bool invertBtnColor;
@@ -27,6 +28,7 @@ class ButtonComponent extends StatelessWidget {
     required this.buttonText,
     this.onPressed,
     this.bgcolor = ColorConstants.primaryColor,
+    this.emptybgcolor = ColorConstants.blackLight,
     this.overrideTextColor,
     this.overrideBorderColor,
     this.invertBtnColor = false,
@@ -36,7 +38,7 @@ class ButtonComponent extends StatelessWidget {
     this.overrideFontStyle = false,
     this.minimizeVerticalPadding = false,
     this.isSmallBtn = false,
-    this.textColor,
+    this.textColor = ColorConstants.grey1,
   });
 
   @override
@@ -51,16 +53,16 @@ class ButtonComponent extends StatelessWidget {
           onTap: onPressed,
           borderRadius: borderRadius(),
           child: Container(
-            padding:  EdgeInsets.symmetric(
+            padding: EdgeInsets.symmetric(
                 vertical: 10, horizontal: isSmallBtn ? 30 : 0),
             width: isSmallBtn ? null : MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 borderRadius: overrideBorderRadius ?? borderRadius(),
-                border: overrideBorderColor != null
-                    ? Border.all(color: overrideBorderColor!)
-                    : Border.all(color: bgcolor),
+                // border: overrideBorderColor != null
+                //     ? Border.all(color: overrideBorderColor!)
+                //     : Border.all(color: bgcolor),
                 color: onPressed == null
-                    ? null //ColorConstants.disableColor
+                    ? emptybgcolor //ColorConstants.disableColor
                     : bgcolor),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -86,7 +88,8 @@ class ButtonComponent extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: FontStylesConstants.style14(
                     fontWeight: FontWeight.bold,
-                    color: textColor ?? themeCubit.backgroundColor,
+                    color: textColor,
+
                   ),
                 ),
               ],
