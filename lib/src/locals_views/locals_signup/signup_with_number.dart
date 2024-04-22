@@ -184,7 +184,8 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
               width: MediaQuery.sizeOf(context).width * 0.9,
               child: ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
-                  textColor: ColorConstants.black,
+                  textColor:isFieldsValidate?
+                      ColorConstants.black:ColorConstants.grey1,
                   buttonText: StringConstants.continues,
                   onPressed: isFieldsValidate ? onContinuePressed : null),
             )
@@ -196,18 +197,18 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
 
   void onContinuePressed() async {
     if (_formKey.currentState!.validate()) {
-      NavigationUtil.push(
-        context,
-        RouteConstants.otpScreenLocal,
-        args: OtpArg(
-            '0000', // state.verificationId,
-            "${_countryCodeController.text}${_phoneNumbercontroller.text}",
-            _countryCodeController.text,
-            "number"),
-      );
-      // await signUpCubit.loginUser(
-      //   (_countryCodeController.text + _phoneNumbercontroller.text).trim(),
+      // NavigationUtil.push(
+      //   context,
+      //   RouteConstants.otpScreenLocal,
+      //   args: OtpArg(
+      //        state.verificationId,
+      //       "${_countryCodeController.text}${_phoneNumbercontroller.text}",
+      //       _countryCodeController.text,
+      //       "number"),
       // );
+      await signUpCubit.loginUser(
+        (_countryCodeController.text + _phoneNumbercontroller.text).trim(),
+      );
     }
   }
 

@@ -84,7 +84,7 @@ class _OtpScreenState extends State<OtpScreen> {
           startTimer(); // Restart the timer
         });
       } else if (state is OTPSuccessOldUserState) {
-        NavigationUtil.popAllAndPush(context, RouteConstants.homeScreenLocal);
+        NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen);
       } else if (state is OTPFailureState) {
         LoadingDialog.hideLoadingDialog(context);
         // ToastComponent.showToast(state.error.toString(), context: context);
@@ -219,7 +219,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 width: MediaQuery.sizeOf(context).width * 0.9,
                 child: ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
-                  textColor: themeCubit.backgroundColor,
+                  textColor: isFieldsValidate?
+                  ColorConstants.black:ColorConstants.grey1,
                   buttonText: StringConstants.continues,
                   onPressed:
                       isFieldsValidate ? handleOTPResponse : null,
