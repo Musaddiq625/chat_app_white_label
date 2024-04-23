@@ -265,7 +265,7 @@ class StringConstants {
   static const String typeYourMessage = "Type your message here...";
   static const String typeYourAnswer = "Type your answer here...";
   static const String typeYourDescription =
-      "Provide a brief description about the event here";
+      "Provide a brief description about the\nevent here";
   static const String doYouHaveQuestion =
       "Do you have questions or comments for the creator? Feel free to leave them here. This message is private.";
 
