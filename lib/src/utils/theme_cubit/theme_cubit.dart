@@ -38,6 +38,9 @@ class ThemeCubit extends Cubit<ThemeState> {
   Color get darkBackgroundColor100 => _isDarkMode
       ? DarkTheme.darkBackgroundColor100
       : LightTheme.darkBackgroundColor;
+  Color get darkBackgroundColor200 => _isDarkMode
+      ? DarkTheme.darkBackgroundColor200
+      : LightTheme.darkBackgroundColor;
   Color get textColor =>
       _isDarkMode ? DarkTheme.textColor : LightTheme.textColor;
   Color get textSecondaryColor => _isDarkMode

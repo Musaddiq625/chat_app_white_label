@@ -310,15 +310,15 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.linkedIn,
-              subIcon: Icons.add_circle,
+              leadingText: StringConstants.linkedIn,
+              trailingIcon: Icons.add_circle,
               trailingIconSize: 30,
               leadingIcon: AssetConstants.linkedin,
               isLeadingImageCircular: true,
               isLeadingImageSVG: true,
               isSocialConnected: true,
               subIconColor: themeCubit.textColor,
-              subText: "",
+              trailingText: "",
               onTap: () {
                 BottomSheetComponent.showBottomSheet(
                   context,
@@ -339,11 +339,11 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               // iconColor: ColorConstants.white,
               leadingIcon: AssetConstants.instagram,
               isSocialConnected: true,
-              iconText: StringConstants.instagram,
+              leadingText: StringConstants.instagram,
               subIconColor: themeCubit.primaryColor,
               trailingIconSize: 30,
-              subIcon: Icons.check_circle,
-              subText: StringConstants.connected,
+              trailingIcon: Icons.check_circle,
+              trailingText: StringConstants.connected,
               subTextColor: themeCubit.primaryColor,
               isLeadingImageCircular: true,
               isLeadingImageSVG: true,
@@ -367,11 +367,11 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               // iconColor: ColorConstants.white,
               leadingIcon: AssetConstants.facebook,
               isSocialConnected: true,
-              iconText: StringConstants.facebook,
+              leadingText: StringConstants.facebook,
               subIconColor: themeCubit.primaryColor,
               trailingIconSize: 30,
-              subIcon: Icons.check_circle,
-              subText: StringConstants.connected,
+              trailingIcon: Icons.check_circle,
+              trailingText: StringConstants.connected,
               subTextColor: themeCubit.primaryColor,
               onTap: () {
                 BottomSheetComponent.showBottomSheet(
@@ -409,12 +409,13 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.diet,
+              leadingText: StringConstants.diet,
+              trailingIcon: Icons.arrow_forward_ios,
               subIconColor: ColorConstants.iconBg,
               leadingIcon: AssetConstants.diet,
               overrideLeadingIconSize: 15,
               isLeadingImageSVG: true,
-              subText: _tempmoreAboutValue[StringConstants.diet],
+              trailingText: _tempmoreAboutValue[StringConstants.diet],
               onTap: () {
                 moreAboutYouSelection(
                     AssetConstants.diet,
@@ -428,12 +429,13 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.workout,
+              leadingText: StringConstants.workout,
+              trailingIcon: Icons.arrow_forward_ios,
               leadingIcon: AssetConstants.workout,
               isLeadingImageSVG: true,
               overrideLeadingIconSize: 15,
               subIconColor: ColorConstants.iconBg,
-              subText: _tempmoreAboutValue[StringConstants.workout],
+              trailingText: _tempmoreAboutValue[StringConstants.workout],
               onTap: () {
                 moreAboutYouSelection(
                     AssetConstants.workout,
@@ -447,12 +449,13 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.height,
+              leadingText: StringConstants.height,
               leadingIcon: AssetConstants.height,
+              trailingIcon: Icons.arrow_forward_ios,
               isLeadingImageSVG: true,
               overrideLeadingIconSize: 15,
               subIconColor: ColorConstants.iconBg,
-              subText: _tempmoreAboutValue[StringConstants.height],
+              trailingText: _tempmoreAboutValue[StringConstants.height],
               onTap: () {
                 moreAboutYouSelection(
                     AssetConstants.height,
@@ -467,10 +470,11 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.smoking,
+              leadingText: StringConstants.smoking,
+              trailingIcon: Icons.arrow_forward_ios,
               leadingIcon: AssetConstants.smoking,
               subIconColor: ColorConstants.iconBg,
-              subText: _tempmoreAboutValue[StringConstants.smoking],
+              trailingText: _tempmoreAboutValue[StringConstants.smoking],
               subTextColor: themeCubit.textColor,
               onTap: () {
                 moreAboutYouSelection(
@@ -485,10 +489,11 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.drinking,
+              leadingText: StringConstants.drinking,
               leadingIcon: AssetConstants.drinking,
+              trailingIcon: Icons.arrow_forward_ios,
               subIconColor: ColorConstants.iconBg,
-              subText: _tempmoreAboutValue[StringConstants.drinking],
+              trailingText: _tempmoreAboutValue[StringConstants.drinking],
               subTextColor: themeCubit.textColor,
               onTap: () {
                 moreAboutYouSelection(
@@ -503,10 +508,11 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.pets,
+              leadingText: StringConstants.pets,
+              trailingIcon: Icons.arrow_forward_ios,
               leadingIcon: AssetConstants.pets,
               subIconColor: ColorConstants.iconBg,
-              subText: _tempmoreAboutValue[StringConstants.pets],
+              trailingText: _tempmoreAboutValue[StringConstants.pets],
               subTextColor: themeCubit.textColor,
               onTap: () {
                 moreAboutYouSelection(
@@ -656,7 +662,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                           titleColor: selectedValue == e.key
                               ? themeCubit.backgroundColor
                               : null,
-                          subIcon: null,
+                          trailingIcon: null,
                         ),
                       );
                     }).toList()),

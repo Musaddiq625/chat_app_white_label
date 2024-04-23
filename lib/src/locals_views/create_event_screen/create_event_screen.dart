@@ -462,8 +462,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   leadingIconWidth: 25,
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.marker,
-                  iconText: StringConstants.location,
-                  subText: "Manchester",
+                  leadingText: StringConstants.location,
+                  trailingText: "Manchester",
                   onTap: _selectLocation,
                   subTextColor: themeCubit.textColor,
                 ),
@@ -474,8 +474,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   leadingIconWidth: 25,
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.ticket,
-                  iconText: StringConstants.price,
-                  subText: "Free",
+                  leadingText: StringConstants.price,
+                  trailingText: "Free",
                   onTap: _selectPrice,
                   subTextColor: themeCubit.textColor,
                 ),
@@ -486,8 +486,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   leadingIconWidth: 25,
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.happy,
-                  iconText: StringConstants.capacity,
-                  subText: "60",
+                  leadingText: StringConstants.capacity,
+                  trailingText: "60",
                   onTap: _selectCapacity,
                   subTextColor: themeCubit.textColor,
                 ),
@@ -550,8 +550,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   leadingIconWidth: 25,
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.marker,
-                  iconText: StringConstants.visibility,
-                  subText: "Public",
+                  leadingText: StringConstants.visibility,
+                  trailingText: "Public",
                   onTap: () {},
                   subTextColor: themeCubit.textColor,
                 ),
@@ -608,6 +608,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               ),
                             ),
                             // const Spacer(),
+
                             Switch(
                               // This bool value toggles the switch.
                               value: requireGuest,
@@ -663,6 +664,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         fontSize: 15,
                                         color: themeCubit.textColor),
                                   ),
+                                  SizedBoxConstants.sizedBoxSixH(),
                                   Container(
                                     child: const TextComponent(
                                         StringConstants

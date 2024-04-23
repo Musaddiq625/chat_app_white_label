@@ -8,7 +8,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/create_event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
-import 'package:chat_app_white_label/src/locals_views/settings_screens/notification_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/settings_screens/allow_notification_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
 import 'package:chat_app_white_label/src/screens/chat_screen/chat_screen.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -21,9 +21,11 @@ import '../utils/theme_cubit/theme_cubit.dart';
 class BottomNavBar extends StatefulWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
-  const BottomNavBar({ Key? key,
-      required this.selectedIndex,
-      required this.onItemTapped,}) : super(key: key);
+  const BottomNavBar({
+    Key? key,
+    required this.selectedIndex,
+    required this.onItemTapped,
+  }) : super(key: key);
 
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
@@ -33,7 +35,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final GlobalKey<PopupMenuButtonState<int>> _key = GlobalKey();
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   // int _selectedIndex = 0;
-
 
   // void _onItemTapped(int index) {
   //   setState(() {
@@ -50,8 +51,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(18.0)),
-      child:
-      BottomNavigationBar(
+      child: BottomNavigationBar(
         selectedFontSize: 0,
         backgroundColor: themeCubit.darkBackgroundColor,
         elevation: 10,
@@ -62,7 +62,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               height: 25,
               AssetConstants.home,
               colorFilter: ColorFilter.mode(
-                  widget.selectedIndex == 0 ? themeCubit.primaryColor : Colors.grey,
+                  widget.selectedIndex == 0
+                      ? themeCubit.primaryColor
+                      : Colors.grey,
                   BlendMode.srcIn),
             ),
             label: '',
@@ -76,7 +78,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               height: 25,
               AssetConstants.message,
               colorFilter: ColorFilter.mode(
-                  widget.selectedIndex == 2 ? themeCubit.primaryColor : Colors.grey,
+                  widget.selectedIndex == 2
+                      ? themeCubit.primaryColor
+                      : Colors.grey,
                   BlendMode.srcIn),
             ),
             label: '',
@@ -86,8 +90,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               width: 25,
               height: 30,
               AssetConstants.notifications,
-              color:
-              widget.selectedIndex == 3 ? themeCubit.primaryColor : Colors.grey,
+              color: widget.selectedIndex == 3
+                  ? themeCubit.primaryColor
+                  : Colors.grey,
             ),
             label: '',
           ),
@@ -96,7 +101,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               height: 25,
               AssetConstants.profile,
               colorFilter: ColorFilter.mode(
-                  widget.selectedIndex == 4 ? themeCubit.primaryColor : Colors.grey,
+                  widget.selectedIndex == 4
+                      ? themeCubit.primaryColor
+                      : Colors.grey,
                   BlendMode.srcIn),
             ),
             label: '',
@@ -133,8 +140,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
             TextComponent(
               StringConstants.createAEvent,
-              style: FontStylesConstants.style14(
-                  color: ColorConstants.white),
+              style: FontStylesConstants.style14(color: ColorConstants.white),
             ),
           ]),
           height: 0,
@@ -155,8 +161,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
             TextComponent(
               StringConstants.createAGroup,
-              style: FontStylesConstants.style14(
-                  color: ColorConstants.white),
+              style: FontStylesConstants.style14(color: ColorConstants.white),
             ),
           ]),
           value: 'makeAGroup',

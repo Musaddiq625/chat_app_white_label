@@ -10,14 +10,15 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
+class AllowNotificationScreen extends StatefulWidget {
+  const AllowNotificationScreen({super.key});
 
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  State<AllowNotificationScreen> createState() =>
+      _AllowNotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
+class _AllowNotificationScreenState extends State<AllowNotificationScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   bool requireNotification = true;
 

@@ -22,6 +22,10 @@ class ButtonComponent extends StatelessWidget {
   final BorderRadius? overrideBorderRadius;
   final bool? overrideFontStyle;
   final bool isSmallBtn;
+  final double? btnHeight;
+  final double? btnWidth;
+  final bool giveDefaultPadding;
+  final bool isBold;
 
   const ButtonComponent({
     Key? key,
@@ -39,6 +43,10 @@ class ButtonComponent extends StatelessWidget {
     this.minimizeVerticalPadding = false,
     this.isSmallBtn = false,
     this.textColor = ColorConstants.grey1,
+    this.btnHeight,
+    this.btnWidth,
+    this.giveDefaultPadding = true,
+    this.isBold = true,
   });
 
   @override
@@ -53,9 +61,13 @@ class ButtonComponent extends StatelessWidget {
           onTap: onPressed,
           borderRadius: borderRadius(),
           child: Container(
-            padding: EdgeInsets.symmetric(
-                vertical: 10, horizontal: isSmallBtn ? 30 : 0),
-            width: isSmallBtn ? null : MediaQuery.of(context).size.width,
+            padding: giveDefaultPadding
+                ? EdgeInsets.symmetric(
+                    vertical: 10, horizontal: isSmallBtn ? 30 : 0)
+                : EdgeInsets.zero,
+            height: btnHeight,
+            width: btnWidth ??
+                (isSmallBtn ? null : MediaQuery.of(context).size.width),
             decoration: BoxDecoration(
                 borderRadius: overrideBorderRadius ?? borderRadius(),
                 // border: overrideBorderColor != null
@@ -87,9 +99,8 @@ class ButtonComponent extends StatelessWidget {
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   style: FontStylesConstants.style14(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
                     color: textColor,
-
                   ),
                 ),
               ],

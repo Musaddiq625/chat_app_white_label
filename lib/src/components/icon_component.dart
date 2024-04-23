@@ -9,6 +9,7 @@ class IconComponent extends StatelessWidget {
   final IconData? iconData;
   final String? svgData;
   final bool svgDataCheck;
+  final bool showCustomTextonLeft;
   final double iconSize;
   final Color iconColor;
   final Color? backgroundColor;
@@ -41,6 +42,7 @@ class IconComponent extends StatelessWidget {
     this.customFontWeight = FontWeight.bold,
     this.svgData,
     this.svgDataCheck = true,
+    this.showCustomTextonLeft = false,
   });
 
   @override
@@ -103,6 +105,18 @@ class IconComponent extends StatelessWidget {
                       SizedBox(
                         width: 10,
                       ),
+                      if (showCustomTextonLeft == true)
+                        SizedBox(
+                          width: 5,
+                        ),
+                      if (showCustomTextonLeft == true)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0, left: 5),
+                          child: Text(
+                            customIconText!,
+                            style: TextStyle(color: customTextColor),
+                          ),
+                        ),
                       iconData != null
                           ? Icon(
                               iconData,
@@ -120,16 +134,18 @@ class IconComponent extends StatelessWidget {
                                   height: iconSize,
                                   color: iconColor,
                                 ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15.0,left: 5),
-                        child: Text(
-                          customIconText!,
-                          style: TextStyle(color: customTextColor),
+                      if (showCustomTextonLeft == false)
+                        SizedBox(
+                          width: 5,
                         ),
-                      ),
+                      if (showCustomTextonLeft == false)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0, left: 5),
+                          child: Text(
+                            customIconText!,
+                            style: TextStyle(color: customTextColor),
+                          ),
+                        ),
                     ],
                   )
                 : iconData != null
@@ -152,8 +168,7 @@ class IconComponent extends StatelessWidget {
                             color: iconColor,
                           ),
           ),
-          if (customText != null)
-            SizedBoxConstants.sizedBoxTenH(),
+          if (customText != null) SizedBoxConstants.sizedBoxTenH(),
           if (customText != null)
             TextComponent(
               customText!,

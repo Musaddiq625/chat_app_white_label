@@ -9,6 +9,8 @@ class DarkTheme {
   static const Color backgroundColor = Color(0xFF080808);
   static const Color darkBackgroundColor = Color(0xFF1A1A1A);
   static const Color darkBackgroundColor100 = Color(0xFF2E2E2E);
+  static const Color darkBackgroundColor200 = Color(0xFF363636);
+
   static const Color textColor = Colors.white;
   static const Color textSecondaryColor = Color(0xFF818181);
 }

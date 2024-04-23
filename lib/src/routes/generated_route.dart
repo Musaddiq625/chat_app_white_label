@@ -10,6 +10,7 @@ import 'package:chat_app_white_label/src/locals_views/group_screens/view_group_s
 import 'package:chat_app_white_label/src/locals_views/locals_signup/password_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/signup_with_email.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/notification_screen/notification_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/dob_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/gender_selection.dart';
@@ -19,7 +20,7 @@ import 'package:chat_app_white_label/src/locals_views/on_boarding/select_profile
 import 'package:chat_app_white_label/src/locals_views/on_boarding/upload_picture_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/what_do_you_do_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/otp_screen.dart';
-import 'package:chat_app_white_label/src/locals_views/settings_screens/notification_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/settings_screens/allow_notification_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/settings_screens/privacy_policy_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/settings_screens/settings_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/settings_screens/terms_of_use_screen.dart';
@@ -212,6 +213,9 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.notificationScreen:
       return materialRoute(const NotificationScreen());
+
+    case RouteConstants.allowNotificationScreen:
+      return materialRoute(const AllowNotificationScreen());
     case RouteConstants.termsOfUseScreen:
       return materialRoute(const TermsOfUseScreen());
     case RouteConstants.privacyPolicyScreen:

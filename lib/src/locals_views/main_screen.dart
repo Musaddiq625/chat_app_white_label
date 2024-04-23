@@ -3,12 +3,13 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/notification_screen/notification_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
 import 'package:flutter/material.dart';
 
 import '../components/bottom_nav_componenet.dart';
 import '../components/ui_scaffold.dart';
-import 'settings_screens/notification_screen.dart';
+import 'settings_screens/allow_notification_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -31,16 +32,13 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
-
-
   void _onItemTapped(int index) {
-    if(index == 1){
+    if (index == 1) {
       return;
     }
     setState(() {
       _selectedIndex = index;
     });
-
   }
 
   @override
@@ -60,6 +58,4 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-
-
 }
