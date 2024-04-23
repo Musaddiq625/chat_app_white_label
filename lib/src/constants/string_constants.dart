@@ -82,6 +82,7 @@ class StringConstants {
   static const String settings = "Settings";
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
+  static const String profile = "Profile";
   static const String messageForYou = "Message for you";
   static const String questionsFromCreator = "Questions from creator";
   static const String createANewEvent = "Create a new event";
@@ -198,7 +199,7 @@ class StringConstants {
   static const String areYouSureYouWantToDelete =
       "Are you sure you want to \ndelete your account? ";
   static const String areYouSureYouwantToShare =
-      "Are you sure you want to share \nEvent ";
+      "Are you sure you want to share ";
   static const String areYouSureYouwantToExit =
       "Are you sure you want to exit \nYour event will be deleted ";
   static const String areYouSureYouwantToRemoveFromConnection =
@@ -208,6 +209,7 @@ class StringConstants {
   static const String yesPlease = "Yes, please ";
   static const String yesRemove = "Yes, please remove";
   static const String eventShared = "Event Shared !";
+  static const String shared = "Shared !";
   static const String amountToWithDraw =
       "Enter the amount you would like to withdraw ";
   static const String eventCreatedSuccessfully =
@@ -240,13 +242,14 @@ class StringConstants {
   static const String exactLocationAfterJoining =
       "Exact location after joining";
   static const String ticketrequired = "Ticket required to attend event";
-  static const String freeToJoin = "Free to join";
+  static const String freeToJoin = "Free to Join";
   static const String noCharityRequired = "No charity support required";
   static const String capacityOf = "Capacity of";
   static const String people = "People";
   static const String limitedGuests = "Limited guests";
   static const String members = "Members";
   static const String events = "Events";
+  static const String event = "Event";
   static const String yourEvents = "Your Events";
   static const String groups = "Groups";
   static const String group = "Group";

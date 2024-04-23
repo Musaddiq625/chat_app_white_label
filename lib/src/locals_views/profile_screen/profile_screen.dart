@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
+import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
@@ -17,6 +18,7 @@ import '../../components/icon_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/string_constants.dart';
+import '../../models/contact.dart';
 import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
@@ -51,6 +53,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
     'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
+  ];
+
+  final List<ContactModel> contacts = [
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    // ... other contacts
   ];
 
   List<Map<String, dynamic>> tagList = [
@@ -398,6 +412,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     iconColor: Colors.white,
                     circleSize: 38,
                     iconSize: 15,
+                    onTap: (){
+                      ShareBottomSheet.shareBottomSheet(
+                          context, contacts,StringConstants.profile);
+                    },
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
