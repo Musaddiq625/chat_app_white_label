@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -102,10 +103,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-
         bgColor: themeCubit.backgroundColor,
-        removeSafeAreaPadding: true,
+        // removeSafeAreaPadding: true,
         // appBar:_appBar(),
+        appBar: const AppBarComponent(
+          StringConstants.createEvent,
+          centerTitle: false,
+          isBackBtnCircular: false,
+        ),
         widget: _createEvent());
   }
 
@@ -145,549 +150,600 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   }
 
   Widget _createEvent() {
-    return Container(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBoxConstants.sizedBoxTenH(),
-            AppBarComponent( StringConstants.createEvent,centerTitle: false,isBackBtnCircular: false),
-            // Padding(
-            //   padding: const EdgeInsets.only(top: 20.0, left: 5),
-            //   child: Row(
-            //     children: [
-            //       SizedBox(
-            //           child: GestureDetector(
-            //         onTap: _goBackBottomSheet,
-            //         child: IconComponent(
-            //           iconData: Icons.arrow_back_ios_new,
-            //           iconSize: 20,
-            //           circleHeight: 30,
-            //           backgroundColor: ColorConstants.transparent,
-            //           borderColor: ColorConstants.transparent,
-            //           iconColor: ColorConstants.lightGray,
-            //         ),
-            //       )),
-            //       const SizedBox(
-            //         width: 20,
-            //       ),
-            //       TextComponent(
-            //         StringConstants.createEvent,
-            //         style: TextStyle(
-            //             fontFamily: FontConstants.fontProtestStrike,
-            //             fontSize: 20,
-            //             color: themeCubit.primaryColor),
-            //       )
-            //     ],
-            //   ),
-            // ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                              "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // SizedBoxConstants.sizedBoxTenH(),
+
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 20.0, left: 5),
+          //   child: Row(
+          //     children: [
+          //       SizedBox(
+          //           child: GestureDetector(
+          //         onTap: _goBackBottomSheet,
+          //         child: IconComponent(
+          //           iconData: Icons.arrow_back_ios_new,
+          //           iconSize: 20,
+          //           circleHeight: 30,
+          //           backgroundColor: ColorConstants.transparent,
+          //           borderColor: ColorConstants.transparent,
+          //           iconColor: ColorConstants.lightGray,
+          //         ),
+          //       )),
+          //       const SizedBox(
+          //         width: 20,
+          //       ),
+          //       TextComponent(
+          //         StringConstants.createEvent,
+          //         style: TextStyle(
+          //             fontFamily: FontConstants.fontProtestStrike,
+          //             fontSize: 20,
+          //             color: themeCubit.primaryColor),
+          //       )
+          //     ],
+          //   ),
+          // ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    ClipRRect(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(30.0)),
+                      child: ImageComponent(
+                        imgUrl:
+                            "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
                         width: AppConstants.responsiveWidth(context),
                         height: AppConstants.responsiveHeight(context,
                             percentage: 85),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Row(
-                                children: [
-                                  IconComponent(
-                                    iconData: Icons.edit,
-                                    borderColor: ColorConstants.transparent,
-                                    circleSize: 38,
-                                    backgroundColor: ColorConstants.lightGray
-                                        .withOpacity(0.5),
-                                    iconColor: ColorConstants.white,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const TextComponent(
-                                    StringConstants.editCover,
-                                    style: TextStyle(
-                                        color: ColorConstants.white,
-                                        fontSize: 15),
-                                  )
-                                ],
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 20),
-                                child: TextComponent(
-                                  "xyz Event",
-                                  style: TextStyle(
-                                      fontSize: 38,
-                                      fontFamily:
-                                          FontConstants.fontProtestStrike,
-                                      color: ColorConstants.white),
-                                ),
-                              ),
-                              SizedBoxConstants.sizedBoxSixtyH()
-                            ],
-                          ),
+                        imgProviderCallback: (imgProvider) {},
+                      ),
+                    ),
+                    Positioned(
+                      top: 470,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 32.0,
                         ),
-                      )
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                IconComponent(
+                                  iconData: Icons.edit,
+                                  borderColor: ColorConstants.transparent,
+                                  circleSize: 35,
+                                  backgroundColor:
+                                      ColorConstants.lightGray.withOpacity(0.5),
+                                  iconColor: ColorConstants.white,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                const TextComponent(
+                                  StringConstants.editCover,
+                                  style: TextStyle(
+                                      color: ColorConstants.white,
+                                      fontSize: 15),
+                                )
+                              ],
+                            ),
+                            const TextComponent(
+                              "xyz Event",
+                              style: TextStyle(
+                                  fontSize: 38,
+                                  fontFamily: FontConstants.fontProtestStrike,
+                                  color: ColorConstants.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Container(
+                // decoration: const BoxDecoration(
+                //   borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                //   image: DecorationImage(
+                //     image: CachedNetworkImageProvider(
+                //       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                //     ),
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
+                // width: AppConstants.responsiveWidth(context),
+                // height:
+                //     AppConstants.responsiveHeight(context, percentage: 85),
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(20.0),
+                //     child: Column(
+                //       crossAxisAlignment: CrossAxisAlignment.start,
+                //       mainAxisAlignment: MainAxisAlignment.end,
+                //       children: [
+                //         Row(
+                //           children: [
+                //             IconComponent(
+                //               iconData: Icons.edit,
+                //               borderColor: ColorConstants.transparent,
+                //               circleSize: 38,
+                //               backgroundColor:
+                //                   ColorConstants.lightGray.withOpacity(0.5),
+                //               iconColor: ColorConstants.white,
+                //             ),
+                //             const SizedBox(
+                //               width: 10,
+                //             ),
+                //             const TextComponent(
+                //               StringConstants.editCover,
+                //               style: TextStyle(
+                //                   color: ColorConstants.white, fontSize: 15),
+                //             )
+                //           ],
+                //         ),
+                //         const Padding(
+                //           padding: EdgeInsets.only(left: 20),
+                //           child: TextComponent(
+                //             "xyz Event",
+                //             style: TextStyle(
+                //                 fontSize: 38,
+                //                 fontFamily: FontConstants.fontProtestStrike,
+                //                 color: ColorConstants.white),
+                //           ),
+                //         ),
+                //         SizedBoxConstants.sizedBoxSixtyH()
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                SizedBoxConstants.sizedBoxTwentyH(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: TextComponent(
+                    StringConstants.eventDetail,
+                    style: TextStyle(
+                        fontFamily: FontConstants.fontProtestStrike,
+                        fontSize: 20,
+                        color: themeCubit.primaryColor),
+                  ),
+                ),
+                SizedBoxConstants.sizedBoxTwelveH(),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  width: AppConstants.responsiveWidth(context),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                    color: themeCubit.darkBackgroundColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ImageComponent(
+                            imgUrl: AssetConstants.calendar,
+                            width: 20,
+                            imgProviderCallback: (imgProvider) {},
+                          ),
+                          // SvgPicture.asset(
+                          //   height: 20,
+                          //   AssetConstants.calendar,
+                          // ),
+                          SizedBoxConstants.sizedBoxTwentyW(),
+                          TextComponent(
+                            StringConstants.start,
+                            style: TextStyle(
+                                fontSize: 15, color: themeCubit.textColor),
+                          ),
+                          const Spacer(),
+                          TextComponent(
+                            "17 Feb at 11 am",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: themeCubit.textColor),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: List.generate(6, (index) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 2.0, left: 6),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: ColorConstants.grey,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  height: 3,
+                                  width: 3,
+                                ),
+                              );
+                            }),
+                          ),
+
+                          // Column(
+                          //   children: [
+                          //     IconComponent(
+                          //       iconData: Icons.circle_rounded,
+                          //       circleSize: 3,
+                          //       iconSize: 3,
+                          //       backgroundColor: ColorConstants.transparent,
+                          //       borderColor: ColorConstants.transparent,
+                          //     ),
+                          //     IconComponent(
+                          //       iconData: Icons.circle_rounded,
+                          //       circleSize: 5,
+                          //       iconSize: 5,
+                          //       backgroundColor: ColorConstants.transparent,
+                          //       borderColor: ColorConstants.transparent,
+                          //     ),
+                          //     IconComponent(
+                          //       iconData: Icons.circle_rounded,
+                          //       circleSize: 5,
+                          //       iconSize: 5,
+                          //       backgroundColor: ColorConstants.transparent,
+                          //       borderColor: ColorConstants.transparent,
+                          //     ),
+                          //     IconComponent(
+                          //       iconData: Icons.circle_rounded,
+                          //       circleSize: 5,
+                          //       iconSize: 5,
+                          //       backgroundColor: ColorConstants.transparent,
+                          //       borderColor: ColorConstants.transparent,
+                          //     ),
+                          //   ],
+                          // ),
+
+                          // IconComponent(
+                          //   iconData: Icons.straight,
+                          //   circleSize: 25,
+                          //   iconSize: 25,
+                          //   backgroundColor: ColorConstants.transparent,
+                          //   borderColor: ColorConstants.transparent,
+                          // ),
+                          const Spacer(),
+                          SizedBox(
+                              width:
+                                  AppConstants.responsiveWidth(context) / 1.5,
+                              child: const Divider(
+                                thickness: 0.1,
+                              ))
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SvgPicture.asset(
+                            height: 20,
+                            AssetConstants.end,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          TextComponent(
+                            StringConstants.end,
+                            style: TextStyle(
+                                fontSize: 15, color: themeCubit.textColor),
+                          ),
+                          const Spacer(),
+                          TextComponent(
+                            "2 pm",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: themeCubit.textColor),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  SizedBoxConstants.sizedBoxTwentyH(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: TextComponent(
-                      StringConstants.eventDetail,
-                      style: TextStyle(
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 20,
-                          color: themeCubit.primaryColor),
-                    ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ListTileComponent(
+                  leadingIconWidth: 25,
+                  leadingIconHeight: 25,
+                  leadingIcon: AssetConstants.marker,
+                  iconText: StringConstants.location,
+                  subText: "Manchester",
+                  onTap: _selectLocation,
+                  subTextColor: themeCubit.textColor,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ListTileComponent(
+                  leadingIconWidth: 25,
+                  leadingIconHeight: 25,
+                  leadingIcon: AssetConstants.ticket,
+                  iconText: StringConstants.price,
+                  subText: "Free",
+                  onTap: _selectPrice,
+                  subTextColor: themeCubit.textColor,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ListTileComponent(
+                  leadingIconWidth: 25,
+                  leadingIconHeight: 25,
+                  leadingIcon: AssetConstants.happy,
+                  iconText: StringConstants.capacity,
+                  subText: "60",
+                  onTap: _selectCapacity,
+                  subTextColor: themeCubit.textColor,
+                ),
+                SizedBoxConstants.sizedBoxTwentyH(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: TextComponent(
+                    StringConstants.eventDescription,
+                    style: TextStyle(
+                        fontFamily: FontConstants.fontProtestStrike,
+                        fontSize: 20,
+                        color: themeCubit.primaryColor),
                   ),
-                  const SizedBox(
-                    height: 13,
+                ),
+                SizedBoxConstants.sizedBoxTenH(),
+                TextField(
+                  controller: _controllerQuestions,
+                  maxLines: 4,
+                  style: TextStyle(color: themeCubit.textColor),
+                  decoration: InputDecoration(
+                    hintText: StringConstants.typeYourDescription,
+                    filled: true,
+                    fillColor: themeCubit.darkBackgroundColor,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(
+                          color: ColorConstants.transparent,
+                        )),
+                    hintStyle: const TextStyle(
+                        color: ColorConstants.lightGray, fontSize: 14),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: const BorderSide(
+                            color: ColorConstants.transparent)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                        borderSide: const BorderSide(
+                            color: ColorConstants.transparent)),
+                    // suffixIcon: IconButton(
+                    //   icon: Icon(Icons.send),
+                    //   onPressed: _sendMessage,
+                    // ),
                   ),
-                  Container(
-                    width: AppConstants.responsiveWidth(context),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20.0)),
-                      color: themeCubit.darkBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              SvgPicture.asset(
-                                height: 20,
-                                AssetConstants.calendar,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              TextComponent(
-                                StringConstants.start,
-                                style: TextStyle(
-                                    fontSize: 15, color: themeCubit.textColor),
-                              ),
-                              const Spacer(),
-                              TextComponent(
-                                "17 Feb at 11 am",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: themeCubit.textColor),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: List.generate(6, (index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 2.0, left: 6),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      height: 3,
-                                      width: 3,
-                                    ),
-                                  );
-                                }),
-                              ),
-
-                              // Column(
-                              //   children: [
-                              //     IconComponent(
-                              //       iconData: Icons.circle_rounded,
-                              //       circleSize: 3,
-                              //       iconSize: 3,
-                              //       backgroundColor: ColorConstants.transparent,
-                              //       borderColor: ColorConstants.transparent,
-                              //     ),
-                              //     IconComponent(
-                              //       iconData: Icons.circle_rounded,
-                              //       circleSize: 5,
-                              //       iconSize: 5,
-                              //       backgroundColor: ColorConstants.transparent,
-                              //       borderColor: ColorConstants.transparent,
-                              //     ),
-                              //     IconComponent(
-                              //       iconData: Icons.circle_rounded,
-                              //       circleSize: 5,
-                              //       iconSize: 5,
-                              //       backgroundColor: ColorConstants.transparent,
-                              //       borderColor: ColorConstants.transparent,
-                              //     ),
-                              //     IconComponent(
-                              //       iconData: Icons.circle_rounded,
-                              //       circleSize: 5,
-                              //       iconSize: 5,
-                              //       backgroundColor: ColorConstants.transparent,
-                              //       borderColor: ColorConstants.transparent,
-                              //     ),
-                              //   ],
-                              // ),
-
-                              // IconComponent(
-                              //   iconData: Icons.straight,
-                              //   circleSize: 25,
-                              //   iconSize: 25,
-                              //   backgroundColor: ColorConstants.transparent,
-                              //   borderColor: ColorConstants.transparent,
-                              // ),
-                              const Spacer(),
-                              SizedBox(
-                                  width: AppConstants.responsiveWidth(context) /
-                                      1.5,
-                                  child: const Divider(
-                                    thickness: 0.1,
-                                  ))
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              SvgPicture.asset(
-                                height: 20,
-                                AssetConstants.end,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              TextComponent(
-                                StringConstants.end,
-                                style: TextStyle(
-                                    fontSize: 15, color: themeCubit.textColor),
-                              ),
-                              const Spacer(),
-                              TextComponent(
-                                "2 pm",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: themeCubit.textColor),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                ),
+                SizedBoxConstants.sizedBoxTwentyH(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: TextComponent(
+                    StringConstants.otherOptions,
+                    style: TextStyle(
+                        fontFamily: FontConstants.fontProtestStrike,
+                        fontSize: 20,
+                        color: themeCubit.primaryColor),
                   ),
-                  const SizedBox(
-                    height: 10,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ListTileComponent(
+                  leadingIconWidth: 25,
+                  leadingIconHeight: 25,
+                  leadingIcon: AssetConstants.marker,
+                  iconText: StringConstants.visibility,
+                  subText: "Public",
+                  onTap: () {},
+                  subTextColor: themeCubit.textColor,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: AppConstants.responsiveWidth(context),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                    color: themeCubit.darkBackgroundColor,
                   ),
-                  ListTileComponent(
-                    leadingIconWidth: 25,
-                    leadingIconHeight: 25,
-                    leadingIcon: AssetConstants.marker,
-                    iconText: StringConstants.location,
-                    subText: "Manchester",
-                    onTap: _selectLocation,
-                    subTextColor: themeCubit.textColor,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ListTileComponent(
-                    leadingIconWidth: 25,
-                    leadingIconHeight: 25,
-                    leadingIcon: AssetConstants.ticket,
-                    iconText: StringConstants.price,
-                    subText: "Free",
-                    onTap: _selectPrice,
-                    subTextColor: themeCubit.textColor,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ListTileComponent(
-                    leadingIconWidth: 25,
-                    leadingIconHeight: 25,
-                    leadingIcon: AssetConstants.happy,
-                    iconText: StringConstants.capacity,
-                    subText: "60",
-                    onTap: _selectCapacity,
-                    subTextColor: themeCubit.textColor,
-                  ),
-                  SizedBoxConstants.sizedBoxTwentyH(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: TextComponent(
-                      StringConstants.eventDescription,
-                      style: TextStyle(
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 20,
-                          color: themeCubit.primaryColor),
-                    ),
-                  ),
-                  SizedBoxConstants.sizedBoxTenH(),
-                  TextField(
-                    controller: _controllerQuestions,
-                    maxLines: 4,
-                    style: TextStyle(color: themeCubit.textColor),
-                    decoration: InputDecoration(
-                      hintText: StringConstants.typeYourDescription,
-                      filled: true,
-                      fillColor: themeCubit.darkBackgroundColor,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: const BorderSide(
-                            color: ColorConstants.transparent,
-                          )),
-                      hintStyle: const TextStyle(
-                          color: ColorConstants.lightGray, fontSize: 14),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: const BorderSide(
-                              color: ColorConstants.transparent)),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(23.0),
-                          borderSide: const BorderSide(
-                              color: ColorConstants.transparent)),
-                      // suffixIcon: IconButton(
-                      //   icon: Icon(Icons.send),
-                      //   onPressed: _sendMessage,
-                      // ),
-                    ),
-                  ),
-                  SizedBoxConstants.sizedBoxTwentyH(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: TextComponent(
-                      StringConstants.otherOptions,
-                      style: TextStyle(
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 20,
-                          color: themeCubit.primaryColor),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ListTileComponent(
-                    leadingIconWidth: 25,
-                    leadingIconHeight: 25,
-                    leadingIcon: AssetConstants.marker,
-                    iconText: StringConstants.visibility,
-                    subText: "Public",
-                    onTap: () {},
-                    subTextColor: themeCubit.textColor,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    width: AppConstants.responsiveWidth(context),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20.0)),
-                      color: themeCubit.darkBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SvgPicture.asset(
-                                height: 25,
-                                AssetConstants.ticket,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                flex: 6,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextComponent(
-                                        StringConstants.requireGuestsApproval,
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: themeCubit.textColor)),
-                                    Container(
-                                      child: const TextComponent(
-                                          StringConstants
-                                              .requireGuestsApprovalBody,
-                                          maxLines:6,
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: ColorConstants.lightGray),
-                                          textAlign: TextAlign.start),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Spacer(),
-                              Switch(
-                                // This bool value toggles the switch.
-                                value: requireGuest,
-                                activeColor: ColorConstants.white,
-                                activeTrackColor: themeCubit.primaryColor,
-                                onChanged: (bool value) {
-                                  // This is called when the user toggles the switch.
-                                  setState(() {
-                                    requireGuest = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    width: AppConstants.responsiveWidth(context),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20.0)),
-                      color: themeCubit.darkBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SvgPicture.asset(
-                                height: 25,
-                                AssetConstants.ticket,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                flex: 6,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextComponent(
-                                      StringConstants.askQuestionWhenPeopleJoin,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ImageComponent(
+                              imgUrl: AssetConstants.ticket,
+                              height: 25,
+                              width: 25,
+                              imgProviderCallback:
+                                  (ImageProvider<Object> imgProvider) {},
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              flex: 6,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextComponent(
+                                      StringConstants.requireGuestsApproval,
                                       maxLines: 3,
                                       style: TextStyle(
                                           fontSize: 15,
-                                          color: themeCubit.textColor),
-                                    ),
-                                    Container(
-                                      child: const TextComponent(
-                                          StringConstants
-                                              .askQuestionWhenPeopleJoinBody,
-                                          maxLines: 3,
+                                          color: themeCubit.textColor)),
+                                  SizedBoxConstants.sizedBoxSixH(),
+                                  Container(
+                                    child: const TextComponent(
+                                        StringConstants
+                                            .requireGuestsApprovalBody,
+                                        maxLines: 6,
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color: ColorConstants.lightGray),
+                                        textAlign: TextAlign.start),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // const Spacer(),
+                            Switch(
+                              // This bool value toggles the switch.
+                              value: requireGuest,
+                              activeColor: ColorConstants.white,
+                              activeTrackColor: themeCubit.primaryColor,
+                              onChanged: (bool value) {
+                                // This is called when the user toggles the switch.
+                                setState(() {
+                                  requireGuest = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: AppConstants.responsiveWidth(context),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                    color: themeCubit.darkBackgroundColor,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SvgPicture.asset(
+                              height: 25,
+                              AssetConstants.ticket,
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              flex: 6,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextComponent(
+                                    StringConstants.askQuestionWhenPeopleJoin,
+                                    maxLines: 3,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: themeCubit.textColor),
+                                  ),
+                                  Container(
+                                    child: const TextComponent(
+                                        StringConstants
+                                            .askQuestionWhenPeopleJoinBody,
+                                        maxLines: 3,
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color: ColorConstants.lightGray),
+                                        textAlign: TextAlign.start),
+                                  ),
+                                  if (editQuestion != false)
+                                    Row(
+                                      children: [
+                                        TextComponent(
+                                          StringConstants.editQuestions,
                                           style: TextStyle(
-                                              fontSize: 13,
-                                              color: ColorConstants.lightGray),
-                                          textAlign: TextAlign.start),
+                                              fontSize: 15,
+                                              color: themeCubit.textColor),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        IconComponent(
+                                          iconData: Icons.edit,
+                                          borderColor:
+                                              ColorConstants.transparent,
+                                          backgroundColor:
+                                              ColorConstants.transparent,
+                                          iconColor: ColorConstants.lightGray
+                                              .withOpacity(0.5),
+                                          iconSize: 20,
+                                          circleSize: 15,
+                                        ),
+                                      ],
                                     ),
-                                    if (editQuestion != false)
-                                      Row(
-                                        children: [
-                                          TextComponent(
-                                            StringConstants.editQuestions,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: themeCubit.textColor),
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          IconComponent(
-                                            iconData: Icons.edit,
-                                            borderColor:
-                                                ColorConstants.transparent,
-                                            backgroundColor:
-                                                ColorConstants.transparent,
-                                            iconColor: ColorConstants.lightGray
-                                                .withOpacity(0.5),
-                                            iconSize: 20,
-                                            circleSize: 15,
-                                          ),
-                                        ],
-                                      ),
-                                  ],
-                                ),
+                                ],
                               ),
-                              const Spacer(),
-                              Switch(
-                                // This bool value toggles the switch.
-                                value: askQuestion,
-                                activeColor: ColorConstants.white,
-                                activeTrackColor: themeCubit.primaryColor,
-                                onChanged: (bool value) {
-                                  // This is called when the user toggles the switch.
-                                  setState(() {
-                                    askQuestion = value;
-                                  });
-                                  if (askQuestion == true) {
-                                    _selectQuestion();
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                            const Spacer(),
+                            Switch(
+                              // This bool value toggles the switch.
+                              value: askQuestion,
+                              activeColor: ColorConstants.white,
+                              activeTrackColor: themeCubit.primaryColor,
+                              onChanged: (bool value) {
+                                // This is called when the user toggles the switch.
+                                setState(() {
+                                  askQuestion = value;
+                                });
+                                if (askQuestion == true) {
+                                  _selectQuestion();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: AppConstants.responsiveWidth(context),
+                  child: ButtonComponent(
+                    bgcolor: themeCubit.primaryColor,
+                    buttonText: StringConstants.createEvent,
+                    textColor: themeCubit.backgroundColor,
+                    onPressed: () {
+                      // EventUtils.createEvent(_eventDataModel!);
+                      _createBottomSheet();
+                      // NavigationUtil.push(
+                      //     context, RouteConstants.localsEventScreen);
+                    },
                   ),
-                  Container(
-                    width: AppConstants.responsiveWidth(context),
-                    child: ButtonComponent(
-                      bgcolor: themeCubit.primaryColor,
-                      buttonText: StringConstants.createEvent,
-                      textColor: themeCubit.backgroundColor,
-                      onPressed: () {
-                        // EventUtils.createEvent(_eventDataModel!);
-                        _createBottomSheet();
-                        // NavigationUtil.push(
-                        //     context, RouteConstants.localsEventScreen);
-                      },
-                    ),
-                  )
-                ],
-              ),
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1469,7 +1525,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextComponent(
+                    const TextComponent(
                       StringConstants.questions,
                       style: TextStyle(
                           color: ColorConstants.primaryColor,

@@ -234,13 +234,6 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
       }
     } else if (index != null) {
       selectedImages[index] = image.path;
-      // selectedImages[selectedImages.indexOf("")] = image.path;
-      // print('SELECTEDIMAGES[SELECTEDIMAGES.INDEXOF("")]: ${selectedImages[selectedImages.indexOf("")]}');
-
-      // if (selectedImages.every((element) => element.isNotEmpty) == false) {
-      //   selectedImages[0] = image.path;
-      // }
-      // selectedImages.insert(index, image.path);
     }
   }
   // }
