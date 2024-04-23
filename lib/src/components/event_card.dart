@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -8,7 +9,7 @@ import '../constants/string_constants.dart';
 
 class EventCard extends StatelessWidget {
   final String imageUrl;
-  final List<ImageProvider> images;
+  final List<String> images;
   final double radius2;
   final bool viewTicket;
 
@@ -76,12 +77,16 @@ class EventCard extends StatelessWidget {
                                   Positioned(
                                     left: i * radius2 / 1.5,
                                     child: ClipOval(
-                                      child: Image(
-                                        image: images[i],
-                                        width: radius2,
-                                        height: radius2,
-                                        fit: BoxFit.cover,
+                                      child:
+                                      ImageComponent(
+                                        imgUrl: images[i], width: radius2,height: radius2,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
                                       ),
+                                      // Image(
+                                      //   image: images[i],
+                                      //   width: radius2,
+                                      //   height: radius2,
+                                      //   fit: BoxFit.cover,
+                                      // ),
                                     ),
                                   ),
                               ],

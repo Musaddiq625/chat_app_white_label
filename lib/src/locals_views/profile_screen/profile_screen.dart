@@ -34,14 +34,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool connectSend = false;
   int _currentPage = 0;
   late PageController _pageController;
-  final List<ImageProvider> images = [
-    const CachedNetworkImageProvider(
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    // Replace with your image URL
-    const CachedNetworkImageProvider(
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    // Replace with your asset path
-    // Add more image providers as needed
+  final List<String> images = [
+    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
   ];
   double radius = 22;
 
@@ -392,12 +387,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             left: i * radius / 1.5,
                             // Adjust the left offset
                             child: ClipOval(
-                              child: Image(
-                                image: images[i],
-                                width: radius,
-                                height: radius,
-                                fit: BoxFit.cover,
-                              ),
+                              child: ImageComponent(
+                                imgUrl: images[i], width: radius,height: radius,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
+                              )
+
+                              // Image(
+                              //   image: images[i],
+                              //   width: radius,
+                              //   height: radius,
+                              //   fit: BoxFit.cover,
+                              // ),
                             ),
                           ),
                       ],
@@ -661,12 +660,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             Positioned(
                                               left: i * radius2 / 1.5,
                                               child: ClipOval(
-                                                child: Image(
-                                                  image: images[i],
-                                                  width: radius2,
-                                                  height: radius2,
-                                                  fit: BoxFit.cover,
-                                                ),
+                                                child:
+
+                                                ImageComponent(
+                                                  imgUrl: images[i], width: radius2,height: radius2,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
+                                                )
+                                                // Image(
+                                                //   image: images[i],
+                                                //   width: radius2,
+                                                //   height: radius2,
+                                                //   fit: BoxFit.cover,
+                                                // ),
                                               ),
                                             ),
                                         ],
@@ -816,12 +820,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             Positioned(
                                               left: i * radius2 / 1.5,
                                               child: ClipOval(
-                                                child: Image(
-                                                  image: images[i],
-                                                  width: radius2,
-                                                  height: radius2,
-                                                  fit: BoxFit.cover,
-                                                ),
+                                                child: ImageComponent(
+                                                  imgUrl: images[i], width: radius2,height: radius2,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
+                                                )
+
+                                                // Image(
+                                                //   image: images[i],
+                                                //   width: radius2,
+                                                //   height: radius2,
+                                                //   fit: BoxFit.cover,
+                                                // ),
                                               ),
                                             ),
                                         ],

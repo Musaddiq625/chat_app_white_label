@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -16,7 +17,7 @@ class EventSummary extends StatelessWidget {
   final int remainingTickets;
   final bool eventActive;
   final bool currenStats;
-  final List<ImageProvider> imagesUserInEvent;
+  final List<String> imagesUserInEvent;
 
   const EventSummary({
     Key? key,
@@ -95,12 +96,16 @@ class EventSummary extends StatelessWidget {
                               Positioned(
                                 left: i * radius / 1.5,
                                 child: ClipOval(
-                                  child: Image(
-                                    image: images[i],
-                                    width: radius,
-                                    height: radius,
-                                    fit: BoxFit.cover,
+                                  child:
+                                  ImageComponent(
+                                    imgUrl: images[i], width: radius,height: radius,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
                                   ),
+                                  // Image(
+                                  //   image: images[i],
+                                  //   width: radius,
+                                  //   height: radius,
+                                  //   fit: BoxFit.cover,
+                                  // ),
                                 ),
                               ),
                           ],

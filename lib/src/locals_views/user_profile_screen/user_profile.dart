@@ -42,28 +42,19 @@ class _UserProfileState extends State<UserProfile> {
   String img =
       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg";
 
-  final List<ImageProvider> images2 = [
-    const CachedNetworkImageProvider(
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const CachedNetworkImageProvider(
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const CachedNetworkImageProvider(
-        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
+  final List<String> images2 = [
+    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+    "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
   ];
 
-  final List<ImageProvider> images = [
-    const CachedNetworkImageProvider(
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const CachedNetworkImageProvider(
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const CachedNetworkImageProvider(
-        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
-    const CachedNetworkImageProvider(
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const CachedNetworkImageProvider(
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const CachedNetworkImageProvider(
-        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
+  final List<String> images = [
+    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+    "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
+    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+    "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
   ];
 
   List<Map<String, dynamic>> eventDetailList = [
@@ -185,7 +176,7 @@ class _UserProfileState extends State<UserProfile> {
           Row(
             children: [
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   NavigationUtil.push(context, RouteConstants.earningScreen);
                 },
                 child: Container(
@@ -225,7 +216,7 @@ class _UserProfileState extends State<UserProfile> {
                 iconSize: 20,
                 borderSize: 0,
                 circleSize: 35,
-                onTap: (){
+                onTap: () {
                   NavigationUtil.push(context, RouteConstants.settingsScreen);
                 },
                 // circleHeight: 30,
@@ -245,7 +236,8 @@ class _UserProfileState extends State<UserProfile> {
           Stack(
             children: [
               GestureDetector(
-                onTap:()=> NavigationUtil.push(context, RouteConstants.editProfileScreen),
+                onTap: () => NavigationUtil.push(
+                    context, RouteConstants.editProfileScreen),
                 child: CircleAvatar(
                   radius: 65,
                   backgroundImage: (selectedImage != null
@@ -318,8 +310,9 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
-                  NavigationUtil.push(context, RouteConstants.allConnectionScreen);
+                onTap: () {
+                  NavigationUtil.push(
+                      context, RouteConstants.allConnectionScreen);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -396,7 +389,7 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   NavigationUtil.push(context, RouteConstants.allEventScreen);
                 },
                 child: Row(
@@ -432,8 +425,9 @@ class _UserProfileState extends State<UserProfile> {
                   (tag) => Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: GestureDetector(
-                        onTap: (){
-                          NavigationUtil.push(context, RouteConstants.viewYourEventScreen);
+                        onTap: () {
+                          NavigationUtil.push(
+                              context, RouteConstants.viewYourEventScreen);
                         },
                         child: EventSummary(
                           eventTitle: "Meet & Mingle in Riyadh Season",
@@ -622,7 +616,8 @@ class _UserProfileState extends State<UserProfile> {
             bgcolor: ColorConstants.darkBackgrounddColor,
             textColor: ColorConstants.white,
             onPressed: () => {
-              NavigationUtil.push(context, RouteConstants.createEventScreen)},
+              NavigationUtil.push(context, RouteConstants.createEventScreen)
+            },
           )
         ],
       ),
@@ -644,8 +639,7 @@ class _UserProfileState extends State<UserProfile> {
               ),
               GestureDetector(
                 onTap: () => {
-                  NavigationUtil.push(
-                      context, RouteConstants.allEventScreen),
+                  NavigationUtil.push(context, RouteConstants.allEventScreen),
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

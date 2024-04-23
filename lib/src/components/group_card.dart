@@ -8,7 +8,7 @@ import '../constants/string_constants.dart';
 
 class GroupCard extends StatelessWidget {
   final String imageUrl;
-  final List<ImageProvider> images;
+  final List<String> images;
   final String membersCount;
   final String name;
 

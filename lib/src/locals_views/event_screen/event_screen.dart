@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/joinBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -56,13 +56,12 @@ class _EventScreenState extends State<EventScreen> {
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
   ];
-  final List<ImageProvider> images = [
-    const CachedNetworkImageProvider(
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const CachedNetworkImageProvider(
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const CachedNetworkImageProvider(
-        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
+  final List<String> images = [
+    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+
+    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+
+    "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
     // Replace with your asset path
     // Add more image providers as needed
   ];
@@ -109,7 +108,8 @@ class _EventScreenState extends State<EventScreen> {
                 bgcolor: themeCubit.primaryColor,
                 // btnTextColor: themeCubit.textColor,
                 onPressed: () {
-                  JoinBottomSheet.showJoinBottomSheet(context, _controller,"Property networking event","Group","ABC","");
+                  JoinBottomSheet.showJoinBottomSheet(context, _controller,
+                      "Property networking event", "Group", "ABC", "");
                   // _showJoinBottomSheet();
                 },
               ),
@@ -160,12 +160,19 @@ class _EventScreenState extends State<EventScreen> {
                           Positioned(
                             left: i * radius / 1.5,
                             child: ClipOval(
-                              child: Image(
-                                image: images[i],
+                              child: ImageComponent(
+                                imgUrl: images[i],
                                 width: radius,
                                 height: radius,
-                                fit: BoxFit.cover,
+                                imgProviderCallback:
+                                    (ImageProvider<Object> imgProvider) {},
                               ),
+                              // Image(
+                              //   image: images[i],
+                              //   width: radius,
+                              //   height: radius,
+                              //   fit: BoxFit.cover,
+                              // ),
                             ),
                           ),
                       ],
