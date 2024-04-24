@@ -873,62 +873,64 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     color: themeCubit.darkBackgroundColor,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
+                    padding: const EdgeInsets.only(top:10.0,left:15,right: 15,bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ImageComponent(
-                              imgUrl: AssetConstants.ticket,
-                              height: 25,
-                              width: 25,
-                              imgProviderCallback:
-                                  (ImageProvider<Object> imgProvider) {},
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              flex: 6,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextComponent(
-                                      StringConstants.requireGuestsApproval,
-                                      maxLines: 3,
+                        Padding(
+                          padding: const EdgeInsets.only(top:8.0),
+                          child: ImageComponent(
+                            imgUrl: AssetConstants.ticket,
+                            height: 25,
+                            width: 25,
+                            imgProviderCallback:
+                                (ImageProvider<Object> imgProvider) {},
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          flex: 6,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top:8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextComponent(
+                                    StringConstants.requireGuestsApproval,
+                                    maxLines: 3,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: themeCubit.textColor)),
+                                SizedBoxConstants.sizedBoxSixH(),
+                                Container(
+                                  child: const TextComponent(
+                                      StringConstants
+                                          .requireGuestsApprovalBody,
+                                      maxLines: 6,
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          color: themeCubit.textColor)),
-                                  SizedBoxConstants.sizedBoxSixH(),
-                                  Container(
-                                    child: const TextComponent(
-                                        StringConstants
-                                            .requireGuestsApprovalBody,
-                                        maxLines: 6,
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: ColorConstants.lightGray),
-                                        textAlign: TextAlign.start),
-                                  ),
-                                ],
-                              ),
+                                          fontSize: 13,
+                                          color: ColorConstants.lightGray),
+                                      textAlign: TextAlign.start),
+                                ),
+                              ],
                             ),
-                            // const Spacer(),
-                            Switch(
-                              // This bool value toggles the switch.
-                              value: requireGuest,
-                              activeColor: ColorConstants.white,
-                              activeTrackColor: themeCubit.primaryColor,
-                              onChanged: (bool value) {
-                                // This is called when the user toggles the switch.
-                                setState(() {
-                                  requireGuest = value;
-                                });
-                              },
-                            ),
-                          ],
+                          ),
+                        ),
+                        // const Spacer(),
+                        Switch(
+                          // This bool value toggles the switch.
+                          value: requireGuest,
+                          activeColor: ColorConstants.white,
+                          activeTrackColor: themeCubit.primaryColor,
+                          onChanged: (bool value) {
+                            // This is called when the user toggles the switch.
+                            setState(() {
+                              requireGuest = value;
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -944,7 +946,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     color: themeCubit.darkBackgroundColor,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.only(top:10.0,left:15,right: 15,bottom: 15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -952,61 +954,67 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SvgPicture.asset(
-                              height: 25,
-                              AssetConstants.ticket,
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0),
+                              child: SvgPicture.asset(
+                                height: 25,
+                                AssetConstants.ticket,
+                              ),
                             ),
                             const SizedBox(
                               width: 20,
                             ),
                             Expanded(
                               flex: 6,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextComponent(
-                                    StringConstants.askQuestionWhenPeopleJoin,
-                                    maxLines: 3,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: themeCubit.textColor),
-                                  ),
-                                  Container(
-                                    child: const TextComponent(
-                                        StringConstants
-                                            .askQuestionWhenPeopleJoinBody,
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: ColorConstants.lightGray),
-                                        textAlign: TextAlign.start),
-                                  ),
-                                  if (editQuestion != false)
-                                    Row(
-                                      children: [
-                                        TextComponent(
-                                          StringConstants.editQuestions,
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: themeCubit.textColor),
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        IconComponent(
-                                          iconData: Icons.edit,
-                                          borderColor:
-                                              ColorConstants.transparent,
-                                          backgroundColor:
-                                              ColorConstants.transparent,
-                                          iconColor: ColorConstants.lightGray
-                                              .withOpacity(0.5),
-                                          iconSize: 20,
-                                          circleSize: 15,
-                                        ),
-                                      ],
+                              child: Padding(
+                                padding: const EdgeInsets.only(top:8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextComponent(
+                                      StringConstants.askQuestionWhenPeopleJoin,
+                                      maxLines: 3,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: themeCubit.textColor),
                                     ),
-                                ],
+                                    Container(
+                                      child: const TextComponent(
+                                          StringConstants
+                                              .askQuestionWhenPeopleJoinBody,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: ColorConstants.lightGray),
+                                          textAlign: TextAlign.start),
+                                    ),
+                                    if (editQuestion != false)
+                                      Row(
+                                        children: [
+                                          TextComponent(
+                                            StringConstants.editQuestions,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: themeCubit.textColor),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          IconComponent(
+                                            iconData: Icons.edit,
+                                            borderColor:
+                                                ColorConstants.transparent,
+                                            backgroundColor:
+                                                ColorConstants.transparent,
+                                            iconColor: ColorConstants.lightGray
+                                                .withOpacity(0.5),
+                                            iconSize: 20,
+                                            circleSize: 15,
+                                          ),
+                                        ],
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                             const Spacer(),
@@ -1035,7 +1043,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   height: 10,
                 ),
                 Container(
-                  width: AppConstants.responsiveWidth(context),
+                  margin: EdgeInsets.only(left: 8,right: 8),
                   child: ButtonComponent(
                     bgcolor: themeCubit.primaryColor,
                     buttonText: StringConstants.createEvent,
