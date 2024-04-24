@@ -74,7 +74,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
       },
       builder: (context, state) {
         return UIScaffold(
-            appBar: const AppBarComponent(""),
+            appBar: AppBarComponent(""),
             removeSafeAreaPadding: false,
             bgColor: themeCubit.backgroundColor,
             widget: setProfileImage());

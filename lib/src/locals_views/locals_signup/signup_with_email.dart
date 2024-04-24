@@ -76,7 +76,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       }
     }, builder: (context, state) {
       return UIScaffold(
-          appBar: const AppBarComponent(""),
+          appBar: AppBarComponent(""),
           resizeToAvoidBottomInset: false,
           // removeSafeAreaPadding: enablePasswordField ? true : false,
           bgColor: themeCubit.backgroundColor,

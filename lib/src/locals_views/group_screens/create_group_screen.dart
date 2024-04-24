@@ -89,7 +89,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
     return UIScaffold(
         bgColor: themeCubit.backgroundColor,
         // removeSafeAreaPadding: false,
-        appBar: const AppBarComponent(
+        appBar: AppBarComponent(
           StringConstants.makeAGroup,
           centerTitle: false,
           isBackBtnCircular: false,
@@ -149,10 +149,10 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                     children: [
                       ClipRRect(
                         borderRadius:
-                        const BorderRadius.all(Radius.circular(30.0)),
+                            const BorderRadius.all(Radius.circular(30.0)),
                         child: ImageComponent(
                           imgUrl:
-                          "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                              "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
                           width: AppConstants.responsiveWidth(context),
                           height: AppConstants.responsiveHeight(context,
                               percentage: 85),
@@ -160,7 +160,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                         ),
                       ),
                       Positioned(
-                        top:  AppConstants.responsiveHeight(context,
+                        top: AppConstants.responsiveHeight(context,
                             percentage: 60),
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -175,8 +175,8 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                                     iconData: Icons.edit,
                                     borderColor: ColorConstants.transparent,
                                     circleSize: 35,
-                                    backgroundColor:
-                                    ColorConstants.lightGray.withOpacity(0.5),
+                                    backgroundColor: ColorConstants.lightGray
+                                        .withOpacity(0.5),
                                     iconColor: ColorConstants.white,
                                   ),
                                   const SizedBox(
@@ -190,7 +190,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                                   )
                                 ],
                               ),
-                               TextComponent(
+                              TextComponent(
                                 groupName,
                                 style: TextStyle(
                                     fontSize: 38,

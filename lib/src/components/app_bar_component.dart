@@ -12,9 +12,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppBarComponent extends StatelessWidget {
   final Function()? overrideBackPressed;
-  final String? text;
+  final String? titleText;
+  final String? titleText2;
   final String? subtitleText;
-  final Color iconBgColor;
+  Color? iconBgColor;
   final bool enableDark;
   final bool enablePadding;
   final bool showBackbutton;
@@ -22,28 +23,30 @@ class AppBarComponent extends StatelessWidget {
   final bool centerTitle;
   final Widget? action;
 
-  const AppBarComponent(
-    this.text, {
+  AppBarComponent(
+    this.titleText, {
     Key? key,
     this.overrideBackPressed,
     this.enableDark = false,
     this.subtitleText,
-    this.iconBgColor = ColorConstants.blackLight,
+    this.iconBgColor,
     this.enablePadding = false,
     this.showBackbutton = true,
     this.action,
     this.centerTitle = true,
     this.isBackBtnCircular = true,
+    this.titleText2,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final themeCubit = BlocProvider.of<ThemeCubit>(context);
+    iconBgColor ??= themeCubit.darkBackgroundColor;
 
     return Container(
       height: kToolbarHeight +
           (Platform.isIOS ? MediaQuery.of(context).viewPadding.top : 10),
-      margin: text != null
+      margin: titleText != null
           ? EdgeInsets.only(top: Platform.isIOS ? 2 : 5, left: 8)
           : null,
 
@@ -63,7 +66,7 @@ class AppBarComponent extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 6.0),
               child: BackButtonComponent(
-                  bgColor: iconBgColor,
+                  bgColor: iconBgColor ?? ColorConstants.blackLight,
                   image: AssetConstants.backArrow,
                   //! pass your asset here
                   enableDark: enableDark,
@@ -79,17 +82,24 @@ class AppBarComponent extends StatelessWidget {
             ),
           // else
           //   const SizedBox(),
-          if (text != null)
+          if (titleText != null)
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              //crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Center(
                     child: Padding(
                       padding: EdgeInsets.only(left: showBackbutton ? 5 : 16),
                       child: TextComponent(
-                        text!,
+                        '',
+                        listOfText: [titleText!, titleText2 ?? ''],
+                        listOfTextStyle: [
+                          FontStylesConstants.style24(
+                              color: themeCubit.primaryColor),
+                          FontStylesConstants.style24(
+                              color: themeCubit.textSecondaryColor),
+                        ],
                         textAlign: TextAlign.center,
                         maxLines: 3,
                         style: FontStylesConstants.style22(

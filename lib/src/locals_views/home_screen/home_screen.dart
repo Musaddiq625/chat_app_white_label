@@ -82,6 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: ColorConstants.iconBg,
           iconColor: Colors.white,
           circleSize: 40,
+          onTap: () {
+            NavigationUtil.push(context, RouteConstants.notificationScreen);
+          },
         ),
         const SizedBox(width: 10),
         IconComponent(
@@ -90,6 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: ColorConstants.iconBg,
           iconColor: Colors.white,
           circleSize: 40,
+          onTap: () {
+            NavigationUtil.push(context, RouteConstants.filterScreen);
+          },
         ),
         const SizedBox(width: 10),
         IconComponent(
@@ -130,17 +136,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             left: i * radius / 1.5,
                             // Adjust the left offset
                             child: ClipOval(
-                              child:
-                              ImageComponent(
-                                imgUrl: images[i], width: radius,height: radius,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
-                              )
-                              // Image(
-                              //   image: images[i],
-                              //   width: radius,
-                              //   height: radius,
-                              //   fit: BoxFit.cover,
-                              // ),
-                            ),
+                                child: ImageComponent(
+                              imgUrl: images[i],
+                              width: radius,
+                              height: radius,
+                              imgProviderCallback:
+                                  (ImageProvider<Object> imgProvider) {},
+                            )
+                                // Image(
+                                //   image: images[i],
+                                //   width: radius,
+                                //   height: radius,
+                                //   fit: BoxFit.cover,
+                                // ),
+                                ),
                           ),
                       ],
                     ),

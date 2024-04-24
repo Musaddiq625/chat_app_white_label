@@ -13,8 +13,11 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/all_connections.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +38,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return UIScaffold(
       bgColor: themeCubit.backgroundColor,
       removeSafeAreaPadding: true,
-      appBar: const AppBarComponent(
+      appBar: AppBarComponent(
         StringConstants.notifications,
         showBackbutton: false,
       ),
@@ -60,9 +63,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           Row(
                             children: [
                               TextComponent(
-                                StringConstants.seeAll,
-                                style: FontStylesConstants.style14(
-                                    color: themeCubit.textSecondaryColor),
+                                '',
+                                listOfText: [StringConstants.seeAll],
+                                listOfOnPressedFunction: [
+                                  () => NavigationUtil.push(context,
+                                      RouteConstants.allConnectionScreen)
+                                ],
+                                listOfTextStyle: [
+                                  FontStylesConstants.style14(
+                                      color: themeCubit.textSecondaryColor),
+                                ],
                               ),
                               IconComponent(
                                 showCustomTextonLeft: true,
@@ -97,79 +107,22 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         trailingBtnTap: () {
                           BottomSheetComponent.showBottomSheet(context,
                               isShowHeader: false,
-                              body: const CommonBottomSheetComponent(
+                              body: CommonBottomSheetComponent(
                                 title: StringConstants.youAreNowConnectedWith,
                                 description: "Jessi",
+                                onBtnTap: () {},
                                 btnText: StringConstants.message,
                                 image:
                                     'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                                 isImageProfilePic: true,
                               ));
-
-                          //  Padding(
-                          //   padding: const EdgeInsets.all(8.0),
-                          //   child: Column(children: [
-                          //     SizedBoxConstants.sizedBoxTwelveH(),
-                          //     ProfileImageComponent(
-                          //       url:
-                          //           'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
-                          //     ),
-                          //     SizedBoxConstants.sizedBoxTwelveH(),
-
-                          //     TextComponent(
-                          //       StringConstants.youAreNowConnectedWith,
-                          //       style: FontStylesConstants.style18(
-                          //           color: themeCubit.textColor,
-                          //           fontWeight: FontWeight.bold),
-                          //     ),
-                          //     TextComponent(
-                          //       "Jessi",
-                          //       style: FontStylesConstants.style18(
-                          //           fontWeight: FontWeight.bold,
-                          //           color: themeCubit.primaryColor),
-                          //     ),
-                          //     SizedBoxConstants.sizedBoxTwelveH(),
-                          //     // Row(
-                          //     //   mainAxisAlignment:
-                          //     //       MainAxisAlignment.spaceEvenly,
-                          //     //   children: [
-                          //     //     ButtonComponent(
-                          //     //         giveDefaultPadding: false,
-                          //     //         btnHeight: 35,
-                          //     //         btnWidth: 150,
-                          //     //         isSmallBtn: true,
-                          //     //         bgcolor: ColorConstants.transparent,
-                          //     //         buttonText: StringConstants.goBack),
-                          //     //     ButtonComponent(
-                          //     //         giveDefaultPadding: false,
-                          //     //         btnHeight: 35,
-                          //     //         bgcolor: themeCubit.primaryColor,
-                          //     //         btnWidth: 150,
-                          //     //         isSmallBtn: true,
-                          //     //         buttonText: StringConstants.message),
-                          //     //   ],
-                          //     // ),
-                          //     SizedBoxConstants.sizedBoxTwelveH(),
-                          //   ]),
-                          // ));
                         },
                         isLeadingImageSVG: true,
 
                         // isSocialConnected: true,
                         subIconColor: themeCubit.textColor,
                         // trailingText: "heelo",
-                        onTap: () {
-                          // BottomSheetComponent.showBottomSheet(
-                          //   context,
-                          //   isShowHeader: false,
-                          //   // body: const SocialSheetComponent(
-                          //   //   heading: StringConstants.whatsYourLinkedin,
-                          //   //   isSvg: true,
-                          //   //   textfieldHint: StringConstants.linkedinHintText,
-                          //   //   image: AssetConstants.linkedin,
-                          //   // ),
-                          // );
-                        }),
+                        onTap: () {}),
                     const DividerComponent(),
                     ListTileComponent(
                         // icon: Icons.location_on,
@@ -302,7 +255,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   ],
                 ),
               ),
-              SizedBoxConstants.sizedBoxTenH(),
+              // SizedBoxConstants.sizedBoxTenH(),
               CardComponent(
                 child: Column(
                   children: [

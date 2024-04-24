@@ -96,7 +96,7 @@ class _OtpScreenState extends State<OtpScreen> {
       }
     }, builder: (context, state) {
       return UIScaffold(
-          appBar: const AppBarComponent(""),
+          appBar: AppBarComponent(""),
           removeSafeAreaPadding: false,
           bgColor: themeCubit.backgroundColor,
           widget: enterOtp());
@@ -219,11 +219,11 @@ class _OtpScreenState extends State<OtpScreen> {
                 width: MediaQuery.sizeOf(context).width * 0.9,
                 child: ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
-                  textColor: isFieldsValidate?
-                  ColorConstants.black:ColorConstants.grey1,
+                  textColor: isFieldsValidate
+                      ? ColorConstants.black
+                      : ColorConstants.grey1,
                   buttonText: StringConstants.continues,
-                  onPressed:
-                      isFieldsValidate ? handleOTPResponse : null,
+                  onPressed: isFieldsValidate ? handleOTPResponse : null,
                 ))
           ],
         ),

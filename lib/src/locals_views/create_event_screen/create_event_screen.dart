@@ -109,7 +109,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         bgColor: themeCubit.backgroundColor,
         // removeSafeAreaPadding: true,
         // appBar:_appBar(),
-        appBar: const AppBarComponent(
+        appBar: AppBarComponent(
           StringConstants.createEvent,
           centerTitle: false,
           isBackBtnCircular: false,
@@ -394,7 +394,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                           ).then((selectedDate) {
                                             // After selecting the date, display the time picker.
                                             if (selectedDate != null) {
-                                              if (endDate != null && selectedDate.isBefore(DateTime.parse(endDate!))) {
+                                              if (endDate != null &&
+                                                  selectedDate.isBefore(
+                                                      DateTime.parse(
+                                                          endDate!))) {
                                                 showTimePicker(
                                                   context: context,
                                                   initialTime: TimeOfDay.now(),
@@ -423,17 +426,20 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 .toString();
                                                         // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                       });
-                                                    }
-                                                    else if(endDate != null && selectedDateTime.isAfter(DateTime.parse(endDate!))){
-                                                      ScaffoldMessenger.of(context)
+                                                    } else if (endDate !=
+                                                            null &&
+                                                        selectedDateTime.isAfter(
+                                                            DateTime.parse(
+                                                                endDate!))) {
+                                                      ScaffoldMessenger.of(
+                                                              context)
                                                           .showSnackBar(
                                                         SnackBar(
                                                           content: TextComponent(
                                                               "Start Date-Time cannot be After end Date-Time."),
                                                         ),
                                                       );
-                                                    }
-                                                    else{
+                                                    } else {
                                                       setState(() {
                                                         startDate =
                                                             selectedDateTime
@@ -446,8 +452,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                         selectedDateTime); // print should display as 11 feb at 11 am
                                                   }
                                                 });
-                                              }
-                                              else if (endDate != null && selectedDate.isAfter(DateTime.parse(endDate!))) {
+                                              } else if (endDate != null &&
+                                                  selectedDate.isAfter(
+                                                      DateTime.parse(
+                                                          endDate!))) {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
                                                   SnackBar(
@@ -455,8 +463,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                         "Start date cannot be After end date."),
                                                   ),
                                                 );
-                                              }
-                                              else {
+                                              } else {
                                                 showTimePicker(
                                                   context: context,
                                                   initialTime: TimeOfDay.now(),
@@ -485,17 +492,20 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 .toString();
                                                         // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                       });
-                                                    }
-                                                    else if(endDate != null && selectedDateTime.isAfter(DateTime.parse(endDate!))){
-                                                      ScaffoldMessenger.of(context)
+                                                    } else if (endDate !=
+                                                            null &&
+                                                        selectedDateTime.isAfter(
+                                                            DateTime.parse(
+                                                                endDate!))) {
+                                                      ScaffoldMessenger.of(
+                                                              context)
                                                           .showSnackBar(
                                                         SnackBar(
                                                           content: TextComponent(
                                                               "Start Date-Time cannot be After end Date-Time."),
                                                         ),
                                                       );
-                                                    }
-                                                    else{
+                                                    } else {
                                                       setState(() {
                                                         startDate =
                                                             selectedDateTime
@@ -561,26 +571,36 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                             ).then((selectedDate) {
                                               // After selecting the date, display the time picker.
                                               if (selectedDate != null) {
-                                                print("selectedDate $selectedDate start Date $startDate");
-                                                if(selectedDate.isBefore(DateTime.parse(startDate!)) ){
-                                                  ScaffoldMessenger.of(
-                                                      context)
+                                                print(
+                                                    "selectedDate $selectedDate start Date $startDate");
+                                                if (selectedDate.isBefore(
+                                                    DateTime.parse(
+                                                        startDate!))) {
+                                                  ScaffoldMessenger.of(context)
                                                       .showSnackBar(
                                                     SnackBar(
                                                       content: TextComponent(
                                                           "End date cannot be select before start date."),
                                                     ),
                                                   );
-                                                }
-                                                else if(selectedDate.isAfter(DateTime.parse(startDate!))|| selectedDate.isAtSameMomentAs(DateTime.parse(startDate!))){
+                                                } else if (selectedDate
+                                                        .isAfter(
+                                                            DateTime.parse(
+                                                                startDate!)) ||
+                                                    selectedDate
+                                                        .isAtSameMomentAs(
+                                                            DateTime.parse(
+                                                                startDate!))) {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime: TimeOfDay.now(),
+                                                    initialTime:
+                                                        TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     // Handle the selected date and time here.
                                                     if (selectedTime != null) {
-                                                      DateTime selectedDateTime =
-                                                      DateTime(
+                                                      DateTime
+                                                          selectedDateTime =
+                                                          DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
                                                         selectedDate.day,
@@ -589,10 +609,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       );
 
                                                       String formattedDateTime =
-                                                      DateFormat(
-                                                          'd MMM \'at\' hh a')
-                                                          .format(
-                                                          selectedDateTime);
+                                                          DateFormat(
+                                                                  'd MMM \'at\' hh a')
+                                                              .format(
+                                                                  selectedDateTime);
 
                                                       if (endDate == null) {
                                                         setState(() {
@@ -601,26 +621,29 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else if(selectedDateTime.isBefore(DateTime.parse(startDate!))){
+                                                      } else if (selectedDateTime
+                                                          .isBefore(
+                                                              DateTime.parse(
+                                                                  startDate!))) {
                                                         ScaffoldMessenger.of(
-                                                            context)
+                                                                context)
                                                             .showSnackBar(
                                                           SnackBar(
                                                             content: TextComponent(
                                                                 "End date-time cannot be select before start date-time."),
                                                           ),
                                                         );
-
-                                                      }else if(selectedDateTime.isAfter(DateTime.parse(startDate!))){
+                                                      } else if (selectedDateTime
+                                                          .isAfter(
+                                                              DateTime.parse(
+                                                                  startDate!))) {
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else{
+                                                      } else {
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
@@ -647,16 +670,17 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       // print(selectedDateTime); // print should display as 11 feb at 11 am
                                                     }
                                                   });
-                                              }
-                                                else{
+                                                } else {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime: TimeOfDay.now(),
+                                                    initialTime:
+                                                        TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     // Handle the selected date and time here.
                                                     if (selectedTime != null) {
-                                                      DateTime selectedDateTime =
-                                                      DateTime(
+                                                      DateTime
+                                                          selectedDateTime =
+                                                          DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
                                                         selectedDate.day,
@@ -665,10 +689,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       );
 
                                                       String formattedDateTime =
-                                                      DateFormat(
-                                                          'd MMM \'at\' hh a')
-                                                          .format(
-                                                          selectedDateTime);
+                                                          DateFormat(
+                                                                  'd MMM \'at\' hh a')
+                                                              .format(
+                                                                  selectedDateTime);
 
                                                       if (endDate == null) {
                                                         setState(() {
@@ -677,26 +701,29 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else if(selectedDateTime.isBefore(DateTime.parse(startDate!))){
+                                                      } else if (selectedDateTime
+                                                          .isBefore(
+                                                              DateTime.parse(
+                                                                  startDate!))) {
                                                         ScaffoldMessenger.of(
-                                                            context)
+                                                                context)
                                                             .showSnackBar(
                                                           SnackBar(
                                                             content: TextComponent(
                                                                 "End date-time cannot be select before start date-time."),
                                                           ),
                                                         );
-
-                                                      }else if(selectedDateTime.isAfter(DateTime.parse(startDate!))){
+                                                      } else if (selectedDateTime
+                                                          .isAfter(
+                                                              DateTime.parse(
+                                                                  startDate!))) {
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else{
+                                                      } else {
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
@@ -724,7 +751,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                     }
                                                   });
                                                 }
-
                                               }
                                             });
                                           } else {
@@ -873,13 +899,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     color: themeCubit.darkBackgroundColor,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.only(top:10.0,left:15,right: 15,bottom: 15),
+                    padding: const EdgeInsets.only(
+                        top: 10.0, left: 15, right: 15, bottom: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top:8.0),
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: ImageComponent(
                             imgUrl: AssetConstants.ticket,
                             height: 25,
@@ -894,7 +921,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         Expanded(
                           flex: 6,
                           child: Padding(
-                            padding: const EdgeInsets.only(top:8.0),
+                            padding: const EdgeInsets.only(top: 8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -907,8 +934,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 SizedBoxConstants.sizedBoxSixH(),
                                 Container(
                                   child: const TextComponent(
-                                      StringConstants
-                                          .requireGuestsApprovalBody,
+                                      StringConstants.requireGuestsApprovalBody,
                                       maxLines: 6,
                                       style: TextStyle(
                                           fontSize: 13,
@@ -946,7 +972,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     color: themeCubit.darkBackgroundColor,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.only(top:10.0,left:15,right: 15,bottom: 15),
+                    padding: const EdgeInsets.only(
+                        top: 10.0, left: 15, right: 15, bottom: 15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -955,7 +982,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(top:8.0),
+                              padding: const EdgeInsets.only(top: 8.0),
                               child: SvgPicture.asset(
                                 height: 25,
                                 AssetConstants.ticket,
@@ -967,7 +994,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             Expanded(
                               flex: 6,
                               child: Padding(
-                                padding: const EdgeInsets.only(top:8.0),
+                                padding: const EdgeInsets.only(top: 8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -1043,7 +1070,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   height: 10,
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: 8,right: 8),
+                  margin: EdgeInsets.only(left: 8, right: 8),
                   child: ButtonComponent(
                     bgcolor: themeCubit.primaryColor,
                     buttonText: StringConstants.createEvent,

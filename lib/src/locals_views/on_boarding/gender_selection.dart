@@ -42,7 +42,7 @@ class _GenderSelectionState extends State<GenderSelection> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-        appBar: const AppBarComponent(""),
+        appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: onBoarding());
