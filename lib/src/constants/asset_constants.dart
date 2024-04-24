@@ -25,6 +25,7 @@ class AssetConstants {
   // static const String google = "$icons/google.png";
   static const String calendar = "$images/calendar.svg";
   static const String happy = "$images/happy.svg";
+  static const String scalability = "$images/scalability.png";
   static const String marker = "$images/marker.svg";
   static const String ticket = "$images/ticket_new.svg";
   static const String tag = "$images/price_tag.svg";

@@ -2,6 +2,7 @@ import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
+import 'package:chat_app_white_label/src/components/switch_permission_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
@@ -45,13 +46,20 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   bool askQuestion = false;
   bool editQuestion = false;
   bool locationVisible = true;
+  String? selectedVisibilityValue = "Public";
+  String? selectedValue = "";
   final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
   String _selectedQuestionRequired = 'Required';
   String _selectedQuestionPublic = 'Public';
   int? selectedIndexPrice;
   int? _draggingIndex;
-  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
+  String selectedPriceValue = "Free"; // Initialize with a default value
+  String capacityValue = "Unlimited"; // Initialize with a default value
+  TextEditingController _inputPriceValuecontroller = TextEditingController();
+  TextEditingController _inputCapacityValuecontroller = TextEditingController();
+  late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  final List<String> values = ['Public', 'Private'];
   final List<ContactModel> contacts = [
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
@@ -68,7 +76,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   String? endDate;
   List<String> questions = ['Question 1'];
   List<TextEditingController> _questionControllers =
-      []; // Initialize with one question
+  []; // Initialize with one question
   final TextEditingController _controllerQuestions = TextEditingController();
 
   //
@@ -122,13 +130,25 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     themeCubit.toggleTheme();
   }
 
-  Widget _buildContainer(
-      int rowIndex, int index, StateSetter setStateBottomSheet) {
+  Widget _buildContainer(int rowIndex, int index,
+      StateSetter setStateBottomSheet) {
     int containerIndex =
         rowIndex * 3 + index; // Calculate the index for each container
     return GestureDetector(
       onTap: () =>
-          setStateBottomSheet(() => selectedIndexPrice = containerIndex),
+      {
+        setStateBottomSheet(() =>
+        {
+          selectedIndexPrice = containerIndex,
+          print(
+              ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex]),
+          print("selectedIndexPrice $containerIndex"),
+        }),
+        setState(() {
+          selectedPriceValue =
+          ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex];
+        }),
+      },
       child: Container(
         width: 100,
         margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -198,10 +218,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   children: [
                     ClipRRect(
                       borderRadius:
-                          const BorderRadius.all(Radius.circular(30.0)),
+                      const BorderRadius.all(Radius.circular(30.0)),
                       child: ImageComponent(
                         imgUrl:
-                            "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                        "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
                         width: AppConstants.responsiveWidth(context),
                         height: AppConstants.responsiveHeight(context,
                             percentage: 85),
@@ -225,7 +245,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   borderColor: ColorConstants.transparent,
                                   circleSize: 35,
                                   backgroundColor:
-                                      ColorConstants.lightGray.withOpacity(0.5),
+                                  ColorConstants.lightGray.withOpacity(0.5),
                                   iconColor: ColorConstants.white,
                                 ),
                                 const SizedBox(
@@ -374,9 +394,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                       percentage: 70),
                                   child: Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       TextComponent(
                                         StringConstants.start,
@@ -394,7 +414,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                           ).then((selectedDate) {
                                             // After selecting the date, display the time picker.
                                             if (selectedDate != null) {
-                                              if (endDate != null && selectedDate.isBefore(DateTime.parse(endDate!))) {
+                                              if (endDate != null &&
+                                                  selectedDate.isBefore(
+                                                      DateTime.parse(
+                                                          endDate!))) {
                                                 showTimePicker(
                                                   context: context,
                                                   initialTime: TimeOfDay.now(),
@@ -402,7 +425,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                   // Handle the selected date and time here.
                                                   if (selectedTime != null) {
                                                     DateTime selectedDateTime =
-                                                        DateTime(
+                                                    DateTime(
                                                       selectedDate.year,
                                                       selectedDate.month,
                                                       selectedDate.day,
@@ -411,10 +434,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                     );
 
                                                     String formattedDateTime =
-                                                        DateFormat(
-                                                                'd MMM \'at\' hh a')
-                                                            .format(
-                                                                selectedDateTime);
+                                                    DateFormat(
+                                                        'd MMM \'at\' hh a')
+                                                        .format(
+                                                        selectedDateTime);
 
                                                     if (startDate == null) {
                                                       setState(() {
@@ -423,17 +446,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 .toString();
                                                         // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                       });
-                                                    }
-                                                    else if(endDate != null && selectedDateTime.isAfter(DateTime.parse(endDate!))){
-                                                      ScaffoldMessenger.of(context)
+                                                    } else if (endDate !=
+                                                        null &&
+                                                        selectedDateTime
+                                                            .isAfter(
+                                                            DateTime.parse(
+                                                                endDate!))) {
+                                                      ScaffoldMessenger.of(
+                                                          context)
                                                           .showSnackBar(
                                                         SnackBar(
                                                           content: TextComponent(
                                                               "Start Date-Time cannot be After end Date-Time."),
                                                         ),
                                                       );
-                                                    }
-                                                    else{
+                                                    } else {
                                                       setState(() {
                                                         startDate =
                                                             selectedDateTime
@@ -446,8 +473,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                         selectedDateTime); // print should display as 11 feb at 11 am
                                                   }
                                                 });
-                                              }
-                                              else if (endDate != null && selectedDate.isAfter(DateTime.parse(endDate!))) {
+                                              } else if (endDate != null &&
+                                                  selectedDate.isAfter(
+                                                      DateTime.parse(
+                                                          endDate!))) {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
                                                   SnackBar(
@@ -455,8 +484,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                         "Start date cannot be After end date."),
                                                   ),
                                                 );
-                                              }
-                                              else {
+                                              } else {
                                                 showTimePicker(
                                                   context: context,
                                                   initialTime: TimeOfDay.now(),
@@ -464,7 +492,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                   // Handle the selected date and time here.
                                                   if (selectedTime != null) {
                                                     DateTime selectedDateTime =
-                                                        DateTime(
+                                                    DateTime(
                                                       selectedDate.year,
                                                       selectedDate.month,
                                                       selectedDate.day,
@@ -473,10 +501,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                     );
 
                                                     String formattedDateTime =
-                                                        DateFormat(
-                                                                'd MMM \'at\' hh a')
-                                                            .format(
-                                                                selectedDateTime);
+                                                    DateFormat(
+                                                        'd MMM \'at\' hh a')
+                                                        .format(
+                                                        selectedDateTime);
 
                                                     if (startDate == null) {
                                                       setState(() {
@@ -485,17 +513,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 .toString();
                                                         // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                       });
-                                                    }
-                                                    else if(endDate != null && selectedDateTime.isAfter(DateTime.parse(endDate!))){
-                                                      ScaffoldMessenger.of(context)
+                                                    } else if (endDate !=
+                                                        null &&
+                                                        selectedDateTime
+                                                            .isAfter(
+                                                            DateTime.parse(
+                                                                endDate!))) {
+                                                      ScaffoldMessenger.of(
+                                                          context)
                                                           .showSnackBar(
                                                         SnackBar(
                                                           content: TextComponent(
                                                               "Start Date-Time cannot be After end Date-Time."),
                                                         ),
                                                       );
-                                                    }
-                                                    else{
+                                                    } else {
                                                       setState(() {
                                                         startDate =
                                                             selectedDateTime
@@ -515,8 +547,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         child: TextComponent(
                                           startDate != null
                                               ? DateFormat('d MMM \'at\' hh a')
-                                                  .format(DateTime.parse(
-                                                      startDate!))
+                                              .format(DateTime.parse(
+                                              startDate!))
                                               : "Select Date & Time",
                                           style: TextStyle(
                                               fontSize: 15,
@@ -540,9 +572,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                       percentage: 70),
                                   child: Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       TextComponent(
                                         StringConstants.end,
@@ -561,25 +593,35 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                             ).then((selectedDate) {
                                               // After selecting the date, display the time picker.
                                               if (selectedDate != null) {
-                                                print("selectedDate $selectedDate start Date $startDate");
-                                                if(selectedDate.isBefore(DateTime.parse(startDate!)) ){
-                                                  ScaffoldMessenger.of(
-                                                      context)
+                                                print(
+                                                    "selectedDate $selectedDate start Date $startDate");
+                                                if (selectedDate.isBefore(
+                                                    DateTime.parse(
+                                                        startDate!))) {
+                                                  ScaffoldMessenger.of(context)
                                                       .showSnackBar(
                                                     SnackBar(
                                                       content: TextComponent(
                                                           "End date cannot be select before start date."),
                                                     ),
                                                   );
-                                                }
-                                                else if(selectedDate.isAfter(DateTime.parse(startDate!))|| selectedDate.isAtSameMomentAs(DateTime.parse(startDate!))){
+                                                } else if (selectedDate
+                                                    .isAfter(
+                                                    DateTime.parse(
+                                                        startDate!)) ||
+                                                    selectedDate
+                                                        .isAtSameMomentAs(
+                                                        DateTime.parse(
+                                                            startDate!))) {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime: TimeOfDay.now(),
+                                                    initialTime:
+                                                    TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     // Handle the selected date and time here.
                                                     if (selectedTime != null) {
-                                                      DateTime selectedDateTime =
+                                                      DateTime
+                                                      selectedDateTime =
                                                       DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
@@ -601,8 +643,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else if(selectedDateTime.isBefore(DateTime.parse(startDate!))){
+                                                      } else
+                                                      if (selectedDateTime
+                                                          .isBefore(
+                                                          DateTime.parse(
+                                                              startDate!))) {
                                                         ScaffoldMessenger.of(
                                                             context)
                                                             .showSnackBar(
@@ -611,16 +656,18 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 "End date-time cannot be select before start date-time."),
                                                           ),
                                                         );
-
-                                                      }else if(selectedDateTime.isAfter(DateTime.parse(startDate!))){
+                                                      } else
+                                                      if (selectedDateTime
+                                                          .isAfter(
+                                                          DateTime.parse(
+                                                              startDate!))) {
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else{
+                                                      } else {
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
@@ -647,15 +694,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       // print(selectedDateTime); // print should display as 11 feb at 11 am
                                                     }
                                                   });
-                                              }
-                                                else{
+                                                } else {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime: TimeOfDay.now(),
+                                                    initialTime:
+                                                    TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     // Handle the selected date and time here.
                                                     if (selectedTime != null) {
-                                                      DateTime selectedDateTime =
+                                                      DateTime
+                                                      selectedDateTime =
                                                       DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
@@ -677,8 +725,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else if(selectedDateTime.isBefore(DateTime.parse(startDate!))){
+                                                      } else
+                                                      if (selectedDateTime
+                                                          .isBefore(
+                                                          DateTime.parse(
+                                                              startDate!))) {
                                                         ScaffoldMessenger.of(
                                                             context)
                                                             .showSnackBar(
@@ -687,16 +738,18 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 "End date-time cannot be select before start date-time."),
                                                           ),
                                                         );
-
-                                                      }else if(selectedDateTime.isAfter(DateTime.parse(startDate!))){
+                                                      } else
+                                                      if (selectedDateTime
+                                                          .isAfter(
+                                                          DateTime.parse(
+                                                              startDate!))) {
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else{
+                                                      } else {
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
@@ -724,7 +777,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                     }
                                                   });
                                                 }
-
                                               }
                                             });
                                           } else {
@@ -740,8 +792,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         child: TextComponent(
                                           endDate != null
                                               ? DateFormat('d MMM \'at\' hh a')
-                                                  .format(
-                                                      DateTime.parse(endDate!))
+                                              .format(
+                                              DateTime.parse(endDate!))
                                               : "Select Date & Time",
                                           style: TextStyle(
                                               fontSize: 15,
@@ -774,6 +826,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   trailingText: "Manchester",
                   onTap: _selectLocation,
                   subTextColor: themeCubit.textColor,
+                  trailingIcon: Icons.arrow_forward_ios,
                 ),
                 const SizedBox(
                   height: 10,
@@ -783,7 +836,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.ticket,
                   leadingText: StringConstants.price,
-                  trailingText: "Free",
+                  trailingText: selectedPriceValue,
+                  trailingIcon: Icons.arrow_forward_ios,
                   onTap: _selectPrice,
                   subTextColor: themeCubit.textColor,
                 ),
@@ -791,11 +845,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   height: 10,
                 ),
                 ListTileComponent(
-                  leadingIconWidth: 25,
-                  leadingIconHeight: 25,
-                  leadingIcon: AssetConstants.happy,
+                  isLeadingIconAsset: true,
+                  leadingIconWidth: 18,
+                  leadingIconHeight: 18,
+                  leadingIcon: AssetConstants.scalability,
                   leadingText: StringConstants.capacity,
-                  trailingText: "60",
+                  trailingText: capacityValue,
+                  trailingIcon: Icons.arrow_forward_ios,
                   onTap: _selectCapacity,
                   subTextColor: themeCubit.textColor,
                 ),
@@ -857,193 +913,55 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ListTileComponent(
                   leadingIconWidth: 25,
                   leadingIconHeight: 25,
+                  trailingIcon: Icons.arrow_forward_ios,
                   leadingIcon: AssetConstants.marker,
                   leadingText: StringConstants.visibility,
-                  trailingText: "Public",
-                  onTap: () {},
+                  trailingText: selectedVisibilityValue,
+                  onTap: visibility,
                   subTextColor: themeCubit.textColor,
                 ),
                 const SizedBox(
                   height: 10,
                 ),
+
+                SwitchPermissionComponent(
+                  name: StringConstants.requireGuestsApproval,
+                  detail: StringConstants.requireGuestsApprovalBody,
+                  switchValue: requireGuest,
+                  editQuestions: false,
+                  onSwitchChanged: (bool value) {
+                    setState(() {
+                      requireGuest = value;
+                    });
+                  },
+                ),
+
+                SizedBoxConstants.sizedBoxTenH(),
+                SwitchPermissionComponent(
+                  name: StringConstants.askQuestionWhenPeopleJoin,
+                  detail: StringConstants.askQuestionWhenPeopleJoinBody,
+                  switchValue: askQuestion,
+                  editQuestionsTap: () {
+                    if (askQuestion == true) {
+                      _selectQuestion();
+                    }
+                  },
+                  editQuestions: askQuestion ? true : false,
+                  onSwitchChanged: (bool value) {
+                    // if(questions.length>=1){
+                    setState(() {
+                      askQuestion = value;
+                    });
+                    if (askQuestion == true) {
+                      _selectQuestion();
+                    }
+                    // }
+
+                  },
+                ),
+                SizedBoxConstants.sizedBoxTenH(),
                 Container(
-                  width: AppConstants.responsiveWidth(context),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-                    color: themeCubit.darkBackgroundColor,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top:10.0,left:15,right: 15,bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top:8.0),
-                          child: ImageComponent(
-                            imgUrl: AssetConstants.ticket,
-                            height: 25,
-                            width: 25,
-                            imgProviderCallback:
-                                (ImageProvider<Object> imgProvider) {},
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          flex: 6,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top:8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextComponent(
-                                    StringConstants.requireGuestsApproval,
-                                    maxLines: 3,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: themeCubit.textColor)),
-                                SizedBoxConstants.sizedBoxSixH(),
-                                Container(
-                                  child: const TextComponent(
-                                      StringConstants
-                                          .requireGuestsApprovalBody,
-                                      maxLines: 6,
-                                      style: TextStyle(
-                                          fontSize: 13,
-                                          color: ColorConstants.lightGray),
-                                      textAlign: TextAlign.start),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // const Spacer(),
-                        Switch(
-                          // This bool value toggles the switch.
-                          value: requireGuest,
-                          activeColor: ColorConstants.white,
-                          activeTrackColor: themeCubit.primaryColor,
-                          onChanged: (bool value) {
-                            // This is called when the user toggles the switch.
-                            setState(() {
-                              requireGuest = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: AppConstants.responsiveWidth(context),
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
-                    color: themeCubit.darkBackgroundColor,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top:10.0,left:15,right: 15,bottom: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top:8.0),
-                              child: SvgPicture.asset(
-                                height: 25,
-                                AssetConstants.ticket,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              flex: 6,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top:8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextComponent(
-                                      StringConstants.askQuestionWhenPeopleJoin,
-                                      maxLines: 3,
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: themeCubit.textColor),
-                                    ),
-                                    Container(
-                                      child: const TextComponent(
-                                          StringConstants
-                                              .askQuestionWhenPeopleJoinBody,
-                                          maxLines: 3,
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: ColorConstants.lightGray),
-                                          textAlign: TextAlign.start),
-                                    ),
-                                    if (editQuestion != false)
-                                      Row(
-                                        children: [
-                                          TextComponent(
-                                            StringConstants.editQuestions,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: themeCubit.textColor),
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          IconComponent(
-                                            iconData: Icons.edit,
-                                            borderColor:
-                                                ColorConstants.transparent,
-                                            backgroundColor:
-                                                ColorConstants.transparent,
-                                            iconColor: ColorConstants.lightGray
-                                                .withOpacity(0.5),
-                                            iconSize: 20,
-                                            circleSize: 15,
-                                          ),
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            Switch(
-                              // This bool value toggles the switch.
-                              value: askQuestion,
-                              activeColor: ColorConstants.white,
-                              activeTrackColor: themeCubit.primaryColor,
-                              onChanged: (bool value) {
-                                // This is called when the user toggles the switch.
-                                setState(() {
-                                  askQuestion = value;
-                                });
-                                if (askQuestion == true) {
-                                  _selectQuestion();
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 8,right: 8),
+                  margin: EdgeInsets.only(left: 8, right: 8, top: 8),
                   child: ButtonComponent(
                     bgcolor: themeCubit.primaryColor,
                     buttonText: StringConstants.createEvent,
@@ -1083,89 +1001,95 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false, isShowHeader: false,
         body: StatefulBuilder(builder: (context, setState) {
-      return Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-            color: themeCubit.darkBackgroundColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          return Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+                color: themeCubit.darkBackgroundColor,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
                   children: [
-                    TextComponent(
-                      StringConstants.selectLocation,
-                      style: TextStyle(
-                          color: themeCubit.primaryColor,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: TextComponent(
+                            StringConstants.selectLocation,
+                            style: TextStyle(
+                                color: themeCubit.primaryColor,
+                                fontFamily: FontConstants.fontProtestStrike,
+                                fontSize: 18),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: IconComponent(
+                            iconData: Icons.close,
+                            borderColor: Colors.transparent,
+                            iconColor: themeCubit.textColor,
+                            circleSize: 20,
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                      ],
                     ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: IconComponent(
-                        iconData: Icons.close,
-                        borderColor: Colors.transparent,
-                        iconColor: themeCubit.textColor,
-                        circleSize: 20,
-                        backgroundColor: Colors.transparent,
-                      ),
+                    const SizedBox(
+                      height: 10,
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SearchTextField(
-                  title: "Search",
-                  hintText: "Search name, postcode..",
-                  onSearch: (text) {
-                    // widget.viewModel.onSearchStories(text);
-                  },
-                  textEditingController: searchController,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: TextComponent(
-                        StringConstants.exactLocationApproval,
-                        style: TextStyle(
-                            fontSize: 15, color: themeCubit.textColor),
-                        maxLines: 4,
-                      ),
-                    ),
-                    const Spacer(),
-                    Switch(
-                      // This bool value toggles the switch.
-                      value: locationVisible,
-                      activeColor: ColorConstants.white,
-                      activeTrackColor: themeCubit.primaryColor,
-                      onChanged: (bool value) {
-                        // This is called when the user toggles the switch.
-                        setState(() {
-                          locationVisible = value;
-                        });
+                    SearchTextField(
+                      title: "Search",
+                      hintText: "Search name, postcode..",
+                      onSearch: (text) {
+                        // widget.viewModel.onSearchStories(text);
                       },
+                      textEditingController: searchController,
+                      filledColor: ColorConstants.backgroundColor.withOpacity(
+                          0.3),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: TextComponent(
+                            StringConstants.exactLocationApproval,
+                            style: TextStyle(
+                                fontSize: 15, color: themeCubit.textColor),
+                            maxLines: 4,
+                          ),
+                        ),
+                        const Spacer(),
+                        Switch(
+                          // This bool value toggles the switch.
+                          value: locationVisible,
+                          activeColor: ColorConstants.white,
+                          activeTrackColor: themeCubit.primaryColor,
+                          onChanged: (bool value) {
+                            // This is called when the user toggles the switch.
+                            setState(() {
+                              locationVisible = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                   ],
                 ),
-                const Divider(
-                  thickness: 1,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-              ],
-            ),
-          ));
-    }));
+              ));
+        }));
   }
 
   _createEventBottomSheet() {
@@ -1231,7 +1155,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     child: TextComponent(
                       StringConstants.inviteYourFriend,
                       style:
-                          TextStyle(fontSize: 15, color: themeCubit.textColor),
+                      TextStyle(fontSize: 15, color: themeCubit.textColor),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -1455,7 +1379,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return Container(
       child: Row(
         children: List.generate(3,
-            (index) => _buildContainer(rowIndex, index, setStateBottomSheet)),
+                (index) =>
+                _buildContainer(rowIndex, index, setStateBottomSheet)),
       ),
     );
   }
@@ -1463,256 +1388,265 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   _selectPrice() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false, isShowHeader: false,
-        body: StatefulBuilder(builder: (context, setState) {
-      return Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-            color: themeCubit.darkBackgroundColor,
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: StatefulBuilder(builder: (context, setState2) {
+          return Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+                color: themeCubit.darkBackgroundColor,
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextComponent(
+                              StringConstants.pricing,
+                              style: TextStyle(
+                                  color: themeCubit.primaryColor,
+                                  fontFamily: FontConstants.fontProtestStrike,
+                                  fontSize: 18),
+                            ),
+                            InkWell(
+                              onTap: () => Navigator.pop(context),
+                              child: IconComponent(
+                                iconData: Icons.close,
+                                borderColor: Colors.transparent,
+                                iconColor: themeCubit.textColor,
+                                circleSize: 20,
+                                backgroundColor: Colors.transparent,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBoxConstants.sizedBoxTwentyH(),
+                        _buildRow(0, setState2),
+                        const SizedBox(height: 10),
+                        _buildRow(1, setState2),
+                        // Container(
+                        //   child: Row(
+                        //     children: [
+                        //       Flexible(
+                        //         child: Container(
+                        //           decoration: BoxDecoration(
+                        //             color: ColorConstants.backgroundColor
+                        //                 .withOpacity(0.3),
+                        //             borderRadius: BorderRadius.circular(15),
+                        //           ),
+                        //           alignment: Alignment.center,
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.only(
+                        //                 top: 25, bottom: 25, left: 30, right: 30),
+                        //             child: TextComponent("Free",
+                        //                 style: TextStyle(
+                        //                     fontSize: 15,
+                        //                     color: themeCubit.textColor)),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       SizedBox(
+                        //         width: 10,
+                        //       ),
+                        //       Flexible(
+                        //         child: Container(
+                        //           decoration: BoxDecoration(
+                        //             color: ColorConstants.backgroundColor
+                        //                 .withOpacity(0.3),
+                        //             borderRadius: BorderRadius.circular(15),
+                        //           ),
+                        //           alignment: Alignment.center,
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.only(
+                        //                 top: 25, bottom: 25, left: 30, right: 30),
+                        //             child: TextComponent("£5",
+                        //                 style: TextStyle(
+                        //                     fontSize: 15,
+                        //                     color: themeCubit.textColor)),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       SizedBox(
+                        //         width: 10,
+                        //       ),
+                        //       Flexible(
+                        //         child: Container(
+                        //           decoration: BoxDecoration(
+                        //             color: ColorConstants.backgroundColor
+                        //                 .withOpacity(0.3),
+                        //             borderRadius: BorderRadius.circular(15),
+                        //           ),
+                        //           alignment: Alignment.center,
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.only(
+                        //                 top: 25, bottom: 25, left: 30, right: 30),
+                        //             child: TextComponent("£10",
+                        //                 style: TextStyle(
+                        //                     fontSize: 15,
+                        //                     color: themeCubit.textColor)),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
+                        // Container(
+                        //   child: Row(
+                        //     children: [
+                        //       Flexible(
+                        //         child: Container(
+                        //           decoration: BoxDecoration(
+                        //             color: ColorConstants.backgroundColor
+                        //                 .withOpacity(0.3),
+                        //             borderRadius: BorderRadius.circular(15),
+                        //           ),
+                        //           alignment: Alignment.center,
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.only(
+                        //                 top: 25, bottom: 25, left: 30, right: 30),
+                        //             child: TextComponent("£25",
+                        //                 style: TextStyle(
+                        //                     fontSize: 15,
+                        //                     color: themeCubit.textColor)),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       SizedBox(
+                        //         width: 10,
+                        //       ),
+                        //       Flexible(
+                        //         child: Container(
+                        //           decoration: BoxDecoration(
+                        //             color: ColorConstants.backgroundColor
+                        //                 .withOpacity(0.3),
+                        //             borderRadius: BorderRadius.circular(15),
+                        //           ),
+                        //           alignment: Alignment.center,
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.only(
+                        //                 top: 25, bottom: 25, left: 30, right: 30),
+                        //             child: TextComponent("£50",
+                        //                 style: TextStyle(
+                        //                     fontSize: 15,
+                        //                     color: themeCubit.textColor)),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       SizedBox(
+                        //         width: 10,
+                        //       ),
+                        //       Flexible(
+                        //         child: Container(
+                        //           decoration: BoxDecoration(
+                        //             color: ColorConstants.backgroundColor
+                        //                 .withOpacity(0.3),
+                        //             borderRadius: BorderRadius.circular(15),
+                        //           ),
+                        //           alignment: Alignment.center,
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.only(
+                        //                 top: 25, bottom: 25, left: 30, right: 30),
+                        //             child: TextComponent(
+                        //               "£100",
+                        //               style: TextStyle(
+                        //                   fontSize: 15, color: themeCubit.textColor),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        SizedBoxConstants.sizedBoxTenH(),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    thickness: 0.1,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
                       children: [
                         TextComponent(
-                          StringConstants.pricing,
-                          style: TextStyle(
-                              color: themeCubit.primaryColor,
-                              fontFamily: FontConstants.fontProtestStrike,
-                              fontSize: 18),
+                          StringConstants.setOtherAmount,
+                          style:
+                          TextStyle(fontSize: 15, color: themeCubit.textColor),
+                          maxLines: 5,
                         ),
-                        InkWell(
-                          onTap: () => Navigator.pop(context),
-                          child: IconComponent(
-                            iconData: Icons.close,
-                            borderColor: Colors.transparent,
-                            iconColor: themeCubit.textColor,
-                            circleSize: 20,
-                            backgroundColor: Colors.transparent,
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          style: const TextStyle(
+                            color: ColorConstants.white,
+                          ),
+                          controller: _inputPriceValuecontroller,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedPriceValue =
+                              "${"£" + _inputPriceValuecontroller.text}";
+                            });
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 15.0),
+                            hintText: "£",
+                            filled: true,
+                            fillColor:
+                            ColorConstants.backgroundColor.withOpacity(0.3),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                                borderSide: const BorderSide(
+                                  color: ColorConstants.transparent,
+                                )),
+                            hintStyle: const TextStyle(
+                                color: ColorConstants.lightGray, fontSize: 14),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                                borderSide: const BorderSide(
+                                    color: ColorConstants.transparent)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                                borderSide: const BorderSide(
+                                    color: ColorConstants.transparent)),
+                            // suffixIcon: IconButton(
+                            //   icon: Icon(Icons.send),
+                            //   onPressed: _sendMessage,
+                            // ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 100,
+                        ),
+                        Container(
+                          width: AppConstants.responsiveWidth(context),
+                          child: ButtonComponent(
+                            bgcolor: themeCubit.primaryColor,
+                            textColor: ColorConstants.black,
+                            buttonText: StringConstants.done,
+                            onPressed: () {
+                              NavigationUtil.pop(context);
+                              // _yesShareItBottomSheet();
+                              // NavigationUtil.push(
+                              //     context, RouteConstants.localsEventScreen);
+                            },
                           ),
                         ),
                       ],
                     ),
-                    SizedBoxConstants.sizedBoxTwentyH(),
-                    _buildRow(0, setState),
-                    const SizedBox(height: 10),
-                    _buildRow(1, setState),
-                    // Container(
-                    //   child: Row(
-                    //     children: [
-                    //       Flexible(
-                    //         child: Container(
-                    //           decoration: BoxDecoration(
-                    //             color: ColorConstants.backgroundColor
-                    //                 .withOpacity(0.3),
-                    //             borderRadius: BorderRadius.circular(15),
-                    //           ),
-                    //           alignment: Alignment.center,
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.only(
-                    //                 top: 25, bottom: 25, left: 30, right: 30),
-                    //             child: TextComponent("Free",
-                    //                 style: TextStyle(
-                    //                     fontSize: 15,
-                    //                     color: themeCubit.textColor)),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         width: 10,
-                    //       ),
-                    //       Flexible(
-                    //         child: Container(
-                    //           decoration: BoxDecoration(
-                    //             color: ColorConstants.backgroundColor
-                    //                 .withOpacity(0.3),
-                    //             borderRadius: BorderRadius.circular(15),
-                    //           ),
-                    //           alignment: Alignment.center,
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.only(
-                    //                 top: 25, bottom: 25, left: 30, right: 30),
-                    //             child: TextComponent("£5",
-                    //                 style: TextStyle(
-                    //                     fontSize: 15,
-                    //                     color: themeCubit.textColor)),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         width: 10,
-                    //       ),
-                    //       Flexible(
-                    //         child: Container(
-                    //           decoration: BoxDecoration(
-                    //             color: ColorConstants.backgroundColor
-                    //                 .withOpacity(0.3),
-                    //             borderRadius: BorderRadius.circular(15),
-                    //           ),
-                    //           alignment: Alignment.center,
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.only(
-                    //                 top: 25, bottom: 25, left: 30, right: 30),
-                    //             child: TextComponent("£10",
-                    //                 style: TextStyle(
-                    //                     fontSize: 15,
-                    //                     color: themeCubit.textColor)),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
-                    // Container(
-                    //   child: Row(
-                    //     children: [
-                    //       Flexible(
-                    //         child: Container(
-                    //           decoration: BoxDecoration(
-                    //             color: ColorConstants.backgroundColor
-                    //                 .withOpacity(0.3),
-                    //             borderRadius: BorderRadius.circular(15),
-                    //           ),
-                    //           alignment: Alignment.center,
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.only(
-                    //                 top: 25, bottom: 25, left: 30, right: 30),
-                    //             child: TextComponent("£25",
-                    //                 style: TextStyle(
-                    //                     fontSize: 15,
-                    //                     color: themeCubit.textColor)),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         width: 10,
-                    //       ),
-                    //       Flexible(
-                    //         child: Container(
-                    //           decoration: BoxDecoration(
-                    //             color: ColorConstants.backgroundColor
-                    //                 .withOpacity(0.3),
-                    //             borderRadius: BorderRadius.circular(15),
-                    //           ),
-                    //           alignment: Alignment.center,
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.only(
-                    //                 top: 25, bottom: 25, left: 30, right: 30),
-                    //             child: TextComponent("£50",
-                    //                 style: TextStyle(
-                    //                     fontSize: 15,
-                    //                     color: themeCubit.textColor)),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         width: 10,
-                    //       ),
-                    //       Flexible(
-                    //         child: Container(
-                    //           decoration: BoxDecoration(
-                    //             color: ColorConstants.backgroundColor
-                    //                 .withOpacity(0.3),
-                    //             borderRadius: BorderRadius.circular(15),
-                    //           ),
-                    //           alignment: Alignment.center,
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.only(
-                    //                 top: 25, bottom: 25, left: 30, right: 30),
-                    //             child: TextComponent(
-                    //               "£100",
-                    //               style: TextStyle(
-                    //                   fontSize: 15, color: themeCubit.textColor),
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    SizedBoxConstants.sizedBoxTenH(),
-                  ],
-                ),
-              ),
-              const Divider(
-                thickness: 0.1,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  children: [
-                    TextComponent(
-                      StringConstants.setOtherAmount,
-                      style:
-                          TextStyle(fontSize: 15, color: themeCubit.textColor),
-                      maxLines: 5,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      style: const TextStyle(
-                        color: ColorConstants.white,
-                      ),
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 15.0),
-                        hintText: "£",
-                        filled: true,
-                        fillColor:
-                            ColorConstants.backgroundColor.withOpacity(0.3),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide: const BorderSide(
-                              color: ColorConstants.transparent,
-                            )),
-                        hintStyle: const TextStyle(
-                            color: ColorConstants.lightGray, fontSize: 14),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide: const BorderSide(
-                                color: ColorConstants.transparent)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                            borderSide: const BorderSide(
-                                color: ColorConstants.transparent)),
-                        // suffixIcon: IconButton(
-                        //   icon: Icon(Icons.send),
-                        //   onPressed: _sendMessage,
-                        // ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 100,
-                    ),
-                    Container(
-                      width: AppConstants.responsiveWidth(context),
-                      child: ButtonComponent(
-                        bgcolor: themeCubit.primaryColor,
-                        textColor: ColorConstants.black,
-                        buttonText: StringConstants.done,
-                        onPressed: () {
-                          // _yesShareItBottomSheet();
-                          // NavigationUtil.push(
-                          //     context, RouteConstants.localsEventScreen);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ));
-    }));
+                  ),
+                ],
+              ));
+        }));
   }
 
   _selectCapacity() {
@@ -1774,14 +1708,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     style: const TextStyle(
                       color: ColorConstants.white,
                     ),
-                    controller: _controller,
+                    controller: _inputCapacityValuecontroller,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 15.0),
                       hintText: "Unlimited",
                       filled: true,
                       fillColor:
-                          ColorConstants.backgroundColor.withOpacity(0.3),
+                      ColorConstants.backgroundColor.withOpacity(0.3),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                           borderSide: const BorderSide(
@@ -1813,6 +1747,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.done,
                       onPressed: () {
+                        setState(() {
+                          capacityValue =
+                          _inputCapacityValuecontroller.text.isNotEmpty
+                              ? _inputCapacityValuecontroller.text
+                              : "Unlimited";
+                        });
+                        NavigationUtil.pop(context);
                         // _yesShareItBottomSheet();
                         // NavigationUtil.push(
                         //     context, RouteConstants.localsEventScreen);
@@ -1827,82 +1768,80 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   _selectQuestion() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false, isShowHeader: false,
-        body: StatefulBuilder(builder: (context, setState) {
-      return Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: StatefulBuilder(builder: (context, setState2) {
+          return Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TextComponent(
-                      StringConstants.questions,
-                      style: TextStyle(
-                          color: ColorConstants.primaryColor,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const TextComponent(
+                          StringConstants.questions,
+                          style: TextStyle(
+                              color: ColorConstants.primaryColor,
+                              fontFamily: FontConstants.fontProtestStrike,
+                              fontSize: 18),
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: IconComponent(
+                            iconData: Icons.close,
+                            borderColor: Colors.transparent,
+                            iconColor: Colors.white,
+                            circleSize: 20,
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                      ],
                     ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: IconComponent(
-                        iconData: Icons.close,
-                        borderColor: Colors.transparent,
-                        iconColor: Colors.white,
-                        circleSize: 20,
-                        backgroundColor: Colors.transparent,
-                      ),
+                    SizedBoxConstants.sizedBoxTenH(),
+                    TextComponent(
+                      StringConstants.choseToAskQuestion,
+                      maxLines: 2,
+                      style: TextStyle(color: themeCubit.textColor),
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                TextComponent(
-                  StringConstants.choseToAskQuestion,
-                  maxLines: 2,
-                  style: TextStyle(color: themeCubit.textColor),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                question(setState),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ButtonWithIconComponent(
-                      btnText: '  ${StringConstants.addQuestion}',
-                      icon: Icons.add_circle,
-                      btnTextStyle: const TextStyle(
-                          color: ColorConstants.black,
-                          fontWeight: FontWeight.bold),
-                      onPressed: () {
-                        setState(() =>
-                            questions.add('Question ${questions.length + 1}'));
-                        TextEditingController newController =
+                    SizedBoxConstants.sizedBoxSixteenH(),
+                    question(setState2),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ButtonWithIconComponent(
+                          btnText: '  ${StringConstants.addQuestion}',
+                          icon: Icons.add_circle,
+                          btnTextStyle: const TextStyle(
+                              color: ColorConstants.black,
+                              fontWeight: FontWeight.bold),
+                          onPressed: () {
+                            setState2(() =>
+                                questions.add(
+                                    'Question ${questions.length + 1}'));
+                            TextEditingController newController =
                             TextEditingController();
-                        // Add the new controller to the _questionControllers list
-                        _questionControllers.add(newController);
-                      },
-                    ),
-                    ButtonComponent(
-                      isSmallBtn: true,
-                      bgcolor: ColorConstants.primaryColor,
-                      textColor: ColorConstants.black,
-                      buttonText: StringConstants.done,
-                      onPressed: () {},
+                            // Add the new controller to the _questionControllers list
+                            _questionControllers.add(newController);
+                          },
+                        ),
+                        ButtonComponent(
+                          isSmallBtn: true,
+                          bgcolor: ColorConstants.primaryColor,
+                          textColor: ColorConstants.black,
+                          buttonText: StringConstants.done,
+                          onPressed: () {},
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ));
-    }));
+              ));
+        }));
   }
 
   question(StateSetter setStateBottomSheet) {
@@ -1919,34 +1858,44 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         setStateBottomSheet(() {
           print('Reordering: $oldIndex -> $newIndex');
           print("item  ${questions}");
-          final String item = questions.removeAt(oldIndex);
-          questions.insert(newIndex, item);
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
 
-          final TextEditingController controller =
-              _questionControllers.removeAt(oldIndex);
+          final String item = questions.removeAt(oldIndex);
+          final TextEditingController controller = _questionControllers
+              .removeAt(oldIndex);
+
+          questions.insert(newIndex, item);
           _questionControllers.insert(newIndex, controller);
+
           print('Reordering After reordering: $questions');
+          print('Reordering After reordering _questionControllers: ${_questionControllers.toString()}');
         });
       },
       children: List<Widget>.generate(questions.length, (int index) {
         return Container(
-          key: ValueKey(questions[index]), // Assign a unique key to each child
+          key: ValueKey(DateTime.now().microsecondsSinceEpoch.toString()), // Assign a unique key to each child
           child: Column(children: [
             Row(
               children: [
                 TextComponent(
-                  questions[index],
+                  'Question ${index + 1}',//'${questions[index]}',
                   style: TextStyle(color: themeCubit.textColor),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
                 GestureDetector(
-                  onTap: () => {
+                  onTap: () =>
+                  {
+
                     setStateBottomSheet(() {
-                      _questionControllers[index].dispose();
+                      print("questions before delete $questions");
+                      // _questionControllers[index].dispose();
                       _questionControllers.removeAt(index);
                       questions.removeAt(index); // Remove the question
+                      print("questions after delete $questions");
                     })
                   },
                   child: IconComponent(
@@ -1972,7 +1921,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.7,
+                    width: MediaQuery
+                        .sizeOf(context)
+                        .width * 0.7,
                     child: Material(
                       color: ColorConstants.transparent,
                       borderRadius: BorderRadius.circular(15.0),
@@ -2028,7 +1979,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconComponent(
-                  iconData: Icons.arrow_downward_outlined,
+                  iconData: Icons.keyboard_arrow_down,
                   borderColor: ColorConstants.transparent,
                   backgroundColor: ColorConstants.transparent,
                   iconColor: ColorConstants.lightGray,
@@ -2051,7 +2002,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               value: _selectedQuestionRequired == 'Required',
                               onChanged: (bool? value) {
                                 if (value != null) {
-                                  setState(() {
+                                  setStateBottomSheet(() {
                                     _selectedQuestionRequired = 'Required';
                                   });
                                 }
@@ -2078,7 +2029,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               value: _selectedQuestionRequired == 'Optional',
                               onChanged: (bool? value) {
                                 if (value != null) {
-                                  setState(() {
+                                  setStateBottomSheet(() {
                                     _selectedQuestionRequired = 'Optional';
                                   });
                                 }
@@ -2118,11 +2069,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                SizedBoxConstants.sizedBoxTenW(),
                 IconComponent(
-                  iconData: Icons.arrow_downward_outlined,
+                  iconData: Icons.keyboard_arrow_down,
                   borderColor: ColorConstants.transparent,
                   backgroundColor: ColorConstants.transparent,
                   iconColor: ColorConstants.lightGray,
@@ -2146,7 +2095,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               value: _selectedQuestionPublic == 'Public',
                               onChanged: (bool? value) {
                                 if (value != null) {
-                                  setState(() {
+                                  setStateBottomSheet(() {
                                     _selectedQuestionPublic = 'Public';
                                   });
                                 }
@@ -2183,7 +2132,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               value: _selectedQuestionPublic == 'Private',
                               onChanged: (bool? value) {
                                 if (value != null) {
-                                  setState(() {
+                                  setStateBottomSheet(() {
                                     _selectedQuestionPublic = 'Private';
                                   });
                                 }
@@ -2243,305 +2192,83 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       }),
     );
   }
-}
 
-// return ListView.builder(
-//     shrinkWrap: true,
-//     itemCount: questions.length,
-//     itemBuilder: (context, index) {
-//       return Container(
-//         child: Column(children: [
-//           Row(
-//             children: [
-//               TextComponent(
-//                 questions[index],
-//                 style: TextStyle(color: themeCubit.textColor),
-//               ),
-//               SizedBox(
-//                 width: 10,
-//               ),
-//               GestureDetector(
-//                 onTap: () => {
-//                   setStateBottomSheet(() {
-//                     questions.removeAt(index); // Remove the question
-//                   })
-//                 },
-//                 child: IconComponent(
-//                   iconData: Icons.delete,
-//                   borderColor: ColorConstants.red,
-//                   backgroundColor: ColorConstants.red,
-//                   iconColor: ColorConstants.white,
-//                   iconSize: 15,
-//                   circleSize: 20,
-//                 ),
-//               ),
-//             ],
-//           ),
-//           SizedBox(
-//             height: 10,
-//           ),
-//           TextField(
-//             controller: _controller,
-//             decoration: InputDecoration(
-//               contentPadding:
-//                   EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-//               hintText: StringConstants.typeYourQuestion,
-//               filled: true,
-//               fillColor: ColorConstants.lightGray.withOpacity(0.3),
-//               suffixIcon: GestureDetector(
-//                 child: Padding(
-//                     padding: EdgeInsets.only(right: 20, top: 8),
-//                     child: IconComponent(
-//                       iconData: Icons.menu,
-//                       borderColor: ColorConstants.transparent,
-//                       backgroundColor: ColorConstants.transparent,
-//                       iconColor: ColorConstants.lightGray.withOpacity(0.4),
-//                       iconSize: 25,
-//                       circleSize: 25,
-//                     )),
-//               ),
-//               border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(15.0),
-//                   borderSide: BorderSide(
-//                     color: ColorConstants.transparent,
-//                   )),
-//               hintStyle:
-//                   TextStyle(color: ColorConstants.lightGray, fontSize: 14),
-//               enabledBorder: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(15.0),
-//                   borderSide:
-//                       BorderSide(color: ColorConstants.transparent)),
-//               focusedBorder: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(15.0),
-//                   borderSide:
-//                       BorderSide(color: ColorConstants.transparent)),
-//             ),
-//           ),
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.end,
-//             children: [
-//               IconComponent(
-//                 iconData: Icons.arrow_downward_outlined,
-//                 borderColor: ColorConstants.transparent,
-//                 backgroundColor: ColorConstants.transparent,
-//                 iconColor: ColorConstants.lightGray,
-//                 iconSize: 25,
-//                 circleSize: 25,
-//               ),
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: <Widget>[
-//                   MenuAnchor(
-//                     style: MenuStyle(
-//                       backgroundColor: MaterialStatePropertyAll<Color>(
-//                           themeCubit.backgroundColor),
-//                     ),
-//                     childFocusNode: _buttonFocusNode,
-//                     menuChildren: <Widget>[
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                             value: _selectedQuestionRequired == 'Required',
-//                             onChanged: (bool? value) {
-//                               if (value != null) {
-//                                 setState(() {
-//                                   _selectedQuestionRequired = 'Required';
-//                                 });
-//                               }
-//                             },
-//                             shape: CircleBorder(),
-//                             // Makes the checkbox circular
-//                             activeColor: ColorConstants.primaryColor,
-//                             // Sets the color of the checkbox when selected
-//                             checkColor: Colors.black,
-//                           ),
-//                           TextComponent(
-//                             "Required",
-//                             style: TextStyle(color: themeCubit.textColor),
-//                           ),
-//                           SizedBox(
-//                             width: 10,
-//                           )
-//                         ],
-//                       ),
-//                       Divider(
-//                         thickness: 0.1,
-//                       ),
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                             value: _selectedQuestionRequired == 'Optional',
-//                             onChanged: (bool? value) {
-//                               if (value != null) {
-//                                 setState(() {
-//                                   _selectedQuestionRequired = 'Optional';
-//                                 });
-//                               }
-//                             },
-//                             shape: CircleBorder(),
-//                             // Makes the checkbox circular
-//                             activeColor: ColorConstants.primaryColor,
-//                             // Sets the color of the checkbox when selected
-//                             checkColor: Colors.black,
-//                           ),
-//                           TextComponent(
-//                             "Optional",
-//                             style: TextStyle(color: themeCubit.textColor),
-//                           ),
-//                           SizedBox(
-//                             width: 10,
-//                           )
-//                         ],
-//                       ),
-//                     ],
-//                     builder: (BuildContext context,
-//                         MenuController controller, Widget? child) {
-//                       return TextButton(
-//                         focusNode: _buttonFocusNode,
-//                         onPressed: () {
-//                           if (controller.isOpen) {
-//                             controller.close();
-//                           } else {
-//                             controller.open();
-//                           }
-//                         },
-//                         child: TextComponent(
-//                           _selectedQuestionRequired,
-//                           style: TextStyle(color: ColorConstants.lightGray),
-//                         ), // Use the selected option as the label
-//                       );
-//                     },
-//                   ),
-//                 ],
-//               ),
-//               SizedBox(
-//                 width: 10,
-//               ),
-//               IconComponent(
-//                 iconData: Icons.arrow_downward_outlined,
-//                 borderColor: ColorConstants.transparent,
-//                 backgroundColor: ColorConstants.transparent,
-//                 iconColor: ColorConstants.lightGray,
-//                 iconSize: 25,
-//                 circleSize: 25,
-//               ),
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: <Widget>[
-//                   MenuAnchor(
-//                     alignmentOffset: Offset(-250, 0),
-//                     style: MenuStyle(
-//                       backgroundColor: MaterialStatePropertyAll<Color>(
-//                           themeCubit.backgroundColor),
-//                     ),
-//                     childFocusNode: _buttonFocusNode,
-//                     menuChildren: <Widget>[
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                             value: _selectedQuestionPublic == 'Public',
-//                             onChanged: (bool? value) {
-//                               if (value != null) {
-//                                 setState(() {
-//                                   _selectedQuestionPublic = 'Public';
-//                                 });
-//                               }
-//                             },
-//                             shape: CircleBorder(),
-//                             // Makes the checkbox circular
-//                             activeColor: ColorConstants.primaryColor,
-//                             // Sets the color of the checkbox when selected
-//                             checkColor: Colors.black,
-//                           ),
-//                           Column(
-//                             mainAxisSize: MainAxisSize.min,
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               TextComponent(
-//                                 'Public',
-//                                 style:
-//                                     TextStyle(color: themeCubit.textColor),
-//                               ),
-//                               TextComponent(
-//                                 'Responses can be seen by everyone',
-//                                 style:
-//                                     TextStyle(color: themeCubit.textColor),
-//                               ),
-//                             ],
-//                           ),
-//                           SizedBox(
-//                             width: 20,
-//                           )
-//                         ],
-//                       ),
-//                       Divider(
-//                         thickness: 0.1,
-//                       ),
-//                       Row(
-//                         children: [
-//                           Checkbox(
-//                             value: _selectedQuestionPublic == 'Private',
-//                             onChanged: (bool? value) {
-//                               if (value != null) {
-//                                 setState(() {
-//                                   _selectedQuestionPublic = 'Private';
-//                                 });
-//                               }
-//                             },
-//                             shape: CircleBorder(),
-//                             // Makes the checkbox circular
-//                             activeColor: ColorConstants.primaryColor,
-//                             // Sets the color of the checkbox when selected
-//                             checkColor: Colors.black,
-//                           ),
-//                           Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               TextComponent(
-//                                 'Private',
-//                                 style:
-//                                     TextStyle(color: themeCubit.textColor),
-//                               ),
-//                               TextComponent(
-//                                 'Only host can see the responses',
-//                                 style:
-//                                     TextStyle(color: themeCubit.textColor),
-//                               ),
-//                             ],
-//                           ),
-//                           SizedBox(
-//                             width: 20,
-//                           )
-//                         ],
-//                       )
-//                     ],
-//                     builder: (BuildContext context,
-//                         MenuController controller, Widget? child) {
-//                       return TextButton(
-//                         focusNode: _buttonFocusNode,
-//                         onPressed: () {
-//                           if (controller.isOpen) {
-//                             controller.close();
-//                           } else {
-//                             controller.open();
-//                           }
-//                         },
-//                         child: Column(
-//                           children: [
-//                             TextComponent(
-//                               _selectedQuestionPublic,
-//                               style: TextStyle(
-//                                   color: ColorConstants.lightGray),
-//                             ),
-//                           ],
-//                         ), // Use the selected option as the label
-//                       );
-//                     },
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ]),
-//       );
-//     });
+  visibility() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState2) {
+          return Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+                color: themeCubit.darkBackgroundColor,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBoxConstants.sizedBoxTwentyH(),
+                    ImageComponent(
+                      imgUrl: AssetConstants.marker,
+                      imgProviderCallback: (imageProvider) {},
+                      width: 40,
+                      height: 40,
+                    ),
+                    SizedBoxConstants.sizedBoxTwentyH(),
+                    TextComponent(
+                      StringConstants.visibility,
+                      style: TextStyle(
+                          color: themeCubit.textColor,
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 18),
+                    ),
+                    SizedBoxConstants.sizedBoxTwentyH(),
+                    ...values.map((value) =>
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 5),
+                          child: ListTileComponent(
+                            title: value,
+                            titleSize: 14,
+                            onTap: () {
+                              setState2(() {
+                                selectedValue =
+                                    value; // Update the selected value
+                              });
+                            },
+                            backgroundColor: //themeCubit.darkBackgroundColor100,
+                            selectedValue == value
+                                ? themeCubit.primaryColor
+                                : themeCubit.darkBackgroundColor100,
+                            titleColor: //ColorConstants.white,
+                            selectedValue == value
+                                ? themeCubit.backgroundColor
+                                : null,
+                            trailingIcon: null,
+                          ),
+                        )),
+                    SizedBoxConstants.sizedBoxForthyH(),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 20, left: 10, right: 10),
+                      width: AppConstants.responsiveWidth(context),
+                      child: ButtonComponent(
+                        textColor: themeCubit.backgroundColor,
+                        bgcolor: themeCubit.primaryColor,
+                        buttonText: StringConstants.save,
+                        onPressed: () {
+                          setState(() {
+                            selectedVisibilityValue = selectedValue!.isNotEmpty
+                                ? selectedValue
+                                : "Public";
+                          });
+                          NavigationUtil.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+        }));
+  }
+}
