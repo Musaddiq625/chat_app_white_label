@@ -64,7 +64,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               colorFilter: ColorFilter.mode(
                   widget.selectedIndex == 0
                       ? themeCubit.primaryColor
-                      : Colors.grey,
+                      : themeCubit.textSecondaryColor,
                   BlendMode.srcIn),
             ),
             label: '',
@@ -80,19 +80,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
               colorFilter: ColorFilter.mode(
                   widget.selectedIndex == 2
                       ? themeCubit.primaryColor
-                      : Colors.grey,
+                      : themeCubit.textSecondaryColor,
                   BlendMode.srcIn),
             ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(
-              width: 25,
-              height: 30,
-              AssetConstants.notifications,
-              color: widget.selectedIndex == 3
-                  ? themeCubit.primaryColor
-                  : Colors.grey,
+            icon: SvgPicture.asset(
+              height: 25,
+              AssetConstants.notificationsSvg,
+              colorFilter: ColorFilter.mode(
+                  widget.selectedIndex == 3
+                      ? themeCubit.primaryColor
+                      : themeCubit.textSecondaryColor,
+                  BlendMode.srcIn),
             ),
             label: '',
           ),
@@ -103,7 +104,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               colorFilter: ColorFilter.mode(
                   widget.selectedIndex == 4
                       ? themeCubit.primaryColor
-                      : Colors.grey,
+                      : themeCubit.textSecondaryColor,
                   BlendMode.srcIn),
             ),
             label: '',
