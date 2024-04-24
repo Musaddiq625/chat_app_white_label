@@ -117,7 +117,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         bgColor: themeCubit.backgroundColor,
         // removeSafeAreaPadding: true,
         // appBar:_appBar(),
-        appBar: const AppBarComponent(
+        appBar: AppBarComponent(
           StringConstants.createEvent,
           centerTitle: false,
           isBackBtnCircular: false,
@@ -713,10 +713,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       );
 
                                                       String formattedDateTime =
-                                                      DateFormat(
-                                                          'd MMM \'at\' hh a')
-                                                          .format(
-                                                          selectedDateTime);
+                                                          DateFormat(
+                                                                  'd MMM \'at\' hh a')
+                                                              .format(
+                                                                  selectedDateTime);
 
                                                       if (endDate == null) {
                                                         setState(() {
@@ -738,11 +738,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 "End date-time cannot be select before start date-time."),
                                                           ),
                                                         );
-                                                      } else
-                                                      if (selectedDateTime
-                                                          .isAfter(
-                                                          DateTime.parse(
-                                                              startDate!))) {
+
+                                                      }else if(selectedDateTime.isAfter(DateTime.parse(startDate!))){
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime

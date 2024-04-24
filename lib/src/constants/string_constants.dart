@@ -24,6 +24,7 @@ class StringConstants {
   static const String whatsYourInstagram =
       "What's your Instagram\nProfile Link?";
   static const String gender = "Gender";
+  static const String filters = "Filters";
   static const String selectYourGender = "Gender";
   static const String connectionRequests = "Connection Requests";
   static const String linkedinHintText =
@@ -48,6 +49,7 @@ class StringConstants {
   static const String nonBinary = "Non Binary";
   static const String ratherNotSay = "Rather not say";
   static const String confirmPassword = "Confirm Password";
+  static const String youAreNowConnectedWith = "You are now connected with";
   static const String yesShareIt = "Yes, share it";
   static const String setYourAccountPassword = "Set your\naccount's password?";
   static const String enterTheVerificationCode = "Enter the\nverification code";
@@ -87,6 +89,7 @@ class StringConstants {
   static const String profile = "Profile";
   static const String seeAll = "See all";
   static const String messageForYou = "Message for you";
+  static const String message = "Message";
   static const String questionsFromCreator = "Questions from creator";
   static const String createANewEvent = "Create a new event";
   static const String createANewGroup = "Create a new group";
@@ -118,6 +121,7 @@ class StringConstants {
       "Any question that is entered when event created*";
   static const String reportEvent = "Report event";
   static const String dateofBirth = "Date of Birth";
+  static const String date = "Date";
   static const String shareEvent = "Share event";
   static const String ticket = "Ticket";
   static const String creator = "Creator";

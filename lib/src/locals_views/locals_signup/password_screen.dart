@@ -38,7 +38,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   Widget build(BuildContext context) {
     return UIScaffold(
         resizeToAvoidBottomInset: false,
-        appBar: const AppBarComponent(""),
+        appBar: AppBarComponent(""),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: Padding(

@@ -27,4 +27,8 @@ class AppConstants {
       {double percentage = 100}) {
     return MediaQuery.of(context).size.width * (percentage) / 100;
   }
+
+  static double bottomPadding(BuildContext context) {
+    return MediaQuery.paddingOf(context).bottom + 10;
+  }
 }

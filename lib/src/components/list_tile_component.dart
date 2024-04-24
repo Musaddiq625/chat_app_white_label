@@ -1,11 +1,16 @@
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/icons_button_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
+import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/dark_theme_color_constants.dart';
+import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,10 +31,15 @@ class ListTileComponent extends StatelessWidget {
   final double leadingIconWidth;
   final double leadingIconHeight;
 
+  final Widget? trailingWidget;
+  final bool showShareBtn;
+  final EdgeInsetsGeometry? customPadding;
+
   final Color? trailingBtnBgColor;
   final Color? trailingBtnTextColor;
 
   final bool overrideTrailingWithBtn;
+  final bool removeBorderFromTile;
 
   final IconData? trailingIcon;
   final Color iconColor, subIconColor, subTextColor;
@@ -44,7 +54,9 @@ class ListTileComponent extends StatelessWidget {
 
   final double? overrideLeadingIconSize;
   final String? trailingBtnTitle;
-  final Function? trailingBtnTap;
+  final Function()? trailingBtnTap;
+  final Function()? moreBtnTap;
+  final Function()? shareBtnTap;
   final bool reducePadding;
 
   ListTileComponent({
@@ -79,6 +91,12 @@ class ListTileComponent extends StatelessWidget {
     this.trailingBtnBgColor,
     this.trailingBtnTextColor,
     this.reducePadding = false,
+    this.removeBorderFromTile = false,
+    this.trailingWidget,
+    this.showShareBtn = false,
+    this.moreBtnTap,
+    this.shareBtnTap,
+    this.customPadding,
   });
 
   @override
@@ -90,32 +108,39 @@ class ListTileComponent extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: AppConstants.responsiveWidth(context),
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-            color: backgroundColor),
+        decoration: removeBorderFromTile
+            ? null
+            : BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+                color: backgroundColor),
         child: Padding(
-          padding: reducePadding
-              ? EdgeInsets.fromLTRB(16, 4, 16, 8)
-              : EdgeInsets.all(15.0),
+          padding: customPadding != null
+              ? customPadding!
+              : reducePadding
+                  ? const EdgeInsets.fromLTRB(16, 4, 16, 8)
+                  : const EdgeInsets.all(15.0),
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: (title ?? '').length > 25
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.center,
                 children: [
                   // if (title != null)
                   if (leadingIcon != null)
-                    ClipRRect(
-                        borderRadius: isLeadingImageCircular
-                            ? BorderRadius.circular(32)
-                            : BorderRadius.zero,
-                        child: ImageComponent(
-                          imgUrl: leadingIcon!,
-                          imgProviderCallback: (imgProvider) {},
-                          width: isSocialConnected ? 30 : leadingIconWidth,
-                          height: isSocialConnected ? 30 : leadingIconHeight,
-                          isAsset: isLeadingIconAsset,
-                        )),
+                    isLeadingImageCircular
+                        ? ProfileImageComponent(
+                            url: leadingIcon,
+                            size: 45,
+                          )
+                        : ImageComponent(
+                            imgUrl: leadingIcon!,
+                            imgProviderCallback: (imgProvider) {},
+                            width: isSocialConnected ? 30 : leadingIconWidth,
+                            height: isSocialConnected ? 30 : leadingIconHeight,
+                            isAsset: isLeadingIconAsset,
+                          ),
                   if (title != null)
                     Center(
                       child: TextComponent(
@@ -184,6 +209,16 @@ class ListTileComponent extends StatelessWidget {
                       iconSize: trailingIconSize ?? 22,
                       iconColor: subIconColor,
                     ),
+                  if (trailingWidget != null) trailingWidget!,
+                  // IconComponent(
+                  //   svgData: AssetConstants.more,
+                  //   onTap: moreBtnTap,
+                  //   borderColor: Colors.transparent,
+                  //   backgroundColor: themeCubit.darkBackgroundColor100,
+                  //   iconColor: Colors.white,
+                  //   circleSize: 35,
+                  //   iconSize: 5,
+                  // ),
                   if (overrideTrailingWithBtn)
                     ButtonComponent(
                         buttonText: trailingBtnTitle ?? '',
@@ -195,7 +230,7 @@ class ListTileComponent extends StatelessWidget {
                         giveDefaultPadding: false,
                         btnHeight: 30,
                         btnWidth: 90,
-                        onPressed: () => trailingBtnTap)
+                        onPressed: trailingBtnTap)
                 ],
               ),
             ],

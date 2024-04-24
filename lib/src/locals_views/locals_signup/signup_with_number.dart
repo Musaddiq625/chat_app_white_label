@@ -88,7 +88,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
       },
       builder: (context, state) {
         return UIScaffold(
-            appBar: const AppBarComponent(""),
+            appBar: AppBarComponent(""),
             removeSafeAreaPadding: false,
             bgColor: themeCubit.backgroundColor,
             widget: continueWithNumber());
@@ -184,8 +184,9 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
               width: MediaQuery.sizeOf(context).width * 0.9,
               child: ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
-                  textColor:isFieldsValidate?
-                      ColorConstants.black:ColorConstants.grey1,
+                  textColor: isFieldsValidate
+                      ? ColorConstants.black
+                      : ColorConstants.grey1,
                   buttonText: StringConstants.continues,
                   onPressed: isFieldsValidate ? onContinuePressed : null),
             )

@@ -55,4 +55,5 @@ class RouteConstants {
   static const String mainScreen = 'mainScreen';
   static const String viewYourEventScreen = 'viewYourEventScreen';
   static const String viewGroupScreen = 'viewGroupScreen';
+  static const String filterScreen = 'filterScreen';
 }

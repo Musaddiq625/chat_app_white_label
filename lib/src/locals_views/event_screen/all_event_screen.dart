@@ -116,7 +116,7 @@ class _AllEventScreenState extends State<AllEventScreen> {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 mainAxisSpacing: 10,
                 crossAxisCount: 2, // Number of items in the cross axis
-                childAspectRatio: 2/ 3, // Aspect ratio of the items
+                childAspectRatio: 2 / 3, // Aspect ratio of the items
               ),
               // Define how each item in the grid should be built
               itemBuilder: (BuildContext context, int index) {
