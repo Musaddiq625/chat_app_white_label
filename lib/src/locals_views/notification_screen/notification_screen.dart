@@ -97,7 +97,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         trailingBtnTap: () {
                           BottomSheetComponent.showBottomSheet(context,
                               isShowHeader: false,
-                              body: CommonBottomSheetComponent(
+                              body: const CommonBottomSheetComponent(
                                 title: StringConstants.youAreNowConnectedWith,
                                 description: "Jessi",
                                 btnText: StringConstants.message,
@@ -170,7 +170,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           //   // ),
                           // );
                         }),
-                    DividerComponent(),
+                    const DividerComponent(),
                     ListTileComponent(
                         // icon: Icons.location_on,
                         // iconColor: ColorConstants.white,
@@ -263,7 +263,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           //   // ),
                           // );
                         }),
-                    DividerComponent(),
+                    const DividerComponent(),
                     ListTileComponent(
                         // icon: Icons.location_on,
                         // iconColor: ColorConstants.white,
@@ -357,7 +357,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           //   // ),
                           // );
                         }),
-                    DividerComponent(),
+                    const DividerComponent(),
                     ListTileComponent(
                         // icon: Icons.location_on,
                         // iconColor: ColorConstants.white,

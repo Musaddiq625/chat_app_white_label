@@ -48,7 +48,7 @@ class StringConstants {
   static const String nonBinary = "Non Binary";
   static const String ratherNotSay = "Rather not say";
   static const String confirmPassword = "Confirm Password";
-  static const String youAreNowConnectedWith = "You are now connected with\n";
+  static const String youAreNowConnectedWith = "You are now connected with";
   static const String yesShareIt = "Yes, share it";
   static const String setYourAccountPassword = "Set your\naccount's password?";
   static const String enterTheVerificationCode = "Enter the\nverification code";
