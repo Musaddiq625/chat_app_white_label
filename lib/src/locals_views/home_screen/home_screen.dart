@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
@@ -9,6 +10,7 @@ import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/filter_screen/filter_screen.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,7 +96,14 @@ class _HomeScreenState extends State<HomeScreen> {
           iconColor: Colors.white,
           circleSize: 40,
           onTap: () {
-            NavigationUtil.push(context, RouteConstants.filterScreen);
+            BottomSheetComponent.showBottomSheet(
+              context,
+              takeFullHeightWhenPossible: true,
+              isShowHeader: false,
+              body: const FilterScreen(),
+            );
+
+            // NavigationUtil.push(context, RouteConstants.filterScreen);
           },
         ),
         const SizedBox(width: 10),

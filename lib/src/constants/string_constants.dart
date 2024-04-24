@@ -24,6 +24,7 @@ class StringConstants {
   static const String whatsYourInstagram =
       "What's your Instagram\nProfile Link?";
   static const String gender = "Gender";
+  static const String filters = "Filters";
   static const String selectYourGender = "Gender";
   static const String connectionRequests = "Connection Requests";
   static const String linkedinHintText =
@@ -120,6 +121,7 @@ class StringConstants {
       "Any question that is entered when event created*";
   static const String reportEvent = "Report event";
   static const String dateofBirth = "Date of Birth";
+  static const String date = "Date";
   static const String shareEvent = "Share event";
   static const String ticket = "Ticket";
   static const String creator = "Creator";
