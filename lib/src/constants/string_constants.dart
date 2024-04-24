@@ -4,6 +4,7 @@ class StringConstants {
   static const String testingOtp = '123456';
 
   static const String locals = "Locals";
+  static const String today = "Today";
   static const String joined = "Joined";
   static const String invitedBy = "You were invited by ";
   static const String phoneNumber = "Phone Number";
@@ -24,6 +25,7 @@ class StringConstants {
       "What's your Instagram\nProfile Link?";
   static const String gender = "Gender";
   static const String selectYourGender = "Gender";
+  static const String connectionRequests = "Connection Requests";
   static const String linkedinHintText =
       "https://www.linkedin.com/in/profile-link/";
   static const String facebookHintText = "https://www.facebook.com/profile/";
@@ -83,6 +85,7 @@ class StringConstants {
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";
   static const String profile = "Profile";
+  static const String seeAll = "See all";
   static const String messageForYou = "Message for you";
   static const String questionsFromCreator = "Questions from creator";
   static const String createANewEvent = "Create a new event";

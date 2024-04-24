@@ -139,14 +139,14 @@ class _EarningScreenState extends State<EarningScreen> {
           ListTileComponent(
 
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.addBankDetails,
+              leadingText: StringConstants.addBankDetails,
               subIconColor: ColorConstants.iconBg,
               overrideLeadingIconSize: 30,
               leadingIconHeight: 20,
               leadingIconWidth: 20,
               leadingIcon: AssetConstants.bank,
               isLeadingImageSVG: true,
-              isLeadingIconAsset:true,
+              isLeadingIconAsset: true,
               onTap: () {
                 _addBankDetailsBottomSheet();
               }),
@@ -202,7 +202,6 @@ class _EarningScreenState extends State<EarningScreen> {
                     }),
                 SizedBoxConstants.sizedBoxTenH(),
                 ButtonComponent(
-
                   buttonText: StringConstants.next,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
@@ -215,7 +214,6 @@ class _EarningScreenState extends State<EarningScreen> {
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -295,7 +293,6 @@ class _EarningScreenState extends State<EarningScreen> {
                     }),
                 SizedBoxConstants.sizedBoxSixtyH(),
                 ButtonComponent(
-
                   buttonText: StringConstants.next,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
@@ -308,14 +305,12 @@ class _EarningScreenState extends State<EarningScreen> {
               ],
             ),
           ),
-
         ],
       ),
     );
   }
 
-
-  void transactionCompleted(){
+  void transactionCompleted() {
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,

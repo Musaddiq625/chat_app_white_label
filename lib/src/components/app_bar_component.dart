@@ -22,7 +22,8 @@ class AppBarComponent extends StatelessWidget {
   final bool centerTitle;
   final Widget? action;
 
-  const AppBarComponent(this.text, {
+  const AppBarComponent(
+    this.text, {
     Key? key,
     this.overrideBackPressed,
     this.enableDark = false,
@@ -41,10 +42,7 @@ class AppBarComponent extends StatelessWidget {
 
     return Container(
       height: kToolbarHeight +
-          (Platform.isIOS ? MediaQuery
-              .of(context)
-              .viewPadding
-              .top : 10),
+          (Platform.isIOS ? MediaQuery.of(context).viewPadding.top : 10),
       margin: text != null
           ? EdgeInsets.only(top: Platform.isIOS ? 2 : 5, left: 8)
           : null,
@@ -61,24 +59,24 @@ class AppBarComponent extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          //if (showBackbutton)
-          Padding(
-            padding: const EdgeInsets.only(left: 6.0),
-            child: BackButtonComponent(
-                bgColor:iconBgColor,
-                image: AssetConstants.backArrow,
-                //! pass your asset here
-                enableDark: enableDark,
-                isImage: true,
-                isCircular: isBackBtnCircular,
-                onTap: () {
-                  if (showBackbutton) {
-                    overrideBackPressed == null
-                        ? NavigationUtil.pop(context)
-                        : overrideBackPressed!();
-                  }
-                }),
-          ),
+          if (showBackbutton)
+            Padding(
+              padding: const EdgeInsets.only(left: 6.0),
+              child: BackButtonComponent(
+                  bgColor: iconBgColor,
+                  image: AssetConstants.backArrow,
+                  //! pass your asset here
+                  enableDark: enableDark,
+                  isImage: true,
+                  isCircular: isBackBtnCircular,
+                  onTap: () {
+                    if (showBackbutton) {
+                      overrideBackPressed == null
+                          ? NavigationUtil.pop(context)
+                          : overrideBackPressed!();
+                    }
+                  }),
+            ),
           // else
           //   const SizedBox(),
           if (text != null)
@@ -89,7 +87,7 @@ class AppBarComponent extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 5),
+                      padding: EdgeInsets.only(left: showBackbutton ? 5 : 16),
                       child: TextComponent(
                         text!,
                         textAlign: TextAlign.center,

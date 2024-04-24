@@ -29,7 +29,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-  Uri gmailUrl = Uri.parse('mailto:test@example.org?subject=Greetings&body=Hello%20World');
+  Uri gmailUrl =
+      Uri.parse('mailto:test@example.org?subject=Greetings&body=Hello%20World');
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
@@ -81,78 +82,83 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBoxConstants.sizedBoxTwentyH(),
           ListTileComponent(
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.notifications,
+              leadingText: StringConstants.notifications,
               subIconColor: ColorConstants.iconBg,
               overrideLeadingIconSize: 30,
               leadingIconHeight: 25,
               leadingIconWidth: 20,
-              isLeadingIconAsset:true,
+              isLeadingIconAsset: true,
               leadingIcon: AssetConstants.notifications,
               isLeadingImageSVG: true,
-              onTap: (){
+              onTap: () {
                 NavigationUtil.push(context, RouteConstants.notificationScreen);
               }),
           SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.contactUs,
+              leadingText: StringConstants.contactUs,
               subIconColor: ColorConstants.iconBg,
               overrideLeadingIconSize: 30,
               leadingIconHeight: 25,
               leadingIconWidth: 20,
               leadingIcon: AssetConstants.contactUs,
-              isLeadingIconAsset:true,
+              isLeadingIconAsset: true,
               isLeadingImageSVG: true,
-              onTap: () { _launch(gmailUrl);}),
+              onTap: () {
+                _launch(gmailUrl);
+              }),
           SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.termsOfService,
+              leadingText: StringConstants.termsOfService,
               subIconColor: ColorConstants.iconBg,
               overrideLeadingIconSize: 30,
               leadingIconHeight: 25,
               leadingIconWidth: 20,
-              isLeadingIconAsset:true,
+              isLeadingIconAsset: true,
               leadingIcon: AssetConstants.note,
               isLeadingImageSVG: true,
-              onTap: (){
+              onTap: () {
                 NavigationUtil.push(context, RouteConstants.termsOfUseScreen);
               }),
           SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.privacyPolicy,
+              leadingText: StringConstants.privacyPolicy,
               subIconColor: ColorConstants.iconBg,
               overrideLeadingIconSize: 30,
               leadingIconHeight: 25,
               leadingIconWidth: 20,
-              isLeadingIconAsset:true,
+              isLeadingIconAsset: true,
               leadingIcon: AssetConstants.security,
               isLeadingImageSVG: true,
-            onTap: (){
-              NavigationUtil.push(context, RouteConstants.privacyPolicyScreen);
-            }),
+              onTap: () {
+                NavigationUtil.push(
+                    context, RouteConstants.privacyPolicyScreen);
+              }),
           SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.logOut,
+              leadingText: StringConstants.logOut,
               subIconColor: ColorConstants.iconBg,
               overrideLeadingIconSize: 30,
               leadingIconHeight: 25,
               leadingIconWidth: 20,
-              isLeadingIconAsset:true,
+              isLeadingIconAsset: true,
               leadingIcon: AssetConstants.logout,
               isLeadingImageSVG: true,
-              onTap: () {_askToLogoutBottomSheet();}),
+              onTap: () {
+                _askToLogoutBottomSheet();
+              }),
           Spacer(),
           ListTileComponent(
               // iconColor: ColorConstants.white,
-              iconText: StringConstants.deleteYourAccount,
-              subIcon: null,
+              leadingText: StringConstants.deleteYourAccount,
+              trailingIcon: null,
               subIconColor: ColorConstants.iconBg,
               overrideLeadingIconSize: 30,
               leadingIconHeight: 25,
-              isLeadingIconAsset:true,
+              isLeadingIconAsset: true,
               leadingIconWidth: 20,
               leadingIcon: AssetConstants.delete,
               isLeadingImageSVG: true,
@@ -236,7 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     fontSize: 20,
                     fontFamily: FontConstants.fontProtestStrike)),
             SizedBoxConstants.sizedBoxTenH(),
-             TextComponent(StringConstants.allYourDataWillBeLost,
+            TextComponent(StringConstants.allYourDataWillBeLost,
                 textAlign: TextAlign.center,
                 style: FontStylesConstants.style16()),
             SizedBoxConstants.sizedBoxTwentyH(),
@@ -279,7 +285,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     } catch (e) {
       print('Error launching URL: $e');
-      Dialogs.showSnackbar(context, 'An error occurred while launching the URL');
+      Dialogs.showSnackbar(
+          context, 'An error occurred while launching the URL');
     }
   }
 }

@@ -486,7 +486,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                                         titleColor: selectedGender == e.key
                                             ? themeCubit.backgroundColor
                                             : null,
-                                        subIcon: null,
+                                        trailingIcon: null,
                                       ),
                                     );
                                   }).toList()),

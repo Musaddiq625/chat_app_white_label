@@ -47,6 +47,7 @@ class RouteConstants {
   static const String allConnectionScreen = 'allConnectionScreen';
   static const String settingsScreen = 'settingsScreen';
   static const String notificationScreen = 'notificationScreen';
+  static const String allowNotificationScreen = 'allowNotificationScreen';
   static const String termsOfUseScreen = 'termsOfUseScreen';
   static const String privacyPolicyScreen = 'privacyPolicyScreen';
   static const String allEventScreen = 'allEventScreen';
@@ -54,5 +55,4 @@ class RouteConstants {
   static const String mainScreen = 'mainScreen';
   static const String viewYourEventScreen = 'viewYourEventScreen';
   static const String viewGroupScreen = 'viewGroupScreen';
-
 }

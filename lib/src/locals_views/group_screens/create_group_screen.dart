@@ -362,10 +362,10 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   // ),
                   ListTileComponent(
                     leadingIcon: AssetConstants.marker,
-                    iconText: StringConstants.location,
-                    leadingIconWidth:25,
+                    leadingText: StringConstants.location,
+                    leadingIconWidth: 25,
                     leadingIconHeight: 25,
-                    subText: "Manchester",
+                    trailingText: "Manchester",
                     subTextColor: themeCubit.textColor,
                   ),
                   const SizedBox(
@@ -373,10 +373,10 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   ),
                   ListTileComponent(
                     leadingIcon: AssetConstants.ticket,
-                    iconText: StringConstants.price,
-                    leadingIconWidth:25,
+                    leadingText: StringConstants.price,
+                    leadingIconWidth: 25,
                     leadingIconHeight: 25,
-                    subText: "Free",
+                    trailingText: "Free",
                     onTap: _selectPrice,
                     subTextColor: themeCubit.textColor,
                   ),
@@ -385,10 +385,10 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   ),
                   ListTileComponent(
                     leadingIcon: AssetConstants.happy,
-                    iconText: StringConstants.capacity,
-                    leadingIconWidth:25,
+                    leadingText: StringConstants.capacity,
+                    leadingIconWidth: 25,
                     leadingIconHeight: 25,
-                    subText: "60",
+                    trailingText: "60",
                     onTap: _selectCapacity,
                     subTextColor: themeCubit.textColor,
                   ),
@@ -449,10 +449,10 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   ),
                   ListTileComponent(
                     leadingIcon: AssetConstants.marker,
-                    iconText: StringConstants.visibility,
-                    leadingIconWidth:25,
+                    leadingText: StringConstants.visibility,
+                    leadingIconWidth: 25,
                     leadingIconHeight: 25,
-                    subText: "Public",
+                    trailingText: "Public",
                     onTap: () {},
                     subTextColor: themeCubit.textColor,
                   ),
@@ -683,7 +683,8 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: () => NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen),
+                    onTap: () => NavigationUtil.popAllAndPush(
+                        context, RouteConstants.mainScreen),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 40.0, top: 15),
                       child: IconComponent(
@@ -772,11 +773,22 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   //   customTextColor: themeCubit.textColor,
                   //   iconSize: 60,
                   // ),
-                  Column(children: [
-                    ImageComponent(height: 60,width: 60,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
-                    SizedBoxConstants.sizedBoxTenH(),
-                    TextComponent(StringConstants.instagram,style: FontStylesConstants.style12(color: ColorConstants.white),)
-                  ],),
+                  Column(
+                    children: [
+                      ImageComponent(
+                        height: 60,
+                        width: 60,
+                        imgUrl: AssetConstants.instagram,
+                        imgProviderCallback: (imageProvider) {},
+                      ),
+                      SizedBoxConstants.sizedBoxTenH(),
+                      TextComponent(
+                        StringConstants.instagram,
+                        style: FontStylesConstants.style12(
+                            color: ColorConstants.white),
+                      )
+                    ],
+                  ),
                   IconComponent(
                     svgData: AssetConstants.share,
                     iconColor: ColorConstants.black,
@@ -811,7 +823,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                 padding: const EdgeInsets.only(
                     left: 18.0, top: 10, bottom: 16, right: 18),
                 child: SearchTextField(
-                  filledColor:  ColorConstants.backgroundColor.withOpacity(0.3),
+                  filledColor: ColorConstants.backgroundColor.withOpacity(0.3),
                   title: "Search",
                   hintText: "Search name, postcode..",
                   onSearch: (text) {
