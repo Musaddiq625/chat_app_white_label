@@ -86,6 +86,7 @@ class StringConstants {
   static const String saveEvent = "Save Event";
   static const String seeAll = "See all";
   static const String messageForYou = "Message for you";
+  static const String message = "Message";
   static const String questionsFromCreator = "Questions from creator";
   static const String createANewEvent = "Create a new event";
   static const String createANewGroup = "Create a new group";
@@ -202,6 +203,7 @@ class StringConstants {
       "Are you sure you want to \ndelete your account? ";
   static const String areYouSureYouwantToShare =
       "Are you sure you want to share \nEvent ";
+  static const String youAreNowConnectedWith = "You are now connected with";
   static const String areYouSureYouwantToExit =
       "Are you sure you want to exit \nYour event will be deleted ";
   static const String areYouSureYouwantToRemoveFromConnection =

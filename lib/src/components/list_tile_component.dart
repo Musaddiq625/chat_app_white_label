@@ -44,7 +44,7 @@ class ListTileComponent extends StatelessWidget {
 
   final double? overrideLeadingIconSize;
   final String? trailingBtnTitle;
-  final Function? trailingBtnTap;
+  final Function()? trailingBtnTap;
   final bool reducePadding;
 
   ListTileComponent({
@@ -195,7 +195,7 @@ class ListTileComponent extends StatelessWidget {
                         giveDefaultPadding: false,
                         btnHeight: 30,
                         btnWidth: 90,
-                        onPressed: () => trailingBtnTap)
+                        onPressed: trailingBtnTap)
                 ],
               ),
             ],
