@@ -88,7 +88,12 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
   Widget build(BuildContext context) {
     return UIScaffold(
         bgColor: themeCubit.backgroundColor,
-        removeSafeAreaPadding: true,
+        // removeSafeAreaPadding: false,
+        appBar: const AppBarComponent(
+          StringConstants.makeAGroup,
+          centerTitle: false,
+          isBackBtnCircular: false,
+        ),
         // appBar:_appBar(),
         widget: _createGroup());
   }
@@ -134,43 +139,44 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBoxConstants.sizedBoxTenH(),
-            AppBarComponent(StringConstants.makeAGroup,
-                centerTitle: false, isBackBtnCircular: false),
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Stack(
+                    alignment: Alignment.centerLeft,
                     children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                              "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-                            ),
-                            fit: BoxFit.cover,
-                          ),
+                      ClipRRect(
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(30.0)),
+                        child: ImageComponent(
+                          imgUrl:
+                          "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                          width: AppConstants.responsiveWidth(context),
+                          height: AppConstants.responsiveHeight(context,
+                              percentage: 85),
+                          imgProviderCallback: (imgProvider) {},
                         ),
-                        width: AppConstants.responsiveWidth(context),
-                        height: AppConstants.responsiveHeight(context,
-                            percentage: 85),
+                      ),
+                      Positioned(
+                        top:  AppConstants.responsiveHeight(context,
+                            percentage: 60),
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.only(
+                            left: 32.0,
+                          ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Row(
                                 children: [
                                   IconComponent(
                                     iconData: Icons.edit,
                                     borderColor: ColorConstants.transparent,
-                                    circleSize: 38,
-                                    backgroundColor: ColorConstants.lightGray
-                                        .withOpacity(0.5),
+                                    circleSize: 35,
+                                    backgroundColor:
+                                    ColorConstants.lightGray.withOpacity(0.5),
                                     iconColor: ColorConstants.white,
                                   ),
                                   const SizedBox(
@@ -184,22 +190,17 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                                   )
                                 ],
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 20),
-                                child: TextComponent(
-                                  groupName,
-                                  style: TextStyle(
-                                      fontSize: 38,
-                                      fontFamily:
-                                          FontConstants.fontProtestStrike,
-                                      color: ColorConstants.white),
-                                ),
+                               TextComponent(
+                                groupName,
+                                style: TextStyle(
+                                    fontSize: 38,
+                                    fontFamily: FontConstants.fontProtestStrike,
+                                    color: ColorConstants.white),
                               ),
-                              SizedBoxConstants.sizedBoxSixtyH()
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                   SizedBoxConstants.sizedBoxTwentyH(),

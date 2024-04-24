@@ -8,6 +8,7 @@ import 'package:chat_app_white_label/src/components/creatorQuestionAnswers.dart'
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/icons_button_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
+import 'package:chat_app_white_label/src/components/joinBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/search_text_field_component.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
@@ -117,7 +118,8 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
               widthSpace: 30,
               // btnTextColor: themeCubit.textColor,
               onPressed: () {
-                _showJoinBottomSheet();
+                JoinBottomSheet.showJoinBottomSheet(context, _messageController,"Property networking event","Group","ABC","",questions: questions);
+                // _showJoinBottomSheet();
               },
             ),
           ],

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/contacts_card_component.dart';
@@ -45,13 +44,12 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
   //   ContactModel('Jesse Ebert', 'Graphic Designer', ""),
   //   ContactModel('Jesse Ebert', 'Graphic Designer', ""),
   // ];
-  final List<ImageProvider> images = [
-    const CachedNetworkImageProvider(
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const CachedNetworkImageProvider(
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const CachedNetworkImageProvider(
-        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
+  final List<String> images = [
+    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+
+    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+
+    "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
     // Replace with your asset path
     // Add more image providers as needed
   ];
@@ -204,7 +202,10 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppBarComponent("",iconBgColor: ColorConstants.iconBg,),
+            AppBarComponent(
+              "",
+              iconBgColor: ColorConstants.iconBg,
+            ),
             SizedBoxConstants.sizedBoxEightyH(),
             Padding(
               padding: EdgeInsets.only(left: 15),
@@ -270,95 +271,96 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
   Widget _aboutTheEvent() {
     return Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0), // Adjust the border radius as needed
+          borderRadius:
+              BorderRadius.circular(20.0), // Adjust the border radius as needed
         ),
         color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Padding(
-        padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextComponent(StringConstants.abouttheEvent,
-                style: FontStylesConstants.style18(
-                    color: themeCubit.primaryColor)),
-            SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  _showFullText = !_showFullText;
-                });
-              },
-              child: RichText(
-                text: TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: _showFullText
-                          ? _fullText
-                          : (_fullText.length > 150
-                                  ? _fullText.substring(0, 150)
-                                  : _fullText) ??
-                              "No description available",
-                      style: TextStyle(color: themeCubit.textColor),
-                    ),
-                    if (_fullText.length > 150)
-                      TextSpan(
-                        text: _showFullText
-                            ? ' ${StringConstants.showLess}'
-                            : ' ...${StringConstants.readMore}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: themeCubit.textColor),
-                      ),
-                  ],
+          Padding(
+            padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextComponent(StringConstants.abouttheEvent,
+                    style: FontStylesConstants.style18(
+                        color: themeCubit.primaryColor)),
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-            ),
-          ],
-        ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _showFullText = !_showFullText;
+                    });
+                  },
+                  child: RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: _showFullText
+                              ? _fullText
+                              : (_fullText.length > 150
+                                      ? _fullText.substring(0, 150)
+                                      : _fullText) ??
+                                  "No description available",
+                          style: TextStyle(color: themeCubit.textColor),
+                        ),
+                        if (_fullText.length > 150)
+                          TextSpan(
+                            text: _showFullText
+                                ? ' ${StringConstants.showLess}'
+                                : ' ...${StringConstants.readMore}',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: themeCubit.textColor),
+                          ),
+                      ],
                     ),
-                    SizedBoxConstants.sizedBoxTwentyH(),
-                    Container(
-        // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
-        child: Column(
-          children: [
-            AboutEventComponent(
-              name: "1456 ${StringConstants.participants}",
-              detail: "Elena, Ilsa and more",
-              icon: AssetConstants.happy,
-              showPersonIcon: true,
-              selectedImages: images,
+                  ),
+                ),
+              ],
             ),
-            AboutEventComponent(
-              name: StringConstants.flexibleDate,
-              detail: StringConstants.dateWillbeDecidelater,
-              icon: AssetConstants.calendar,
+          ),
+          SizedBoxConstants.sizedBoxTwentyH(),
+          Container(
+            // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
+            child: Column(
+              children: [
+                AboutEventComponent(
+                  name: "1456 ${StringConstants.participants}",
+                  detail: "Elena, Ilsa and more",
+                  icon: AssetConstants.happy,
+                  showPersonIcon: true,
+                  selectedImages: images,
+                ),
+                AboutEventComponent(
+                  name: StringConstants.flexibleDate,
+                  detail: StringConstants.dateWillbeDecidelater,
+                  icon: AssetConstants.calendar,
+                ),
+                AboutEventComponent(
+                  name: "Manchester",
+                  detail: StringConstants.exactLocationAfterJoining,
+                  icon: AssetConstants.marker,
+                ),
+                if (ticketRequired == true)
+                  AboutEventComponent(
+                    name: "SR 150",
+                    detail: StringConstants.ticketrequired,
+                    icon: AssetConstants.ticket,
+                  ),
+                AboutEventComponent(
+                  divider: false,
+                  name: StringConstants.capacityOf,
+                  detail: StringConstants.limitedGuests,
+                  icon: AssetConstants.tag,
+                ),
+                SizedBoxConstants.sizedBoxTenH()
+              ],
             ),
-            AboutEventComponent(
-              name: "Manchester",
-              detail: StringConstants.exactLocationAfterJoining,
-              icon: AssetConstants.marker,
-            ),
-            if (ticketRequired == true)
-              AboutEventComponent(
-                name: "SR 150",
-                detail: StringConstants.ticketrequired,
-                icon: AssetConstants.ticket,
-              ),
-            AboutEventComponent(
-              divider: false,
-              name: StringConstants.capacityOf,
-              detail: StringConstants.limitedGuests,
-              icon: AssetConstants.tag,
-            ),
-            SizedBoxConstants.sizedBoxTenH()
-          ],
-        ),
-                    ),
-                  ]));
+          ),
+        ]));
   }
 
   Widget _members() {
@@ -395,7 +397,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
             Row(
               children: [
                 Container(
-                  margin: EdgeInsets.only(left: 5),
+                    margin: EdgeInsets.only(left: 5),
                     width:
                         AppConstants.responsiveWidth(context, percentage: 66),
                     child: const ContactCard(
@@ -407,7 +409,6 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                       imageSize: 40,
                     )),
                 Container(
-
                   padding: const EdgeInsets.only(
                       left: 16, right: 16, top: 3, bottom: 3),
                   decoration: BoxDecoration(
@@ -427,7 +428,6 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
               Map<String, dynamic> details = entry.value;
               bool isLast = index == memberResponseDetail!.length - 1;
               return Container(
-
                 child: Column(
                   children: [
                     Container(

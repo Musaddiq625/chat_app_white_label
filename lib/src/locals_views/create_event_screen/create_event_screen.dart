@@ -1,13 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
+import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
-import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
@@ -18,6 +18,7 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -63,6 +64,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     // ... other contacts
   ];
 
+  String? startDate;
+  String? endDate;
   List<String> questions = ['Question 1'];
   List<TextEditingController> _questionControllers =
       []; // Initialize with one question
@@ -206,7 +209,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       ),
                     ),
                     Positioned(
-                      top: 470,
+                      top: AppConstants.responsiveHeight(context,
+                          percentage: 60),
                       child: Padding(
                         padding: const EdgeInsets.only(
                           left: 32.0,
@@ -316,7 +320,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ),
                 SizedBoxConstants.sizedBoxTwelveH(),
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
                   width: AppConstants.responsiveWidth(context),
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(20.0)),
@@ -325,132 +329,436 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          ImageComponent(
-                            imgUrl: AssetConstants.calendar,
-                            width: 20,
-                            imgProviderCallback: (imgProvider) {},
+                          Column(
+                            children: [
+                              ImageComponent(
+                                imgUrl: AssetConstants.calendar,
+                                width: 20,
+                                imgProviderCallback: (imgProvider) {},
+                              ),
+                              SizedBoxConstants.sizedBoxSixH(),
+                              Column(
+                                children: List.generate(6, (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 2.0, left: 0, bottom: 0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: ColorConstants.grey,
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      height: 3,
+                                      width: 3,
+                                    ),
+                                  );
+                                }),
+                              ),
+                              SizedBoxConstants.sizedBoxSixH(),
+                              SvgPicture.asset(
+                                height: 20,
+                                AssetConstants.end,
+                              ),
+                            ],
                           ),
-                          // SvgPicture.asset(
-                          //   height: 20,
-                          //   AssetConstants.calendar,
-                          // ),
-                          SizedBoxConstants.sizedBoxTwentyW(),
-                          TextComponent(
-                            StringConstants.start,
-                            style: TextStyle(
-                                fontSize: 15, color: themeCubit.textColor),
-                          ),
-                          const Spacer(),
-                          TextComponent(
-                            "17 Feb at 11 am",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: themeCubit.textColor),
+                          Container(
+                            margin: EdgeInsets.only(left: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 5),
+                                  width: AppConstants.responsiveWidth(context,
+                                      percentage: 70),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextComponent(
+                                        StringConstants.start,
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: themeCubit.textColor),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2000),
+                                            lastDate: DateTime(2101),
+                                          ).then((selectedDate) {
+                                            // After selecting the date, display the time picker.
+                                            if (selectedDate != null) {
+                                              if (endDate != null && selectedDate.isBefore(DateTime.parse(endDate!))) {
+                                                showTimePicker(
+                                                  context: context,
+                                                  initialTime: TimeOfDay.now(),
+                                                ).then((selectedTime) {
+                                                  // Handle the selected date and time here.
+                                                  if (selectedTime != null) {
+                                                    DateTime selectedDateTime =
+                                                        DateTime(
+                                                      selectedDate.year,
+                                                      selectedDate.month,
+                                                      selectedDate.day,
+                                                      selectedTime.hour,
+                                                      selectedTime.minute,
+                                                    );
+
+                                                    String formattedDateTime =
+                                                        DateFormat(
+                                                                'd MMM \'at\' hh a')
+                                                            .format(
+                                                                selectedDateTime);
+
+                                                    if (startDate == null) {
+                                                      setState(() {
+                                                        startDate =
+                                                            selectedDateTime
+                                                                .toString();
+                                                        // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                      });
+                                                    }
+                                                    else if(endDate != null && selectedDateTime.isAfter(DateTime.parse(endDate!))){
+                                                      ScaffoldMessenger.of(context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: TextComponent(
+                                                              "Start Date-Time cannot be After end Date-Time."),
+                                                        ),
+                                                      );
+                                                    }
+                                                    else{
+                                                      setState(() {
+                                                        startDate =
+                                                            selectedDateTime
+                                                                .toString();
+                                                        // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                      });
+                                                    }
+                                                    print(formattedDateTime);
+                                                    print(
+                                                        selectedDateTime); // print should display as 11 feb at 11 am
+                                                  }
+                                                });
+                                              }
+                                              else if (endDate != null && selectedDate.isAfter(DateTime.parse(endDate!))) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: TextComponent(
+                                                        "Start date cannot be After end date."),
+                                                  ),
+                                                );
+                                              }
+                                              else {
+                                                showTimePicker(
+                                                  context: context,
+                                                  initialTime: TimeOfDay.now(),
+                                                ).then((selectedTime) {
+                                                  // Handle the selected date and time here.
+                                                  if (selectedTime != null) {
+                                                    DateTime selectedDateTime =
+                                                        DateTime(
+                                                      selectedDate.year,
+                                                      selectedDate.month,
+                                                      selectedDate.day,
+                                                      selectedTime.hour,
+                                                      selectedTime.minute,
+                                                    );
+
+                                                    String formattedDateTime =
+                                                        DateFormat(
+                                                                'd MMM \'at\' hh a')
+                                                            .format(
+                                                                selectedDateTime);
+
+                                                    if (startDate == null) {
+                                                      setState(() {
+                                                        startDate =
+                                                            selectedDateTime
+                                                                .toString();
+                                                        // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                      });
+                                                    }
+                                                    else if(endDate != null && selectedDateTime.isAfter(DateTime.parse(endDate!))){
+                                                      ScaffoldMessenger.of(context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: TextComponent(
+                                                              "Start Date-Time cannot be After end Date-Time."),
+                                                        ),
+                                                      );
+                                                    }
+                                                    else{
+                                                      setState(() {
+                                                        startDate =
+                                                            selectedDateTime
+                                                                .toString();
+                                                        // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                      });
+                                                    }
+                                                    print(formattedDateTime);
+                                                    print(
+                                                        selectedDateTime); // print should display as 11 feb at 11 am
+                                                  }
+                                                });
+                                              }
+                                            }
+                                          });
+                                        },
+                                        child: TextComponent(
+                                          startDate != null
+                                              ? DateFormat('d MMM \'at\' hh a')
+                                                  .format(DateTime.parse(
+                                                      startDate!))
+                                              : "Select Date & Time",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: themeCubit.textColor),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: AppConstants.responsiveWidth(context,
+                                      percentage: 76),
+                                  child: Column(
+                                    children: [DividerCosntants.divider1],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  width: AppConstants.responsiveWidth(context,
+                                      percentage: 70),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextComponent(
+                                        StringConstants.end,
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: themeCubit.textColor),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          if (startDate != null) {
+                                            showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime(2101),
+                                            ).then((selectedDate) {
+                                              // After selecting the date, display the time picker.
+                                              if (selectedDate != null) {
+                                                print("selectedDate $selectedDate start Date $startDate");
+                                                if(selectedDate.isBefore(DateTime.parse(startDate!)) ){
+                                                  ScaffoldMessenger.of(
+                                                      context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                      content: TextComponent(
+                                                          "End date cannot be select before start date."),
+                                                    ),
+                                                  );
+                                                }
+                                                else if(selectedDate.isAfter(DateTime.parse(startDate!))|| selectedDate.isAtSameMomentAs(DateTime.parse(startDate!))){
+                                                  showTimePicker(
+                                                    context: context,
+                                                    initialTime: TimeOfDay.now(),
+                                                  ).then((selectedTime) {
+                                                    // Handle the selected date and time here.
+                                                    if (selectedTime != null) {
+                                                      DateTime selectedDateTime =
+                                                      DateTime(
+                                                        selectedDate.year,
+                                                        selectedDate.month,
+                                                        selectedDate.day,
+                                                        selectedTime.hour,
+                                                        selectedTime.minute,
+                                                      );
+
+                                                      String formattedDateTime =
+                                                      DateFormat(
+                                                          'd MMM \'at\' hh a')
+                                                          .format(
+                                                          selectedDateTime);
+
+                                                      if (endDate == null) {
+                                                        setState(() {
+                                                          endDate =
+                                                              selectedDateTime
+                                                                  .toString();
+                                                          // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                        });
+                                                      }
+                                                      else if(selectedDateTime.isBefore(DateTime.parse(startDate!))){
+                                                        ScaffoldMessenger.of(
+                                                            context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: TextComponent(
+                                                                "End date-time cannot be select before start date-time."),
+                                                          ),
+                                                        );
+
+                                                      }else if(selectedDateTime.isAfter(DateTime.parse(startDate!))){
+                                                        setState(() {
+                                                          endDate =
+                                                              selectedDateTime
+                                                                  .toString();
+                                                          // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                        });
+                                                      }
+                                                      else{
+                                                        setState(() {
+                                                          endDate =
+                                                              selectedDateTime
+                                                                  .toString();
+                                                          // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                        });
+                                                      }
+
+                                                      print(formattedDateTime);
+                                                      print(selectedDateTime);
+                                                      //
+                                                      // else {
+                                                      //        // Optionally, show an error message or ignore the selection
+                                                      //        ScaffoldMessenger.of(
+                                                      //                context)
+                                                      //            .showSnackBar(
+                                                      //          SnackBar(
+                                                      //            content: TextComponent(
+                                                      //                "End date cannot be select before start date."),
+                                                      //          ),
+                                                      //        );
+                                                      //      }
+                                                      print(formattedDateTime);
+                                                      // print(selectedDateTime); // print should display as 11 feb at 11 am
+                                                    }
+                                                  });
+                                              }
+                                                else{
+                                                  showTimePicker(
+                                                    context: context,
+                                                    initialTime: TimeOfDay.now(),
+                                                  ).then((selectedTime) {
+                                                    // Handle the selected date and time here.
+                                                    if (selectedTime != null) {
+                                                      DateTime selectedDateTime =
+                                                      DateTime(
+                                                        selectedDate.year,
+                                                        selectedDate.month,
+                                                        selectedDate.day,
+                                                        selectedTime.hour,
+                                                        selectedTime.minute,
+                                                      );
+
+                                                      String formattedDateTime =
+                                                      DateFormat(
+                                                          'd MMM \'at\' hh a')
+                                                          .format(
+                                                          selectedDateTime);
+
+                                                      if (endDate == null) {
+                                                        setState(() {
+                                                          endDate =
+                                                              selectedDateTime
+                                                                  .toString();
+                                                          // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                        });
+                                                      }
+                                                      else if(selectedDateTime.isBefore(DateTime.parse(startDate!))){
+                                                        ScaffoldMessenger.of(
+                                                            context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: TextComponent(
+                                                                "End date-time cannot be select before start date-time."),
+                                                          ),
+                                                        );
+
+                                                      }else if(selectedDateTime.isAfter(DateTime.parse(startDate!))){
+                                                        setState(() {
+                                                          endDate =
+                                                              selectedDateTime
+                                                                  .toString();
+                                                          // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                        });
+                                                      }
+                                                      else{
+                                                        setState(() {
+                                                          endDate =
+                                                              selectedDateTime
+                                                                  .toString();
+                                                          // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                        });
+                                                      }
+
+                                                      print(formattedDateTime);
+                                                      print(selectedDateTime);
+                                                      //
+                                                      // else {
+                                                      //        // Optionally, show an error message or ignore the selection
+                                                      //        ScaffoldMessenger.of(
+                                                      //                context)
+                                                      //            .showSnackBar(
+                                                      //          SnackBar(
+                                                      //            content: TextComponent(
+                                                      //                "End date cannot be select before start date."),
+                                                      //          ),
+                                                      //        );
+                                                      //      }
+                                                      print(formattedDateTime);
+                                                      // print(selectedDateTime); // print should display as 11 feb at 11 am
+                                                    }
+                                                  });
+                                                }
+
+                                              }
+                                            });
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: TextComponent(
+                                                    "First Select start date."),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: TextComponent(
+                                          endDate != null
+                                              ? DateFormat('d MMM \'at\' hh a')
+                                                  .format(
+                                                      DateTime.parse(endDate!))
+                                              : "Select Date & Time",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: themeCubit.textColor),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(
                         height: 5,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: List.generate(6, (index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 2.0, left: 6),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: ColorConstants.grey,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  height: 3,
-                                  width: 3,
-                                ),
-                              );
-                            }),
-                          ),
-
-                          // Column(
-                          //   children: [
-                          //     IconComponent(
-                          //       iconData: Icons.circle_rounded,
-                          //       circleSize: 3,
-                          //       iconSize: 3,
-                          //       backgroundColor: ColorConstants.transparent,
-                          //       borderColor: ColorConstants.transparent,
-                          //     ),
-                          //     IconComponent(
-                          //       iconData: Icons.circle_rounded,
-                          //       circleSize: 5,
-                          //       iconSize: 5,
-                          //       backgroundColor: ColorConstants.transparent,
-                          //       borderColor: ColorConstants.transparent,
-                          //     ),
-                          //     IconComponent(
-                          //       iconData: Icons.circle_rounded,
-                          //       circleSize: 5,
-                          //       iconSize: 5,
-                          //       backgroundColor: ColorConstants.transparent,
-                          //       borderColor: ColorConstants.transparent,
-                          //     ),
-                          //     IconComponent(
-                          //       iconData: Icons.circle_rounded,
-                          //       circleSize: 5,
-                          //       iconSize: 5,
-                          //       backgroundColor: ColorConstants.transparent,
-                          //       borderColor: ColorConstants.transparent,
-                          //     ),
-                          //   ],
-                          // ),
-
-                          // IconComponent(
-                          //   iconData: Icons.straight,
-                          //   circleSize: 25,
-                          //   iconSize: 25,
-                          //   backgroundColor: ColorConstants.transparent,
-                          //   borderColor: ColorConstants.transparent,
-                          // ),
-                          const Spacer(),
-                          SizedBox(
-                              width:
-                                  AppConstants.responsiveWidth(context) / 1.5,
-                              child: const Divider(
-                                thickness: 0.1,
-                              ))
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SvgPicture.asset(
-                            height: 20,
-                            AssetConstants.end,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          TextComponent(
-                            StringConstants.end,
-                            style: TextStyle(
-                                fontSize: 15, color: themeCubit.textColor),
-                          ),
-                          const Spacer(),
-                          TextComponent(
-                            "2 pm",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: themeCubit.textColor),
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -565,63 +873,64 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     color: themeCubit.darkBackgroundColor,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
+                    padding: const EdgeInsets.only(top:10.0,left:15,right: 15,bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ImageComponent(
-                              imgUrl: AssetConstants.ticket,
-                              height: 25,
-                              width: 25,
-                              imgProviderCallback:
-                                  (ImageProvider<Object> imgProvider) {},
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              flex: 6,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextComponent(
-                                      StringConstants.requireGuestsApproval,
-                                      maxLines: 3,
+                        Padding(
+                          padding: const EdgeInsets.only(top:8.0),
+                          child: ImageComponent(
+                            imgUrl: AssetConstants.ticket,
+                            height: 25,
+                            width: 25,
+                            imgProviderCallback:
+                                (ImageProvider<Object> imgProvider) {},
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          flex: 6,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top:8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextComponent(
+                                    StringConstants.requireGuestsApproval,
+                                    maxLines: 3,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: themeCubit.textColor)),
+                                SizedBoxConstants.sizedBoxSixH(),
+                                Container(
+                                  child: const TextComponent(
+                                      StringConstants
+                                          .requireGuestsApprovalBody,
+                                      maxLines: 6,
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          color: themeCubit.textColor)),
-                                  SizedBoxConstants.sizedBoxSixH(),
-                                  Container(
-                                    child: const TextComponent(
-                                        StringConstants
-                                            .requireGuestsApprovalBody,
-                                        maxLines: 6,
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: ColorConstants.lightGray),
-                                        textAlign: TextAlign.start),
-                                  ),
-                                ],
-                              ),
+                                          fontSize: 13,
+                                          color: ColorConstants.lightGray),
+                                      textAlign: TextAlign.start),
+                                ),
+                              ],
                             ),
-                            // const Spacer(),
-
-                            Switch(
-                              // This bool value toggles the switch.
-                              value: requireGuest,
-                              activeColor: ColorConstants.white,
-                              activeTrackColor: themeCubit.primaryColor,
-                              onChanged: (bool value) {
-                                // This is called when the user toggles the switch.
-                                setState(() {
-                                  requireGuest = value;
-                                });
-                              },
-                            ),
-                          ],
+                          ),
+                        ),
+                        // const Spacer(),
+                        Switch(
+                          // This bool value toggles the switch.
+                          value: requireGuest,
+                          activeColor: ColorConstants.white,
+                          activeTrackColor: themeCubit.primaryColor,
+                          onChanged: (bool value) {
+                            // This is called when the user toggles the switch.
+                            setState(() {
+                              requireGuest = value;
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -637,7 +946,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     color: themeCubit.darkBackgroundColor,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.only(top:10.0,left:15,right: 15,bottom: 15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -645,62 +954,67 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SvgPicture.asset(
-                              height: 25,
-                              AssetConstants.ticket,
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0),
+                              child: SvgPicture.asset(
+                                height: 25,
+                                AssetConstants.ticket,
+                              ),
                             ),
                             const SizedBox(
                               width: 20,
                             ),
                             Expanded(
                               flex: 6,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextComponent(
-                                    StringConstants.askQuestionWhenPeopleJoin,
-                                    maxLines: 3,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: themeCubit.textColor),
-                                  ),
-                                  SizedBoxConstants.sizedBoxSixH(),
-                                  Container(
-                                    child: const TextComponent(
-                                        StringConstants
-                                            .askQuestionWhenPeopleJoinBody,
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: ColorConstants.lightGray),
-                                        textAlign: TextAlign.start),
-                                  ),
-                                  if (editQuestion != false)
-                                    Row(
-                                      children: [
-                                        TextComponent(
-                                          StringConstants.editQuestions,
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: themeCubit.textColor),
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        IconComponent(
-                                          iconData: Icons.edit,
-                                          borderColor:
-                                              ColorConstants.transparent,
-                                          backgroundColor:
-                                              ColorConstants.transparent,
-                                          iconColor: ColorConstants.lightGray
-                                              .withOpacity(0.5),
-                                          iconSize: 20,
-                                          circleSize: 15,
-                                        ),
-                                      ],
+                              child: Padding(
+                                padding: const EdgeInsets.only(top:8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextComponent(
+                                      StringConstants.askQuestionWhenPeopleJoin,
+                                      maxLines: 3,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: themeCubit.textColor),
                                     ),
-                                ],
+                                    Container(
+                                      child: const TextComponent(
+                                          StringConstants
+                                              .askQuestionWhenPeopleJoinBody,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: ColorConstants.lightGray),
+                                          textAlign: TextAlign.start),
+                                    ),
+                                    if (editQuestion != false)
+                                      Row(
+                                        children: [
+                                          TextComponent(
+                                            StringConstants.editQuestions,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: themeCubit.textColor),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          IconComponent(
+                                            iconData: Icons.edit,
+                                            borderColor:
+                                                ColorConstants.transparent,
+                                            backgroundColor:
+                                                ColorConstants.transparent,
+                                            iconColor: ColorConstants.lightGray
+                                                .withOpacity(0.5),
+                                            iconSize: 20,
+                                            circleSize: 15,
+                                          ),
+                                        ],
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                             const Spacer(),
@@ -729,7 +1043,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   height: 10,
                 ),
                 Container(
-                  width: AppConstants.responsiveWidth(context),
+                  margin: EdgeInsets.only(left: 8,right: 8),
                   child: ButtonComponent(
                     bgcolor: themeCubit.primaryColor,
                     buttonText: StringConstants.createEvent,

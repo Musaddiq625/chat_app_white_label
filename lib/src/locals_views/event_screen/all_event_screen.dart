@@ -20,13 +20,13 @@ class _AllEventScreenState extends State<AllEventScreen> {
   int _selectedIndex = 0;
   String img =
       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg";
-  final List<ImageProvider> images2 = [
-    const CachedNetworkImageProvider(
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const CachedNetworkImageProvider(
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const CachedNetworkImageProvider(
-        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
+  final List<String> images2 = [
+
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+
+        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+
+        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
   ];
   List<Map<String, dynamic>> eventList = [
     {

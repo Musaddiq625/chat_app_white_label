@@ -7,13 +7,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/color_constants.dart';
 import '../constants/font_styles.dart';
 import '../constants/size_box_constants.dart';
+import 'image_component.dart';
 
 class AboutEventComponent extends StatelessWidget {
   final String name;
   final String detail;
   final String icon;
   final bool divider;
-  final List<ImageProvider>? selectedImages;
+  final List<String>? selectedImages;
   final Function()? onShareTap;
   final Function()? onProfileTap;
   final bool showPersonIcon;
@@ -83,13 +84,20 @@ class AboutEventComponent extends StatelessWidget {
                               left: i * radius / 1.5,
 // Adjust the left offset
                               child: ClipOval(
-                                child: Image(
-// color: Colors.red,
-                                  image: selectedImages![i],
+                                child: ImageComponent(
+                                  imgUrl: selectedImages![i],
                                   width: radius,
                                   height: radius,
-                                  fit: BoxFit.cover,
+                                  imgProviderCallback:
+                                      (ImageProvider<Object> imgProvider) {},
                                 ),
+// Image(
+// // color: Colors.red,
+//                                   image: selectedImages![i],
+//                                   width: radius,
+//                                   height: radius,
+//                                   fit: BoxFit.cover,
+//                                 ),
                               ),
                             ),
                         ],
@@ -99,8 +107,7 @@ class AboutEventComponent extends StatelessWidget {
             ),
           ),
         ),
-        if(divider== true)
-        const Divider(thickness: 0.1),
+        if (divider == true) const Divider(thickness: 0.1),
       ],
     );
   }

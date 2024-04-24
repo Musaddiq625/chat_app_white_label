@@ -1,12 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
-import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
+import 'package:chat_app_white_label/src/components/joinBottomSheetComponent.dart';
+import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
@@ -27,7 +28,6 @@ import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../constants/color_constants.dart';
-import '../../constants/route_constants.dart';
 import '../../models/contact.dart';
 
 class EventScreen extends StatefulWidget {
@@ -56,13 +56,12 @@ class _EventScreenState extends State<EventScreen> {
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
   ];
-  final List<ImageProvider> images = [
-    const CachedNetworkImageProvider(
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    const CachedNetworkImageProvider(
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg"),
-    const CachedNetworkImageProvider(
-        "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg"),
+  final List<String> images = [
+    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+
+    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+
+    "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
     // Replace with your asset path
     // Add more image providers as needed
   ];
@@ -109,7 +108,9 @@ class _EventScreenState extends State<EventScreen> {
                 bgcolor: themeCubit.primaryColor,
                 // btnTextColor: themeCubit.textColor,
                 onPressed: () {
-                  _showJoinBottomSheet();
+                  JoinBottomSheet.showJoinBottomSheet(context, _controller,
+                      "Property networking event", "Group", "ABC", "");
+                  // _showJoinBottomSheet();
                 },
               ),
             ),
@@ -159,12 +160,19 @@ class _EventScreenState extends State<EventScreen> {
                           Positioned(
                             left: i * radius / 1.5,
                             child: ClipOval(
-                              child: Image(
-                                image: images[i],
+                              child: ImageComponent(
+                                imgUrl: images[i],
                                 width: radius,
                                 height: radius,
-                                fit: BoxFit.cover,
+                                imgProviderCallback:
+                                    (ImageProvider<Object> imgProvider) {},
                               ),
+                              // Image(
+                              //   image: images[i],
+                              //   width: radius,
+                              //   height: radius,
+                              //   fit: BoxFit.cover,
+                              // ),
                             ),
                           ),
                       ],
@@ -214,7 +222,9 @@ class _EventScreenState extends State<EventScreen> {
                       circleSize: 35,
                       iconSize: 15,
                       onTap: () {
-                        _shareEventBottomSheet();
+                        ShareBottomSheet.shareBottomSheet(
+                            context, contacts, StringConstants.event);
+                        // _shareEventBottomSheet();
                       }),
                   const SizedBox(width: 10),
                   IconComponent(
@@ -345,7 +355,7 @@ class _EventScreenState extends State<EventScreen> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-                padding: const EdgeInsets.only(top: 10, left: 18),
+                padding: const EdgeInsets.only(top: 20, left: 18),
                 child: RichText(
                   textAlign: TextAlign.start,
                   text: TextSpan(
@@ -367,6 +377,7 @@ class _EventScreenState extends State<EventScreen> {
             ...List.generate(
                 contacts.length,
                 (index) => ContactCard(
+                    imageSize: 45,
                     name: contacts[index].name,
                     title: contacts[index].title,
                     url: contacts[index].url,
@@ -379,199 +390,199 @@ class _EventScreenState extends State<EventScreen> {
     );
   }
 
-  _shareEventBottomSheet() {
-    BottomSheetComponent.showBottomSheet(context,
-        bgColor: themeCubit.darkBackgroundColor,
-        takeFullHeightWhenPossible: false,
-        isShowHeader: false,
-        body: Container(
-          constraints: const BoxConstraints(maxHeight: 600),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
-                    child: TextComponent(StringConstants.shareEvent,
-                        style: FontStylesConstants.style18(
-                            color: themeCubit.primaryColor)),
-                  ),
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 20.0),
-                      child: IconComponent(
-                        iconData: Icons.close,
-                        borderColor: Colors.transparent,
-                        iconColor: themeCubit.textColor,
-                        circleSize: 50,
-                        backgroundColor: Colors.transparent,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconComponent(
-                    // iconData: Icons.link,
-                    svgData: AssetConstants.copyLink,
-                    borderColor: Colors.transparent,
-                    backgroundColor: themeCubit.primaryColor,
-                    iconColor: ColorConstants.black,
-                    circleSize: 60,
-                    customText: StringConstants.copyLink,
-                    customTextColor: themeCubit.textColor,
-                  ),
-                  IconComponent(
-                    iconData: Icons.facebook,
-                    borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.blue,
-                    circleSize: 60,
-                    iconSize: 30,
-                    customText: StringConstants.facebook,
-                    customTextColor: themeCubit.textColor,
-                  ),
-                  // IconComponent(
-                  //   svgDataCheck: false,
-                  //   svgData: AssetConstants.instagram,
-                  //   backgroundColor: Colors.transparent,
-                  //   borderColor: Colors.transparent,
-                  //   circleSize: 60,
-                  //   customText: StringConstants.instagram,
-                  //   customTextColor: themeCubit.textColor,
-                  //   iconSize: 60,
-                  // ),
-                  Column(children: [
-                    ImageComponent(height: 60,width: 60,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
-                    SizedBoxConstants.sizedBoxTenH(),
-                    TextComponent(StringConstants.instagram,style: FontStylesConstants.style12(color: ColorConstants.white),)
-                  ],),
-                  IconComponent(
-                    svgData: AssetConstants.share,
-                    iconColor: ColorConstants.black,
-                    borderColor: Colors.transparent,
-                    // backgroundColor:ColorConstants.transparent,
-                    circleSize: 60,
-                    customText: StringConstants.share,
-                    customTextColor: themeCubit.textColor,
-                  )
-                ],
-              ),
-              SizedBoxConstants.sizedBoxTenH(),
-              const Divider(
-                thickness: 0.5,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
-                child: TextComponent(
-                  StringConstants.yourConnections,
-                  style: TextStyle(
-                      color: themeCubit.primaryColor,
-                      fontFamily: FontConstants.fontProtestStrike,
-                      fontSize: 18),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: contacts.length,
-                  itemBuilder: (ctx, index) {
-                    return ContactCard(
-                      name: contacts[index].name,
-                      title: contacts[index].title,
-                      url: contacts[index].url,
-                      // contact: contacts[index],
-                      onShareTap: () {
-                        Navigator.pop(context);
-                        _shareWithConnectionBottomSheet(
-                            StringConstants.fireWorks, contacts[index].name);
-                      },
-                      onProfileTap: () {
-                        NavigationUtil.push(
-                            context, RouteConstants.profileScreenLocal);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
-
-  _shareWithConnectionBottomSheet(String eventName, String userName) {
-    BottomSheetComponent.showBottomSheet(context,
-        bgColor: themeCubit.darkBackgroundColor,
-        takeFullHeightWhenPossible: false,
-        isShowHeader: false,
-        body: Column(
-          children: [
-            const SizedBox(height: 25),
-            const ProfileImageComponent(url: ''),
-            const SizedBox(height: 20),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: FontConstants.fontProtestStrike,
-                    height: 1.5),
-                children: <TextSpan>[
-                  TextSpan(text: StringConstants.areYouSureYouwantToShare),
-                  TextSpan(
-                    text: eventName,
-                    style: TextStyle(color: themeCubit.primaryColor),
-                  ),
-                  TextSpan(text: " with \n"),
-                  TextSpan(
-                    text: "$userName?",
-                    style: TextStyle(color: themeCubit.primaryColor),
-                  ),
-                ],
-              ),
-            ),
-            SizedBoxConstants.sizedBoxTwentyH(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: TextComponent(
-                      StringConstants.goBack,
-                      style: TextStyle(color: themeCubit.textColor),
-                    )),
-                SizedBoxConstants.sizedBoxThirtyW(),
-                ButtonComponent(
-                  bgcolor: themeCubit.primaryColor,
-                  textColor: themeCubit.backgroundColor,
-                  buttonText: StringConstants.yesShareIt,
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _yesShareItBottomSheet();
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-          ],
-        ));
-  }
-
-  _yesShareItBottomSheet() {
-    _navigateToBack();
-    BottomSheetComponent.showBottomSheet(
-      context,
-      isShowHeader: false,
-      body: InfoSheetComponent(
-        heading: StringConstants.eventShared,
-        image: AssetConstants.garland,
-      ),
-    );
-  }
+  // _shareEventBottomSheet() {
+  //   BottomSheetComponent.showBottomSheet(context,
+  //       bgColor: themeCubit.darkBackgroundColor,
+  //       takeFullHeightWhenPossible: false,
+  //       isShowHeader: false,
+  //       body: Container(
+  //         constraints: const BoxConstraints(maxHeight: 600),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Padding(
+  //                   padding: EdgeInsets.only(left: 18.0, top: 18, bottom: 18),
+  //                   child: TextComponent(StringConstants.shareEvent,
+  //                       style: FontStylesConstants.style18(
+  //                           color: themeCubit.primaryColor)),
+  //                 ),
+  //                 InkWell(
+  //                   onTap: () => Navigator.pop(context),
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.only(right: 20.0),
+  //                     child: IconComponent(
+  //                       iconData: Icons.close,
+  //                       borderColor: Colors.transparent,
+  //                       iconColor: themeCubit.textColor,
+  //                       circleSize: 50,
+  //                       backgroundColor: Colors.transparent,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children: [
+  //                 IconComponent(
+  //                   // iconData: Icons.link,
+  //                   svgData: AssetConstants.copyLink,
+  //                   borderColor: Colors.transparent,
+  //                   backgroundColor: themeCubit.primaryColor,
+  //                   iconColor: ColorConstants.black,
+  //                   circleSize: 60,
+  //                   customText: StringConstants.copyLink,
+  //                   customTextColor: themeCubit.textColor,
+  //                 ),
+  //                 IconComponent(
+  //                   iconData: Icons.facebook,
+  //                   borderColor: Colors.transparent,
+  //                   backgroundColor: ColorConstants.blue,
+  //                   circleSize: 60,
+  //                   iconSize: 30,
+  //                   customText: StringConstants.facebook,
+  //                   customTextColor: themeCubit.textColor,
+  //                 ),
+  //                 // IconComponent(
+  //                 //   svgDataCheck: false,
+  //                 //   svgData: AssetConstants.instagram,
+  //                 //   backgroundColor: Colors.transparent,
+  //                 //   borderColor: Colors.transparent,
+  //                 //   circleSize: 60,
+  //                 //   customText: StringConstants.instagram,
+  //                 //   customTextColor: themeCubit.textColor,
+  //                 //   iconSize: 60,
+  //                 // ),
+  //                 Column(children: [
+  //                   ImageComponent(height: 60,width: 60,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
+  //                   SizedBoxConstants.sizedBoxTenH(),
+  //                   TextComponent(StringConstants.instagram,style: FontStylesConstants.style12(color: ColorConstants.white),)
+  //                 ],),
+  //                 IconComponent(
+  //                   svgData: AssetConstants.share,
+  //                   iconColor: ColorConstants.black,
+  //                   borderColor: Colors.transparent,
+  //                   // backgroundColor:ColorConstants.transparent,
+  //                   circleSize: 60,
+  //                   customText: StringConstants.share,
+  //                   customTextColor: themeCubit.textColor,
+  //                 )
+  //               ],
+  //             ),
+  //             SizedBoxConstants.sizedBoxTenH(),
+  //             const Divider(
+  //               thickness: 0.5,
+  //             ),
+  //             Padding(
+  //               padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
+  //               child: TextComponent(
+  //                 StringConstants.yourConnections,
+  //                 style: TextStyle(
+  //                     color: themeCubit.primaryColor,
+  //                     fontFamily: FontConstants.fontProtestStrike,
+  //                     fontSize: 18),
+  //               ),
+  //             ),
+  //             Expanded(
+  //               child: ListView.builder(
+  //                 shrinkWrap: true,
+  //                 itemCount: contacts.length,
+  //                 itemBuilder: (ctx, index) {
+  //                   return ContactCard(
+  //                     name: contacts[index].name,
+  //                     title: contacts[index].title,
+  //                     url: contacts[index].url,
+  //                     // contact: contacts[index],
+  //                     onShareTap: () {
+  //                       Navigator.pop(context);
+  //                       _shareWithConnectionBottomSheet(
+  //                           StringConstants.fireWorks, contacts[index].name);
+  //                     },
+  //                     onProfileTap: () {
+  //                       NavigationUtil.push(
+  //                           context, RouteConstants.profileScreenLocal);
+  //                     },
+  //                   );
+  //                 },
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ));
+  // }
+  //
+  // _shareWithConnectionBottomSheet(String eventName, String userName) {
+  //   BottomSheetComponent.showBottomSheet(context,
+  //       bgColor: themeCubit.darkBackgroundColor,
+  //       takeFullHeightWhenPossible: false,
+  //       isShowHeader: false,
+  //       body: Column(
+  //         children: [
+  //           const SizedBox(height: 25),
+  //           const ProfileImageComponent(url: ''),
+  //           const SizedBox(height: 20),
+  //           RichText(
+  //             textAlign: TextAlign.center,
+  //             text: TextSpan(
+  //               style: TextStyle(
+  //                   fontSize: 20,
+  //                   fontFamily: FontConstants.fontProtestStrike,
+  //                   height: 1.5),
+  //               children: <TextSpan>[
+  //                 TextSpan(text: StringConstants.areYouSureYouwantToShare),
+  //                 TextSpan(
+  //                   text: eventName,
+  //                   style: TextStyle(color: themeCubit.primaryColor),
+  //                 ),
+  //                 TextSpan(text: " with \n"),
+  //                 TextSpan(
+  //                   text: "$userName?",
+  //                   style: TextStyle(color: themeCubit.primaryColor),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           SizedBoxConstants.sizedBoxTwentyH(),
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               InkWell(
+  //                   onTap: () => Navigator.pop(context),
+  //                   child: TextComponent(
+  //                     StringConstants.goBack,
+  //                     style: TextStyle(color: themeCubit.textColor),
+  //                   )),
+  //               SizedBoxConstants.sizedBoxThirtyW(),
+  //               ButtonComponent(
+  //                 bgcolor: themeCubit.primaryColor,
+  //                 textColor: themeCubit.backgroundColor,
+  //                 buttonText: StringConstants.yesShareIt,
+  //                 onPressed: () {
+  //                   Navigator.pop(context);
+  //                   _yesShareItBottomSheet();
+  //                 },
+  //               ),
+  //             ],
+  //           ),
+  //           const SizedBox(height: 20),
+  //         ],
+  //       ));
+  // }
+  //
+  // _yesShareItBottomSheet() {
+  //   _navigateToBack();
+  //   BottomSheetComponent.showBottomSheet(
+  //     context,
+  //     isShowHeader: false,
+  //     body: InfoSheetComponent(
+  //       heading: StringConstants.eventShared,
+  //       image: AssetConstants.garland,
+  //     ),
+  //   );
+  // }
 
   _showMoreBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
@@ -665,7 +676,7 @@ class _EventScreenState extends State<EventScreen> {
 
   _showJoinBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false,
+        takeFullHeightWhenPossible: true,
         isShowHeader: false,
         body: Container(
           decoration: BoxDecoration(
@@ -707,9 +718,9 @@ class _EventScreenState extends State<EventScreen> {
                             style: FontStylesConstants.style28(
                                 color: ColorConstants.white)),
                         Image.asset(
-                          AssetConstants.group,
+                          AssetConstants.ticketWithCircle,
                           width: 100,
-                          height: 80,
+                          height: 100,
                         ),
                       ],
                     ),
@@ -720,13 +731,9 @@ class _EventScreenState extends State<EventScreen> {
                   ],
                 ),
               ),
-              const Divider(
-                thickness: 0.1,
-              ),
+              DividerCosntants.divider1,
               _messageComponent(),
-              const Divider(
-                thickness: 0.1,
-              ),
+              DividerCosntants.divider1,
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Column(
@@ -792,9 +799,9 @@ class _EventScreenState extends State<EventScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 10.0,right: 10,bottom: 10 ),
+                padding:
+                    const EdgeInsets.only(left: 20.0, right: 20, bottom: 10),
                 child: ButtonComponent(
-
                   buttonText: StringConstants.join,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
@@ -842,14 +849,15 @@ class _EventScreenState extends State<EventScreen> {
               SizedBoxConstants.sizedBoxTenW(),
               TextComponent(
                 "Message for Raul",
-                style :FontStylesConstants.style18(color: ColorConstants.primaryColor),
+                style: FontStylesConstants.style18(
+                    color: ColorConstants.primaryColor),
               ),
             ],
           ),
           SizedBoxConstants.sizedBoxTenH(),
           TextComponent(
             StringConstants.doYouHaveQuestion,
-            style :FontStylesConstants.style14(color: ColorConstants.white),
+            style: FontStylesConstants.style14(color: ColorConstants.white),
             maxLines: 4,
           ),
           SizedBoxConstants.sizedBoxTenH(),
@@ -1011,7 +1019,6 @@ class _EventScreenState extends State<EventScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ButtonComponent(
-
                   buttonText: StringConstants.next,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
@@ -1220,7 +1227,6 @@ class _EventScreenState extends State<EventScreen> {
                     buttonText: StringConstants.payWithCard,
                     textColor: themeCubit.backgroundColor,
                     onPressed: () {
-
                       Navigator.pop(context);
                       _paymentSuccessBottomSheet();
                     },
@@ -1282,23 +1288,25 @@ class _EventScreenState extends State<EventScreen> {
             ),
             SizedBoxConstants.sizedBoxSixteenH(),
             TextComponent(StringConstants.when,
-                style:
-                    FontStylesConstants.style14(color: ColorConstants.lightGray)),
+                style: FontStylesConstants.style14(
+                    color: ColorConstants.lightGray)),
             SizedBoxConstants.sizedBoxSixteenH(),
             TextComponent("17 Feb . 11AM - 2PM ",
                 style:
                     FontStylesConstants.style14(color: ColorConstants.white)),
             SizedBoxConstants.sizedBoxSixteenH(),
             TextComponent(StringConstants.where,
-                style:
-                    FontStylesConstants.style14(color: ColorConstants.lightGray)),
+                style: FontStylesConstants.style14(
+                    color: ColorConstants.lightGray)),
             SizedBoxConstants.sizedBoxSixteenH(),
             Padding(
-              padding: const EdgeInsets.only(left:70,right: 70),
-              child: TextComponent("Pique Cafe\n Al-Semairi, Yanbu Al Bahir 46455 Riyadh Saudia Arabia",
-                  style:
-                      FontStylesConstants.style14(color: ColorConstants.white),
-              maxLines: 4,textAlign: TextAlign.center,),
+              padding: const EdgeInsets.only(left: 70, right: 70),
+              child: TextComponent(
+                "Pique Cafe\n Al-Semairi, Yanbu Al Bahir 46455 Riyadh Saudia Arabia",
+                style: FontStylesConstants.style14(color: ColorConstants.white),
+                maxLines: 4,
+                textAlign: TextAlign.center,
+              ),
             ),
             SizedBoxConstants.sizedBoxEighteenH(),
             Container(
@@ -1314,7 +1322,7 @@ class _EventScreenState extends State<EventScreen> {
               child: TextComponent(
                 StringConstants.viewInMap,
                 style: TextStyle(color: ColorConstants.white),
-                  textAlign: TextAlign.center,
+                textAlign: TextAlign.center,
               ),
             ),
             SizedBoxConstants.sizedBoxSixtyH(),
