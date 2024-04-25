@@ -80,6 +80,7 @@ class _UIScaffoldState extends State<UIScaffold> {
                     ),
                   ),
         child: Scaffold(
+
           drawer: widget.drawer,
           extendBody: widget.extendBody,
           backgroundColor: widget.bgImage == null
@@ -97,7 +98,7 @@ class _UIScaffoldState extends State<UIScaffold> {
                     double.infinity,
                     widget.toolBarHeight,
                   ),
-                  child: widget.appBar!,
+                  child: Container(color:widget.bgColor,child: widget.appBar!),
                 )
               : null,
           bottomSheet: widget.bottomSheet,

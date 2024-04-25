@@ -2,6 +2,8 @@ import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
@@ -14,12 +16,16 @@ class CommonBottomSheetComponent extends StatefulWidget {
   final String title;
   final String description;
   final String image;
-
   final String? btnText;
+  final double? discFontSize;
+  final String? discFontFamily;
   Color? btnColor;
   final Color? btnTextColor;
+  final Color? discTextColor;
+  final Color? titleTextColor;
   final bool isImageProfilePic;
   final bool isImageAsset;
+  final bool size14Disc;
   final Function()? onBtnTap;
 
   CommonBottomSheetComponent(
@@ -31,8 +37,11 @@ class CommonBottomSheetComponent extends StatefulWidget {
       this.btnText,
       this.btnColor,
       this.isImageAsset = false,
+      this.size14Disc = false,
       this.btnTextColor,
-      this.onBtnTap});
+      this.discTextColor=ColorConstants.primaryColor,
+      this.titleTextColor=ColorConstants.white,
+      this.onBtnTap, this.discFontSize, this.discFontFamily});
 
   @override
   State<CommonBottomSheetComponent> createState() =>
@@ -47,7 +56,10 @@ class _CommonBottomSheetComponentState
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Column(children: [
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
         SizedBoxConstants.sizedBoxTwelveH(),
         if (widget.isImageProfilePic)
           const ProfileImageComponent(
@@ -64,14 +76,21 @@ class _CommonBottomSheetComponentState
           ),
         SizedBoxConstants.sizedBoxTwentyH(),
         TextComponent(
+
           widget.title,
+          textAlign: TextAlign.center,
+          maxLines: 6,
           style: FontStylesConstants.style18(
-              color: themeCubit.textColor, fontWeight: FontWeight.bold),
+              color: themeCubit.textColor ),
         ),
         TextComponent(
           widget.description,
+          textAlign: TextAlign.center,
+          maxLines: 6,
           style: FontStylesConstants.style18(
-              fontWeight: FontWeight.bold, color: themeCubit.primaryColor),
+            fontFamily: widget.size14Disc ?FontConstants.inter : FontConstants.fontProtestStrike,
+               fontSize: widget.size14Disc ? 14:18 ,
+               color:widget.size14Disc?themeCubit.textColor: themeCubit.primaryColor),
         ),
         SizedBoxConstants.sizedBoxTwentyH(),
         Row(

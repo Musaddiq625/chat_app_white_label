@@ -1,16 +1,21 @@
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/common_bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/search_text_field_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/divier_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
@@ -18,6 +23,8 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../utils/logger_util.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({super.key});
@@ -29,7 +36,9 @@ class ChatRoomScreen extends StatefulWidget {
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   late final ThemeCubit themeCubit = BlocProvider.of<ThemeCubit>(context);
   TextEditingController controller = TextEditingController();
+  TextEditingController searchController = TextEditingController();
   List selectedContacts = [];
+
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
@@ -210,59 +219,105 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   List<PopupMenuEntry<String>> _buildPopupItems() {
     return [
       PopupMenuItem<String>(
+        height: 0,
         value: 'Add People',
-        child: ListTile(
-          leading: const Icon(Icons.groups_outlined),
-          title: TextComponent(
-            'Add People to Group',
-            style: TextStyle(color: themeCubit.textColor),
-          ),
+        child: Row(
+          children: [
+            IconComponent(
+              iconData: Icons.groups_outlined,
+              iconColor: ColorConstants.white,
+            ),
+            TextComponent(
+              'Add People to Group',
+              style: TextStyle(color: themeCubit.textColor),
+            ),
+          ],
         ),
       ),
-      PopupMenuItem<String>(
-        value: 'Rename Group',
-        child: ListTile(
-          leading: const Icon(Icons.edit_outlined),
-          title: TextComponent(
-            'Rename Group',
-            style: TextStyle(color: themeCubit.textColor),
-          ),
-        ),
+      PopupMenuItem(
+        padding: EdgeInsets.all(0),
+        height: 0,
+        child: DividerCosntants.divider1,
+        value: '',
       ),
       PopupMenuItem<String>(
+          height: 0,
+          value: 'Rename Group',
+          child: Row(
+            children: [
+              IconComponent(
+                iconData: Icons.edit_outlined,
+                iconColor: ColorConstants.white,
+              ),
+              TextComponent(
+                'Rename Group',
+                style: TextStyle(color: themeCubit.textColor),
+              ),
+            ],
+          )),
+      PopupMenuItem(
+        padding: EdgeInsets.all(0),
+        height: 0,
+        child: DividerCosntants.divider1,
+        value: '',
+      ),
+      PopupMenuItem<String>(
+        height: 0,
         value: 'Media',
-        child: ListTile(
-          leading: const Icon(Icons.photo_outlined),
-          title: TextComponent(
-            'Media',
-            style: TextStyle(color: themeCubit.textColor),
-          ),
+        child: Row(
+          children: [
+            IconComponent(
+              iconData: Icons.photo_outlined,
+              iconColor: ColorConstants.white,
+            ),
+            TextComponent(
+              'Media',
+              style: TextStyle(color: themeCubit.textColor),
+            ),
+          ],
         ),
       ),
-      const PopupMenuItem<String>(
-        value: 'Leave Conversation',
-        child: ListTile(
-          leading: Icon(
-            Icons.exit_to_app,
-            color: ColorConstants.red,
-          ),
-          title: TextComponent(
-            'Leave Conversation',
-            style: TextStyle(color: ColorConstants.red),
-          ),
-        ),
+      PopupMenuItem(
+        padding: EdgeInsets.all(0),
+        height: 0,
+        child: DividerCosntants.divider1,
+        value: '',
       ),
-      const PopupMenuItem<String>(
+      PopupMenuItem<String>(
+          height: 0,
+          value: 'Leave Conversation',
+          child: Row(
+            children: [
+              IconComponent(
+                iconData: Icons.exit_to_app,
+                iconColor: ColorConstants.red,
+              ),
+              TextComponent(
+                'Leave Conversation',
+                style: TextStyle(color: ColorConstants.red),
+              ),
+            ],
+          )),
+      PopupMenuItem(
+        padding: EdgeInsets.all(0),
+        height: 0,
+        child: DividerCosntants.divider1,
+        value: '',
+      ),
+      PopupMenuItem<String>(
+        height: 0,
         value: 'Delete Group',
-        child: ListTile(
-          leading: Icon(
-            Icons.delete_outline_sharp,
-            color: ColorConstants.red,
-          ),
-          title: TextComponent(
-            'Delete Group',
-            style: TextStyle(color: ColorConstants.red),
-          ),
+        child: Row(
+          children: [
+            IconComponent(
+              iconData: Icons.delete_outline_sharp,
+              iconColor: ColorConstants.red,
+            ),
+            TextComponent(
+              'Delete Group',
+              style: TextStyle(color: ColorConstants.red),
+            ),
+          ],
         ),
       ),
     ];
@@ -292,7 +347,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false, isShowHeader: false,
         body: StatefulBuilder(builder: (context, setState) {
-      return SizedBox(
+      return Container(
+        color: ColorConstants.darkBackgrounddColor,
         height: AppConstants.responsiveHeight(context, percentage: 90),
         child: Stack(
           children: [
@@ -308,7 +364,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextComponent(
-                            StringConstants.addPeople,
+                            StringConstants.createChat,
                             style: TextStyle(
                                 color: themeCubit.primaryColor,
                                 fontSize: 20,
@@ -316,8 +372,30 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           ),
                           InkWell(
                               onTap: () => NavigationUtil.pop(context),
-                              child: const Icon(Icons.close))
+                              child: const Icon(
+                                Icons.close,
+                                color: ColorConstants.white,
+                              ))
                         ],
+                      ),
+                      SizedBoxConstants.sizedBoxTenH(),
+                      TextComponent(
+                        StringConstants.startDirectChat,
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: FontConstants.fontNunitoSans,
+                            color: themeCubit.textColor),
+                      ),
+                      SizedBoxConstants.sizedBoxTenH(),
+                      SearchTextField(
+                        iconColor: ColorConstants.lightGrey.withOpacity(0.6),
+                        title: "Search",
+                        hintText: "Search for people",
+                        onSearch: (text) {
+                          // widget.viewModel.onSearchStories(text);
+                        },
+                        textEditingController: searchController,
+                        filledColor: ColorConstants.blackLight.withOpacity(0.6),
                       ),
                     ],
                   ),
@@ -328,7 +406,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       shrinkWrap: true,
                       itemCount: dummyContactList.length,
                       itemBuilder: (context, index) {
+                        bool isLast = index == dummyContactList!.length - 1;
                         return ContactTileComponent(
+                          showDivider: (!isLast),
                           title: dummyContactList[index].name,
                           subtitle: dummyContactList[index].designation,
                           isSelected: selectedContacts.contains(index),
@@ -339,29 +419,30 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                               selectedContacts.add(index);
                             }
                             setState(() {});
+                            LoggerUtil.logs(selectedContacts);
                           },
                         );
                       }),
                 ),
                 const SizedBox(
-                  height: 60,
-                )
+                  height: 20,
+                ),
+                Container(
+                  margin:
+                      const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                  width: double.infinity,
+                  height: 45,
+                  child: ButtonComponent(
+                      textColor: themeCubit.darkBackgroundColor,
+                      buttonText: StringConstants.startChatting,
+                      bgcolor: themeCubit.primaryColor,
+                      onPressed: () {}),
+                ),
               ],
             ),
             Column(
               children: [
                 Expanded(child: Container()),
-                Container(
-                  height: 65,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  width: double.infinity,
-                  child: ButtonComponent(
-                      buttonText: StringConstants.addPeopleToGroup,
-                      bgcolor: themeCubit.primaryColor,
-                      textColor: themeCubit.backgroundColor,
-                      onPressed: () {}),
-                ),
               ],
             )
           ],
@@ -374,121 +455,148 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: Column(
-          children: [
-            const SizedBox(height: 25),
-            Image.asset(
-              AssetConstants.warning,
-              height: 60,
-              width: 60,
-            ),
-            const SizedBox(height: 20),
-            Column(
-              children: [
-                TextComponent(
-                  StringConstants.areYouSureYouWanttoLeave,
-                  style: TextStyle(
-                      fontFamily: FontConstants.fontProtestStrike,
-                      color: themeCubit.textColor,
-                      fontSize: 20),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: TextComponent(
-                    StringConstants.youWillNotBeAbleToAccessAnyMessage,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: TextStyle(color: themeCubit.textColor),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: TextComponent(
-                      StringConstants.goBack,
-                      style: TextStyle(
-                        color: themeCubit.textColor,
-                      ),
-                    )),
-                const SizedBox(width: 30),
-                ButtonComponent(
-                  buttonText: StringConstants.yesPleaseLeave,
-                  textColor: themeCubit.textColor,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  bgcolor: ColorConstants.red,
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-          ],
-        ));
+        body: CommonBottomSheetComponent(
+          title: StringConstants.areYouSureYouWanttoLeave,
+          description: StringConstants.youWillNotBeAbleToAccessAnyMessage,
+          image: AssetConstants.warning,
+          isImageAsset: true,
+          btnColor: ColorConstants.red,
+          btnTextColor: ColorConstants.white,
+          btnText: StringConstants.yesPleaseLeave,
+          size14Disc: true,
+          onBtnTap: (){},
+        )
+        // Column(
+        //   children: [
+        //     const SizedBox(height: 25),
+        //     Image.asset(
+        //       AssetConstants.warning,
+        //       height: 60,
+        //       width: 60,
+        //     ),
+        //     const SizedBox(height: 20),
+        //     Column(
+        //       children: [
+        //         TextComponent(
+        //
+        //           StringConstants.areYouSureYouWanttoLeave,
+        //           style: TextStyle(
+        //               fontFamily: FontConstants.fontProtestStrike,
+        //               color: themeCubit.textColor,
+        //               fontSize: 20),
+        //         ),
+        //         Padding(
+        //           padding: const EdgeInsets.symmetric(horizontal: 50),
+        //           child: TextComponent(
+        //             StringConstants.youWillNotBeAbleToAccessAnyMessage,
+        //             textAlign: TextAlign.center,
+        //             maxLines: 2,
+        //             style: TextStyle(color: themeCubit.textColor),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //     const SizedBox(height: 20),
+        //     Row(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         InkWell(
+        //             onTap: () => Navigator.pop(context),
+        //             child: TextComponent(
+        //               StringConstants.goBack,
+        //               style: TextStyle(
+        //                 color: themeCubit.textColor,
+        //               ),
+        //             )),
+        //         const SizedBox(width: 30),
+        //         ButtonComponent(
+        //           buttonText: StringConstants.yesPleaseLeave,
+        //           isSmallBtn: true,
+        //           textColor: themeCubit.textColor,
+        //           onPressed: () {
+        //             Navigator.pop(context);
+        //           },
+        //           bgcolor: ColorConstants.red,
+        //         ),
+        //       ],
+        //     ),
+        //     const SizedBox(height: 20),
+        //   ],
+        // )
+        );
   }
 
   _showDeleteBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: Column(
-          children: [
-            const SizedBox(height: 25),
-            Image.asset(
-              AssetConstants.warning,
-              height: 60,
-              width: 60,
-            ),
-            const SizedBox(height: 20),
-            Column(
-              children: [
-                TextComponent(
-                  StringConstants.areYouSureYouWanttoLeave,
-                  style: TextStyle(
-                    fontFamily: FontConstants.fontProtestStrike,
-                    fontSize: 20,
-                    color: themeCubit.textColor,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: TextComponent(
-                      StringConstants.goBack,
-                      style: TextStyle(
-                        color: themeCubit.textColor,
-                      ),
-                    )),
-                const SizedBox(width: 30),
-                ButtonComponent(
-                  buttonText: StringConstants.yesDeleteIt,
-                  textColor: themeCubit.textColor,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  bgcolor: ColorConstants.red,
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-          ],
-        ));
+        body: CommonBottomSheetComponent(
+          title: StringConstants.areYouSureYouWantToDelete,
+          description: "",
+          image: AssetConstants.warning,
+          isImageAsset: true,
+          btnColor: ColorConstants.red,
+          btnTextColor: ColorConstants.white,
+          btnText: StringConstants.yesDeleteIt,
+          size14Disc: true,
+          onBtnTap: (){},
+        )
+        // Column(
+        //   children: [
+        //     const SizedBox(height: 25),
+        //     Image.asset(
+        //       AssetConstants.warning,
+        //       height: 60,
+        //       width: 60,
+        //     ),
+        //     const SizedBox(height: 20),
+        //     Column(
+        //       children: [
+        //         TextComponent(
+        //           StringConstants.areYouSureYouWanttoLeave,
+        //           style: TextStyle(
+        //             fontFamily: FontConstants.fontProtestStrike,
+        //             fontSize: 20,
+        //             color: themeCubit.textColor,
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //     const SizedBox(height: 20),
+        //     Row(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         InkWell(
+        //             onTap: () => Navigator.pop(context),
+        //             child: TextComponent(
+        //               StringConstants.goBack,
+        //               style: TextStyle(
+        //                 color: themeCubit.textColor,
+        //               ),
+        //             )),
+        //         const SizedBox(width: 30),
+        //         ButtonComponent(
+        //           buttonText: StringConstants.yesDeleteIt,
+        //           textColor: themeCubit.textColor,
+        //           onPressed: () {
+        //             Navigator.pop(context);
+        //           },
+        //           bgcolor: ColorConstants.red,
+        //         ),
+        //       ],
+        //     ),
+        //     const SizedBox(height: 20),
+        //   ],
+        // )
+    );
   }
 
   _renameGroup() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: Padding(
+        body: Container(
+          color: themeCubit.darkBackgroundColor,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -496,14 +604,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               const SizedBox(height: 25),
               TextComponent(
                 StringConstants.renameGroup,
-                style: TextStyle(fontSize: 20, color: themeCubit.primaryColor),
+                style: FontStylesConstants.style20(
+                    color: ColorConstants.primaryColor),
               ),
               const SizedBox(height: 20),
               TextFieldComponent(
                 controller,
-                fieldColor: ColorConstants.lightGrey.withOpacity(0.2),
+                filled: true,
+                fieldColor: ColorConstants.blackLight,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
                 height: 50,

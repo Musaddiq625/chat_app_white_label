@@ -24,7 +24,7 @@ class _ChatTileComponentState extends State<ChatTileComponent> {
       child: ListTile(
         horizontalTitleGap: 10,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
-        tileColor: themeCubit.darkBackgroundColor,
+        tileColor: ColorConstants.darkBackgrounddColor,
         onTap: () =>
             NavigationUtil.push(context, RouteConstants.chatRoomScreen),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),

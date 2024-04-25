@@ -37,6 +37,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
     return UIScaffold(
         removeSafeAreaPadding: true,
         appBar: AppBarComponent(StringConstants.chat,
+            titleFontSize: 30,
             showBackbutton: false,
             action: InkWell(
               onTap: () {
@@ -66,15 +67,16 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
   }
 
   _main(){
-   return Container(
-      color: themeCubit.backgroundColor,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+   return Padding(
+      // color: ColorConstants.red,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       child: Column(
         children: [
           Container(
-            color: themeCubit.backgroundColor,
+            color: ColorConstants.black,
             child: Column(
               children: [
+                SizedBoxConstants.sizedBoxTenH(),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 //   children: [
@@ -120,7 +122,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                     },
                     textEditingController: searchController,
                     filledColor:
-                    ColorConstants.backgroundColor.withOpacity(0.1),
+                    themeCubit.darkBackgroundColor,
                   ),
                 ),
                 // TextFieldComponent(
@@ -203,7 +205,8 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false, isShowHeader: false,
         body: StatefulBuilder(builder: (context, setState) {
-      return SizedBox(
+      return Container(
+        color: ColorConstants.darkBackgrounddColor,
         height: AppConstants.responsiveHeight(context, percentage: 90),
         child: Stack(
           children: [
@@ -227,9 +230,10 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                           ),
                           InkWell(
                               onTap: () => NavigationUtil.pop(context),
-                              child: const Icon(Icons.close))
+                              child: const Icon(Icons.close,color: ColorConstants.white,))
                         ],
                       ),
+                      SizedBoxConstants.sizedBoxTenH(),
                       TextComponent(
                         StringConstants.startDirectChat,
                         style: TextStyle(
@@ -237,6 +241,19 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                             fontFamily: FontConstants.fontNunitoSans,
                             color: themeCubit.textColor),
                       ),
+                      SizedBoxConstants.sizedBoxTenH(),
+                      SearchTextField(
+                        iconColor: ColorConstants.lightGrey.withOpacity(0.6),
+                        title: "Search",
+                        hintText: "Search for people",
+                        onSearch: (text) {
+                          // widget.viewModel.onSearchStories(text);
+                        },
+                        textEditingController: searchController,
+                        filledColor:
+                        ColorConstants.blackLight.withOpacity(0.6),
+                      ),
+
                     ],
                   ),
                 ),
@@ -246,7 +263,9 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                       shrinkWrap: true,
                       itemCount: dummyContactList.length,
                       itemBuilder: (context, index) {
+                        bool isLast = index == dummyContactList!.length - 1;
                         return ContactTileComponent(
+                          showDivider: (!isLast),
                           title: dummyContactList[index].name,
                           subtitle: dummyContactList[index].designation,
                           isSelected: selectedContacts.contains(index),
@@ -263,23 +282,25 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                       }),
                 ),
                 const SizedBox(
-                  height: 50,
-                )
+                  height: 20,
+                ),
+                Container(
+                  margin:
+                  const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                  width: double.infinity,
+                  height: 45,
+                  child: ButtonComponent(
+                      textColor: themeCubit.darkBackgroundColor,
+                      buttonText: StringConstants.startChatting,
+                      bgcolor: themeCubit.primaryColor,
+                      onPressed: () {}),
+                ),
               ],
             ),
             Column(
               children: [
                 Expanded(child: Container()),
-                Container(
-                  margin:
-                      const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-                  width: double.infinity,
-                  height: 45,
-                  child: ButtonComponent(
-                      buttonText: StringConstants.startChatting,
-                      bgcolor: themeCubit.primaryColor,
-                      onPressed: () {}),
-                ),
+
               ],
             )
           ],
