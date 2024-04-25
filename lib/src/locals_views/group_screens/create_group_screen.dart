@@ -1,15 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/contacts_card_component.dart';
+import 'package:chat_app_white_label/src/components/drop_down_bottom_sheet.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/icons_button_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/question_component.dart';
 import 'package:chat_app_white_label/src/components/search_text_field_component.dart';
+import 'package:chat_app_white_label/src/components/success_share_bottom_sheet.dart';
+import 'package:chat_app_white_label/src/components/switch_permission_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
@@ -26,7 +29,7 @@ import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreateGroupScreens extends StatefulWidget {
   const CreateGroupScreens({super.key});
@@ -50,8 +53,10 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
   String groupName = 'xyz Group';
   int? selectedIndexPrice;
   int? _draggingIndex;
+  final List<String> values = ['Public', 'Private'];
+  String? selectedVisibilityValue = "Public";
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-
+  String? selectedImagePath;
   final List<ContactModel> contacts = [
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
@@ -88,13 +93,11 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
   Widget build(BuildContext context) {
     return UIScaffold(
         bgColor: themeCubit.backgroundColor,
-        // removeSafeAreaPadding: false,
         appBar: AppBarComponent(
           StringConstants.makeAGroup,
           centerTitle: false,
           isBackBtnCircular: false,
         ),
-        // appBar:_appBar(),
         widget: _createGroup());
   }
 
@@ -151,8 +154,9 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(30.0)),
                         child: ImageComponent(
-                          imgUrl:
-                              "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                          imgUrl: selectedImagePath != null
+                              ? selectedImagePath!
+                              : "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
                           width: AppConstants.responsiveWidth(context),
                           height: AppConstants.responsiveHeight(context,
                               percentage: 85),
@@ -169,26 +173,38 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  IconComponent(
-                                    iconData: Icons.edit,
-                                    borderColor: ColorConstants.transparent,
-                                    circleSize: 35,
-                                    backgroundColor: ColorConstants.lightGray
-                                        .withOpacity(0.5),
-                                    iconColor: ColorConstants.white,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  const TextComponent(
-                                    StringConstants.editCover,
-                                    style: TextStyle(
-                                        color: ColorConstants.white,
-                                        fontSize: 15),
-                                  )
-                                ],
+                              GestureDetector(
+                                onTap: () async {
+                                  final XFile? image = await ImagePicker()
+                                      .pickImage(source: ImageSource.gallery);
+                                  if (image != null) {
+                                    setState(() {
+                                      selectedImagePath = image
+                                          .path; // Update the state with the selected image path
+                                    });
+                                  }
+                                },
+                                child: Row(
+                                  children: [
+                                    IconComponent(
+                                      iconData: Icons.edit,
+                                      borderColor: ColorConstants.transparent,
+                                      circleSize: 35,
+                                      backgroundColor: ColorConstants.lightGray
+                                          .withOpacity(0.5),
+                                      iconColor: ColorConstants.white,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    const TextComponent(
+                                      StringConstants.editCover,
+                                      style: TextStyle(
+                                          color: ColorConstants.white,
+                                          fontSize: 15),
+                                    )
+                                  ],
+                                ),
                               ),
                               TextComponent(
                                 groupName,
@@ -217,149 +233,6 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   const SizedBox(
                     height: 13,
                   ),
-                  // Container(
-                  //   width: AppConstants.responsiveWidth(context),
-                  //   decoration: BoxDecoration(
-                  //     borderRadius:
-                  //     const BorderRadius.all(Radius.circular(20.0)),
-                  //     color: themeCubit.darkBackgroundColor,
-                  //   ),
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.all(20.0),
-                  //     child: Column(
-                  //       children: [
-                  //         Row(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //           children: [
-                  //             SvgPicture.asset(
-                  //               height: 20,
-                  //               AssetConstants.calendar,
-                  //             ),
-                  //             const SizedBox(
-                  //               width: 20,
-                  //             ),
-                  //             TextComponent(
-                  //               StringConstants.start,
-                  //               style: TextStyle(
-                  //                   fontSize: 15, color: themeCubit.textColor),
-                  //             ),
-                  //             const Spacer(),
-                  //             TextComponent(
-                  //               "17 Feb at 11 am",
-                  //               style: TextStyle(
-                  //                   fontSize: 15,
-                  //                   fontWeight: FontWeight.bold,
-                  //                   color: themeCubit.textColor),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //         const SizedBox(
-                  //           height: 10,
-                  //         ),
-                  //         Row(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //           children: [
-                  //             Column(
-                  //               children: List.generate(6, (index) {
-                  //                 return Padding(
-                  //                   padding: const EdgeInsets.only(
-                  //                       top: 2.0, left: 6),
-                  //                   child: Container(
-                  //                     decoration: BoxDecoration(
-                  //                       color: Colors.white,
-                  //                       borderRadius: BorderRadius.circular(15),
-                  //                     ),
-                  //                     height: 3,
-                  //                     width: 3,
-                  //                   ),
-                  //                 );
-                  //               }),
-                  //             ),
-                  //
-                  //             // Column(
-                  //             //   children: [
-                  //             //     IconComponent(
-                  //             //       iconData: Icons.circle_rounded,
-                  //             //       circleSize: 3,
-                  //             //       iconSize: 3,
-                  //             //       backgroundColor: ColorConstants.transparent,
-                  //             //       borderColor: ColorConstants.transparent,
-                  //             //     ),
-                  //             //     IconComponent(
-                  //             //       iconData: Icons.circle_rounded,
-                  //             //       circleSize: 5,
-                  //             //       iconSize: 5,
-                  //             //       backgroundColor: ColorConstants.transparent,
-                  //             //       borderColor: ColorConstants.transparent,
-                  //             //     ),
-                  //             //     IconComponent(
-                  //             //       iconData: Icons.circle_rounded,
-                  //             //       circleSize: 5,
-                  //             //       iconSize: 5,
-                  //             //       backgroundColor: ColorConstants.transparent,
-                  //             //       borderColor: ColorConstants.transparent,
-                  //             //     ),
-                  //             //     IconComponent(
-                  //             //       iconData: Icons.circle_rounded,
-                  //             //       circleSize: 5,
-                  //             //       iconSize: 5,
-                  //             //       backgroundColor: ColorConstants.transparent,
-                  //             //       borderColor: ColorConstants.transparent,
-                  //             //     ),
-                  //             //   ],
-                  //             // ),
-                  //
-                  //             // IconComponent(
-                  //             //   iconData: Icons.straight,
-                  //             //   circleSize: 25,
-                  //             //   iconSize: 25,
-                  //             //   backgroundColor: ColorConstants.transparent,
-                  //             //   borderColor: ColorConstants.transparent,
-                  //             // ),
-                  //             const Spacer(),
-                  //             SizedBox(
-                  //                 width: AppConstants.responsiveWidth(context) /
-                  //                     1.5,
-                  //                 child: const Divider(
-                  //                   thickness: 0.1,
-                  //                 ))
-                  //           ],
-                  //         ),
-                  //         const SizedBox(
-                  //           height: 10,
-                  //         ),
-                  //         Row(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //           children: [
-                  //             SvgPicture.asset(
-                  //               height: 20,
-                  //               AssetConstants.end,
-                  //             ),
-                  //             const SizedBox(
-                  //               width: 20,
-                  //             ),
-                  //             TextComponent(
-                  //               StringConstants.end,
-                  //               style: TextStyle(
-                  //                   fontSize: 15, color: themeCubit.textColor),
-                  //             ),
-                  //             const Spacer(),
-                  //             TextComponent(
-                  //               "2 pm",
-                  //               style: TextStyle(
-                  //                   fontSize: 15,
-                  //                   fontWeight: FontWeight.bold,
-                  //                   color: themeCubit.textColor),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(
-                  //   height: 10,
-                  // ),
                   ListTileComponent(
                     leadingIcon: AssetConstants.marker,
                     leadingText: StringConstants.location,
@@ -367,31 +240,12 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                     leadingIconHeight: 25,
                     trailingText: "Manchester",
                     subTextColor: themeCubit.textColor,
+                    onTap: _selectLocation,
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  ListTileComponent(
-                    leadingIcon: AssetConstants.ticket,
-                    leadingText: StringConstants.price,
-                    leadingIconWidth: 25,
-                    leadingIconHeight: 25,
-                    trailingText: "Free",
-                    onTap: _selectPrice,
-                    subTextColor: themeCubit.textColor,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ListTileComponent(
-                    leadingIcon: AssetConstants.happy,
-                    leadingText: StringConstants.capacity,
-                    leadingIconWidth: 25,
-                    leadingIconHeight: 25,
-                    trailingText: "60",
-                    onTap: _selectCapacity,
-                    subTextColor: themeCubit.textColor,
-                  ),
+
                   SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
@@ -452,181 +306,71 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                     leadingText: StringConstants.visibility,
                     leadingIconWidth: 25,
                     leadingIconHeight: 25,
-                    trailingText: "Public",
-                    onTap: () {},
+                    trailingText: selectedVisibilityValue,
+                    onTap: visibility,
                     subTextColor: themeCubit.textColor,
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    width: AppConstants.responsiveWidth(context),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20.0)),
-                      color: themeCubit.darkBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SvgPicture.asset(
-                                height: 25,
-                                AssetConstants.ticket,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                flex: 6,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextComponent(
-                                        StringConstants.requireGuestsApproval,
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: themeCubit.textColor)),
-                                    Container(
-                                      child: const TextComponent(
-                                          StringConstants
-                                              .requireGuestsApprovalBody,
-                                          maxLines: 6,
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: ColorConstants.lightGray),
-                                          textAlign: TextAlign.start),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Spacer(),
-                              Switch(
-                                // This bool value toggles the switch.
-                                value: requireGuest,
-                                activeColor: ColorConstants.white,
-                                activeTrackColor: themeCubit.primaryColor,
-                                onChanged: (bool value) {
-                                  // This is called when the user toggles the switch.
-                                  setState(() {
-                                    requireGuest = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                  SwitchPermissionComponent(
+                    name: StringConstants.requireGuestsApproval,
+                    detail: StringConstants.requireGuestsApprovalBody,
+                    switchValue: requireGuest,
+                    editQuestions: false,
+                    onSwitchChanged: (bool value) {
+                      setState(() {
+                        requireGuest = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SwitchPermissionComponent(
+                    name: StringConstants.askQuestionWhenPeopleJoin,
+                    detail: StringConstants.askQuestionWhenPeopleJoinBody,
+                    switchValue: _questionControllers.isNotEmpty &&
+                            _questionControllers.first.text.isNotEmpty
+                        ? true
+                        : false,
+                    editQuestionsTap: () {
+                      if (askQuestion == true) {
+                        // _selectQuestion();
+                        QuestionComponent.selectQuestion(
+                          context,
+                          _questionControllers,
+                          questions,
+                        );
+                      }
+                    },
+                    editQuestions: _questionControllers.isNotEmpty &&
+                            _questionControllers.first.text.isNotEmpty
+                        ? true
+                        : false,
+                    onSwitchChanged: (bool value) {
+                      // if(questions.length>=1){
+
+                      // askQuestion = value;
+                      askQuestion = value;
+                      if (askQuestion == true) {
+                        QuestionComponent.selectQuestion(
+                            context, _questionControllers, questions);
+
+                        // _selectQuestion();
+                      } else if (askQuestion == false) {
+                        questions.clear();
+                        _questionControllers.clear();
+                      }
+                      // }
+                      setState(() {});
+                    },
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   Container(
-                    width: AppConstants.responsiveWidth(context),
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20.0)),
-                      color: themeCubit.darkBackgroundColor,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SvgPicture.asset(
-                                height: 25,
-                                AssetConstants.ticket,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                flex: 6,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    TextComponent(
-                                      StringConstants.askQuestionWhenPeopleJoin,
-                                      maxLines: 3,
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: themeCubit.textColor),
-                                    ),
-                                    Container(
-                                      child: const TextComponent(
-                                          StringConstants
-                                              .askQuestionWhenPeopleJoinBody,
-                                          maxLines: 3,
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: ColorConstants.lightGray),
-                                          textAlign: TextAlign.start),
-                                    ),
-                                    if (editQuestion != false)
-                                      Row(
-                                        children: [
-                                          TextComponent(
-                                            StringConstants.editQuestions,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: themeCubit.textColor),
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          IconComponent(
-                                            iconData: Icons.edit,
-                                            borderColor:
-                                                ColorConstants.transparent,
-                                            backgroundColor:
-                                                ColorConstants.transparent,
-                                            iconColor: ColorConstants.lightGray
-                                                .withOpacity(0.5),
-                                            iconSize: 20,
-                                            circleSize: 15,
-                                          ),
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              const Spacer(),
-                              Switch(
-                                // This bool value toggles the switch.
-                                value: askQuestion,
-                                activeColor: ColorConstants.white,
-                                activeTrackColor: themeCubit.primaryColor,
-                                onChanged: (bool value) {
-                                  // This is called when the user toggles the switch.
-                                  setState(() {
-                                    askQuestion = value;
-                                  });
-                                  if (askQuestion == true) {
-                                    _selectQuestion();
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    width: AppConstants.responsiveWidth(context),
+                    margin: EdgeInsets.only(left: 8, right: 8, top: 8),
                     child: ButtonComponent(
                       bgcolor: themeCubit.primaryColor,
                       buttonText: StringConstants.createGroup,
@@ -649,267 +393,17 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
     );
   }
 
-  _createBottomSheet() {
-    BottomSheetComponent.showBottomSheet(
-      context,
-      isShowHeader: false,
-      body: const InfoSheetComponent(
-        heading: StringConstants.eventCreatedSuccessfully,
-        image: AssetConstants.confetti,
-      ),
-    );
-    Future.delayed(const Duration(milliseconds: 1000), () async {
-      NavigationUtil.pop(context);
-      _createEventBottomSheet();
-    });
-  }
 
   _createEventBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                topRight: Radius.circular(20.0)),
-            color: themeCubit.darkBackgroundColor,
-          ),
-          constraints: const BoxConstraints(maxHeight: 700),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: () => NavigationUtil.popAllAndPush(
-                        context, RouteConstants.mainScreen),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 40.0, top: 15),
-                      child: IconComponent(
-                        iconData: Icons.close,
-                        borderColor: Colors.transparent,
-                        iconColor: themeCubit.textColor,
-                        circleSize: 10,
-                        backgroundColor: Colors.transparent,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  const SizedBox(
-                    width: double.infinity,
-                  ),
-                  Image.asset(
-                    AssetConstants.confetti,
-                    width: 100,
-                    height: 100,
-                  ),
-                  Container(
-                    width:
-                        AppConstants.responsiveWidth(context, percentage: 60),
-                    padding: const EdgeInsets.only(top: 10),
-                    child: TextComponent(
-                      StringConstants.groupCreatedSuccessfully,
-                      maxLines: 6,
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          color: themeCubit.textColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    width:
-                        AppConstants.responsiveWidth(context, percentage: 60),
-                    child: TextComponent(
-                      StringConstants.inviteYourFriend,
-                      maxLines: 6,
-                      style:
-                          TextStyle(fontSize: 15, color: themeCubit.textColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconComponent(
-                    // iconData: Icons.link,
-                    svgData: AssetConstants.copyLink,
-                    borderColor: Colors.transparent,
-                    backgroundColor: themeCubit.primaryColor,
-                    iconColor: ColorConstants.black,
-                    circleSize: 60,
-                    customText: StringConstants.copyLink,
-                    customTextColor: themeCubit.textColor,
-                  ),
-                  IconComponent(
-                    iconData: Icons.facebook,
-                    borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.blue,
-                    circleSize: 60,
-                    iconSize: 30,
-                    customText: StringConstants.facebook,
-                    customTextColor: themeCubit.textColor,
-                  ),
-                  // IconComponent(
-                  //   svgDataCheck: false,
-                  //   svgData: AssetConstants.instagram,
-                  //   backgroundColor: Colors.transparent,
-                  //   borderColor: Colors.transparent,
-                  //   circleSize: 60,
-                  //   customText: StringConstants.instagram,
-                  //   customTextColor: themeCubit.textColor,
-                  //   iconSize: 60,
-                  // ),
-                  Column(
-                    children: [
-                      ImageComponent(
-                        height: 60,
-                        width: 60,
-                        imgUrl: AssetConstants.instagram,
-                        imgProviderCallback: (imageProvider) {},
-                      ),
-                      SizedBoxConstants.sizedBoxTenH(),
-                      TextComponent(
-                        StringConstants.instagram,
-                        style: FontStylesConstants.style12(
-                            color: ColorConstants.white),
-                      )
-                    ],
-                  ),
-                  IconComponent(
-                    svgData: AssetConstants.share,
-                    iconColor: ColorConstants.black,
-                    borderColor: Colors.transparent,
-                    // backgroundColor:ColorConstants.transparent,
-                    circleSize: 60,
-                    customText: StringConstants.share,
-                    customTextColor: themeCubit.textColor,
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              const Divider(
-                thickness: 0.1,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 18.0, top: 10, bottom: 5),
-                child: TextComponent(
-                  StringConstants.yourConnections,
-                  style: TextStyle(
-                      color: themeCubit.primaryColor,
-                      fontFamily: FontConstants.fontProtestStrike,
-                      fontSize: 18),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 18.0, top: 10, bottom: 16, right: 18),
-                child: SearchTextField(
-                  filledColor: ColorConstants.backgroundColor.withOpacity(0.3),
-                  title: "Search",
-                  hintText: "Search name, postcode..",
-                  onSearch: (text) {
-                    // widget.viewModel.onSearchStories(text);
-                  },
-                  textEditingController: searchControllerConnections,
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: contacts.length,
-                  itemBuilder: (ctx, index) {
-                    return ContactCard(
-                      name: contacts[index].name,
-                      title: contacts[index].title,
-                      url: contacts[index].url,
-                      // contact: contacts[index],
-                      onShareTap: () {
-                        Navigator.pop(context);
-                        _shareWithConnectionBottomSheet(
-                            StringConstants.fireWorks, contacts[index].name);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ));
+        body:SuccessShareBottomSheet(
+            contacts: contacts,
+            successTitle: StringConstants.groupCreatedSuccessfully));
+
   }
 
-  _shareWithConnectionBottomSheet(String eventName, String userName) {
-    BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false,
-        isShowHeader: false,
-        body: Column(
-          children: [
-            const SizedBox(height: 25),
-            const ProfileImageComponent(url: ''),
-            const SizedBox(height: 20),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: ColorConstants.black,
-                    height: 1.5),
-                children: <TextSpan>[
-                  const TextSpan(
-                      text: StringConstants.areYouSureYouwantToShare),
-                  TextSpan(
-                    text: eventName,
-                    style: const TextStyle(color: Colors.indigo),
-                  ),
-                  const TextSpan(text: "with \n"),
-                  TextSpan(
-                    text: "$userName?",
-                    style: const TextStyle(color: Colors.indigo),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const TextComponent(StringConstants.goBack)),
-                const SizedBox(width: 30),
-                ButtonComponent(
-                  buttonText: "Yes, share it",
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _yesShareItBottomSheet();
-                  },
-                  bgcolor: ColorConstants.yellow,
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-          ],
-        ));
-  }
 
   _goBackBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
@@ -1759,5 +1253,114 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
         );
       }),
     );
+  }
+
+  visibility() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: DropDownBottomSheet(
+          image: AssetConstants.marker,
+          values: values,
+          selectedValue: selectedVisibilityValue,
+          onValueSelected: (String? newValue) {
+            setState(() {
+              selectedVisibilityValue = newValue;
+            });
+          },
+        ));
+  }
+
+  _selectLocation() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false, isShowHeader: false,
+        body: StatefulBuilder(builder: (context, setState) {
+      return Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            color: themeCubit.darkBackgroundColor,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: TextComponent(
+                        StringConstants.selectLocation,
+                        style: TextStyle(
+                            color: themeCubit.primaryColor,
+                            fontFamily: FontConstants.fontProtestStrike,
+                            fontSize: 18),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: IconComponent(
+                        iconData: Icons.close,
+                        borderColor: Colors.transparent,
+                        iconColor: themeCubit.textColor,
+                        circleSize: 20,
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SearchTextField(
+                  title: "Search",
+                  hintText: "Search name, postcode..",
+                  onSearch: (text) {
+                    // widget.viewModel.onSearchStories(text);
+                  },
+                  textEditingController: searchController,
+                  filledColor: ColorConstants.backgroundColor.withOpacity(0.3),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: TextComponent(
+                        StringConstants.exactLocationApproval,
+                        style: TextStyle(
+                            fontSize: 15, color: themeCubit.textColor),
+                        maxLines: 4,
+                      ),
+                    ),
+                    const Spacer(),
+                    Switch(
+                      // This bool value toggles the switch.
+                      value: locationVisible,
+                      activeColor: ColorConstants.white,
+                      activeTrackColor: themeCubit.primaryColor,
+                      onChanged: (bool value) {
+                        // This is called when the user toggles the switch.
+                        setState(() {
+                          locationVisible = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const Divider(
+                  thickness: 1,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ));
+    }));
   }
 }
