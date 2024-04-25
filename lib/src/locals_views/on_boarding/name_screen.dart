@@ -70,6 +70,7 @@ class _NameScreenState extends State<NameScreen> {
                 _firstNameController,
                 keyboardType: TextInputType.name,
                 hintText: StringConstants.firstName,
+                allowSpaces: false,
                 onChanged: (_) {
                   handleFieldsOnChange();
                 },
@@ -81,6 +82,7 @@ class _NameScreenState extends State<NameScreen> {
                 _secondNameController,
                 keyboardType: TextInputType.name,
                 hintText: StringConstants.lastName,
+                allowSpaces: false,
                 onChanged: (_) {
                   handleFieldsOnChange();
                 },

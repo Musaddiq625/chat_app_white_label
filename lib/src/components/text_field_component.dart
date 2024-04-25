@@ -36,6 +36,7 @@ class TextFieldComponent extends StatefulWidget {
   final Function()? onTrailingPressed;
   final FocusNode? focusNode;
   final bool capitalizeText;
+  final bool allowSpaces;
   final double titlePaddingFromLeft;
   final bool digitsOnly;
   final bool filled;
@@ -71,6 +72,7 @@ class TextFieldComponent extends StatefulWidget {
     this.onTrailingPressed,
     this.focusNode,
     this.capitalizeText = false,
+    this.allowSpaces = true,
     this.filled = false,
     this.digitsOnly = false,
     this.prefixWidget,
@@ -167,7 +169,9 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
               ? [_UpperCaseTextFormatter()]
               : widget.digitsOnly
                   ? [FilteringTextInputFormatter.digitsOnly]
-                  : null,
+                  : widget.allowSpaces
+                      ? null
+                      : [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
           cursorColor: themeCubit.primaryColor,
 
           decoration: widget.filled
