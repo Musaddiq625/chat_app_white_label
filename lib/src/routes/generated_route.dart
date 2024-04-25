@@ -9,7 +9,7 @@ import 'package:chat_app_white_label/src/locals_views/group_screens/create_group
 import 'package:chat_app_white_label/src/locals_views/group_screens/view_group_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/password_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/signup_with_email.dart';
-import 'package:chat_app_white_label/src/locals_views/main_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/main_screen/main_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/notification_screen/notification_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/dob_screen.dart';

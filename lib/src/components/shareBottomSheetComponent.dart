@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
@@ -16,7 +17,9 @@ import 'package:chat_app_white_label/src/models/contact.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ShareBottomSheet {
   static shareBottomSheet(
@@ -61,40 +64,59 @@ class ShareBottomSheet {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  IconComponent(
-                    // iconData: Icons.link,
-                    svgData: AssetConstants.copyLink,
-                    borderColor: Colors.transparent,
-                    backgroundColor: themeCubit.primaryColor,
-                    iconColor: ColorConstants.black,
-                    circleSize: 60,
-                    customText: StringConstants.copyLink,
-                    customTextColor: themeCubit.textColor,
+                  GestureDetector(
+                    onTap: () async {
+                      await Clipboard.setData(
+                              ClipboardData(text: "www.locals.com/event"))
+                          .then((value) => ToastComponent.showToast(
+                              StringConstants.copiedToClipboard,
+                              context: context));
+                    },
+                    child: IconComponent(
+                      // iconData: Icons.link,
+                      svgData: AssetConstants.copyLink,
+                      borderColor: Colors.transparent,
+                      backgroundColor: themeCubit.primaryColor,
+                      iconColor: ColorConstants.black,
+                      circleSize: 60,
+                      customText: StringConstants.copyLink,
+                      customTextColor: themeCubit.textColor,
+                    ),
                   ),
-                  IconComponent(
-                    iconData: Icons.facebook,
-                    borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.blue,
-                    circleSize: 60,
-                    iconSize: 30,
-                    customText: StringConstants.facebook,
-                    customTextColor: themeCubit.textColor,
+                  GestureDetector(
+                    onTap: () async {
+                      Share.share('www.locals.com/event');
+                    },
+                    child: IconComponent(
+                      iconData: Icons.facebook,
+                      borderColor: Colors.transparent,
+                      backgroundColor: ColorConstants.blue,
+                      circleSize: 60,
+                      iconSize: 30,
+                      customText: StringConstants.facebook,
+                      customTextColor: themeCubit.textColor,
+                    ),
                   ),
-                  Column(
-                    children: [
-                      ImageComponent(
-                        height: 60,
-                        width: 60,
-                        imgUrl: AssetConstants.instagram,
-                        imgProviderCallback: (imageProvider) {},
-                      ),
-                      SizedBoxConstants.sizedBoxTenH(),
-                      TextComponent(
-                        StringConstants.instagram,
-                        style: FontStylesConstants.style12(
-                            color: ColorConstants.white),
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Share.share('www.locals.com/event');
+                    },
+                    child: Column(
+                      children: [
+                        ImageComponent(
+                          height: 60,
+                          width: 60,
+                          imgUrl: AssetConstants.instagram,
+                          imgProviderCallback: (imageProvider) {},
+                        ),
+                        SizedBoxConstants.sizedBoxTenH(),
+                        TextComponent(
+                          StringConstants.instagram,
+                          style: FontStylesConstants.style12(
+                              color: ColorConstants.white),
+                        )
+                      ],
+                    ),
                   ),
                   IconComponent(
                     svgData: AssetConstants.share,
@@ -102,6 +124,9 @@ class ShareBottomSheet {
                     borderColor: Colors.transparent,
                     // backgroundColor:ColorConstants.transparent,
                     circleSize: 60,
+                    onTap: () {
+                      Share.share('www.locals.com/event');
+                    },
                     customText: StringConstants.share,
                     customTextColor: themeCubit.textColor,
                   )

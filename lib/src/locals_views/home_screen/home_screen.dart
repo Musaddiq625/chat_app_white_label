@@ -11,6 +11,7 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/filter_screen/filter_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,6 +52,8 @@ class _HomeScreenState extends State<HomeScreen> {
   double radius = 30;
   final GlobalKey<PopupMenuButtonState<int>> _key = GlobalKey();
 
+  late final mainScreenCubit = BlocProvider.of<MainScreenCubit>(context);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -85,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
           iconColor: Colors.white,
           circleSize: 40,
           onTap: () {
-            NavigationUtil.push(context, RouteConstants.notificationScreen);
+            mainScreenCubit.updateIndex(3);
+            // NavigationUtil.push(context, RouteConstants.notificationScreen);
           },
         ),
         const SizedBox(width: 10),
