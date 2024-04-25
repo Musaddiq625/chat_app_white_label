@@ -1,4 +1,5 @@
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
@@ -44,11 +45,11 @@ class _ChatTileComponentState extends State<ChatTileComponent> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
-                child: Text(
-                  'Davia: Looking forward to it!!!',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  softWrap: false,
+                child: TextComponent(
+                  'Davia: Looking forward to it  !!!',
+                  // overflow: TextOverflow.ellipsis,
+                  // maxLines: 1,
+                  // softWrap: false,
                   style: TextStyle(fontSize: 14, color: themeCubit.textColor),
                 ),
               ),
