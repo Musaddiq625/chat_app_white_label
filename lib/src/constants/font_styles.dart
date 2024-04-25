@@ -94,9 +94,10 @@ class FontStylesConstants {
     final letterSpacing = 0.0,
     Color color = ColorConstants.black,
     FontWeight fontWeight = FontWeight.normal,
+    double fontsize = 24,
   }) =>
       TextStyle(
-          fontSize: 24,
+          fontSize: fontsize,
           color: color,
           fontWeight: fontWeight,
           fontFamily: FontConstants.fontProtestStrike,
