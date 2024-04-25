@@ -21,6 +21,7 @@ class TagComponent extends StatelessWidget {
   final Color customTextColor;
   final double customTextSize;
   final FontWeight customFontWeight;
+  final AlignmentGeometry? tagAlignment;
 
   // Constructor to initialize the icon data, size, color, border size, border color, and circle size
   TagComponent({
@@ -38,6 +39,7 @@ class TagComponent extends StatelessWidget {
     this.customTextColor = Colors.black,
     this.customTextSize = 12,
     this.customFontWeight = FontWeight.bold,
+    this.tagAlignment = Alignment.center,
   });
 
   @override
@@ -48,8 +50,8 @@ class TagComponent extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            alignment: Alignment.center,
-            width: width,
+              alignment: tagAlignment,
+              width: width,
               height: circleHeight,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
@@ -62,7 +64,7 @@ class TagComponent extends StatelessWidget {
               ),
               child: iconData == null
                   ? Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
+                      padding: const EdgeInsets.all(10),
                       child: TextComponent(
                         customIconText ?? '',
                         style: TextStyle(

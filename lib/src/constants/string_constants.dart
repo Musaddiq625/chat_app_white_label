@@ -57,6 +57,7 @@ class StringConstants {
   static const String didntReciveCode = "Didnt receive the code? Resend in";
   static const String createEvent = "Create Event";
   static const String createGroup = "Create Group";
+  static const String categories = "Categories";
   static const String private = "Private";
   static const String makeAGroup = "Make a group";
   static const String account = "Account";
@@ -122,6 +123,7 @@ class StringConstants {
   static const String reportEvent = "Report event";
   static const String dateofBirth = "Date of Birth";
   static const String date = "Date";
+  static const String chooseDate = "Choose a Date";
   static const String shareEvent = "Share event";
   static const String ticket = "Ticket";
   static const String creator = "Creator";
@@ -175,7 +177,9 @@ class StringConstants {
   static const String save = "Save";
   static const String saveChanges = "Save Changes";
   static const String end = "End";
+  static const String endDate = "End Date";
   static const String start = "Start";
+  static const String startDate = "Start Date";
   static const String bio = "Bio";
   static const String hobbiesAndInterests = "Hobbies / interests";
   static const String creativity = "Creativity";
@@ -196,6 +200,7 @@ class StringConstants {
   static const String price = "Price";
   static const String share = "Share";
   static const String selectLocation = "Select Location";
+  static const String selectDateRange = "Select Date Range";
   static const String pricing = "Pricing";
   static const String yourConnections = "Your Connections";
   static const String connectionRemoved = "Connection Removed";
@@ -298,6 +303,7 @@ class StringConstants {
   static const String yesDeleteIt = 'Yes, delete it';
   static const String renameGroup = 'Rename Group';
   static const String addPeople = "Add People";
+  static const String applyFilters = "Apply Filters";
   static const String addPeopleToGroup = "Add People to Group";
   static const String editCover = "Edit Cover";
   static const String editProfile = "Edit Profile";

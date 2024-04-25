@@ -17,6 +17,7 @@ class BottomSheetComponent {
     required Widget body,
     Widget? header,
     bool isShowHeader = true,
+    bool isScrollable = true,
     Color? bgColor = Colors.white,
     bool takeFullHeightWhenPossible = false,
     Function()? whenComplete,
@@ -41,6 +42,8 @@ class BottomSheetComponent {
               FocusScope.of(context).unfocus();
             },
             child: SingleChildScrollView(
+              physics:
+                  isScrollable == false ? NeverScrollableScrollPhysics() : null,
               child: Stack(
                 children: [
                   Positioned(

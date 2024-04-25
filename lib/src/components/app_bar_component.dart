@@ -15,6 +15,7 @@ class AppBarComponent extends StatelessWidget {
   final String? titleText;
   final String? titleText2;
   final String? subtitleText;
+  final double? titleFontSize;
   Color? iconBgColor;
   final bool enableDark;
   final bool enablePadding;
@@ -36,6 +37,7 @@ class AppBarComponent extends StatelessWidget {
     this.centerTitle = true,
     this.isBackBtnCircular = true,
     this.titleText2,
+    this.titleFontSize,
   }) : super(key: key);
 
   @override
@@ -96,9 +98,11 @@ class AppBarComponent extends StatelessWidget {
                         listOfText: [titleText!, titleText2 ?? ''],
                         listOfTextStyle: [
                           FontStylesConstants.style24(
-                              color: themeCubit.primaryColor),
+                              color: themeCubit.primaryColor,
+                              fontsize: titleFontSize ?? 24),
                           FontStylesConstants.style24(
-                              color: themeCubit.textSecondaryColor),
+                              color: themeCubit.textSecondaryColor,
+                              fontsize: titleFontSize ?? 24),
                         ],
                         textAlign: TextAlign.center,
                         maxLines: 3,

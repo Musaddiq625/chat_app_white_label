@@ -100,7 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               takeFullHeightWhenPossible: true,
               isShowHeader: false,
-              body: const FilterScreen(),
+              isScrollable: false,
+              body: FilterScreen(),
             );
 
             // NavigationUtil.push(context, RouteConstants.filterScreen);
