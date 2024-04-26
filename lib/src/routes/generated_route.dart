@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen
 import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/all_event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/event_screen/payment_success_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/group_screens/create_group_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/group_screens/view_group_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/password_screen.dart';
@@ -207,6 +208,9 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.viewGroupScreen:
       return materialRoute(const ViewGroupScreen());
+
+    case RouteConstants.paymentSuccessScreen:
+      return materialRoute(const PaymentSuccessScreen());
 
     case RouteConstants.settingsScreen:
       return materialRoute(const SettingsScreen());

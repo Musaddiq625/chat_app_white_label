@@ -138,7 +138,7 @@ class IconComponent extends StatelessWidget {
                       //   SizedBox(
                       //     width: 5,
                       //   ),
-
+                      SizedBoxConstants.sizedBoxTwoW(),
                       if (showCustomTextonLeft == false)
                         Text(
                           customIconText!,

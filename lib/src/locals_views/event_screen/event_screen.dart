@@ -15,6 +15,7 @@ import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -117,8 +118,9 @@ class _EventScreenState extends State<EventScreen> {
                 // bgcolor: themeCubit.primaryColor,
                 // btnTextColor: themeCubit.textColor,
                 onPressed: () {
-                  JoinBottomSheet.showJoinBottomSheet(context, _controller,
-                      "Property networking event", "Group", "ABC", "");
+                  _getTicketBottomSheet();
+                  // JoinBottomSheet.showJoinBottomSheet(context, _controller,
+                  //     "Property networking event", "Group", "ABC", "");
                   // _showJoinBottomSheet();
                 },
               ),
@@ -247,10 +249,11 @@ class _EventScreenState extends State<EventScreen> {
                     backgroundColor:
                         ColorConstants.darkBackgrounddColor.withOpacity(0.9),
                     iconColor: Colors.red,
-                    customIconText: " 22",
-                    circleSize: 60,
-                    circleHeight: 35,
+                    customIconText: "22",
+                    circleSize: 70,
+                    circleHeight: 36,
                     iconSize: 20,
+
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
@@ -259,13 +262,12 @@ class _EventScreenState extends State<EventScreen> {
                       backgroundColor:
                           ColorConstants.darkBackgrounddColor.withOpacity(0.9),
                       circleSize: 35,
-                      iconSize: 15,
+                      iconSize: 14,
                       onTap: () {
                         ShareBottomSheet.shareBottomSheet(
                             context, contacts, StringConstants.event);
                         // _shareEventBottomSheet();
                       }),
-                  const SizedBox(width: 10),
                   showMore(),
                   // IconComponent(
                   //   // iconData: Icons.menu,
@@ -1011,7 +1013,7 @@ class _EventScreenState extends State<EventScreen> {
                     left: 15, right: 15, top: 15, bottom: 10),
                 decoration: BoxDecoration(
                   color: ColorConstants.iconBg,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
                   // color: themeCubit.darkBackgroundColor,
                 ),
                 child: Column(
@@ -1064,7 +1066,7 @@ class _EventScreenState extends State<EventScreen> {
             ),
             SizedBoxConstants.sizedBoxTenH(),
             Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                padding: const EdgeInsets.only(left: 30, right: 30, bottom: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -1086,12 +1088,12 @@ class _EventScreenState extends State<EventScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ButtonComponent(
+                  btnWidth: AppConstants.responsiveWidth(context,percentage: 90),
                   buttonText: StringConstants.next,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
                     // _sendMessage();
-                    Navigator.pop(context);
-                    _getPaymentBottomSheet();
+                    NavigationUtil.push(context, RouteConstants.paymentSuccessScreen);
                     // _navigateToBack();
                     // BottomSheetComponent.showBottomSheet(
                     //   context,
@@ -1117,7 +1119,7 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   _getPaymentBottomSheet() {
-    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,
+    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,takeFullHeightWhenPossible: true,
         body: StatefulBuilder(builder: (context, setState) {
       return Container(
         // padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
@@ -1129,7 +1131,7 @@ class _EventScreenState extends State<EventScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 10, top: 10),
+              padding: const EdgeInsets.only(left: 20, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -1169,11 +1171,12 @@ class _EventScreenState extends State<EventScreen> {
                 children: [
                   SizedBoxConstants.sizedBoxEighteenH(),
                   Container(
+                    // margin: EdgeInsets.all(20),
                     padding: const EdgeInsets.only(
-                        left: 15, right: 15, top: 15, bottom: 10),
+                        left: 15, right: 15, top: 20, bottom: 20),
                     decoration: BoxDecoration(
                       color: ColorConstants.iconBg,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
                       // color: themeCubit.darkBackgroundColor,
                     ),
                     child: Row(
@@ -1190,7 +1193,7 @@ class _EventScreenState extends State<EventScreen> {
                       ],
                     ),
                   ),
-                  SizedBoxConstants.sizedBoxEighteenH(),
+                  SizedBoxConstants.sizedBoxThirtyH(),
                   TextComponent(
                     StringConstants.anyQuestionWhenEventCreated,
                     style: TextStyle(color: ColorConstants.white),
@@ -1244,9 +1247,9 @@ class _EventScreenState extends State<EventScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: 150,
+                    width: AppConstants.responsiveWidth(context,percentage: 40),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 9.5),
+                        horizontal: 0, vertical: 4),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
                         color: ColorConstants.white),
@@ -1289,16 +1292,35 @@ class _EventScreenState extends State<EventScreen> {
                   //   },
                   //   bgcolor: ColorConstants.white,
                   // ),
-                  ButtonComponent(
-                    isSmallBtn: true,
-                    buttonText: StringConstants.payWithCard,
-                    textColor: themeCubit.backgroundColor,
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _paymentSuccessBottomSheet();
-                    },
-                    bgcolor: themeCubit.primaryColor,
-                  )
+
+                  SizedBox(
+                    width: AppConstants.responsiveWidth(context, percentage: 40),
+                    child: ButtonWithIconComponent(
+                      btnText: '${StringConstants.payWithCard}',
+                      // icon: Icons.add_circle,
+                      showIcon: false,
+                      bgcolor: themeCubit.primaryColor,
+                      // btnTextColor: themeCubit.textColor,
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _paymentSuccessBottomSheet();
+                        // JoinBottomSheet.showJoinBottomSheet(context, _controller,
+                        //     "Property networking event", "Group", "ABC", "");
+                        // _showJoinBottomSheet();
+                      },
+                    ),
+                  ),
+                  // ButtonWithIconComponent(
+                  //   btnWidth:  AppConstants.responsiveWidth(context,percentage: 40),
+                  //   isSmallBtn: true,
+                  //   buttonText: StringConstants.payWithCard,
+                  //   textColor: themeCubit.backgroundColor,
+                  //   onPressed: () {
+                  //     Navigator.pop(context);
+                  //     _paymentSuccessBottomSheet();
+                  //   },
+                  //   bgcolor: themeCubit.primaryColor,
+                  // )
                 ],
               ),
             ),
@@ -1319,7 +1341,8 @@ class _EventScreenState extends State<EventScreen> {
               topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           // color: themeCubit.darkBackgroundColor,
         ),
-        child: Column(
+        child:
+        Column(
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 10, top: 10),
@@ -1468,7 +1491,7 @@ class _EventScreenState extends State<EventScreen> {
         backgroundColor: ColorConstants.darkBackgrounddColor.withOpacity(0.9),
         iconColor: Colors.white,
         circleSize: 35,
-        iconSize: 6,
+        iconSize: 5,
       ),
       itemBuilder: (BuildContext context) => [
 
