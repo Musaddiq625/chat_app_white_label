@@ -62,4 +62,8 @@ class AssetConstants {
   static const String withDraw = "$images/with_draw.png";
   static const String transectionComplete = "$images/transection_complete.png";
   static const String ticketWithCircle = "$images/ticket_with_circle.png";
+  static const String delete1 = "$images/delete1.png";
+  static const String exit = "$images/exit.png";
+  static const String gallery = "$images/galary.png";
+  static const String people = "$images/people.png";
 }

@@ -1,30 +1,26 @@
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/common_bottom_sheet_component.dart';
-import 'package:chat_app_white_label/src/components/contact_tile_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
-import 'package:chat_app_white_label/src/components/search_text_field_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
-import 'package:chat_app_white_label/src/constants/app_constants.dart';
+import 'package:chat_app_white_label/src/components/user_list_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
-import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
-import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../utils/logger_util.dart';
+import '../../models/contact.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({super.key});
@@ -38,6 +34,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   TextEditingController controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
   List selectedContacts = [];
+  final List<ContactModel> contacts = [
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    // ... other contacts
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -224,8 +231,10 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         child: Row(
           children: [
             IconComponent(
-              iconData: Icons.groups_outlined,
-              iconColor: ColorConstants.white,
+              // iconData: Icons.groups_outlined,
+              svgData: AssetConstants.people,
+              svgDataCheck: false,
+              iconColor: ColorConstants.grey1,
             ),
             TextComponent(
               'Add People to Group',
@@ -247,7 +256,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             children: [
               IconComponent(
                 iconData: Icons.edit_outlined,
-                iconColor: ColorConstants.white,
+                iconColor: ColorConstants.grey1,
+
               ),
               TextComponent(
                 'Rename Group',
@@ -267,8 +277,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         child: Row(
           children: [
             IconComponent(
-              iconData: Icons.photo_outlined,
-              iconColor: ColorConstants.white,
+              svgData: AssetConstants.gallery,
+              svgDataCheck: false,
+              iconColor: ColorConstants.grey1,
             ),
             TextComponent(
               'Media',
@@ -289,7 +300,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           child: Row(
             children: [
               IconComponent(
-                iconData: Icons.exit_to_app,
+                svgData: AssetConstants.exit,
+                svgDataCheck: false,
+                // iconData: Icons.exit_to_app,
                 iconColor: ColorConstants.red,
               ),
               TextComponent(
@@ -310,7 +323,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         child: Row(
           children: [
             IconComponent(
-              iconData: Icons.delete_outline_sharp,
+              svgData: AssetConstants.delete1,
+              svgDataCheck: false,
+              // iconData: Icons.delete_outline_sharp,
               iconColor: ColorConstants.red,
             ),
             TextComponent(
@@ -347,107 +362,113 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false, isShowHeader: false,
         body: StatefulBuilder(builder: (context, setState) {
-      return Container(
-        color: ColorConstants.darkBackgrounddColor,
-        height: AppConstants.responsiveHeight(context, percentage: 90),
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextComponent(
-                            StringConstants.createChat,
-                            style: TextStyle(
-                                color: themeCubit.primaryColor,
-                                fontSize: 20,
-                                fontFamily: FontConstants.fontProtestStrike),
-                          ),
-                          InkWell(
-                              onTap: () => NavigationUtil.pop(context),
-                              child: const Icon(
-                                Icons.close,
-                                color: ColorConstants.white,
-                              ))
-                        ],
-                      ),
-                      SizedBoxConstants.sizedBoxTenH(),
-                      TextComponent(
-                        StringConstants.startDirectChat,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontFamily: FontConstants.fontNunitoSans,
-                            color: themeCubit.textColor),
-                      ),
-                      SizedBoxConstants.sizedBoxTenH(),
-                      SearchTextField(
-                        iconColor: ColorConstants.lightGrey.withOpacity(0.6),
-                        title: "Search",
-                        hintText: "Search for people",
-                        onSearch: (text) {
-                          // widget.viewModel.onSearchStories(text);
-                        },
-                        textEditingController: searchController,
-                        filledColor: ColorConstants.blackLight.withOpacity(0.6),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: dummyContactList.length,
-                      itemBuilder: (context, index) {
-                        bool isLast = index == dummyContactList!.length - 1;
-                        return ContactTileComponent(
-                          showDivider: (!isLast),
-                          title: dummyContactList[index].name,
-                          subtitle: dummyContactList[index].designation,
-                          isSelected: selectedContacts.contains(index),
-                          onTap: () {
-                            if (selectedContacts.contains(index)) {
-                              selectedContacts.remove(index);
-                            } else {
-                              selectedContacts.add(index);
-                            }
-                            setState(() {});
-                            LoggerUtil.logs(selectedContacts);
-                          },
-                        );
-                      }),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  margin:
-                      const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-                  width: double.infinity,
-                  height: 45,
-                  child: ButtonComponent(
-                      textColor: themeCubit.darkBackgroundColor,
-                      buttonText: StringConstants.startChatting,
-                      bgcolor: themeCubit.primaryColor,
-                      onPressed: () {}),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Expanded(child: Container()),
-              ],
-            )
-          ],
-        ),
-      );
+      return UserListComponent(
+          headingName: StringConstants.addPeople,
+          dummyContactList: contacts,
+          subtitle: false,
+          btnName: StringConstants.addPeopleToGroup,
+          onBtnTap: () {});
+      //   Container(
+      //   color: ColorConstants.darkBackgrounddColor,
+      //   height: AppConstants.responsiveHeight(context, percentage: 90),
+      //   child: Stack(
+      //     children: [
+      //       Column(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           Padding(
+      //             padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+      //             child: Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //                 Row(
+      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                   children: [
+      //                     TextComponent(
+      //                       StringConstants.createChat,
+      //                       style: TextStyle(
+      //                           color: themeCubit.primaryColor,
+      //                           fontSize: 20,
+      //                           fontFamily: FontConstants.fontProtestStrike),
+      //                     ),
+      //                     InkWell(
+      //                         onTap: () => NavigationUtil.pop(context),
+      //                         child: const Icon(
+      //                           Icons.close,
+      //                           color: ColorConstants.white,
+      //                         ))
+      //                   ],
+      //                 ),
+      //                 SizedBoxConstants.sizedBoxTenH(),
+      //                 TextComponent(
+      //                   StringConstants.startDirectChat,
+      //                   style: TextStyle(
+      //                       fontSize: 15,
+      //                       fontFamily: FontConstants.fontNunitoSans,
+      //                       color: themeCubit.textColor),
+      //                 ),
+      //                 SizedBoxConstants.sizedBoxTenH(),
+      //                 SearchTextField(
+      //                   iconColor: ColorConstants.lightGrey.withOpacity(0.6),
+      //                   title: "Search",
+      //                   hintText: "Search for people",
+      //                   onSearch: (text) {
+      //                     // widget.viewModel.onSearchStories(text);
+      //                   },
+      //                   textEditingController: searchController,
+      //                   filledColor: ColorConstants.blackLight.withOpacity(0.6),
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //           Expanded(
+      //             child: ListView.builder(
+      //                 physics: const BouncingScrollPhysics(),
+      //                 shrinkWrap: true,
+      //                 itemCount: dummyContactList.length,
+      //                 itemBuilder: (context, index) {
+      //                   bool isLast = index == dummyContactList!.length - 1;
+      //                   return ContactTileComponent(
+      //                     showDivider: (!isLast),
+      //                     title: dummyContactList[index].name,
+      //                     subtitle: dummyContactList[index].designation,
+      //                     isSelected: selectedContacts.contains(index),
+      //                     onTap: () {
+      //                       if (selectedContacts.contains(index)) {
+      //                         selectedContacts.remove(index);
+      //                       } else {
+      //                         selectedContacts.add(index);
+      //                       }
+      //                       setState(() {});
+      //                       LoggerUtil.logs(selectedContacts);
+      //                     },
+      //                   );
+      //                 }),
+      //           ),
+      //           const SizedBox(
+      //             height: 20,
+      //           ),
+      //           Container(
+      //             margin:
+      //                 const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+      //             width: double.infinity,
+      //             height: 45,
+      //             child: ButtonComponent(
+      //                 textColor: themeCubit.darkBackgroundColor,
+      //                 buttonText: StringConstants.startChatting,
+      //                 bgcolor: themeCubit.primaryColor,
+      //                 onPressed: () {}),
+      //           ),
+      //         ],
+      //       ),
+      //       Column(
+      //         children: [
+      //           Expanded(child: Container()),
+      //         ],
+      //       )
+      //     ],
+      //   ),
+      // );
     }));
   }
 
@@ -464,7 +485,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           btnTextColor: ColorConstants.white,
           btnText: StringConstants.yesPleaseLeave,
           size14Disc: true,
-          onBtnTap: (){},
+          onBtnTap: () {},
         )
         // Column(
         //   children: [
@@ -539,7 +560,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           btnTextColor: ColorConstants.white,
           btnText: StringConstants.yesDeleteIt,
           size14Disc: true,
-          onBtnTap: (){},
+          onBtnTap: () {},
         )
         // Column(
         //   children: [
@@ -588,7 +609,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         //     const SizedBox(height: 20),
         //   ],
         // )
-    );
+        );
   }
 
   _renameGroup() {
