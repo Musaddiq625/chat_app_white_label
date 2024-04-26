@@ -3,6 +3,7 @@ class StringConstants {
   static const String testingPhoneNo = '3331111111';
   static const String testingOtp = '123456';
   static const String copiedToClipboard = 'Copied to clipboard';
+  static const String filtersApplied = 'Filters Applied';
 
   static const String locals = "Locals";
   static const String today = "Today";

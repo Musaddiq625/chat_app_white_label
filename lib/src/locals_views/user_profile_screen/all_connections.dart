@@ -37,12 +37,18 @@ class _AllConnectionsState extends State<AllConnections> {
 
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
+    ContactModel('Jesse Ebert', 'Graphic Designer',
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
+    ContactModel('Jesse Ebert', 'Graphic Designer',
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
+    ContactModel('Jesse Ebert', 'Graphic Designer',
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
+    ContactModel('Jesse Ebert', 'Graphic Designer',
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
+    ContactModel('Jesse Ebert', 'Graphic Designer',
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
+    ContactModel('Jesse Ebert', 'Graphic Designer',
+        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
     ContactModel('Jesse Ebert', 'Graphic Designer', ""),
@@ -90,6 +96,9 @@ class _AllConnectionsState extends State<AllConnections> {
               title: "Search",
               hintText: "Search name, postcode..",
               onSearch: (text) {
+                // contacts.retainWhere((element) => element.name
+                //     .toLowerCase()
+                //     .contains(text.toLowerCase().trim()));
                 // widget.viewModel.onSearchStories(text);
               },
               textEditingController: searchController,
@@ -106,17 +115,19 @@ class _AllConnectionsState extends State<AllConnections> {
               },
               itemBuilder: (ctx, index) {
                 return ListTileComponent(
-                    leadingText: StringConstants.linkedIn,
+                    leadingText:
+                        contacts[index].name, // StringConstants.linkedIn,
                     removeBorderFromTile: true,
                     customPadding: const EdgeInsets.only(left: 20, right: 16),
-                    leadingsubText: 'Graphic Designer',
+                    leadingsubText:
+                        contacts[index].title, // 'Graphic Designer',
                     // trailingIcon: Icons.add_circle,
                     trailingIconSize: 30,
-                    leadingIcon:
-                        'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
+                    leadingIcon: contacts[index]
+                        .url, //  'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                     leadingIconHeight: 40,
                     leadingIconWidth: 40,
-                    isLeadingImageCircular: true,
+                    isLeadingImageProfileImage: true,
                     trailingWidget: showMore(),
                     // moreBtnTap: () {
                     //   return showMore();
@@ -236,7 +247,7 @@ class _AllConnectionsState extends State<AllConnections> {
 
   Widget showMore() {
     return PopupMenuButton(
-      offset: const Offset(0, -140),
+      offset: const Offset(0, -100),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // Set the border radius
       ),

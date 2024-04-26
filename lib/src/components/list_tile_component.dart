@@ -46,7 +46,7 @@ class ListTileComponent extends StatelessWidget {
   Color? backgroundColor;
   Color? titleColor;
   final Function()? onTap;
-  final bool isLeadingImageCircular;
+  final bool isLeadingImageProfileImage;
   final bool isLeadingImageSVG;
   final bool isSocialConnected;
   final bool isIconValue;
@@ -73,7 +73,7 @@ class ListTileComponent extends StatelessWidget {
     this.backgroundColor,
     this.trailingTextSize,
     this.trailingIconSize,
-    this.isLeadingImageCircular = false,
+    this.isLeadingImageProfileImage = false,
     this.isLeadingImageSVG = false,
     this.overrideLeadingIconSize,
     this.leadingIconWidth = 15,
@@ -129,7 +129,7 @@ class ListTileComponent extends StatelessWidget {
                 children: [
                   // if (title != null)
                   if (leadingIcon != null)
-                    isLeadingImageCircular
+                    isLeadingImageProfileImage
                         ? ProfileImageComponent(
                             url: leadingIcon,
                             size: 45,
