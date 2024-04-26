@@ -120,9 +120,11 @@ class StringConstants {
   static const String bioHint =
       "Tell the world what you like, why you're here or anything about yourself ";
   static const String showLessLikeThis = "Show less like this";
+  static const String block = "Block";
   static const String anyQuestionWhenEventCreated =
       "Any question that is entered when event created*";
   static const String reportEvent = "Report event";
+  static const String report = "Report";
   static const String dateofBirth = "Date of Birth";
   static const String date = "Date";
   static const String chooseDate = "Choose a Date";
@@ -160,6 +162,11 @@ class StringConstants {
   static const String typeYourQuestion = "Type your question here";
   static const String inviteYourFriend =
       "You can invite your friend or share it with them.";
+
+  static const String blockDetail =
+      "They wont be able to view your profile or send a message. They will not know that you have blocked them";
+  static const String reportDetail =
+      "They will not know you have reported them";
 
   static const String setOtherAmount =
       "You can also set other amount. If ticket is above £1000, please send contact our support at hello@locals.com";
