@@ -14,21 +14,22 @@ class ButtonWithIconComponent extends StatelessWidget {
   final Color iconColor;
   final double? widthSpace;
   final bool svgDataCheck;
+  final bool showIcon;
 
   const ButtonWithIconComponent({
     super.key,
     this.btnText,
     this.icon,
     this.svgData,
-    this.svgDataCheck=false,
+    this.svgDataCheck = false,
     this.widthSpace = 10,
     required this.onPressed,
     this.btnTextStyle = const TextStyle(color: ColorConstants.white),
-    this.bgcolor ,
+    this.bgcolor,
     this.btnTextColor = Colors.black,
     this.iconSize = 24,
     this.iconColor = Colors.black,
-
+    this.showIcon = true,
   });
 
   @override
@@ -36,35 +37,43 @@ class ButtonWithIconComponent extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9.5),
+        padding:
+            EdgeInsets.symmetric(horizontal: 7, vertical: showIcon ? 5.5 : 7.5),
         decoration: BoxDecoration(
-          gradient:bgcolor == null? LinearGradient(
-            colors: [ColorConstants.btnGradientColor, Color.fromARGB(255, 220, 210, 210)],
-          ):null,
+            gradient: bgcolor == null
+                ? LinearGradient(
+                    colors: [
+                      ColorConstants.btnGradientColor,
+                      Color.fromARGB(255, 220, 210, 210)
+                    ],
+                  )
+                : null,
             borderRadius: BorderRadius.circular(25),
-        color: bgcolor
-        ),
+            color: bgcolor),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: showIcon
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.center,
           children: [
-            if(btnText!=null)
-            Text(
-              btnText!,
-              style: TextStyle(color: btnTextColor,fontWeight: FontWeight.bold),
-            ),
-            SizedBox(width: widthSpace),
-            svgData!=null ?
-            SvgPicture.asset(
-              height: iconSize,
-                svgData!,
-              colorFilter:
-              ColorFilter.mode(iconColor, BlendMode.srcIn),
-            ):Icon(
-              icon,
-              size: iconSize,
-              color: iconColor,
-            )
-
+            if (btnText != null)
+              Text(
+                btnText!,
+                style:
+                    TextStyle(color: btnTextColor, fontWeight: FontWeight.bold),
+              ),
+            if (showIcon) SizedBox(width: widthSpace),
+            if (showIcon)
+              svgData != null
+                  ? SvgPicture.asset(
+                      height: iconSize,
+                      svgData!,
+                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                    )
+                  : Icon(
+                      icon,
+                      size: iconSize,
+                      color: iconColor,
+                    )
           ],
         ),
       ),

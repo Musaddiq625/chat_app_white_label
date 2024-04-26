@@ -1,6 +1,8 @@
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
+import 'package:chat_app_white_label/src/components/divider.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/joinBottomSheetComponent.dart';
+import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
@@ -91,20 +93,54 @@ class _EventScreenState extends State<EventScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ButtonComponent(
-              isSmallBtn: true,
-              buttonText: StringConstants.getTicket,
-              onPressed: () {
-                _getTicketBottomSheet();
-              },
-              textColor: ColorConstants.black,
-              bgcolor: ColorConstants.btnGradientColor,
+            // ButtonComponent(
+            //   isSmallBtn: true,
+            //   btnHeight: 35,
+            //   overrideFontStyle:
+            //       FontStylesConstants.style12(fontWeight: FontWeight.bold),
+            //   buttonText: StringConstants.getTicket,
+            //   onPressed: () {
+            //     _getTicketBottomSheet();
+            //   },
+            //   textColor: ColorConstants.black,
+            //   bgcolor: ColorConstants.btnGradientColor,
+            // ),
+            SizedBox(
+              width: AppConstants.responsiveWidth(context, percentage: 30),
+              child: ButtonWithIconComponent(
+                btnText: '${StringConstants.getTicket}',
+                // icon: Icons.add_circle,
+                showIcon: false,
+                // bgcolor: themeCubit.primaryColor,
+                // btnTextColor: themeCubit.textColor,
+                onPressed: () {
+                  JoinBottomSheet.showJoinBottomSheet(context, _controller,
+                      "Property networking event", "Group", "ABC", "");
+                  // _showJoinBottomSheet();
+                },
+              ),
             ),
+            // SizedBox(
+            //   width: AppConstants.responsiveWidth(context, percentage: 31),
+            //   child: ButtonWithIconComponent(
+            //     btnText: '  ${StringConstants.getTicket}',
+            //     // icon: Icons.add_circle,
+
+            //     bgcolor: themeCubit.primaryColor,
+            //     // btnTextColor: themeCubit.textColor,
+            //     onPressed: () {
+            //       JoinBottomSheet.showJoinBottomSheet(context, _controller,
+            //           "Property networking event", "Group", "ABC", "");
+            //       // _showJoinBottomSheet();
+            //     },
+            //   ),
+            // ),
             SizedBox(
               width: AppConstants.responsiveWidth(context, percentage: 30),
               child: ButtonWithIconComponent(
                 btnText: '  ${StringConstants.join}',
                 icon: Icons.add_circle,
+
                 bgcolor: themeCubit.primaryColor,
                 // btnTextColor: themeCubit.textColor,
                 onPressed: () {
@@ -374,15 +410,42 @@ class _EventScreenState extends State<EventScreen> {
                   ),
                 )),
             SizedBoxConstants.sizedBoxThirtyH(),
-            ...List.generate(
-                contacts.length,
-                (index) => ContactCard(
-                    imageSize: 45,
-                    name: contacts[index].name,
-                    title: contacts[index].title,
-                    url: contacts[index].url,
-                    // contact: contacts[index],
-                    showShareIcon: false)),
+            ListView.separated(
+              separatorBuilder: (context, index) => const DividerComponent(),
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: contacts.length,
+              itemBuilder: (context, index) => ListTileComponent(
+                leadingText: contacts[index].name, // StringConstants.linkedIn,
+                removeBorderFromTile: true,
+                customPadding: const EdgeInsets.only(left: 20, right: 16),
+                leadingsubText: contacts[index].title, // 'Graphic Designer',
+                // trailingIcon: Icons.add_circle,
+                trailingIconSize: 30,
+                leadingIcon:
+                    'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
+                leadingIconHeight: 20,
+                leadingIconWidth: 20,
+                isLeadingImageProfileImage: true,
+                // trailingWidget: showMore(),
+                // moreBtnTap: () {
+                //   return showMore();
+                // },
+                // isLeadingImageSVG: true,
+
+                // isSocialConnected: true,
+                subIconColor: themeCubit.textColor,
+                // trailingText: "heelo",
+                onTap: () {},
+              ),
+            ),
+            // ContactCard(
+            //     imageSize: 45,
+            //     name: contacts[index].name,
+            //     title: contacts[index].title,
+            //     url: contacts[index].url,
+            //     // contact: contacts[index],
+            //     showShareIcon: false)),
             SizedBoxConstants.sizedBoxSixtyH(),
           ],
         ),

@@ -132,7 +132,7 @@ class ListTileComponent extends StatelessWidget {
                     isLeadingImageProfileImage
                         ? ProfileImageComponent(
                             url: leadingIcon,
-                            size: 45,
+                            size: 40,
                           )
                         : ImageComponent(
                             imgUrl: leadingIcon!,
