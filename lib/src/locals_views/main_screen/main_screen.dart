@@ -50,18 +50,30 @@ class _MainScreenState extends State<MainScreen> {
           setState(() {});
         }
       },
-      child: UIScaffold(
-        extendBody: true,
-        removeSafeAreaPadding: false,
-        widget: Stack(children: [
-          IndexedStack(
-            index: _selectedIndex,
-            children: _screens,
+      child: PopScope(
+        canPop: _selectedIndex == 0 ? true : false,
+        onPopInvoked: (didPop) {
+          if (_selectedIndex == 0) {
+            return;
+          } else {
+            setState(() {
+              _selectedIndex = 0;
+            });
+          }
+        },
+        child: UIScaffold(
+          extendBody: true,
+          removeSafeAreaPadding: false,
+          widget: Stack(children: [
+            IndexedStack(
+              index: _selectedIndex,
+              children: _screens,
+            ),
+          ]),
+          bottomNavigationBar: BottomNavBar(
+            selectedIndex: _selectedIndex,
+            onItemTapped: _onItemTapped,
           ),
-        ]),
-        bottomNavigationBar: BottomNavBar(
-          selectedIndex: _selectedIndex,
-          onItemTapped: _onItemTapped,
         ),
       ),
     );

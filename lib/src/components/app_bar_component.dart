@@ -23,6 +23,7 @@ class AppBarComponent extends StatelessWidget {
   final bool isBackBtnCircular;
   final bool centerTitle;
   final Widget? action;
+  final TextStyle? overrideTitleTextStyle;
 
   AppBarComponent(
     this.titleText, {
@@ -38,6 +39,7 @@ class AppBarComponent extends StatelessWidget {
     this.isBackBtnCircular = true,
     this.titleText2,
     this.titleFontSize,
+    this.overrideTitleTextStyle,
   }) : super(key: key);
 
   @override
@@ -97,9 +99,10 @@ class AppBarComponent extends StatelessWidget {
                         '',
                         listOfText: [titleText!, titleText2 ?? ''],
                         listOfTextStyle: [
-                          FontStylesConstants.style24(
-                              color: themeCubit.primaryColor,
-                              fontsize: titleFontSize ?? 24),
+                          overrideTitleTextStyle ??
+                              FontStylesConstants.style24(
+                                  color: themeCubit.primaryColor,
+                                  fontsize: titleFontSize ?? 24),
                           FontStylesConstants.style24(
                               color: themeCubit.textSecondaryColor,
                               fontsize: titleFontSize ?? 24),
