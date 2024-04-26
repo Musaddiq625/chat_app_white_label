@@ -31,7 +31,7 @@ class _AllowNotificationScreenState extends State<AllowNotificationScreen> {
           isBackBtnCircular: false,
         ),
         appBarHeight: 500,
-        removeSafeAreaPadding: true,
+        removeSafeAreaPadding: false,
         bgColor: ColorConstants.black,
         // bgImage:
         //     "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",

@@ -1,8 +1,11 @@
+import 'package:chat_app_white_label/src/components/contacts_card_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/models/usert_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -36,55 +39,79 @@ class _ContactTileComponentState extends State<ContactTileComponent> {
       behavior: HitTestBehavior.opaque,
       child: Container(
         // color: ColorConstants.red,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+        // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const ProfileImageComponent(
-                  url: null,
-                  size: 40,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextComponent(
-                      widget.title,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: themeCubit.textColor),
+            Container(
+              // color: ColorConstants.red,
+              padding: const EdgeInsets.only(left: 5,right: 10,),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                      width: AppConstants.responsiveWidth(context, percentage: 80),
+                      // color: ColorConstants.red,
+                      child:  ContactCard(
+                        name: widget.title,
+                        title: widget.subtitle,
+                        url: "",
+                        showShareIcon: false,
+                        showDivider: false,
+                        imageSize: 45,
+                      )),
+                  // ContactCard(
+                  //   name:  widget.title,
+                  //   title:  widget.title,
+                  //   url: "",
+                  // ),
+                  // const ProfileImageComponent(
+                  //   url: null,
+                  //   size: 40,
+                  // ),
+                  // const SizedBox(
+                  //   width: 10,
+                  // ),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   mainAxisSize: MainAxisSize.min,
+                  //   children: [
+                  //     TextComponent(
+                  //       widget.title,
+                  //       style: TextStyle(
+                  //           fontWeight: FontWeight.bold, color: themeCubit.textColor),
+                  //     ),
+                  //     TextComponent(
+                  //       widget.subtitle,
+                  //       style: const TextStyle(color: ColorConstants.lightGrey),
+                  //     )
+                  //   ],
+                  // ),
+                  const Spacer(),
+                  Transform.scale(
+                    scale: 1.2, // Adjust the scale factor as needed
+                    child: Checkbox(
+                      checkColor: ColorConstants.black,
+                      shape: const CircleBorder(),
+                      fillColor: MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return ColorConstants.primaryColor;
+                        }
+                        return ColorConstants.blackLight;
+                      }),
+                      value: widget.isSelected,
+                      onChanged: (bool? newValue) {
+                        // Your onChanged logic here
+                      },
                     ),
-                    TextComponent(
-                      widget.subtitle,
-                      style: const TextStyle(color: ColorConstants.lightGrey),
-                    )
-                  ],
-                ),
-                const Spacer(),
-                Checkbox(
-                  checkColor: ColorConstants.black,
-                  shape: const CircleBorder(),
-                  fillColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.selected)) {
-                      return ColorConstants.primaryColor;
-                    }
-                    return null;
-                  }),
-                  value: widget.isSelected,
-                  onChanged: (bool? newValue) {
-                    // setState(() {
-                    //   checkBoxValue = newValue!;
-                    // });
-                  },
-                )
-              ],
+                  )
+                ],
+              ),
             ),
             if(widget.showDivider)
-            DividerCosntants.divider1
+            DividerCosntants.divider1,
+            // SizedBoxConstants.sizedBoxThirtyH()
           ],
         ),
       ),
