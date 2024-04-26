@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/event_card.dart';
 import 'package:chat_app_white_label/src/components/group_card.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
@@ -230,7 +231,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget profile() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
         children: [
           Stack(
@@ -289,53 +290,70 @@ class _UserProfileState extends State<UserProfile> {
             style: FontStylesConstants.style20(),
           ),
           SizedBoxConstants.sizedBoxSixtyH(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(
-                textAlign: TextAlign.start,
-                text: TextSpan(
-                  style: FontStylesConstants.style20(
-                      color: themeCubit.primaryColor),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: "${StringConstants.connections}  ",
-                    ),
-                    TextSpan(
-                      text: "387",
-                      style: FontStylesConstants.style20(
-                          color: ColorConstants.lightGray.withOpacity(0.8)),
-                    ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // RichText(
+                //   textAlign: TextAlign.start,
+                //   text: TextSpan(
+                //     style: FontStylesConstants.style20(
+                //         color: themeCubit.primaryColor),
+                //     children: <TextSpan>[
+                //       TextSpan(
+                //         text: "${StringConstants.yourEvents}  ",
+                //       ),
+                //       TextSpan(
+                //         text: "387",
+                //         style: FontStylesConstants.style20(
+                //             color: ColorConstants.lightGray.withOpacity(0.8)),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                TextComponent(
+                  "",
+                  listOfText: [
+                    StringConstants.connections,
+                    " 387",
                   ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  NavigationUtil.push(
-                      context, RouteConstants.allConnectionScreen);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextComponent(
-                      "See all",
-                      style: FontStylesConstants.style15(
-                          color: ColorConstants.lightGray.withOpacity(0.8)),
+                  listOfTextStyle: [
+                    FontStylesConstants.style20(
+                      color: themeCubit.primaryColor,
                     ),
-                    SizedBoxConstants.sizedBoxTenW(),
-                    IconComponent(
-                      iconData: Icons.arrow_forward_ios,
-                      backgroundColor: ColorConstants.transparent,
-                      borderColor: ColorConstants.transparent,
-                      iconSize: 18,
-                      borderSize: 0,
-                      circleSize: 18,
-                      iconColor: ColorConstants.lightGray,
+                    FontStylesConstants.style20(
+                      color: ColorConstants.lightGray.withOpacity(0.8),
                     )
                   ],
                 ),
-              ),
-            ],
+                GestureDetector(
+                  onTap: () {
+                    NavigationUtil.push(context, RouteConstants.allEventScreen);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextComponent(
+                        "See all",
+                        style: FontStylesConstants.style15(
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
+                      ),
+                      SizedBoxConstants.sizedBoxTenW(),
+                      IconComponent(
+                        iconData: Icons.arrow_forward_ios,
+                        backgroundColor: ColorConstants.transparent,
+                        borderColor: ColorConstants.transparent,
+                        iconSize: 18,
+                        borderSize: 0,
+                        circleSize: 18,
+                        iconColor: ColorConstants.lightGray,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           SizedBoxConstants.sizedBoxTwentyH(),
           SizedBox(
@@ -365,26 +383,44 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget yourEvents() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              RichText(
-                textAlign: TextAlign.start,
-                text: TextSpan(
-                  style: FontStylesConstants.style20(
-                      color: themeCubit.primaryColor),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: "${StringConstants.yourEvents}  ",
+              // RichText(
+              //   textAlign: TextAlign.start,
+              //   text: TextSpan(
+              //     style: FontStylesConstants.style20(
+              //         color: themeCubit.primaryColor),
+              //     children: <TextSpan>[
+              //       TextSpan(
+              //         text: "${StringConstants.yourEvents}  ",
+              //       ),
+              //       TextSpan(
+              //         text: "387",
+              //         style: FontStylesConstants.style20(
+              //             color: ColorConstants.lightGray.withOpacity(0.8)),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: TextComponent(
+                  "",
+                  listOfText: [
+                    StringConstants.yourEvents,
+                    " 387",
+                  ],
+                  listOfTextStyle: [
+                    FontStylesConstants.style20(
+                      color: themeCubit.primaryColor,
                     ),
-                    TextSpan(
-                      text: "387",
-                      style: FontStylesConstants.style20(
-                          color: ColorConstants.lightGray.withOpacity(0.8)),
-                    ),
+                    FontStylesConstants.style20(
+                      color: ColorConstants.lightGray.withOpacity(0.8),
+                    )
                   ],
                 ),
               ),
@@ -415,7 +451,7 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ],
           ),
-          SizedBoxConstants.sizedBoxTenH(),
+          SizedBoxConstants.sizedBoxTwentyH(),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -610,14 +646,17 @@ class _UserProfileState extends State<UserProfile> {
               ],
             ),
           ),
-          SizedBoxConstants.sizedBoxTwentyH(),
-          ButtonComponent(
-            buttonText: StringConstants.createANewEvent,
-            bgcolor: ColorConstants.darkBackgrounddColor,
-            textColor: ColorConstants.white,
-            onPressed: () => {
-              NavigationUtil.push(context, RouteConstants.createEventScreen)
-            },
+          // SizedBoxConstants.sizedBoxTwentyH(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: ButtonComponent(
+              buttonText: StringConstants.createANewEvent,
+              bgcolor: ColorConstants.darkBackgrounddColor,
+              textColor: ColorConstants.white,
+              onPressed: () => {
+                NavigationUtil.push(context, RouteConstants.createEventScreen)
+              },
+            ),
           )
         ],
       ),
@@ -626,43 +665,73 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget eventsGoingTo() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextComponent(
-                StringConstants.eventsYouGoingTo,
-                style:
-                    FontStylesConstants.style20(color: themeCubit.primaryColor),
-              ),
-              GestureDetector(
-                onTap: () => {
-                  NavigationUtil.push(context, RouteConstants.allEventScreen),
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextComponent(
-                      "See all",
-                      style: FontStylesConstants.style15(
-                          color: ColorConstants.lightGray.withOpacity(0.8)),
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // RichText(
+                //   textAlign: TextAlign.start,
+                //   text: TextSpan(
+                //     style: FontStylesConstants.style20(
+                //         color: themeCubit.primaryColor),
+                //     children: <TextSpan>[
+                //       TextSpan(
+                //         text: "${StringConstants.yourEvents}  ",
+                //       ),
+                //       TextSpan(
+                //         text: "387",
+                //         style: FontStylesConstants.style20(
+                //             color: ColorConstants.lightGray.withOpacity(0.8)),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                TextComponent(
+                  "",
+                  listOfText: [
+                    StringConstants.eventsYouGoingTo,
+                    " 387",
+                  ],
+                  listOfTextStyle: [
+                    FontStylesConstants.style20(
+                      color: themeCubit.primaryColor,
                     ),
-                    SizedBoxConstants.sizedBoxTenW(),
-                    IconComponent(
-                      iconData: Icons.arrow_forward_ios,
-                      backgroundColor: ColorConstants.transparent,
-                      borderColor: ColorConstants.transparent,
-                      iconSize: 18,
-                      borderSize: 0,
-                      circleSize: 18,
-                      iconColor: ColorConstants.lightGray,
+                    FontStylesConstants.style20(
+                      color: ColorConstants.lightGray.withOpacity(0.8),
                     )
                   ],
                 ),
-              ),
-            ],
+                GestureDetector(
+                  onTap: () {
+                    NavigationUtil.push(context, RouteConstants.allEventScreen);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextComponent(
+                        "See all",
+                        style: FontStylesConstants.style15(
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
+                      ),
+                      SizedBoxConstants.sizedBoxTenW(),
+                      IconComponent(
+                        iconData: Icons.arrow_forward_ios,
+                        backgroundColor: ColorConstants.transparent,
+                        borderColor: ColorConstants.transparent,
+                        iconSize: 18,
+                        borderSize: 0,
+                        circleSize: 18,
+                        iconColor: ColorConstants.lightGray,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           SizedBoxConstants.sizedBoxTwentyH(),
           FilterComponent(
@@ -702,38 +771,73 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget groups() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextComponent(
-                StringConstants.groups,
-                style:
-                    FontStylesConstants.style20(color: themeCubit.primaryColor),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextComponent(
-                    "See all",
-                    style: FontStylesConstants.style15(
-                        color: ColorConstants.lightGray.withOpacity(0.8)),
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // RichText(
+                //   textAlign: TextAlign.start,
+                //   text: TextSpan(
+                //     style: FontStylesConstants.style20(
+                //         color: themeCubit.primaryColor),
+                //     children: <TextSpan>[
+                //       TextSpan(
+                //         text: "${StringConstants.yourEvents}  ",
+                //       ),
+                //       TextSpan(
+                //         text: "387",
+                //         style: FontStylesConstants.style20(
+                //             color: ColorConstants.lightGray.withOpacity(0.8)),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                TextComponent(
+                  "",
+                  listOfText: [
+                    StringConstants.groups,
+                    " 387",
+                  ],
+                  listOfTextStyle: [
+                    FontStylesConstants.style20(
+                      color: themeCubit.primaryColor,
+                    ),
+                    FontStylesConstants.style20(
+                      color: ColorConstants.lightGray.withOpacity(0.8),
+                    )
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    NavigationUtil.push(context, RouteConstants.allEventScreen);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextComponent(
+                        "See all",
+                        style: FontStylesConstants.style15(
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
+                      ),
+                      SizedBoxConstants.sizedBoxTenW(),
+                      IconComponent(
+                        iconData: Icons.arrow_forward_ios,
+                        backgroundColor: ColorConstants.transparent,
+                        borderColor: ColorConstants.transparent,
+                        iconSize: 18,
+                        borderSize: 0,
+                        circleSize: 18,
+                        iconColor: ColorConstants.lightGray,
+                      )
+                    ],
                   ),
-                  SizedBoxConstants.sizedBoxTenW(),
-                  IconComponent(
-                    iconData: Icons.arrow_forward_ios,
-                    backgroundColor: ColorConstants.transparent,
-                    borderColor: ColorConstants.transparent,
-                    iconSize: 18,
-                    borderSize: 0,
-                    circleSize: 18,
-                    iconColor: ColorConstants.lightGray,
-                  )
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
           SizedBoxConstants.sizedBoxTwentyH(),
           FilterComponent(
@@ -766,11 +870,17 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
           SizedBoxConstants.sizedBoxTwentyH(),
-          ButtonComponent(
-              buttonText: StringConstants.createANewGroup,
-              bgcolor: ColorConstants.darkBackgrounddColor,
-              textColor: ColorConstants.white,
-              onPressed: () => {}),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ButtonComponent(
+                buttonText: StringConstants.createANewGroup,
+                bgcolor: ColorConstants.darkBackgrounddColor,
+                textColor: ColorConstants.white,
+                onPressed: () => {}),
+          ),
+          Padding(
+              padding:
+                  EdgeInsets.only(bottom: AppConstants.bottomPadding(context))),
         ],
       ),
     );
