@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
@@ -260,6 +261,11 @@ class _SplashScreenState extends State<SplashScreen> {
                                       //     AssetConstants.google,
                                       //   ),
                                       // ),
+                                      if(!Platform.isIOS)
+                                      ImageComponent(imgUrl: AssetConstants.google,isAsset: true, imgProviderCallback: (imgProviderCallback){
+
+                                      }),
+                                      if(Platform.isIOS)
                                       SvgPicture.asset(
                                         height: 20,
                                         AssetConstants.google,
@@ -267,6 +273,9 @@ class _SplashScreenState extends State<SplashScreen> {
                                             themeCubit.backgroundColor,
                                             BlendMode.srcIn),
                                       ),
+                                      SizedBoxConstants.sizedBoxTenW(),
+                                      if(!Platform.isIOS)
+                                      TextComponent(StringConstants.continueWithGoogle,style: FontStylesConstants.style14(fontWeight: FontWeight.bold),)
                                       // Icon(
                                       //   Icons.svg,
                                       //   color: ColorConstants.black,

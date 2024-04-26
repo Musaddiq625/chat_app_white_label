@@ -66,6 +66,7 @@ class StringConstants {
   static const String viewEvent = "View Event";
   static const String getStarted = "Get Started";
   static const String continueWithEmail = "Continue with Email";
+  static const String continueWithGoogle = "Continue with Google";
   static const String continueWithPhone = "Continue with Phone";
   static const String inviteFriends = "Invite Friends";
   static const String continues = "Continue";
