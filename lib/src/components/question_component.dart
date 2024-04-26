@@ -27,7 +27,12 @@ class QuestionComponent {
       final FocusNode buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
       int? draggingIndex;
       return ReorderableListView(
+        primary: false,
         shrinkWrap: true,
+        buildDefaultDragHandles:
+            questions.length > 1, // disable drag&drop if there's only one item
+
+        physics: const NeverScrollableScrollPhysics(),
         proxyDecorator: (Widget child, int index, Animation<double> animation) {
           return Container(
             color: Colors.transparent, // Change this to your desired color
@@ -110,7 +115,7 @@ class QuestionComponent {
                         });
                       },
                       child: Padding(
-                          padding: const EdgeInsets.only(right: 20,bottom: 5),
+                          padding: const EdgeInsets.only(right: 20, bottom: 5),
                           child: IconComponent(
                             iconData: Icons.menu,
                             borderColor: ColorConstants.transparent,
@@ -148,12 +153,14 @@ class QuestionComponent {
                           Row(
                             children: [
                               Checkbox(
-                                value: selectedQuestionRequired[index] == 'Required',
+                                value: selectedQuestionRequired[index] ==
+                                    'Required',
                                 onChanged: (bool? value) {
                                   print("Required Selected");
                                   if (value != null) {
                                     setStateBottomSheet(() {
-                                      selectedQuestionRequired[index] = 'Required';
+                                      selectedQuestionRequired[index] =
+                                          'Required';
                                     });
                                   }
                                 },
@@ -176,12 +183,14 @@ class QuestionComponent {
                           Row(
                             children: [
                               Checkbox(
-                                value:  selectedQuestionRequired[index] == 'Optional',
+                                value: selectedQuestionRequired[index] ==
+                                    'Optional',
                                 onChanged: (bool? value) {
                                   print("Otional Selected $value");
                                   if (value != null) {
                                     setStateBottomSheet(() {
-                                      selectedQuestionRequired[index] = 'Optional';
+                                      selectedQuestionRequired[index] =
+                                          'Optional';
                                     });
                                   }
                                 },
@@ -243,7 +252,8 @@ class QuestionComponent {
                           Row(
                             children: [
                               Checkbox(
-                                value: selectedQuestionPublic[index] == 'Public',
+                                value:
+                                    selectedQuestionPublic[index] == 'Public',
                                 onChanged: (bool? value) {
                                   if (value != null) {
                                     setStateBottomSheet(() {
@@ -280,11 +290,12 @@ class QuestionComponent {
                           Row(
                             children: [
                               Checkbox(
-                                value:  selectedQuestionPublic[index]  == 'Private',
+                                value:
+                                    selectedQuestionPublic[index] == 'Private',
                                 onChanged: (bool? value) {
                                   if (value != null) {
                                     setStateBottomSheet(() {
-                                      selectedQuestionPublic[index]  = 'Private';
+                                      selectedQuestionPublic[index] = 'Private';
                                     });
                                   }
                                 },
@@ -356,10 +367,11 @@ class QuestionComponent {
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(18.0),
+            padding: const EdgeInsets.all(32.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // SizedBoxConstants.sizedBoxTwentyH(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -414,7 +426,9 @@ class QuestionComponent {
                       bgcolor: ColorConstants.primaryColor,
                       textColor: ColorConstants.black,
                       buttonText: StringConstants.done,
-                      onPressed: () {NavigationUtil.pop(context);},
+                      onPressed: () {
+                        NavigationUtil.pop(context);
+                      },
                     ),
                   ],
                 ),
