@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/src/components/common_bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
@@ -6,6 +9,7 @@ import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
+import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:flutter/material.dart';
@@ -414,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 30),
+                  const SizedBox(width: 20),
                   IconComponent(
                     svgData: AssetConstants.share,
                     // iconData: Icons.share,
@@ -428,17 +432,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           context, contacts, StringConstants.profile);
                     },
                   ),
-                  const SizedBox(width: 10),
-                  IconComponent(
-                    // iconData: Icons.more,
-                    svgData: AssetConstants.more,
-                    borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.iconBg,
-                    iconColor: Colors.white,
-                    circleSize: 38,
-                    iconSize: 6,
-                    // onTap: _showMoreBottomSheet,
-                  )
+                  showMore(),
                 ],
               ),
               SizedBoxConstants.sizedBoxEightyH(),
@@ -446,6 +440,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )
         ],
       ),
+    );
+  }
+  Widget showMore() {
+    return PopupMenuButton(
+      offset: const Offset(0, -100),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10), // Set the border radius
+      ),
+      color: ColorConstants.darkBackgrounddColor,
+      key: ValueKey('key${Random().nextInt(1000)}'),
+      icon: IconComponent(
+        svgData: AssetConstants.more,
+        borderColor: Colors.transparent,
+        backgroundColor: ColorConstants.iconBg,
+        iconColor: Colors.white,
+        circleSize: 40,
+        iconSize: 6,
+      ),
+      itemBuilder: (BuildContext context) => [
+
+        PopupMenuItem(
+          height: 0,
+          child: Row(children: [
+            IconComponent(
+              iconData: Icons.block,
+              iconColor: ColorConstants.red,
+            ),
+            SizedBoxConstants.sizedBoxSixW(),
+            TextComponent(
+              StringConstants.block,
+              style: FontStylesConstants.style14(color: ColorConstants.red),
+            ),
+          ]),
+          value: 'block',
+        ),
+        PopupMenuItem(
+          padding: const EdgeInsets.all(0),
+          height: 0,
+          child: DividerCosntants.divider1,
+          value: 'remove_connection',
+        ),
+        PopupMenuItem(
+          height: 0,
+          child: Row(children: [
+            IconComponent(
+              iconData: Icons.remove_circle_sharp,
+              iconColor: ColorConstants.red,
+            ),
+            SizedBoxConstants.sizedBoxSixW(),
+            TextComponent(
+              StringConstants.report,
+              style: FontStylesConstants.style14(color: ColorConstants.red),
+            ),
+          ]),
+          value: 'report',
+        ),
+      ],
+      // onSelected: onMenuItemSelected,
+      onSelected: (value) {
+        if (value == 'block') {
+          _showBlockBottomSheet();
+        } else if (value == 'report') {
+          _showReportBottomSheet();
+        }
+        // Add more conditions as needed
+      },
+    );
+  }
+  _showBlockBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: CommonBottomSheetComponent(
+          title:"Block Alyna",
+          description:StringConstants.blockDetail,
+          image: AssetConstants.warning,
+          isImageAsset: true,
+          btnColor: ColorConstants.red,
+          btnTextColor: ColorConstants.white,
+          btnText: StringConstants.block,
+          size14Disc: true,
+          onBtnTap: () {},
+        )
+
+    );
+  }
+
+  _showReportBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: CommonBottomSheetComponent(
+          title: "Report Alyna",
+          description: StringConstants.reportDetail,
+          image: AssetConstants.warning,
+          isImageAsset: true,
+          btnColor: ColorConstants.red,
+          btnTextColor: ColorConstants.white,
+          btnText: StringConstants.report,
+          size14Disc: true,
+          onBtnTap: () {},
+        )
+
     );
   }
 

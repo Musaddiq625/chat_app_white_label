@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
+import 'package:chat_app_white_label/src/components/common_bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/divider.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/joinBottomSheetComponent.dart';
@@ -263,15 +266,16 @@ class _EventScreenState extends State<EventScreen> {
                         // _shareEventBottomSheet();
                       }),
                   const SizedBox(width: 10),
-                  IconComponent(
-                    // iconData: Icons.menu,
-                    svgData: AssetConstants.more,
-                    backgroundColor:
-                        ColorConstants.darkBackgrounddColor.withOpacity(0.9),
-                    circleSize: 35,
-                    iconSize: 6,
-                    onTap: _showMoreBottomSheet,
-                  )
+                  showMore(),
+                  // IconComponent(
+                  //   // iconData: Icons.menu,
+                  //   svgData: AssetConstants.more,
+                  //   backgroundColor:
+                  //       ColorConstants.darkBackgrounddColor.withOpacity(0.9),
+                  //   circleSize: 35,
+                  //   iconSize: 6,
+                  //   onTap: _showMoreBottomSheet,
+                  // )
                 ],
               ),
             ),
@@ -1448,5 +1452,109 @@ class _EventScreenState extends State<EventScreen> {
       _count++;
       _totalAmount += _price; // Add the fixed amount
     });
+  }
+
+  Widget showMore() {
+    return PopupMenuButton(
+      offset: const Offset(0, -100),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10), // Set the border radius
+      ),
+      color: ColorConstants.darkBackgrounddColor,
+      key: ValueKey('key${Random().nextInt(1000)}'),
+      icon: IconComponent(
+        svgData: AssetConstants.more,
+        borderColor: Colors.transparent,
+        backgroundColor: ColorConstants.darkBackgrounddColor.withOpacity(0.9),
+        iconColor: Colors.white,
+        circleSize: 35,
+        iconSize: 6,
+      ),
+      itemBuilder: (BuildContext context) => [
+
+        PopupMenuItem(
+          height: 0,
+          child: Row(children: [
+            IconComponent(
+              iconData: Icons.block,
+              iconColor: ColorConstants.red,
+            ),
+            SizedBoxConstants.sizedBoxSixW(),
+            TextComponent(
+              StringConstants.block,
+              style: FontStylesConstants.style14(color: ColorConstants.red),
+            ),
+          ]),
+          value: 'block',
+        ),
+        PopupMenuItem(
+          padding: const EdgeInsets.all(0),
+          height: 0,
+          child: DividerCosntants.divider1,
+          value: 'remove_connection',
+        ),
+        PopupMenuItem(
+          height: 0,
+          child: Row(children: [
+            IconComponent(
+              iconData: Icons.remove_circle_sharp,
+              iconColor: ColorConstants.red,
+            ),
+            SizedBoxConstants.sizedBoxSixW(),
+            TextComponent(
+              StringConstants.report,
+              style: FontStylesConstants.style14(color: ColorConstants.red),
+            ),
+          ]),
+          value: 'report',
+        ),
+      ],
+      // onSelected: onMenuItemSelected,
+      onSelected: (value) {
+        if (value == 'block') {
+          _showBlockBottomSheet();
+        } else if (value == 'report') {
+          _showReportBottomSheet();
+        }
+        // Add more conditions as needed
+      },
+    );
+  }
+  _showBlockBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: CommonBottomSheetComponent(
+          title:"Block Alyna",
+          description:StringConstants.blockDetail,
+          image: AssetConstants.warning,
+          isImageAsset: true,
+          btnColor: ColorConstants.red,
+          btnTextColor: ColorConstants.white,
+          btnText: StringConstants.block,
+          size14Disc: true,
+          onBtnTap: () {},
+        )
+
+    );
+  }
+
+  _showReportBottomSheet() {
+    BottomSheetComponent.showBottomSheet(context,
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: CommonBottomSheetComponent(
+          title: "Report Alyna",
+          description: StringConstants.reportDetail,
+          image: AssetConstants.warning,
+          isImageAsset: true,
+          btnColor: ColorConstants.red,
+          btnTextColor: ColorConstants.white,
+          btnText: StringConstants.report,
+          size14Disc: true,
+          onBtnTap: () {},
+        )
+
+    );
   }
 }
