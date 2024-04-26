@@ -314,7 +314,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               trailingIcon: Icons.add_circle,
               trailingIconSize: 30,
               leadingIcon: AssetConstants.linkedin,
-              isLeadingImageCircular: true,
+              // isLeadingImageProfileImage: true,
               isLeadingImageSVG: true,
               isSocialConnected: true,
               subIconColor: themeCubit.textColor,
@@ -345,7 +345,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               trailingIcon: Icons.check_circle,
               trailingText: StringConstants.connected,
               subTextColor: themeCubit.primaryColor,
-              isLeadingImageCircular: true,
+              // isLeadingImageCircular: true,
               isLeadingImageSVG: true,
               onTap: () {
                 BottomSheetComponent.showBottomSheet(
@@ -373,12 +373,15 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               trailingIcon: Icons.check_circle,
               trailingText: StringConstants.connected,
               subTextColor: themeCubit.primaryColor,
+              // isLeadingImageCircular: true,
+              isLeadingImageSVG: true,
               onTap: () {
                 BottomSheetComponent.showBottomSheet(
                   context,
                   isShowHeader: false,
                   body: const SocialSheetComponent(
                     heading: StringConstants.whatsYourFacebook,
+                    isSvg: true,
                     textfieldHint: StringConstants.facebookHintText,
                     image: AssetConstants.facebook,
                   ),

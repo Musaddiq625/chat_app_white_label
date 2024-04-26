@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late PageController _pageController;
   final List<String> images = [
     "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
-        "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
   ];
   double radius = 22;
 
@@ -203,27 +203,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       )),
       floatingActionButton: connectSend
-          ? ButtonComponent(
-              bgcolor: themeCubit.primaryColor,
-              buttonText: StringConstants.connectSent,
-              textColor: themeCubit.backgroundColor,
-              onPressed: () {
-                _yesShareItBottomSheet();
-                // NavigationUtil.push(
-                //     context, RouteConstants.localsEventScreen);
-              },
+          ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                buttonText: StringConstants.connectSent,
+                textColor: themeCubit.backgroundColor,
+                onPressed: () {
+                  _yesShareItBottomSheet();
+                  // NavigationUtil.push(
+                  //     context, RouteConstants.localsEventScreen);
+                },
+              ),
             )
-          : ButtonComponent(
-              bgcolor: themeCubit.primaryColor,
-              buttonText: StringConstants.connect,
-              textColor: themeCubit.backgroundColor,
-              onPressed: () {
-                setState(() {
-                  connectSend = true;
-                });
-                // NavigationUtil.push(
-                //     context, RouteConstants.localsEventScreen);
-              },
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                buttonText: StringConstants.connect,
+                textColor: themeCubit.backgroundColor,
+                onPressed: () {
+                  setState(() {
+                    connectSend = true;
+                  });
+                  // NavigationUtil.push(
+                  //     context, RouteConstants.localsEventScreen);
+                },
+              ),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -277,7 +283,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       enableDark: false,
                       isImage: true,
                       isCircular: true,
-                      onTap: () {NavigationUtil.pop(context);}),
+                      onTap: () {
+                        NavigationUtil.pop(context);
+                      }),
                 ),
               ),
               _infoWidget(),
@@ -387,17 +395,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             left: i * radius / 1.5,
                             // Adjust the left offset
                             child: ClipOval(
-                              child: ImageComponent(
-                                imgUrl: images[i], width: radius,height: radius,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
-                              )
+                                child: ImageComponent(
+                              imgUrl: images[i],
+                              width: radius,
+                              height: radius,
+                              imgProviderCallback:
+                                  (ImageProvider<Object> imgProvider) {},
+                            )
 
-                              // Image(
-                              //   image: images[i],
-                              //   width: radius,
-                              //   height: radius,
-                              //   fit: BoxFit.cover,
-                              // ),
-                            ),
+                                // Image(
+                                //   image: images[i],
+                                //   width: radius,
+                                //   height: radius,
+                                //   fit: BoxFit.cover,
+                                // ),
+                                ),
                           ),
                       ],
                     ),
@@ -411,9 +423,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     iconColor: Colors.white,
                     circleSize: 38,
                     iconSize: 15,
-                    onTap: (){
+                    onTap: () {
                       ShareBottomSheet.shareBottomSheet(
-                          context, contacts,StringConstants.profile);
+                          context, contacts, StringConstants.profile);
                     },
                   ),
                   const SizedBox(width: 10),
@@ -429,9 +441,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 100,
-              ),
+              SizedBoxConstants.sizedBoxEightyH(),
             ],
           )
         ],
@@ -473,7 +483,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     circleSize: 30,
                   ),
                   SizedBoxConstants.sizedBoxTenW(),
-                  ImageComponent(height: 30,width: 30,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
+                  ImageComponent(
+                    height: 30,
+                    width: 30,
+                    imgUrl: AssetConstants.instagram,
+                    imgProviderCallback: (imageProvider) {},
+                  ),
                   // IconComponent(
                   //   // iconData: Icons.facebook,
                   //   svgDataCheck: false,
@@ -660,18 +675,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             Positioned(
                                               left: i * radius2 / 1.5,
                                               child: ClipOval(
-                                                child:
-
-                                                ImageComponent(
-                                                  imgUrl: images[i], width: radius2,height: radius2,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
-                                                )
-                                                // Image(
-                                                //   image: images[i],
-                                                //   width: radius2,
-                                                //   height: radius2,
-                                                //   fit: BoxFit.cover,
-                                                // ),
-                                              ),
+                                                  child: ImageComponent(
+                                                imgUrl: images[i],
+                                                width: radius2,
+                                                height: radius2,
+                                                imgProviderCallback:
+                                                    (ImageProvider<Object>
+                                                        imgProvider) {},
+                                              )
+                                                  // Image(
+                                                  //   image: images[i],
+                                                  //   width: radius2,
+                                                  //   height: radius2,
+                                                  //   fit: BoxFit.cover,
+                                                  // ),
+                                                  ),
                                             ),
                                         ],
                                       ),
@@ -783,8 +801,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               ...eventList
                   .map(
-                    (tag) =>
-                        Padding(
+                    (tag) => Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Container(
                         decoration: const BoxDecoration(
@@ -820,17 +837,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             Positioned(
                                               left: i * radius2 / 1.5,
                                               child: ClipOval(
-                                                child: ImageComponent(
-                                                  imgUrl: images[i], width: radius2,height: radius2,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
-                                                )
+                                                  child: ImageComponent(
+                                                imgUrl: images[i],
+                                                width: radius2,
+                                                height: radius2,
+                                                imgProviderCallback:
+                                                    (ImageProvider<Object>
+                                                        imgProvider) {},
+                                              )
 
-                                                // Image(
-                                                //   image: images[i],
-                                                //   width: radius2,
-                                                //   height: radius2,
-                                                //   fit: BoxFit.cover,
-                                                // ),
-                                              ),
+                                                  // Image(
+                                                  //   image: images[i],
+                                                  //   width: radius2,
+                                                  //   height: radius2,
+                                                  //   fit: BoxFit.cover,
+                                                  // ),
+                                                  ),
                                             ),
                                         ],
                                       ),

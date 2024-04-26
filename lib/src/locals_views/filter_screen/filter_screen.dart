@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -57,7 +58,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
   String startingDate = DateFormat.yMMMMd().format(DateTime.now());
   String endingDate = DateFormat.yMMMMd().format(DateTime.now());
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
@@ -67,6 +68,23 @@ class _FilterScreenState extends State<FilterScreen> {
     if (picked != null) {
       setState(() {
         startingDate = DateFormat.yMMMMd().format(picked);
+        // startingDate = dayNameTR;
+
+        // startingDate = "${picked.month} ${picked.day} ${picked.year}";
+      });
+    }
+  }
+
+  Future<void> _selectEndDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null) {
+      setState(() {
+        endingDate = DateFormat.yMMMMd().format(picked);
         // startingDate = dayNameTR;
 
         // startingDate = "${picked.month} ${picked.day} ${picked.year}";
@@ -138,7 +156,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   ],
                   listOfOnPressedFunction: [
                     () {
-                      _selectDate(context);
+                      _selectStartDate(context);
                     }
                   ],
                 ),
@@ -165,7 +183,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   ],
                   listOfOnPressedFunction: [
                     () {
-                      _selectDate(context);
+                      _selectEndDate(context);
                     }
                   ],
                 )
@@ -184,7 +202,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   textColor: themeCubit.backgroundColor,
                   isBold: true,
                   onPressed: () {
-                    _pageController.nextPage(
+                    _pageController.previousPage(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.linear,
                     );
@@ -257,9 +275,12 @@ class _FilterScreenState extends State<FilterScreen> {
                               tagAlignment: null,
                               onTap: () {
                                 setState(() {
-                                  availableDates.updateAll((key, value) =>
-                                      false); // remove selection of all
+                                  availableDates
+                                      .updateAll((key, value) => false);
+
+                                  // remove selection of all
                                   availableDates[e] = !availableDates[e]!;
+                                  navigateIfDateChosen(e);
                                 });
                               },
                             ),
@@ -377,13 +398,26 @@ class _FilterScreenState extends State<FilterScreen> {
                 textColor: themeCubit.backgroundColor,
                 isBold: true,
                 onPressed: () {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.linear,
-                  );
+                  NavigationUtil.pop(context);
+                  ToastComponent.showToast(StringConstants.filtersApplied,
+                      context: context);
                 },
                 buttonText: StringConstants.applyFilters)),
       ],
     );
+  }
+
+  void navigateIfDateChosen(String e) {
+    if (e.toLowerCase() == StringConstants.chooseDate.toLowerCase()) {
+      // availableDates.removeWhere((key, value) => key == e);
+      // availableDates.addEntries([
+
+      // ])
+      // change "choose a date" to "custom date"
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      );
+    }
   }
 }

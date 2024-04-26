@@ -82,6 +82,7 @@ class _SocialSheetComponentState extends State<SocialSheetComponent> {
           SizedBoxConstants.sizedBoxTenH(),
           ButtonComponent(
             buttonText: StringConstants.save,
+            textColor: themeCubit.backgroundColor,
             bgcolor: themeCubit.primaryColor,
             onPressed: () {},
           )
