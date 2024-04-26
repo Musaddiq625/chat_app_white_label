@@ -88,8 +88,11 @@ class _InterestScreenState extends State<InterestScreen> {
     return UIScaffold(
       appBar: AppBarComponent(
         "",
-        action: TextComponent(StringConstants.skip,
-            style: FontStylesConstants.style14(color: themeCubit.textColor)),
+        action: GestureDetector(
+          onTap:()=>  NavigationUtil.push(context, RouteConstants.doneScreen),
+          child: TextComponent(StringConstants.skip,
+              style: FontStylesConstants.style14(color: themeCubit.textColor)),
+        ),
       ),
       removeSafeAreaPadding: false,
       bgColor: themeCubit.backgroundColor,

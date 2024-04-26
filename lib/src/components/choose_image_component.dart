@@ -170,7 +170,7 @@ class _ChooseImageComponentState extends State<ChooseImageComponent> {
                 width: MediaQuery.sizeOf(context).width * 0.6,
                 height: 250,
                 decoration: BoxDecoration(
-                  color: ColorConstants.lightGray.withOpacity(0.4),
+                  color: ColorConstants.lightGray.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Column(

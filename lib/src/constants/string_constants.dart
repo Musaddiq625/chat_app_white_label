@@ -198,7 +198,7 @@ class StringConstants {
   static const String verificationCodeSentToEmail =
       "Verification code will be sent on this email.";
   static const String passwordValidation =
-      "Should be 8 character long with 1 number and special character.";
+      "Should be 8 character long with 1 number, 1 upper case and special character.";
   static const String price = "Price";
   static const String share = "Share";
   static const String selectLocation = "Select Location";
@@ -310,7 +310,7 @@ class StringConstants {
   static const String editCover = "Edit Cover";
   static const String editProfile = "Edit Profile";
   static const String characters = "characters";
-  static const String phoneTextFieldHint = "1234 123456";
+  static const String phoneTextFieldHint = "1234123456";
   static const String emailTextFieldHint = "abc@gmail.com";
   static const String email = "Email";
   static const String otpTextFieldHint = '000000';

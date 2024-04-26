@@ -124,7 +124,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
         SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
-              bgcolor: ColorConstants.lightGray.withOpacity(0.2),
+              bgcolor: ColorConstants.lightGray.withOpacity(0.5),
               textColor: ColorConstants.white,
               buttonText: StringConstants.addPhotoFromGallery,
               onPressed: () async {
@@ -153,11 +153,11 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
               bgcolor:
-                  selectedImages.map((e) => e.isNotEmpty).toList().length > 3
-                      ? ColorConstants.lightGray.withOpacity(0.2)
+              selectedImages.where((e) => e.isNotEmpty).toList().length >= 2
+                      ? ColorConstants.lightGray.withOpacity(0.5)
                       : ColorConstants.white,
               textColor:
-                  selectedImages.map((e) => e.isNotEmpty).toList().length > 3
+              selectedImages.where((e) => e.isNotEmpty).toList().length >= 2
                       ? ColorConstants.white
                       : const Color.fromRGBO(0, 0, 0, 1),
               buttonText: StringConstants.takeASelfie,

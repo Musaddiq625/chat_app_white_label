@@ -21,7 +21,6 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class OtpScreen extends StatefulWidget {
   final OtpArg otpArg;
@@ -240,12 +239,16 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void handleOTPResponse() async {
     AppConstants.closeKeyboard();
-
-    await otpCubit.otpUser(
-      widget.otpArg.verificationId,
-      otpController.text,
-      widget.otpArg.phoneNumber,
-    );
+    if (widget.otpArg.type == "setPasswordBeforeNumber") {
+      NavigationUtil.push(context, RouteConstants.passwordScreen,
+          args: "phoneNumber");
+    } else {
+      await otpCubit.otpUser(
+        widget.otpArg.verificationId,
+        otpController.text,
+        widget.otpArg.phoneNumber,
+      );
+    }
   }
 }
 
