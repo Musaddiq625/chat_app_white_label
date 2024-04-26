@@ -20,7 +20,7 @@ class ButtonComponent extends StatelessWidget {
   final bool minimizeVerticalPadding;
   final String? leadingImgPath;
   final BorderRadius? overrideBorderRadius;
-  final bool? overrideFontStyle;
+  final TextStyle? overrideFontStyle;
   final bool isSmallBtn;
   final double? btnHeight;
   final double? btnWidth;
@@ -39,7 +39,7 @@ class ButtonComponent extends StatelessWidget {
     this.minimizeHorizontalPadding = false,
     this.leadingImgPath,
     this.overrideBorderRadius,
-    this.overrideFontStyle = false,
+    this.overrideFontStyle,
     this.minimizeVerticalPadding = false,
     this.isSmallBtn = false,
     this.textColor = ColorConstants.grey1,
@@ -98,10 +98,12 @@ class ButtonComponent extends StatelessWidget {
                   buttonText,
                   maxLines: 2,
                   textAlign: TextAlign.center,
-                  style: FontStylesConstants.style14(
-                    fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                    color: textColor,
-                  ),
+                  style: overrideFontStyle ??
+                      FontStylesConstants.style14(
+                        fontWeight:
+                            isBold ? FontWeight.bold : FontWeight.normal,
+                        color: textColor,
+                      ),
                 ),
               ],
             ),

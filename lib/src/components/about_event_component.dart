@@ -34,7 +34,7 @@ class AboutEventComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double radius = 30;
+    double radius = 25;
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
     return Column(
       children: [
@@ -48,9 +48,9 @@ class AboutEventComponent extends StatelessWidget {
                 ProfileImageComponent(
                   svgImage: true,
                   url: icon,
-                  size: 35,
+                  size: 25,
                 ),
-                SizedBoxConstants.sizedBoxTenW(),
+                SizedBoxConstants.sizedBoxTwentyW(),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

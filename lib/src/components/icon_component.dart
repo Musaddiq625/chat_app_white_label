@@ -103,7 +103,7 @@ class IconComponent extends StatelessWidget {
                 ? Row(
                     children: [
                       SizedBox(
-                        width: 10,
+                        width: 8,
                       ),
                       if (showCustomTextonLeft == true)
                         SizedBox(
@@ -134,17 +134,19 @@ class IconComponent extends StatelessWidget {
                                   height: iconSize,
                                   color: iconColor,
                                 ),
+                      // if (showCustomTextonLeft == false)
+                      //   SizedBox(
+                      //     width: 5,
+                      //   ),
+
                       if (showCustomTextonLeft == false)
-                        SizedBox(
-                          width: 5,
+                        Text(
+                          customIconText!,
+                          style: TextStyle(color: customTextColor),
                         ),
                       if (showCustomTextonLeft == false)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0, left: 5),
-                          child: Text(
-                            customIconText!,
-                            style: TextStyle(color: customTextColor),
-                          ),
+                        SizedBox(
+                          width: 8,
                         ),
                     ],
                   )
