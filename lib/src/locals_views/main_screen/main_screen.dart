@@ -1,15 +1,15 @@
-import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/notification_screen/notification_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../components/bottom_nav_componenet.dart';
-import '../components/ui_scaffold.dart';
-import 'settings_screens/allow_notification_screen.dart';
+import '../../components/bottom_nav_componenet.dart';
+import '../../components/ui_scaffold.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -43,18 +43,26 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-      extendBody: true,
-      removeSafeAreaPadding: false,
-      widget: Stack(children: [
-        IndexedStack(
-          index: _selectedIndex,
-          children: _screens,
+    return BlocListener<MainScreenCubit, MainScreenState>(
+      listener: (context, state) {
+        if (state is UpdateIndexState) {
+          _selectedIndex = state.selectedIndex;
+          setState(() {});
+        }
+      },
+      child: UIScaffold(
+        extendBody: true,
+        removeSafeAreaPadding: false,
+        widget: Stack(children: [
+          IndexedStack(
+            index: _selectedIndex,
+            children: _screens,
+          ),
+        ]),
+        bottomNavigationBar: BottomNavBar(
+          selectedIndex: _selectedIndex,
+          onItemTapped: _onItemTapped,
         ),
-      ]),
-      bottomNavigationBar: BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
       ),
     );
   }
