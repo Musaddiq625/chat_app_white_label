@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
@@ -50,27 +53,55 @@ class _HomeScreenState extends State<HomeScreen> {
     // ... other contacts
   ];
   double radius = 30;
-  final GlobalKey<PopupMenuButtonState<int>> _key = GlobalKey();
 
   late final mainScreenCubit = BlocProvider.of<MainScreenCubit>(context);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: CachedNetworkImageProvider(
-          "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+    return Stack(
+      children: [
+        PageView(
+          scrollDirection: Axis.vertical,
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                image: CachedNetworkImageProvider(
+                  "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                ),
+                fit: BoxFit.cover,
+              )),
+              child: _eventWidget(),
+              // child: UIScaffold(
+              //   bgImage:
+              //       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+              //   widget: _eventWidget(),
+              //   // bottomNavigationBar: Container(child: const BottomNavBar()),
+              // ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                image: CachedNetworkImageProvider(
+                  "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                ),
+                fit: BoxFit.cover,
+              )),
+              child: _eventWidget(),
+              // child: UIScaffold(
+              //   bgImage:
+              //       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+              //   widget: _eventWidget(),
+              //   // bottomNavigationBar: Container(child: const BottomNavBar()),
+              // ),
+            ),
+          ],
         ),
-        fit: BoxFit.cover,
-      )),
-      child: _eventWidget(),
-      // child: UIScaffold(
-      //   bgImage:
-      //       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-      //   widget: _eventWidget(),
-      //   // bottomNavigationBar: Container(child: const BottomNavBar()),
-      // ),
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: _topData(),
+        ),
+      ],
     );
   }
 
@@ -105,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
               takeFullHeightWhenPossible: true,
               isShowHeader: false,
               isScrollable: false,
-              body: FilterScreen(),
+              body: const FilterScreen(),
             );
 
             // NavigationUtil.push(context, RouteConstants.filterScreen);
@@ -127,10 +158,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 80),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          _topData(),
+          // _topData(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -264,12 +295,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget showMore() {
     return PopupMenuButton(
-      offset: Offset(0, -140),
+      offset: const Offset(0, -140),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // Set the border radius
       ),
       color: ColorConstants.darkBackgrounddColor,
-      key: _key,
+      key: ValueKey('key${Random().nextInt(1000)}'),
       icon: IconComponent(
         svgData: AssetConstants.more,
         borderColor: Colors.transparent,
@@ -295,7 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
           value: 'message',
         ),
         PopupMenuItem(
-          padding: EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
           height: 0,
           child: DividerCosntants.divider1,
           value: 'remove_connection',
@@ -316,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
           value: 'remove_connection',
         ),
         PopupMenuItem(
-          padding: EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
           height: 0,
           child: DividerCosntants.divider1,
           value: 'remove_connection',
