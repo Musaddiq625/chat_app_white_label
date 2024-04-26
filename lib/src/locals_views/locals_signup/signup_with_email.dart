@@ -177,7 +177,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 child: ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
 
-                  // textColor: ColorConstants.black,
+                  textColor: ColorConstants.black,
 
                   buttonText: StringConstants.continues,
                   onPressed: isFieldsValidate ? onContinuePressed : null,

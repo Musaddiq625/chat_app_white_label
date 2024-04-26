@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
@@ -44,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          SizedBoxConstants.sizedBoxTwentyH(),
           Image.asset(
             AssetConstants.splash,
           ),
@@ -210,29 +213,36 @@ class _SplashScreenState extends State<SplashScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              width: MediaQuery.sizeOf(context).width * 0.42,
-                              child: GestureDetector(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 9.5),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25),
-                                      color: ColorConstants.black),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.apple,
-                                        color: ColorConstants.white,
-                                      )
-                                    ],
+                            if (Platform.isIOS)
+                              SizedBox(
+                                width: AppConstants.responsiveWidth(context,
+                                    percentage: 40),
+                                child: GestureDetector(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 9.5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(25),
+                                        color: ColorConstants.black),
+                                    child: const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.apple,
+                                          color: ColorConstants.white,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
                             SizedBox(
-                              width: MediaQuery.sizeOf(context).width * 0.42,
+                              width: Platform.isIOS
+                                  ? AppConstants.responsiveWidth(context,
+                                      percentage: 40)
+                                  : AppConstants.responsiveWidth(context,
+                                      percentage: 87),
                               child: GestureDetector(
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(

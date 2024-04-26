@@ -45,7 +45,7 @@ class AppBarComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeCubit = BlocProvider.of<ThemeCubit>(context);
-    iconBgColor ??= themeCubit.darkBackgroundColor;
+    iconBgColor ??= ColorConstants.iconBg;
 
     return Container(
       height: kToolbarHeight +
@@ -70,7 +70,7 @@ class AppBarComponent extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 6.0),
               child: BackButtonComponent(
-                  bgColor: iconBgColor ?? ColorConstants.blackLight,
+                  bgColor: iconBgColor ?? ColorConstants.grey,
                   image: AssetConstants.backArrow,
                   //! pass your asset here
                   enableDark: enableDark,

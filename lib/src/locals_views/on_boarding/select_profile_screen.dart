@@ -1,28 +1,27 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
-import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/constants/font_constants.dart';
+import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
+import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/font_styles.dart';
 
 class SelectProfileImageScreen extends StatefulWidget {
   final List<String> selectedImages;
+
   const SelectProfileImageScreen({super.key, required this.selectedImages});
 
   @override
@@ -116,7 +115,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
               ),
               SizedBoxConstants.sizedBoxForthyH(),
               SizedBox(
-                height: 250,
+                height: 300,
                 child: PageView.builder(
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
@@ -126,18 +125,31 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ClipOval(
-                          // Wrap the Image.network with ClipOval
-                          child: Container(
-                            width: 200, // Set the width of the oval
-                            height: 400, // Set the height of the oval
-                            child: Image.file(
-                              File(file),
-                              fit: BoxFit
-                                  .cover, // Use BoxFit.cover to ensure the image covers the oval area
-                            ),
+                        ClipRRect(
+                          borderRadius:
+                          const BorderRadius.all(Radius.circular(130.0)),
+                          child: ImageComponent(
+                            imgUrl:file,
+                            // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                            width: 250,
+                            height: 700,
+                            imgProviderCallback: (imgProvider) {},
                           ),
                         ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(100),
+                        //     color: ColorConstants.red,
+                        //   ),
+                        //   width: 200, // Set the width of the oval
+                        //   height: 800, // Set the height of the oval
+                        //   // child: Image.file(
+                        //   //   // width: 100, // Set the width of the oval
+                        //   //   // height: 100,
+                        //   //   File(file),
+                        //   //   // fit: BoxFit.cover, // Use BoxFit.cover to ensure the image covers the oval area
+                        //   // ),
+                        // ),
                       ],
                     );
                   },

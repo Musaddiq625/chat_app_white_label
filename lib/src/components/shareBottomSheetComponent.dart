@@ -171,6 +171,7 @@ class ShareBottomSheet {
                   },
                 ),
               ),
+              SizedBoxConstants.sizedBoxTenH()
             ],
           ),
         ));
