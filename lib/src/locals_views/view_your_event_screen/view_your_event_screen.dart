@@ -61,10 +61,10 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
   bool ticketRequired = true;
   final TextEditingController _controller = TextEditingController();
 
-  List<ContactModel> contact = [
-    ContactModel('Jesse E bert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    // Add more contacts as needed
+  final List<ContactModel> contact = [
+    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
+
   ];
 
 // Dummy data for member response details

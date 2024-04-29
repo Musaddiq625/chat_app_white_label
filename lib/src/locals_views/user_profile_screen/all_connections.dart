@@ -34,35 +34,28 @@ class AllConnections extends StatefulWidget {
 
 class _AllConnectionsState extends State<AllConnections> {
   final GlobalKey<PopupMenuButtonState<int>> _key = GlobalKey();
-
+  List<ContactModel> filteredContacts = [];
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer',
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    ContactModel('Jesse Ebert', 'Graphic Designer',
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    ContactModel('Jesse Ebert', 'Graphic Designer',
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    ContactModel('Jesse Ebert', 'Graphic Designer',
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    ContactModel('Jesse Ebert', 'Graphic Designer',
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    ContactModel('Jesse Ebert', 'Graphic Designer',
-        "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    // ... other contacts
+    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
+    ContactModel('Json Ebert', 'Tester', "","03323333333"),
+    ContactModel('Mack', 'Intern', "","03312233445"),
+    ContactModel('Julia', 'Developer', "","88552233644"),
+    ContactModel('Rose', 'Human Resource', "","55366114532"),
+    ContactModel('Frank', 'xyz', "","25651412344"),
+    ContactModel('Taylor', 'Test', "","5511772266"),
   ];
   TextEditingController searchController = TextEditingController();
 
   void _showPopupMenu() {
     _key.currentState?.showButtonMenu();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    filteredContacts = contacts; // Initialize with all contacts
   }
 
   @override
@@ -96,10 +89,15 @@ class _AllConnectionsState extends State<AllConnections> {
               title: "Search",
               hintText: "Search name, postcode..",
               onSearch: (text) {
-                // contacts.retainWhere((element) => element.name
-                //     .toLowerCase()
-                //     .contains(text.toLowerCase().trim()));
-                // widget.viewModel.onSearchStories(text);
+                setState(() {
+                  filteredContacts = contacts
+                      .where((contact) =>
+                  contact.name.toLowerCase().contains(text.toLowerCase()) ||
+                      contact.title.toLowerCase().contains(text.toLowerCase())||
+                      contact.number.toLowerCase().contains(text.toLowerCase())
+                  )
+                      .toList();
+                });
               },
               textEditingController: searchController,
             ),
@@ -109,22 +107,24 @@ class _AllConnectionsState extends State<AllConnections> {
             child: ListView.separated(
               shrinkWrap: true,
               padding: const EdgeInsets.only(bottom: 32),
-              itemCount: contacts.length,
+              itemCount: filteredContacts.length,
               separatorBuilder: (BuildContext context, int index) {
                 return const DividerComponent();
               },
               itemBuilder: (ctx, index) {
+                final contact = filteredContacts[index];
                 return ListTileComponent(
                     leadingText:
-                        contacts[index].name, // StringConstants.linkedIn,
+                        contact.name, // contacts[index].name // StringConstants.linkedIn,
                     removeBorderFromTile: true,
                     customPadding: const EdgeInsets.only(left: 20, right: 16),
                     leadingsubText:
-                        contacts[index].title, // 'Graphic Designer',
+                    contact.title,//contacts[index].title, // 'Graphic Designer',
                     // trailingIcon: Icons.add_circle,
                     trailingIconSize: 30,
-                    leadingIcon: contacts[index]
-                        .url, //  'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
+                    leadingIcon:contact.url,
+                    // contacts[index]
+                    //     .url, //  'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                     leadingIconHeight: 40,
                     leadingIconWidth: 40,
                     isLeadingImageProfileImage: true,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/app_constants.dart';
 import '../constants/color_constants.dart';
 import '../constants/asset_constants.dart';
 import 'icon_component.dart';
@@ -35,6 +36,16 @@ class SearchTextField extends StatelessWidget {
           onSubmitted: onSearch,
           controller: textEditingController,
           textInputAction: TextInputAction.search,
+          onChanged: (text) {
+            if (text.length >= 3) {
+              onSearch!(text);
+            } else {
+              onSearch!('');
+              // Display the entire list if the search text is less than 3 characters
+              // This part depends on how you manage the state of your filtered list
+              // For example, you might call a function to reset the filtered list to the original list
+            }
+          },
           style: TextStyle(
               color: ColorConstants.white,
           ),
@@ -43,7 +54,10 @@ class SearchTextField extends StatelessWidget {
               contentPadding:
                   EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
               suffixIcon: GestureDetector(
-                onTap: () => onSearch!(textEditingController?.text ?? ''),
+                onTap: () {
+                  AppConstants.closeKeyboard();
+                  onSearch!(textEditingController?.text ?? '');},
+
                 child: Padding(
                     padding: EdgeInsets.only(right: 20, top: 8),
                     child: IconComponent(

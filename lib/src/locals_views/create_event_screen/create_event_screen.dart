@@ -62,15 +62,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<String> values = ['Public', 'Private'];
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    // ... other contacts
+    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
+    ContactModel('Json Ebert', 'Tester', "","03323333333"),
+    ContactModel('Mack', 'Intern', "","03312233445"),
+    ContactModel('Julia', 'Developer', "","88552233644"),
+    ContactModel('Rose', 'Human Resource', "","55366114532"),
+    ContactModel('Frank', 'xyz', "","25651412344"),
+    ContactModel('Taylor', 'Test', "","5511772266"),
   ];
 
   // final List<Map<String, dynamic>> contacts = [
@@ -984,7 +983,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
   _createEventBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: true,
+        takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: SuccessShareBottomSheet(
             contacts: contacts,

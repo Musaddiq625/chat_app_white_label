@@ -261,21 +261,27 @@ class _SplashScreenState extends State<SplashScreen> {
                                       //     AssetConstants.google,
                                       //   ),
                                       // ),
-                                      if(!Platform.isIOS)
-                                      ImageComponent(imgUrl: AssetConstants.google,isAsset: true, imgProviderCallback: (imgProviderCallback){
-
-                                      }),
-                                      if(Platform.isIOS)
-                                      SvgPicture.asset(
-                                        height: 20,
-                                        AssetConstants.google,
-                                        colorFilter: ColorFilter.mode(
-                                            themeCubit.backgroundColor,
-                                            BlendMode.srcIn),
-                                      ),
+                                      if (!Platform.isIOS)
+                                        ImageComponent(
+                                            imgUrl: AssetConstants.google,
+                                            isAsset: true,
+                                            imgProviderCallback:
+                                                (imgProviderCallback) {}),
+                                      if (Platform.isIOS)
+                                        SvgPicture.asset(
+                                          height: 20,
+                                          AssetConstants.google,
+                                          colorFilter: ColorFilter.mode(
+                                              themeCubit.backgroundColor,
+                                              BlendMode.srcIn),
+                                        ),
                                       SizedBoxConstants.sizedBoxTenW(),
-                                      if(!Platform.isIOS)
-                                      TextComponent(StringConstants.continueWithGoogle,style: FontStylesConstants.style14(fontWeight: FontWeight.bold),)
+                                      if (!Platform.isIOS)
+                                        TextComponent(
+                                          StringConstants.continueWithGoogle,
+                                          style: FontStylesConstants.style14(
+                                              fontWeight: FontWeight.bold),
+                                        )
                                       // Icon(
                                       //   Icons.svg,
                                       //   color: ColorConstants.black,

@@ -34,8 +34,14 @@ class SuccessShareBottomSheet extends StatefulWidget {
 }
 
 class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
+  List<ContactModel> filteredContacts = [];
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   TextEditingController searchControllerConnections = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    filteredContacts = widget.contacts; // Initialize with all contacts
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -202,20 +208,30 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
               title: "Search",
               hintText: "Search name, postcode..",
               onSearch: (text) {
-                // widget.viewModel.onSearchStories(text);
+                setState(() {
+                  filteredContacts = widget.contacts
+                      .where((contact) =>
+                  contact.name.toLowerCase().contains(text.toLowerCase()) ||
+                      contact.title.toLowerCase().contains(text.toLowerCase())||
+                      contact.number.toLowerCase().contains(text.toLowerCase())
+                  )
+                      .toList();
+                });
               },
               textEditingController: searchControllerConnections,
             ),
           ),
           Expanded(
             child: ListView.builder(
+              // physics: BouncingScrollPhysics(),
               shrinkWrap: true,
-              itemCount: widget.contacts.length,
+              itemCount: filteredContacts.length,
               itemBuilder: (ctx, index) {
+                final contact = filteredContacts[index];
                 return ContactCard(
-                  name: widget.contacts[index].name,
-                  title: widget.contacts[index].title,
-                  url: widget.contacts[index].url,
+                  name: contact.name,
+                  title: contact.title,
+                  url: contact.url,
                   // contact: contacts[index],
                   onShareTap: () {
                     Navigator.pop(context);

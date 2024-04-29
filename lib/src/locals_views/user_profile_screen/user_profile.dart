@@ -329,7 +329,7 @@ class _UserProfileState extends State<UserProfile> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    NavigationUtil.push(context, RouteConstants.allEventScreen);
+                    NavigationUtil.push(context, RouteConstants.allConnectionScreen);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

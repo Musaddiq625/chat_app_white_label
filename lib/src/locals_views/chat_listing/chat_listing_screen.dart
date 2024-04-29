@@ -29,19 +29,41 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
   int _selectedIndex = 0;
   List selectedContacts = [];
   TextEditingController searchController = TextEditingController();
+  List<DummyContacts> filteredContacts = [];
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
-  final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    // ... other contacts
+  List<DummyContacts> dummyContactList = [
+    DummyContacts(name: 'Jesse Ebert', designation: 'Graphic Designer'),
+    DummyContacts(
+        name: 'Ann Chovey', designation: 'Infrastructure Project Manager'),
+    DummyContacts(name: 'Luz Stamm', designation: 'Accountant'),
+    DummyContacts(name: 'Accountant', designation: 'Digital Marketing'),
+    DummyContacts(name: 'Digital Marketing', designation: 'Graphic Designer'),
+    DummyContacts(name: 'Graphic Designer', designation: 'Graphic Designer'),
+    DummyContacts(name: 'Jesse Ebert', designation: 'Graphic Designer'),
+    DummyContacts(
+        name: 'Ann Chovey', designation: 'Infrastructure Project Manager'),
+    DummyContacts(name: 'Luz Stamm', designation: 'Accountant'),
+    DummyContacts(name: 'Accountant', designation: 'Digital Marketing'),
+    DummyContacts(name: 'Digital Marketing', designation: 'Graphic Designer'),
+    DummyContacts(name: 'Graphic Designer', designation: 'Graphic Designer')
   ];
+  final List<ContactModel> contacts = [
+    ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
+    ContactModel('Json Ebert', 'Tester', "", "03323333333"),
+    ContactModel('Mack', 'Intern', "", "03312233445"),
+    ContactModel('Julia', 'Developer', "", "88552233644"),
+    ContactModel('Rose', 'Human Resource', "", "55366114532"),
+    ContactModel('Frank', 'xyz', "", "25651412344"),
+    ContactModel('Taylor', 'Test', "", "5511772266"),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredContacts = dummyContactList; // Initialize with all contacts
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +151,17 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                     title: "Search",
                     hintText: "Search name, postcode..",
                     onSearch: (text) {
-                      // widget.viewModel.onSearchStories(text);
+                      setState(() {
+                        filteredContacts = dummyContactList
+                            .where((contact) =>
+                                contact.name
+                                    .toLowerCase()
+                                    .contains(text.toLowerCase()) ||
+                                contact.designation
+                                    .toLowerCase()
+                                    .contains(text.toLowerCase()))
+                            .toList();
+                      });
                     },
                     textEditingController: searchController,
                     filledColor: themeCubit.darkBackgroundColor,
@@ -165,11 +197,18 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
           Expanded(
             child: dummyContactList.isNotEmpty
                 ? ListView.builder(
-                    itemCount: 16,
-                    itemBuilder: (context, index) => const ChatTileComponent())
+                    itemCount: filteredContacts.length,
+                    itemBuilder: (context, index) {
+                      final contact = filteredContacts[index];
+                      return ChatTileComponent(
+                        name: contact.name,
+                        detail: contact.designation,
+                      );
+                    })
                 : Container(
-              width: AppConstants.responsiveWidth(context,percentage: 80),
-                  child: Column(
+                    width:
+                        AppConstants.responsiveWidth(context, percentage: 80),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
@@ -197,14 +236,15 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                         SizedBoxConstants.sizedBoxTwentyH(),
                         ButtonComponent(
                             // isSmallBtn: true,
-                            btnWidth: AppConstants.responsiveWidth(context,percentage: 40),
+                            btnWidth: AppConstants.responsiveWidth(context,
+                                percentage: 40),
                             buttonText: StringConstants.startChat,
                             bgcolor: themeCubit.primaryColor,
                             textColor: themeCubit.backgroundColor,
                             onPressed: () {})
                       ],
                     ),
-                ),
+                  ),
           ),
           SizedBoxConstants.sizedBoxThirtyH()
         ],
@@ -214,16 +254,15 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
 
   _showCreateChatBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false, isShowHeader: false,
-        body: StatefulBuilder(builder: (context, setState) {
-      return UserListComponent(
-          headingName: StringConstants.createChat,
-          dummyContactList: contacts,
-          selectedContacts: selectedContacts,
-          subtitle: true,
-          btnName: StringConstants.startChatting,
-          onBtnTap: () {});
-    }));
+        takeFullHeightWhenPossible: false,
+        isShowHeader: false,
+        body: UserListComponent(
+            headingName: StringConstants.createChat,
+            dummyContactList: contacts,
+            selectedContacts: selectedContacts,
+            subtitle: true,
+            btnName: StringConstants.startChatting,
+            onBtnTap: () {}));
   }
 }
 
@@ -234,19 +273,3 @@ class DummyContacts {
   DummyContacts({required this.name, required this.designation});
 }
 
-List<DummyContacts> dummyContactList = [
-  DummyContacts(name: 'Jesse Ebert', designation: 'Graphic Designer'),
-  DummyContacts(
-      name: 'Ann Chovey', designation: 'Infrastructure Project Manager'),
-  DummyContacts(name: 'Luz Stamm', designation: 'Accountant'),
-  DummyContacts(name: 'Accountant', designation: 'Digital Marketing'),
-  DummyContacts(name: 'Digital Marketing', designation: 'Graphic Designer'),
-  DummyContacts(name: 'Graphic Designer', designation: 'Graphic Designer'),
-  DummyContacts(name: 'Jesse Ebert', designation: 'Graphic Designer'),
-  DummyContacts(
-      name: 'Ann Chovey', designation: 'Infrastructure Project Manager'),
-  DummyContacts(name: 'Luz Stamm', designation: 'Accountant'),
-  DummyContacts(name: 'Accountant', designation: 'Digital Marketing'),
-  DummyContacts(name: 'Digital Marketing', designation: 'Graphic Designer'),
-  DummyContacts(name: 'Graphic Designer', designation: 'Graphic Designer')
-];

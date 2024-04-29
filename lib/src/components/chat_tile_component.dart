@@ -2,6 +2,7 @@ import 'package:chat_app_white_label/src/components/profile_image_component.dart
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -9,7 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatTileComponent extends StatefulWidget {
-  const ChatTileComponent({super.key});
+  String name;
+  String detail;
+
+  ChatTileComponent({super.key, required this.name,required this.detail});
 
   @override
   State<ChatTileComponent> createState() => _ChatTileComponentState();
@@ -32,7 +36,7 @@ class _ChatTileComponentState extends State<ChatTileComponent> {
           url: null,
         ),
         title: Text(
-          'Manchester Locals',
+          widget.name,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
               fontSize: 15,
@@ -46,7 +50,7 @@ class _ChatTileComponentState extends State<ChatTileComponent> {
             children: [
               Expanded(
                 child: TextComponent(
-                  'Davia: Looking forward to it  !!!',
+                 'Davia: ${widget.detail}', //'Davia: Looking forward to it  !!!',
                   // overflow: TextOverflow.ellipsis,
                   // maxLines: 1,
                   // softWrap: false,

@@ -34,21 +34,14 @@ class _EarningScreenState extends State<EarningScreen> {
   bool isFieldsValidate = false;
   final TextEditingController _amountController = TextEditingController();
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    ContactModel('Jesse Ebert', 'Graphic Designer', ""),
-    // ... other contacts
+    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
+    ContactModel('Json Ebert', 'Tester', "","03323333333"),
+    ContactModel('Mack', 'Intern', "","03312233445"),
+    ContactModel('Julia', 'Developer', "","88552233644"),
+    ContactModel('Rose', 'Human Resource', "","55366114532"),
+    ContactModel('Frank', 'xyz', "","25651412344"),
+    ContactModel('Taylor', 'Test', "","5511772266"),
   ];
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
