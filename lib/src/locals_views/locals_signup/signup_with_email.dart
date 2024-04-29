@@ -193,13 +193,14 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
 
   void onContinuePressed() {
     if (_formKey.currentState!.validate()) {
-      if (widget.routeType == "number") {
-        NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-            args: OtpArg("", "", "", "setPasswordAfterNumber"));
-      } else {
-        NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-            args: OtpArg("", "", "", "setPasswordBeforeNumber"));
-      }
+      signupCubit.loginUser(_emailcontroller.text.trim(), "Test@123");
+      // if (widget.routeType == "number") {
+      //   NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+      //       args: OtpArg("", "", "", "setPasswordAfterNumber"));
+      // } else {
+      //   NavigationUtil.push(context, RouteConstants.otpScreenLocal,
+      //       args: OtpArg("", "", "", "setPasswordBeforeNumber"));
+      // }
     }
   }
 

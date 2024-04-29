@@ -208,8 +208,8 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
       //       "number"),
       // );
       await signUpCubit.loginUser(
-        (_countryCodeController.text + _phoneNumbercontroller.text).trim(),
-      );
+          (_countryCodeController.text + _phoneNumbercontroller.text).trim(),
+          "Test@123");
     }
   }
 
