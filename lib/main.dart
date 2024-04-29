@@ -5,10 +5,12 @@ import 'package:chat_app_white_label/src/locals_views/locals_signup/cubit/signup
 import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
+import 'package:chat_app_white_label/src/network/dio_client_network.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -54,6 +56,8 @@ void main() async {
 
 Future<void> _initRepos() async {
   getIt.registerSingleton(FirebaseService());
+  getIt.registerSingleton(DioClientNetwork());
+  getIt.registerSingleton(SharedPreferencesUtil());
 }
 
 class MyApp extends StatelessWidget {

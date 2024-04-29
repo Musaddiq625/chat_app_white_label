@@ -21,6 +21,7 @@ class DioClientNetwork {
       dio.options.headers['Authorization'] = 'Bearer $token';
     }
     dio.interceptors.clear();
+
     dio.interceptors.add(
       LogInterceptor(
         responseBody: true,

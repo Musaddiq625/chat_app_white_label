@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/network/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -12,43 +14,12 @@ class SignUpCubit extends Cubit<SignUpState> {
   SignUpCubit() : super(SignUpInitial());
   FirebaseService firebaseService = getIt<FirebaseService>();
 
-  Future<void> loginUser(String phoneNumber) async {
+  Future<void> loginUser(String identifier, String password) async {
     emit(SignUpLoadingState());
 
     try {
-      print("Phone1 ");
-      LoggerUtil.logs(phoneNumber);
-      await firebaseService.auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          print("Phone2 $credential");
-          try {
-            // Sign in with the credential
-            // final UserCredential userCredential = await firebaseService.auth.signInWithCredential(credential);
-            // if (userCredential.user != null) {
-            //   emit(LoginSuccessSignInState());
-            // } else {
-            //   emit(LoginFailureState('Unable to sign in with the provided credential.'));
-            // }
-          } catch (e) {
-            print("Phone2 $e credential $credential");
-            emit(SignUpFailureState(e.toString()));
-          }
-        },
-        verificationFailed: (FirebaseAuthException error) {
-          emit(SignUpFailureState(error.toString()));
-          LoggerUtil.logs("Verification Error: $error");
-          print("Phone3 $error ");
-        },
-        codeSent: (String verificationId, int? forceResendingToken) {
-          print("Phone4 $verificationId");
-          emit(SignUpSignUpState(verificationId));
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          print("Phone5 $verificationId");
-          // emit(LoginCodeAutoRetrievalTimeoutState(verificationId));
-        },
-      );
+      var resp = await AuthRepository.login(identifier, password);
+      LoggerUtil.logs(resp);
     } catch (error) {
       emit(SignUpFailureState(error.toString()));
       LoggerUtil.logs("General Error: $error");
