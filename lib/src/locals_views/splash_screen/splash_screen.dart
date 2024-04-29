@@ -66,6 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               TextComponent(
                 "Attend Events.",
+                maxLines: 5,
                 style: TextStyle(
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
@@ -74,6 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               TextComponent(
                 "Connect with People.",
+                maxLines: 5,
                 style: TextStyle(
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
@@ -86,6 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               TextComponent(
                 "It all start here.",
+                maxLines: 5,
                 style:
                     TextStyle(fontSize: 15, color: themeCubit.backgroundColor),
               ),
