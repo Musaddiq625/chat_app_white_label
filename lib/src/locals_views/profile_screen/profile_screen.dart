@@ -441,6 +441,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
   Widget showMore() {
     return PopupMenuButton(
       offset: const Offset(0, -100),
@@ -458,7 +459,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         iconSize: 6,
       ),
       itemBuilder: (BuildContext context) => [
-
         PopupMenuItem(
           height: 0,
           child: Row(children: [
@@ -507,13 +507,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
+
   _showBlockBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: CommonBottomSheetComponent(
-          title:"Block Alyna",
-          description:StringConstants.blockDetail,
+          title: "Block Alyna",
+          description: StringConstants.blockDetail,
           image: AssetConstants.warning,
           isImageAsset: true,
           btnColor: ColorConstants.red,
@@ -521,9 +522,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           btnText: StringConstants.block,
           size14Disc: true,
           onBtnTap: () {},
-        )
-
-    );
+        ));
   }
 
   _showReportBottomSheet() {
@@ -540,9 +539,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           btnText: StringConstants.report,
           size14Disc: true,
           onBtnTap: () {},
-        )
-
-    );
+        ));
   }
 
   Widget _aboutMe() {

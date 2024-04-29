@@ -26,15 +26,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class JoinBottomSheet {
-
   static navigateToBack(BuildContext context) async {
     Future.delayed(const Duration(milliseconds: 1800), () async {
       NavigationUtil.pop(context);
     });
   }
 
-
-  static showJoinBottomSheet(BuildContext context,TextEditingController messageController,String name,String detail,String messageFor,String messageForImage,{
+  static showJoinBottomSheet(
+    BuildContext context,
+    TextEditingController messageController,
+    String name,
+    String detail,
+    String messageFor,
+    String messageForImage, {
     List<String>? questions,
   }) {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
@@ -78,7 +82,7 @@ class JoinBottomSheet {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          flex:3,
+                          flex: 3,
                           child: TextComponent(name,
                               maxLines: 3,
                               style: FontStylesConstants.style28(
@@ -98,12 +102,10 @@ class JoinBottomSheet {
                   ],
                 ),
               ),
-              if(questions != null)
+              if (questions != null) DividerCosntants.divider1,
+              if (questions != null) questionsFromCreatorComponent(questions),
               DividerCosntants.divider1,
-              if(questions != null)
-              questionsFromCreatorComponent(questions),
-              DividerCosntants.divider1,
-              messageComponent(messageController,messageFor,messageForImage),
+              messageComponent(messageController, messageFor, messageForImage),
               DividerCosntants.divider1,
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
@@ -170,9 +172,9 @@ class JoinBottomSheet {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20.0,right: 20,bottom: 10 ),
+                padding:
+                    const EdgeInsets.only(left: 20.0, right: 20, bottom: 10),
                 child: ButtonComponent(
-
                   buttonText: StringConstants.join,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
@@ -200,9 +202,10 @@ class JoinBottomSheet {
         ));
   }
 
-  static messageComponent(TextEditingController controller,String messageFor, String messageForImage) {
+  static messageComponent(TextEditingController controller, String messageFor,
+      String messageForImage) {
     return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20,top: 10),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
       child: Column(
         children: [
           Row(
@@ -214,14 +217,15 @@ class JoinBottomSheet {
               SizedBoxConstants.sizedBoxTenW(),
               TextComponent(
                 "Message for ${messageFor}",
-                style :FontStylesConstants.style18(color: ColorConstants.primaryColor),
+                style: FontStylesConstants.style18(
+                    color: ColorConstants.primaryColor),
               ),
             ],
           ),
           SizedBoxConstants.sizedBoxTenH(),
           TextComponent(
             StringConstants.doYouHaveQuestion,
-            style :FontStylesConstants.style14(color: ColorConstants.white),
+            style: FontStylesConstants.style14(color: ColorConstants.white),
             maxLines: 4,
           ),
           SizedBoxConstants.sizedBoxTenH(),
@@ -240,7 +244,6 @@ class JoinBottomSheet {
     );
   }
 
-
   static questionsFromCreatorComponent(List<String> questions) {
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20),
@@ -249,8 +252,8 @@ class JoinBottomSheet {
         children: [
           TextComponent(
             StringConstants.questionsFromCreator,
-            style: FontStylesConstants.style18(
-                color: ColorConstants.primaryColor),
+            style:
+                FontStylesConstants.style18(color: ColorConstants.primaryColor),
           ),
           SizedBoxConstants.sizedBoxTenH(),
           Column(
@@ -278,7 +281,6 @@ class JoinBottomSheet {
     );
   }
 
-
   void _sendMessage(TextEditingController controller) {
     // if (controller.text.isNotEmpty) {
     //   setState(() {
@@ -287,8 +289,4 @@ class JoinBottomSheet {
     //   });
     // }
   }
-
-
 }
-
-

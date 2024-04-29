@@ -1,4 +1,4 @@
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 
 class ContactModel {
   ContactModel({

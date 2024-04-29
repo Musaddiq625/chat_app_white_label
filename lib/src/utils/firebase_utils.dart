@@ -4,7 +4,7 @@ import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/models/user_detail_model.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -18,8 +18,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import '../models/OnBoardingNewModel.dart';
-
-
 
 class FirebaseUtils {
   static FirebaseService firebaseService = getIt<FirebaseService>();
@@ -86,37 +84,34 @@ class FirebaseUtils {
     LoggerUtil.logs('Created User');
   }
 
-
-  static Future<void> updateUserStepOne(UserDetailModel? userDetailModel) async {
+  static Future<void> updateUserStepOne(
+      UserDetailModel? userDetailModel) async {
     final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
       'first_name': userDetailModel?.firstName,
       'last_name': userDetailModel?.lastName,
-      'user_images':userDetailModel?.userPhotos,
-      'profile_image':userDetailModel?.profileImage,
-    },SetOptions(merge: true));
+      'user_images': userDetailModel?.userPhotos,
+      'profile_image': userDetailModel?.profileImage,
+    }, SetOptions(merge: true));
     LoggerUtil.logs('Updated User Step 1');
   }
 
-
   static Future<void> updateUserStepTwo(
       // String? dob,String? aboutMe,String? gender,String? bio,MoreAboutMeModel? moreAboutMe,SocialLinkModel? socialLinkModel,List<String>?  hobbies,List<String>? creativity
-      UserDetailModel? userDetailModel
-      ) async {
+      UserDetailModel? userDetailModel) async {
     final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
-      'date_of_birth': userDetailModel?.dateOfBirth ,
+      'date_of_birth': userDetailModel?.dateOfBirth,
       'about_me': userDetailModel?.aboutMe,
       'gender': userDetailModel?.gender,
-      'bio':userDetailModel?.bio,
+      'bio': userDetailModel?.bio,
       'social_links': userDetailModel?.socialLink?.toJson(),
       'more_about_me': userDetailModel?.moreAbout?.toJson(),
-      'hobbies':userDetailModel?.hobbies,
-      'creativity':userDetailModel?.creativity,
-    },SetOptions(merge: true));
+      'hobbies': userDetailModel?.hobbies,
+      'creativity': userDetailModel?.creativity,
+    }, SetOptions(merge: true));
     LoggerUtil.logs('Updated User Step 2');
   }
-
 
   static Future<void> createCalls(String callId, String callerNumber,
       List<String> receiverNumber, String type) async {
@@ -229,7 +224,7 @@ class FirebaseUtils {
       'about': about,
       'is_profile_complete': true,
     });
-    user?.name = name;
+    user?.firstName = name;
     user?.image = imageUrl;
     user?.about = about;
     user?.isProfileComplete = true;

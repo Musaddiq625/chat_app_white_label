@@ -6,7 +6,7 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class ContactTileComponent extends StatefulWidget {
       required this.title,
       required this.subtitle,
       required this.isSelected,
-        this.showDivider = true,
+      this.showDivider = true,
       required this.onTap});
 
   @override
@@ -45,15 +45,19 @@ class _ContactTileComponentState extends State<ContactTileComponent> {
           children: [
             Container(
               // color: ColorConstants.red,
-              padding: const EdgeInsets.only(left: 5,right: 10,),
+              padding: const EdgeInsets.only(
+                left: 5,
+                right: 10,
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                      width: AppConstants.responsiveWidth(context, percentage: 80),
+                      width:
+                          AppConstants.responsiveWidth(context, percentage: 80),
                       // color: ColorConstants.red,
-                      child:  ContactCard(
+                      child: ContactCard(
                         name: widget.title,
                         title: widget.subtitle,
                         url: "",
@@ -109,8 +113,7 @@ class _ContactTileComponentState extends State<ContactTileComponent> {
                 ],
               ),
             ),
-            if(widget.showDivider)
-            DividerCosntants.divider1,
+            if (widget.showDivider) DividerCosntants.divider1,
             // SizedBoxConstants.sizedBoxThirtyH()
           ],
         ),
@@ -118,5 +121,3 @@ class _ContactTileComponentState extends State<ContactTileComponent> {
     );
   }
 }
-
-

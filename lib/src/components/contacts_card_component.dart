@@ -32,7 +32,7 @@ class ContactCard extends StatelessWidget {
 
   const ContactCard(
       {Key? key,
-       this.contact,
+      this.contact,
       this.iconGradient = true,
       this.icon = AssetConstants.share,
       this.iconColor = ColorConstants.black,
@@ -64,7 +64,10 @@ class ContactCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ProfileImageComponent(url: url,size: imageSize,),
+                ProfileImageComponent(
+                  url: url,
+                  size: imageSize,
+                ),
                 SizedBoxConstants.sizedBoxTenW(),
                 Expanded(
                   child: Column(
@@ -79,8 +82,7 @@ class ContactCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (showShareIcon)
-                const Spacer(),
+                if (showShareIcon) const Spacer(),
                 if (showShareIcon)
                   Container(
                     decoration: BoxDecoration(
@@ -146,8 +148,7 @@ class ContactCard extends StatelessWidget {
             ),
           ),
         ),
-        if(showDivider)
-        const Divider(thickness: 0.1),
+        if (showDivider) const Divider(thickness: 0.1),
       ],
     );
   }

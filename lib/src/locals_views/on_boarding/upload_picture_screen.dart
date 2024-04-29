@@ -153,11 +153,11 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
           width: MediaQuery.sizeOf(context).width * 0.9,
           child: ButtonComponent(
               bgcolor:
-              selectedImages.where((e) => e.isNotEmpty).toList().length >= 2
+                  selectedImages.where((e) => e.isNotEmpty).toList().length >= 2
                       ? ColorConstants.lightGray.withOpacity(0.5)
                       : ColorConstants.white,
               textColor:
-              selectedImages.where((e) => e.isNotEmpty).toList().length >= 2
+                  selectedImages.where((e) => e.isNotEmpty).toList().length >= 2
                       ? ColorConstants.white
                       : const Color.fromRGBO(0, 0, 0, 1),
               buttonText: StringConstants.takeASelfie,
@@ -200,7 +200,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 selectedImages.removeWhere((element) => element.isEmpty);
 
                 NavigationUtil.push(context, RouteConstants.selectProfileScreen,
-                    args:selectedImages );
+                    args: selectedImages);
               },
             ),
           ),

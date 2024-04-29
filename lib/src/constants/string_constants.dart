@@ -87,6 +87,7 @@ class StringConstants {
   static const String connect = "Connect";
   static const String connected = "Connected";
   static const String connections = "Connections";
+  static const String loginExpired = "Login Expired";
   static const String settings = "Settings";
   static const String connectSent = "Connect Sent";
   static const String saveEvent = "Save Event";

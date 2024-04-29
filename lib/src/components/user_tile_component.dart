@@ -1,7 +1,7 @@
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +43,7 @@ class UserTileComponent extends StatelessWidget {
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 2),
           child: Text(
-            chatUser?.name ?? '',
+            chatUser?.firstName ?? '',
             overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
           ),

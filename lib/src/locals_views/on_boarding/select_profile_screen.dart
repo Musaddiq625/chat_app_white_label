@@ -127,9 +127,9 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                       children: [
                         ClipRRect(
                           borderRadius:
-                          const BorderRadius.all(Radius.circular(130.0)),
+                              const BorderRadius.all(Radius.circular(130.0)),
                           child: ImageComponent(
-                            imgUrl:file,
+                            imgUrl: file,
                             // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
                             width: 250,
                             height: 700,

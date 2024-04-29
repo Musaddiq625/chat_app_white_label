@@ -2,7 +2,7 @@ import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -172,7 +172,7 @@ class ChatUtils {
                 "chatId": chatId,
                 "chatType": type.name,
                 "chatMessage": sendingMessage,
-                "senderName": FirebaseUtils.user?.name ?? '',
+                "senderName": FirebaseUtils.user?.firstName ?? '',
               }));
     } catch (e) {
       LoggerUtil.logs(e.toString());

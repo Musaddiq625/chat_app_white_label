@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen>
     tabController = TabController(vsync: this, length: 3);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await appSettingCubit.initGetLocalContacts(context);
-       PermissionUtils.requestCameraAndMicPermission();
+      PermissionUtils.requestCameraAndMicPermission();
     });
     SystemChannels.lifecycle.setMessageHandler((message) async {
       LoggerUtil.logs('message $message');
@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen>
           automaticallyImplyLeading: false,
           backgroundColor: ColorConstants.greenMain,
           title: Text(
-          "WhatsApp",  // FirebaseUtils.user?.name ?? "",
+            "WhatsApp", // FirebaseUtils.user?.name ?? "",
             style: const TextStyle(
               color: Colors.white,
             ),
@@ -81,11 +81,11 @@ class _HomeScreenState extends State<HomeScreen>
                 if (result == 'logout') {
                   FirebaseUtils.logOut(context);
                 } else if (result == 'editProfile') {
-                  NavigationUtil.push(context, RouteConstants.editProfileScreen, args: true);
+                  NavigationUtil.push(context, RouteConstants.editProfileScreen,
+                      args: true);
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-
                 const PopupMenuItem<String>(
                   value: 'editProfile',
                   child: Text('Edit Profile'),
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen>
               ],
               icon: const Icon(
                 Icons.more_vert,
-                size:   28,
+                size: 28,
                 color: Colors.white,
               ),
               color: ColorConstants.white,

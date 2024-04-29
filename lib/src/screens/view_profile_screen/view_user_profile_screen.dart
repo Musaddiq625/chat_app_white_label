@@ -1,6 +1,6 @@
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
           //app bar
           appBar: AppBar(
               backgroundColor: ColorConstants.greenMain,
-              title: Text(widget.user.name ?? '',
+              title: Text(widget.user.firstName ?? '',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -62,7 +62,7 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
                       ),
-                      Text(widget.user.name ?? '',
+                      Text(widget.user.firstName ?? '',
                           style: const TextStyle(
                               color: Colors.black87, fontSize: 16)),
                     ],

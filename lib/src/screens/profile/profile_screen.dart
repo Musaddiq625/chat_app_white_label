@@ -32,7 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     if (widget.isEdit == true) {
-      nameController.text = FirebaseUtils.user?.name ?? '';
+      nameController.text = FirebaseUtils.user?.firstName ?? '';
       aboutController.text = FirebaseUtils.user?.about ?? '';
       imageUrl = FirebaseUtils.user?.image;
     }
@@ -73,7 +73,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? FileImage(selectedImage!)
                               : widget.isEdit == true && imageUrl != null
                                   ? NetworkImage(imageUrl ?? '')
-                                  : const AssetImage(AssetConstants.profileDummy))
+                                  : const AssetImage(
+                                      AssetConstants.profileDummy))
                           as ImageProvider,
                     ),
                     Positioned(

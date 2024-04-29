@@ -17,17 +17,16 @@ class CallTileComponent extends StatelessWidget {
       required this.name,
       required this.image,
       required this.videocall,
-       this.isMissed,
-       this.inComing,
+      this.isMissed,
+      this.inComing,
       required this.time});
 
   @override
   Widget build(BuildContext context) {
-
     String formatRelativeTime(String pastDateString) {
       // Parse the string into a DateTime object
-      int unixTimestamp = int.tryParse(pastDateString) ??  0;
-      if (unixTimestamp ==  0) {
+      int unixTimestamp = int.tryParse(pastDateString) ?? 0;
+      if (unixTimestamp == 0) {
         return 'Invalid date';
       }
 
@@ -37,22 +36,23 @@ class CallTileComponent extends StatelessWidget {
       final now = DateTime.now();
       final difference = now.difference(pastDate);
 
-      if (difference.inSeconds <=  60) {
+      if (difference.inSeconds <= 60) {
         return 'just now';
-      } else if (difference.inMinutes <=  60) {
+      } else if (difference.inMinutes <= 60) {
         return '${difference.inMinutes} minutes ago';
-      } else if (difference.inHours <=  24) {
+      } else if (difference.inHours <= 24) {
         return '${difference.inHours} hours ago';
-      } else if (difference.inDays <=  7) {
+      } else if (difference.inDays <= 7) {
         return '${difference.inDays} days ago';
-      } else if (difference.inDays <=  30) {
+      } else if (difference.inDays <= 30) {
         return 'about a month ago';
-      } else if (difference.inDays <=  365) {
-        return '${difference.inDays ~/  30} months ago';
+      } else if (difference.inDays <= 365) {
+        return '${difference.inDays ~/ 30} months ago';
       } else {
         return 'over a year ago';
       }
     }
+
     return ListTile(
       leading: image != ''
           ? CircleAvatar(radius: 25, backgroundImage: NetworkImage(image))
@@ -83,7 +83,8 @@ class CallTileComponent extends StatelessWidget {
           // ),
           Padding(
             padding: const EdgeInsets.only(top: 2, left: 4),
-            child: Text(formatRelativeTime(time),
+            child: Text(
+              formatRelativeTime(time),
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 12,

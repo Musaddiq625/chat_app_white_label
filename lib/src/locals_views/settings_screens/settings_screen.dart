@@ -91,7 +91,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leadingIcon: AssetConstants.notifications,
               isLeadingImageSVG: true,
               onTap: () {
-                NavigationUtil.push(context, RouteConstants.allowNotificationScreen);
+                NavigationUtil.push(
+                    context, RouteConstants.allowNotificationScreen);
               }),
           SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(

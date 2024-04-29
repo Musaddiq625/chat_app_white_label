@@ -1,6 +1,6 @@
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
@@ -96,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen>
                             if (asyncSnapshot.hasData) {
                               UserModel chatUser = UserModel.fromJson(
                                   asyncSnapshot.data?.data() ?? {});
-                              chatUser.name =
+                              chatUser.firstName =
                                   FirebaseUtils.getNameFromLocalContact(
                                       chatUser.id ?? '', context);
                               return Container();

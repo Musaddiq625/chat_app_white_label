@@ -1494,7 +1494,6 @@ class _EventScreenState extends State<EventScreen> {
         iconSize: 5,
       ),
       itemBuilder: (BuildContext context) => [
-
         PopupMenuItem(
           height: 0,
           child: Row(children: [
@@ -1543,13 +1542,14 @@ class _EventScreenState extends State<EventScreen> {
       },
     );
   }
+
   _showBlockBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: CommonBottomSheetComponent(
-          title:"Block Alyna",
-          description:StringConstants.blockDetail,
+          title: "Block Alyna",
+          description: StringConstants.blockDetail,
           image: AssetConstants.warning,
           isImageAsset: true,
           btnColor: ColorConstants.red,
@@ -1557,9 +1557,7 @@ class _EventScreenState extends State<EventScreen> {
           btnText: StringConstants.block,
           size14Disc: true,
           onBtnTap: () {},
-        )
-
-    );
+        ));
   }
 
   _showReportBottomSheet() {
@@ -1576,8 +1574,6 @@ class _EventScreenState extends State<EventScreen> {
           btnText: StringConstants.report,
           size14Disc: true,
           onBtnTap: () {},
-        )
-
-    );
+        ));
   }
 }

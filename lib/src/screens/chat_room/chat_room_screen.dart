@@ -16,7 +16,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants/color_constants.dart';
-import '../../models/usert_model.dart';
+import '../../models/user_model.dart';
 import '../../models/message_model.dart';
 
 class ChatRoomScreen extends StatefulWidget {
@@ -92,7 +92,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 }
               },
               child: Scaffold(
-
                 appBar: AppBar(
                   backgroundColor: ColorConstants.greenMain,
                   automaticallyImplyLeading: false,
@@ -298,21 +297,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           if (snapshot.hasData) {
             UserModel chatUserData =
                 UserModel.fromJson(snapshot.data?.data() ?? {});
-            chatUserData.name = widget.chatUser.name == chatUserData.phoneNumber
-                ? chatUserData.name
-                : widget.chatUser.name;
+            chatUserData.firstName =
+                widget.chatUser.firstName == chatUserData.phoneNumber
+                    ? chatUserData.firstName
+                    : widget.chatUser.firstName;
             return InkWell(
-
               onTap: () => NavigationUtil.push(
                   context, RouteConstants.viewUserProfile,
                   args: chatUserData),
               child: Row(
                 children: [
                   IconButton(
-                    color: Colors.white,
+                      color: Colors.white,
                       onPressed: () => Navigator.pop(context),
-                      icon:
-                          const Icon(Icons.arrow_back, color: Colors.white)),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white)),
                   //user profile picture
                   ProfileImageComponent(
                     url: chatUserData.image,
@@ -325,7 +323,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //user name
-                      Text(widget.chatUser.name ?? '',
+                      Text(widget.chatUser.firstName ?? '',
                           style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,

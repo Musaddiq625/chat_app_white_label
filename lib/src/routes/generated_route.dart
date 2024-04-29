@@ -30,7 +30,7 @@ import 'package:chat_app_white_label/src/locals_views/user_profile_screen/edit_p
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/view_your_event_screen.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_screen.dart';
 import 'package:chat_app_white_label/src/screens/group_chat_room/group_chat_room.dart';

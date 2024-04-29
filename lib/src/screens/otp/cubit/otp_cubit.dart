@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:chat_app_white_label/src/models/usert_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,8 +15,6 @@ class OTPCubit extends Cubit<OTPState> {
   FirebaseService firebaseService = getIt<FirebaseService>();
 
   OTPCubit() : super(OTPInitial());
-
-
 
   otpUser(
     String verificationId,
@@ -57,7 +55,7 @@ class OTPCubit extends Cubit<OTPState> {
     }
   }
 
-  resendOtptoUser(String phoneNumber)async{
+  resendOtptoUser(String phoneNumber) async {
     emit(OTPLoadingState());
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
@@ -75,8 +73,7 @@ class OTPCubit extends Cubit<OTPState> {
           // verificationId = _verificationId;
         },
       );
-    }
-    catch(e){
+    } catch (e) {
       print("Error $e");
     }
   }

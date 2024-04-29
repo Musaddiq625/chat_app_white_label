@@ -255,7 +255,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               IconComponent(
                 iconData: Icons.edit_outlined,
                 iconColor: ColorConstants.grey1,
-
               ),
               TextComponent(
                 'Rename Group',

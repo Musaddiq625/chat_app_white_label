@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/message_model.dart';
-import '../models/usert_model.dart';
+import '../models/user_model.dart';
 
 class APIs {
   // for authentication
@@ -21,7 +21,7 @@ class APIs {
   // for storing self information
   static UserModel me = UserModel(
       id: user.uid,
-      name: user.displayName.toString(),
+      firstName: user.displayName.toString(),
       phoneNumber: user.phoneNumber,
       about: "Hey, I'm using We Chat!",
       image: user.photoURL.toString(),
@@ -143,7 +143,7 @@ class APIs {
 
     final chatUser = UserModel(
         id: user.uid,
-        name: user.displayName.toString(),
+        firstName: user.displayName.toString(),
         about: "Hey, I'm using We Chat!",
         image: user.photoURL.toString(),
         isOnline: false,
@@ -194,7 +194,7 @@ class APIs {
   // for updating user information
   static Future<void> updateUserInfo() async {
     await firestore.collection('users').doc(user.uid).update({
-      'name': me.name,
+      'name': me.firstName,
       'about': me.about,
     });
   }

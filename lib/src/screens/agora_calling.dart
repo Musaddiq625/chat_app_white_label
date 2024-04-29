@@ -162,7 +162,7 @@ class _AgoraCallingState extends State<AgoraCalling> {
     Map<String, dynamic> data = {
       "messageType": "missed-call",
       "callId": callId,
-      "callerName": FirebaseUtils.user?.name,
+      "callerName": FirebaseUtils.user?.firstName,
       "callerNumber": FirebaseUtils.user?.phoneNumber,
     };
 
@@ -183,7 +183,7 @@ class _AgoraCallingState extends State<AgoraCalling> {
     Map<String, dynamic> data = {
       "messageType": "missed-call",
       "callId": callId,
-      "callerName": FirebaseUtils.user?.name,
+      "callerName": FirebaseUtils.user?.firstName,
       "callerNumber": FirebaseUtils.user?.phoneNumber,
     };
     if (_remoteUid == null) {

@@ -26,7 +26,7 @@ class EventSummary extends StatelessWidget {
     required this.ticketsSold,
     required this.remainingTickets,
     required this.eventActive,
-    this.currenStats= false,
+    this.currenStats = false,
     required this.imagesUserInEvent,
   }) : super(key: key);
 
@@ -38,8 +38,9 @@ class EventSummary extends StatelessWidget {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
     return Container(
-      width:AppConstants.responsiveWidth(context,percentage: currenStats ? 100 : 80),
-          //MediaQuery.of(context).size.width * 0.8, // Adjust the width as needed
+      width: AppConstants.responsiveWidth(context,
+          percentage: currenStats ? 100 : 80),
+      //MediaQuery.of(context).size.width * 0.8, // Adjust the width as needed
       decoration: BoxDecoration(
         color: ColorConstants.darkBackgrounddColor,
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -53,33 +54,32 @@ class EventSummary extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if(currenStats == true)
+                if (currenStats == true)
                   TextComponent(
                     eventTitle,
-                    style:
-                    FontStylesConstants.style20(color: ColorConstants.primaryColor),
+                    style: FontStylesConstants.style20(
+                        color: ColorConstants.primaryColor),
                   ),
-                if(currenStats == false)
-                TextComponent(
-                  eventTitle,
-                  style:
-                      FontStylesConstants.style16(fontWeight: FontWeight.bold),
-                ),
-                if(price != null)
-                TextComponent(
-                  price!,
-                  style: FontStylesConstants.style16(),
-                ),
+                if (currenStats == false)
+                  TextComponent(
+                    eventTitle,
+                    style: FontStylesConstants.style16(
+                        fontWeight: FontWeight.bold),
+                  ),
+                if (price != null)
+                  TextComponent(
+                    price!,
+                    style: FontStylesConstants.style16(),
+                  ),
               ],
             ),
           ),
-        currenStats ?
-        SizedBoxConstants.sizedBoxTwentyH():
-          DividerCosntants.divider1,
-
+          currenStats
+              ? SizedBoxConstants.sizedBoxTwentyH()
+              : DividerCosntants.divider1,
           Padding(
-            padding:
-                const EdgeInsets.only(top: 8.0, left: 15, right: 15, bottom: 18),
+            padding: const EdgeInsets.only(
+                top: 8.0, left: 15, right: 15, bottom: 18),
             child: Row(
               children: [
                 Expanded(
@@ -96,9 +96,12 @@ class EventSummary extends StatelessWidget {
                               Positioned(
                                 left: i * radius / 1.5,
                                 child: ClipOval(
-                                  child:
-                                  ImageComponent(
-                                    imgUrl: images[i], width: radius,height: radius,imgProviderCallback: (ImageProvider<Object> imgProvider) {  },
+                                  child: ImageComponent(
+                                    imgUrl: images[i],
+                                    width: radius,
+                                    height: radius,
+                                    imgProviderCallback:
+                                        (ImageProvider<Object> imgProvider) {},
                                   ),
                                   // Image(
                                   //   image: images[i],

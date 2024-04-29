@@ -34,7 +34,7 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
     super.initState();
     _captionControllers = List.generate(
       widget.imageFiles.length,
-          (index) => TextEditingController(),
+      (index) => TextEditingController(),
     );
     for (final file in widget.imageFiles) {
       if (!isImage(file)) {
@@ -43,7 +43,6 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
     }
     // _customLoadingDialog = LoadingDialog(context);
   }
-
 
   @override
   void dispose() {
@@ -60,7 +59,7 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
     print("widget.imageFiles ${widget.imageFiles.length}");
     LoadingDialog.showLoadingDialog(context);
     // for (var imageFile in widget.imageFiles)
-    for (int index = 0; index < widget.imageFiles.length; index++){
+    for (int index = 0; index < widget.imageFiles.length; index++) {
       String fileName =
           'images/${DateTime.now().millisecondsSinceEpoch}_${widget.imageFiles[index].path.split('/').last}';
       FirebaseStorage storage = FirebaseStorage.instance;
@@ -81,10 +80,8 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
           'timestamp': FieldValue.serverTimestamp(),
         });
 
-
         // Assuming _uploadStoryData now takes a list of image URLs
         await _uploadStoryData(context, imageUrl, caption);
-
       } catch (e) {
         print("Error uploading image: $e");
       }
@@ -97,12 +94,10 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
     if (mounted) {
       Navigator.pop(context);
     }
-
-
-
   }
 
-  Future<void> _uploadStoryData(BuildContext context, String imageUrl, String caption) async {
+  Future<void> _uploadStoryData(
+      BuildContext context, String imageUrl, String caption) async {
     print("Image Url = $imageUrl");
     print("_commentController.text.trim() = ${_commentController.text.trim()}");
     print("_captionControllers[index], ${_captionControllers[0]}");
@@ -111,10 +106,9 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
     String storyUniqueId = uuid.v1();
     String? userId = FirebaseUtils.user?.id;
     String storyId = "storyId";
-    String? name = FirebaseUtils.user?.name;
+    String? name = FirebaseUtils.user?.firstName;
     String id = "id";
-    String? userImage =
-        FirebaseUtils.user?.image;
+    String? userImage = FirebaseUtils.user?.image;
 
     String storiesDataId = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -124,12 +118,10 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
         FirebaseFirestore.instance.collection('stories').doc(storiesDataId);
 
     await FirebaseFirestore.instance.runTransaction((transaction) async {
-
       DocumentSnapshot snapshot = await transaction.get(docRef);
       DocumentSnapshot snapshot2 = await transaction.get(docRefStories);
 
       if (!snapshot.exists) {
-
         transaction.set(docRef, {
           'id': uniqueId,
           'user_id': userId,
@@ -144,39 +136,40 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
       }
 
       if (!snapshot2.exists) {
-       transaction.set(docRefStories, {
+        transaction.set(docRefStories, {
           'story_image': imageUrl,
           'user_id': userId,
           'story_id': storiesDataId,
-          'story_msg': caption,// _commentController.text,
-          'time': storiesDataId,//DateTime.now().millisecondsSinceEpoch.toString(),// This will set the current time
+          'story_msg': caption, // _commentController.text,
+          'time':
+              storiesDataId, //DateTime.now().millisecondsSinceEpoch.toString(),// This will set the current time
         });
       }
     }).then((_) {
       print("Story uploaded successfully");
     }).catchError((error) {
       print("Error uploading story $error");
-
     });
   }
-
-
 
   VideoPlayerController _initializeVideoPlayer(File file) {
     VideoPlayerController controller = VideoPlayerController.file(file);
     controller.initialize().then((_) {
       // Ensure the first frame is shown after the video is initialized
-      controller.setLooping(true); // Set looping to true so the video continues to play
+      controller.setLooping(
+          true); // Set looping to true so the video continues to play
       // controller.play(); // Play the video
     });
     return controller;
   }
 
   bool isImage(File file) {
-    return file.path.endsWith('.jpg') || file.path.endsWith('.jpeg') || file.path.endsWith('.png');
+    return file.path.endsWith('.jpg') ||
+        file.path.endsWith('.jpeg') ||
+        file.path.endsWith('.png');
   }
 
-  void _playVideo(String videoPath) async{
+  void _playVideo(String videoPath) async {
     // if (_videoPlayers[videoPath] != null && !_videoPlayers[videoPath]!.value.isPlaying) {
     //   _videoPlayers[videoPath]!.play();
     // }
@@ -191,10 +184,12 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
     }
   }
 
-  void _pauseVideo(String videoPath) async{
-    if (_videoPlayers[videoPath] != null && _videoPlayers[videoPath]!.value.isPlaying) {
-      _videoPositions[videoPath] = _videoPlayers[videoPath]!.value.position; // Store current position
-     await _videoPlayers[videoPath]!.pause();
+  void _pauseVideo(String videoPath) async {
+    if (_videoPlayers[videoPath] != null &&
+        _videoPlayers[videoPath]!.value.isPlaying) {
+      _videoPositions[videoPath] =
+          _videoPlayers[videoPath]!.value.position; // Store current position
+      await _videoPlayers[videoPath]!.pause();
       setState(() {});
     }
   }
@@ -244,56 +239,64 @@ class _StatusGenerateScreenState extends State<StatusGenerateScreen> {
             itemCount: widget.imageFiles.length,
             itemBuilder: (context, index) {
               final file = widget.imageFiles[index];
-              String type=  widget.imageFiles[index].toString();
+              String type = widget.imageFiles[index].toString();
               bool isImageFile = isImage(file);
               if (!isImageFile && !_videoPlayers.containsKey(file.path)) {
                 _videoPlayers[file.path] = _initializeVideoPlayer(file);
               }
-               return Column(
+              return Column(
                 children: [
                   Expanded(
                     child: isImageFile
                         ? Image.file(
-                      file,
-                      fit: BoxFit.cover,
-                    )
+                            file,
+                            fit: BoxFit.cover,
+                          )
                         : FutureBuilder(
-                      future: _videoPlayers[file.path]!.initialize(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          return AspectRatio(
-                            aspectRatio: _videoPlayers[file.path]!.value.aspectRatio,
-                            child: Stack(
-                              alignment: Alignment.bottomCenter,
-                              children: [
-                                VideoPlayer(_videoPlayers[file.path]!),
-                                VideoProgressIndicator(_videoPlayers[file.path]!, allowScrubbing: true),
-                              ],
-                            ),
-                          );
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },
+                            future: _videoPlayers[file.path]!.initialize(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                return AspectRatio(
+                                  aspectRatio: _videoPlayers[file.path]!
+                                      .value
+                                      .aspectRatio,
+                                  child: Stack(
+                                    alignment: Alignment.bottomCenter,
+                                    children: [
+                                      VideoPlayer(_videoPlayers[file.path]!),
+                                      VideoProgressIndicator(
+                                          _videoPlayers[file.path]!,
+                                          allowScrubbing: true),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
+                            },
+                          ),
+                  ),
+                  if (type.contains('mp4'))
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: Icon(_videoPlayers[file.path]!.value.isPlaying
+                              ? Icons.pause
+                              : Icons.play_arrow),
+                          onPressed: () {
+                            if (_videoPlayers[file.path]!.value.isPlaying) {
+                              _pauseVideo(file.path);
+                            } else {
+                              _playVideo(file.path);
+                            }
+                          },
+                        ),
+                        // Add any other buttons or controls you need here
+                      ],
                     ),
-                  ),
-                  if(type.contains('mp4'))
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(_videoPlayers[file.path]!.value.isPlaying ? Icons.pause : Icons.play_arrow),
-                        onPressed: () {
-                          if (_videoPlayers[file.path]!.value.isPlaying) {
-                            _pauseVideo(file.path);
-                          } else {
-                            _playVideo(file.path);
-                          }
-                        },
-                      ),
-                      // Add any other buttons or controls you need here
-                    ],
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(

@@ -70,22 +70,18 @@ class _OTPScreenState extends State<OTPScreen> {
           LoadingDialog.hideLoadingDialog(context);
           NavigationUtil.push(context, RouteConstants.profileScreen,
               args: state.phoneNumber);
-        }
-        else if(state is OtpSuccessResendState){
+        } else if (state is OtpSuccessResendState) {
           LoadingDialog.hideLoadingDialog(context);
           setState(() {
             _counter = 15; // Reset the counter
             startTimer(); // Restart the timer
           });
-        }
-        else if (state is OTPSuccessOldUserState) {
-
+        } else if (state is OTPSuccessOldUserState) {
           NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
         } else if (state is OTPFailureState) {
           LoadingDialog.hideLoadingDialog(context);
           // ToastComponent.showToast(state.error.toString(), context: context);
           ToastComponent.showToast("Invalid Otp", context: context);
-
         } else if (state is OTPCancleState) {
           LoadingDialog.hideLoadingDialog(context);
         }
@@ -118,14 +114,14 @@ class _OTPScreenState extends State<OTPScreen> {
                           style: const TextStyle(
                               color: Colors.black), // Change the color here
                         ),
-                         TextSpan(
+                        TextSpan(
                           text: 'WrongNumber ?',
-                          style: TextStyle(
-                              color: Colors.blue),
+                          style: TextStyle(color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              NavigationUtil.pop(context); // Navigate back to the previous screen
-                            },// Change the color here
+                              NavigationUtil.pop(
+                                  context); // Navigate back to the previous screen
+                            }, // Change the color here
                         ),
                       ],
                     ),
@@ -190,16 +186,15 @@ class _OTPScreenState extends State<OTPScreen> {
                       : Container(),
                   if (_counter <= 0)
                     ElevatedButton(
-                    onPressed: () async {
-                      otpCubit.resendOtptoUser(
-                        widget.otpScreenArg.phoneNumber,
-                        // otpController.text,
-                        // widget.otpScreenArg.phoneNumber,
-                      );
-                    },
-                    child: const Text("Resend Otp"),
-                  ),
-
+                      onPressed: () async {
+                        otpCubit.resendOtptoUser(
+                          widget.otpScreenArg.phoneNumber,
+                          // otpController.text,
+                          // widget.otpScreenArg.phoneNumber,
+                        );
+                      },
+                      child: const Text("Resend Otp"),
+                    ),
                 ],
               ),
             ),

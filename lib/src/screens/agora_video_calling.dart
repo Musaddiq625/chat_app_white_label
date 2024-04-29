@@ -164,7 +164,7 @@ class _AgoraVideoCallingState extends State<AgoraVideoCalling> {
       Map<String, dynamic> data = {
         "messageType": "missed-video-call",
         "callId": callId,
-        "callerName": FirebaseUtils.user?.name,
+        "callerName": FirebaseUtils.user?.firstName,
         "callerNumber": FirebaseUtils.user?.phoneNumber,
       };
       if (_remoteUid == null) {

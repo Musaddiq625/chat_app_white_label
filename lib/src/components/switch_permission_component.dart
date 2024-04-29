@@ -12,12 +12,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 class SwitchPermissionComponent extends StatelessWidget {
   final String name;
   final String detail;
-  final bool editQuestions ;
-  final bool switchValue ;
+  final bool editQuestions;
+  final bool switchValue;
   final Function()? editQuestionsTap;
   final ValueChanged<bool> onSwitchChanged;
 
-  const SwitchPermissionComponent({super.key, required this.name, required this.detail,this.editQuestions=false,this.switchValue=false,  required this.onSwitchChanged,this.editQuestionsTap});
+  const SwitchPermissionComponent(
+      {super.key,
+      required this.name,
+      required this.detail,
+      this.editQuestions = false,
+      this.switchValue = false,
+      required this.onSwitchChanged,
+      this.editQuestionsTap});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +36,8 @@ class SwitchPermissionComponent extends StatelessWidget {
         color: themeCubit.darkBackgroundColor,
       ),
       child: Padding(
-        padding: const EdgeInsets.only(
-            top: 10.0, left: 15, right: 15, bottom: 15),
+        padding:
+            const EdgeInsets.only(top: 10.0, left: 15, right: 15, bottom: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -59,13 +66,11 @@ class SwitchPermissionComponent extends StatelessWidget {
                           name,
                           maxLines: 13,
                           style: TextStyle(
-                              fontSize: 15,
-                              color: themeCubit.textColor),
+                              fontSize: 15, color: themeCubit.textColor),
                         ),
                         Container(
                           margin: EdgeInsets.only(top: 5),
-                          child:  TextComponent(
-                             detail,
+                          child: TextComponent(detail,
                               maxLines: 15,
                               style: TextStyle(
                                   fontSize: 13,
@@ -90,10 +95,8 @@ class SwitchPermissionComponent extends StatelessWidget {
                                   ),
                                   IconComponent(
                                     iconData: Icons.edit,
-                                    borderColor:
-                                    ColorConstants.transparent,
-                                    backgroundColor:
-                                    ColorConstants.transparent,
+                                    borderColor: ColorConstants.transparent,
+                                    backgroundColor: ColorConstants.transparent,
                                     iconColor: ColorConstants.lightGray
                                         .withOpacity(0.5),
                                     iconSize: 16,

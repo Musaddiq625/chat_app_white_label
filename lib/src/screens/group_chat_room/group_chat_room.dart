@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants/color_constants.dart';
 import '../../models/message_model.dart';
-import '../../models/usert_model.dart';
+import '../../models/user_model.dart';
 import '../../utils/firebase_notification_utils.dart';
 import '../../utils/firebase_utils.dart';
 

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import '../components/calls_tile_component.dart';
 import '../dummy data/whatsapp_data.dart';
 import '../models/call_model.dart';
-import '../models/usert_model.dart';
+import '../models/user_model.dart';
 
 Data callList = Data();
 
@@ -51,7 +51,6 @@ class _CallScreenState extends State<CallScreen>
                   child: CircularProgressIndicator(),
                 );
               } else {
-
                 return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                     stream: FirebaseUtils.getAllCalls(),
                     builder: (context, snapshot) {
@@ -77,10 +76,11 @@ class _CallScreenState extends State<CallScreen>
                           final CallModel call = CallModel.fromJson(
                               snapshot.data!.docs[index].data());
                           String? groupId;
-                          if(call.type == "group_call"){
-                            groupId =  call.groupId;
+                          if (call.type == "group_call") {
+                            groupId = call.groupId;
                           }
-                          final chatUserIdData = FirebaseUtils.getChatUser(chatUserId!);
+                          final chatUserIdData =
+                              FirebaseUtils.getChatUser(chatUserId!);
                           print("chatUserIdData-1 ${chatUserIdData}");
                           return FutureBuilder(
                             future: call.type != "group_call"
@@ -89,29 +89,30 @@ class _CallScreenState extends State<CallScreen>
                             builder: (context, asyncSnapshot) {
                               // if user id is null so this is a group
                               //  no need to read future snapshot user
-                              if(call.type == "group_call"){
-                                  if (asyncSnapshot.hasData) {
-                                     ChatModel chatUser = ChatModel.fromJson(asyncSnapshot.data?.data() ?? {});
-                                    return CallTileComponent(
-                                      name: chatUser.groupData?.grougName ?? "",
-                                      image: chatUser.groupData?.groupImage ?? "",
-                                      videocall: call.type!,
-                                      time: call.time!,
-                                    );
-                                  } else {
-                                    return const SizedBox();
-                                  }
-
-                              }
-                              else{
+                              if (call.type == "group_call") {
+                                if (asyncSnapshot.hasData) {
+                                  ChatModel chatUser = ChatModel.fromJson(
+                                      asyncSnapshot.data?.data() ?? {});
+                                  return CallTileComponent(
+                                    name: chatUser.groupData?.grougName ?? "",
+                                    image: chatUser.groupData?.groupImage ?? "",
+                                    videocall: call.type!,
+                                    time: call.time!,
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              } else {
                                 if (chatUserId != null) {
                                   if (asyncSnapshot.hasData) {
                                     UserModel chatUser = UserModel.fromJson(
                                         asyncSnapshot.data?.data() ?? {});
-                                    chatUser.name = FirebaseUtils.getNameFromLocalContact(chatUser.id ?? '', context);
+                                    chatUser.firstName =
+                                        FirebaseUtils.getNameFromLocalContact(
+                                            chatUser.id ?? '', context);
 
                                     return CallTileComponent(
-                                      name: chatUser.name ?? "",
+                                      name: chatUser.firstName ?? "",
                                       image: chatUser.image ?? "",
                                       videocall: call.type!,
                                       time: call.time!,
@@ -123,7 +124,6 @@ class _CallScreenState extends State<CallScreen>
                                   return const SizedBox();
                                 }
                               }
-
                             },
                           );
                         },

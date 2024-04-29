@@ -14,7 +14,6 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
   UserDetailModel? userDetailModel;
 
   userDetailFirstStep(String? selectedImage) async {
-
     emit(OnBoardingLoadingState());
     try {
       userDetailModel?.profileImage = selectedImage;
@@ -31,8 +30,7 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
       await FirebaseUtils.updateUserStepTwo(userDetailModel
           // dateOfBirth, aboutMe, gender, bio,
           // moreAboutMeModel, socialLinkModel, hobbies, creativity
-      );
-
+          );
 
       emit(OnBoardingUserDataFirstStepSuccessState());
     } catch (e) {

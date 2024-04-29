@@ -14,7 +14,7 @@ import '../../globals.dart';
 import '../constants/color_constants.dart';
 import '../constants/firebase_constants.dart';
 import '../models/contacts_model.dart';
-import '../models/usert_model.dart';
+import '../models/user_model.dart';
 
 class AgoraGroupCalling extends StatefulWidget {
   const AgoraGroupCalling(

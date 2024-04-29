@@ -15,11 +15,18 @@ import 'text_component.dart';
 
 class DropDownBottomSheet extends StatefulWidget {
   final String? image;
-   String? selectedVisibilityValue;
-   String? selectedValue;
+  String? selectedVisibilityValue;
+  String? selectedValue;
   final List<String> values;
   final Function(String?)? onValueSelected;
-   DropDownBottomSheet({super.key,  this.image, this.selectedVisibilityValue, this.selectedValue, required this.values,  this.onValueSelected, });
+  DropDownBottomSheet({
+    super.key,
+    this.image,
+    this.selectedVisibilityValue,
+    this.selectedValue,
+    required this.values,
+    this.onValueSelected,
+  });
 
   @override
   State<DropDownBottomSheet> createState() => _DropDownBottomSheetState();
@@ -29,7 +36,7 @@ class _DropDownBottomSheetState extends State<DropDownBottomSheet> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
               topRight: Radius.circular(20), topLeft: Radius.circular(20)),
@@ -41,15 +48,14 @@ class _DropDownBottomSheetState extends State<DropDownBottomSheet> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBoxConstants.sizedBoxTwentyH(),
-              if(widget.image != null)
-              ImageComponent(
-                imgUrl: widget.image!,
-                imgProviderCallback: (imageProvider) {},
-                width: 40,
-                height: 40,
-              ),
-              if(widget.image != null)
-              SizedBoxConstants.sizedBoxTwentyH(),
+              if (widget.image != null)
+                ImageComponent(
+                  imgUrl: widget.image!,
+                  imgProviderCallback: (imageProvider) {},
+                  width: 40,
+                  height: 40,
+                ),
+              if (widget.image != null) SizedBoxConstants.sizedBoxTwentyH(),
               TextComponent(
                 StringConstants.visibility,
                 style: TextStyle(
@@ -59,26 +65,27 @@ class _DropDownBottomSheetState extends State<DropDownBottomSheet> {
               ),
               SizedBoxConstants.sizedBoxTwentyH(),
               ...widget.values.map((value) => Container(
-                margin: const EdgeInsets.symmetric(vertical: 5),
-                child: ListTileComponent(
-                  title: value,
-                  titleSize: 14,
-                  onTap: () {
-                    setState(() {
-                      widget.selectedValue = value; // Update the selected value
-                    });
-                  },
-                  backgroundColor: //themeCubit.darkBackgroundColor100,
-                  widget.selectedValue == value
-                      ? themeCubit.primaryColor
-                      : themeCubit.darkBackgroundColor100,
-                  titleColor: //ColorConstants.white,
-                  widget.selectedValue == value
-                      ? themeCubit.backgroundColor
-                      : null,
-                  trailingIcon: null,
-                ),
-              )),
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    child: ListTileComponent(
+                      title: value,
+                      titleSize: 14,
+                      onTap: () {
+                        setState(() {
+                          widget.selectedValue =
+                              value; // Update the selected value
+                        });
+                      },
+                      backgroundColor: //themeCubit.darkBackgroundColor100,
+                          widget.selectedValue == value
+                              ? themeCubit.primaryColor
+                              : themeCubit.darkBackgroundColor100,
+                      titleColor: //ColorConstants.white,
+                          widget.selectedValue == value
+                              ? themeCubit.backgroundColor
+                              : null,
+                      trailingIcon: null,
+                    ),
+                  )),
               SizedBoxConstants.sizedBoxForthyH(),
               Container(
                 margin: EdgeInsets.only(bottom: 20, left: 10, right: 10),
@@ -89,10 +96,12 @@ class _DropDownBottomSheetState extends State<DropDownBottomSheet> {
                   buttonText: StringConstants.save,
                   onPressed: () {
                     setState(() {
-                      widget.onValueSelected!(widget.selectedValue); // Invoke the callback with the selected value
-                      widget.selectedVisibilityValue = widget.selectedValue!.isNotEmpty
-                          ? widget.selectedValue
-                          : widget.values[0];
+                      widget.onValueSelected!(widget
+                          .selectedValue); // Invoke the callback with the selected value
+                      widget.selectedVisibilityValue =
+                          widget.selectedValue!.isNotEmpty
+                              ? widget.selectedValue
+                              : widget.values[0];
                     });
                     NavigationUtil.pop(context);
                   },

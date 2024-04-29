@@ -89,7 +89,7 @@ class _InterestScreenState extends State<InterestScreen> {
       appBar: AppBarComponent(
         "",
         action: GestureDetector(
-          onTap:()=>  NavigationUtil.push(context, RouteConstants.doneScreen),
+          onTap: () => NavigationUtil.push(context, RouteConstants.doneScreen),
           child: TextComponent(StringConstants.skip,
               style: FontStylesConstants.style14(color: themeCubit.textColor)),
         ),
@@ -230,15 +230,17 @@ class _InterestScreenState extends State<InterestScreen> {
                               selectedInterestTagList.contains(tag['name'])
                                   ? themeCubit.primaryColor
                                   : ColorConstants.lightGray.withOpacity(0.3),
-                          iconColor: selectedInterestTagList.contains(tag['name'])
-                              ? themeCubit.backgroundColor
-                              : themeCubit.primaryColor,
+                          iconColor:
+                              selectedInterestTagList.contains(tag['name'])
+                                  ? themeCubit.backgroundColor
+                                  : themeCubit.primaryColor,
                           customIconText: tag['name'],
                           circleHeight: 35,
                           iconSize: 20,
                           onTap: () {
                             setState(() {
-                              if (selectedInterestTagList.contains(tag['name'])) {
+                              if (selectedInterestTagList
+                                  .contains(tag['name'])) {
                                 selectedInterestTagList.remove(tag['name']);
                               } else if (selectedInterestTagList.length < 4) {
                                 selectedInterestTagList.add(tag['name']);

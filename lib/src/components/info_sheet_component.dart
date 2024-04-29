@@ -16,7 +16,8 @@ class InfoSheetComponent extends StatefulWidget {
   final image;
   final bool svg;
 
-  const InfoSheetComponent({super.key, this.heading, this.body, this.image,this.svg=false});
+  const InfoSheetComponent(
+      {super.key, this.heading, this.body, this.image, this.svg = false});
 
   @override
   State<InfoSheetComponent> createState() => _InfoSheetComponentState();
@@ -35,23 +36,23 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
       ),
       child: Column(
         children: [
-         SizedBoxConstants.sizedBoxThirtyH(),
+          SizedBoxConstants.sizedBoxThirtyH(),
           if (widget.image != null)
-            widget.svg?
-            SvgPicture.asset(
-              // height: 25.55,
-              widget.image,
-              height: 100,
-            ):
-            Image.asset(
-              // AssetConstants.group,
-              widget.image!,
-              width: 100,
-              height: 100,
-            ),
+            widget.svg
+                ? SvgPicture.asset(
+                    // height: 25.55,
+                    widget.image,
+                    height: 100,
+                  )
+                : Image.asset(
+                    // AssetConstants.group,
+                    widget.image!,
+                    width: 100,
+                    height: 100,
+                  ),
           SizedBoxConstants.sizedBoxTwentyH(),
           Container(
-            width: AppConstants.responsiveWidth(context,percentage: 70),
+            width: AppConstants.responsiveWidth(context, percentage: 70),
             child: TextComponent(
               widget.heading,
               style: FontStylesConstants.style24(color: CupertinoColors.white),
@@ -59,8 +60,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
               maxLines: 4,
             ),
           ),
-          if(widget.body!=null)
-          SizedBoxConstants.sizedBoxTwentyH(),
+          if (widget.body != null) SizedBoxConstants.sizedBoxTwentyH(),
           Container(
             width: 300,
             child: TextComponent(
@@ -70,7 +70,7 @@ class _InfoSheetComponentState extends State<InfoSheetComponent> {
               maxLines: 4,
             ),
           ),
-         SizedBoxConstants.sizedBoxThirtyH()
+          SizedBoxConstants.sizedBoxThirtyH()
         ],
       ),
     );

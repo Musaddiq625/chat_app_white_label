@@ -49,7 +49,6 @@ class LoginCubit extends Cubit<LoginState> {
       print("Phone1 ");
       LoggerUtil.logs(phoneNumber);
       await firebaseService.auth.verifyPhoneNumber(
-
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
           print("Phone2 $credential");
@@ -85,5 +84,4 @@ class LoginCubit extends Cubit<LoginState> {
       LoggerUtil.logs("General Error: $error");
     }
   }
-
 }

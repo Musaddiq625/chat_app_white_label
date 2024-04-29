@@ -59,7 +59,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
     // Add more image providers as needed
   ];
 
-  final List<String> questions=[
+  final List<String> questions = [
     "Hello Question 1",
     "Hello Question 2",
     "Hello Question 3",
@@ -97,76 +97,83 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: (!groupMember)
             ? Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ButtonWithIconComponent(
-              iconColor: ColorConstants.white,
-              btnText: '  ${StringConstants.decline}',
-              btnTextColor: ColorConstants.white,
-              icon: Icons.cancel,
-              widthSpace: 30,
-              bgcolor: ColorConstants.blackLight,
-              // btnTextColor: themeCubit.textColor,
-              onPressed: () {
-                // _showJoinBottomSheet();
-              },
-            ),
-            ButtonWithIconComponent(
-              btnText: '  ${StringConstants.accept}',
-              icon: Icons.check_circle,
-              bgcolor: themeCubit.primaryColor,
-              widthSpace: 30,
-              // btnTextColor: themeCubit.textColor,
-              onPressed: () {
-                JoinBottomSheet.showJoinBottomSheet(context, _messageController,"Property networking event","Group","ABC","",questions: questions);
-                // _showJoinBottomSheet();
-              },
-            ),
-          ],
-        )
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ButtonWithIconComponent(
+                    iconColor: ColorConstants.white,
+                    btnText: '  ${StringConstants.decline}',
+                    btnTextColor: ColorConstants.white,
+                    icon: Icons.cancel,
+                    widthSpace: 30,
+                    bgcolor: ColorConstants.blackLight,
+                    // btnTextColor: themeCubit.textColor,
+                    onPressed: () {
+                      // _showJoinBottomSheet();
+                    },
+                  ),
+                  ButtonWithIconComponent(
+                    btnText: '  ${StringConstants.accept}',
+                    icon: Icons.check_circle,
+                    bgcolor: themeCubit.primaryColor,
+                    widthSpace: 30,
+                    // btnTextColor: themeCubit.textColor,
+                    onPressed: () {
+                      JoinBottomSheet.showJoinBottomSheet(
+                          context,
+                          _messageController,
+                          "Property networking event",
+                          "Group",
+                          "ABC",
+                          "",
+                          questions: questions);
+                      // _showJoinBottomSheet();
+                    },
+                  ),
+                ],
+              )
             : Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconComponent(
-                iconData: Icons.favorite,
-                backgroundColor: ColorConstants.blackLight,
-                circleSize: 40,
-                iconSize: 25,
-                onTap: () {
-                  // _shareEventBottomSheet();
-                }),
-            SizedBoxConstants.sizedBoxTenW(),
-            IconComponent(
-              // iconData: Icons.menu,
-              svgData: AssetConstants.share,
-              backgroundColor: ColorConstants.blackLight,
-              circleSize: 40,
-              iconSize: 20,
-              // onTap: _showMoreBottomSheet,
-            ),
-            SizedBoxConstants.sizedBoxTenW(),
-            IconComponent(
-              // iconData: Icons.menu,
-              svgData: AssetConstants.more,
-              backgroundColor: ColorConstants.blackLight,
-              circleSize: 40,
-              iconSize: 6,
-              // onTap: _showMoreBottomSheet,
-            ),
-            Spacer(),
-            if (groupMember)
-              ButtonWithIconComponent(
-                btnText: '  ${StringConstants.chat}',
-                svgData: AssetConstants.message,
-                bgcolor: themeCubit.primaryColor,
-                widthSpace: 30,
-                // btnTextColor: themeCubit.textColor,
-                onPressed: () {
-                  // _showJoinBottomSheet();
-                },
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconComponent(
+                      iconData: Icons.favorite,
+                      backgroundColor: ColorConstants.blackLight,
+                      circleSize: 40,
+                      iconSize: 25,
+                      onTap: () {
+                        // _shareEventBottomSheet();
+                      }),
+                  SizedBoxConstants.sizedBoxTenW(),
+                  IconComponent(
+                    // iconData: Icons.menu,
+                    svgData: AssetConstants.share,
+                    backgroundColor: ColorConstants.blackLight,
+                    circleSize: 40,
+                    iconSize: 20,
+                    // onTap: _showMoreBottomSheet,
+                  ),
+                  SizedBoxConstants.sizedBoxTenW(),
+                  IconComponent(
+                    // iconData: Icons.menu,
+                    svgData: AssetConstants.more,
+                    backgroundColor: ColorConstants.blackLight,
+                    circleSize: 40,
+                    iconSize: 6,
+                    // onTap: _showMoreBottomSheet,
+                  ),
+                  Spacer(),
+                  if (groupMember)
+                    ButtonWithIconComponent(
+                      btnText: '  ${StringConstants.chat}',
+                      svgData: AssetConstants.message,
+                      bgcolor: themeCubit.primaryColor,
+                      widthSpace: 30,
+                      // btnTextColor: themeCubit.textColor,
+                      onPressed: () {
+                        // _showJoinBottomSheet();
+                      },
+                    ),
+                ],
               ),
-          ],
-        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -225,7 +232,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
               child: TextComponent(groupName,
                   maxLines: 6,
                   style:
-                  FontStylesConstants.style38(color: ColorConstants.white)),
+                      FontStylesConstants.style38(color: ColorConstants.white)),
             ),
             SizedBoxConstants.sizedBoxTenH(),
             Padding(
@@ -296,7 +303,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
     return Card(
         shape: RoundedRectangleBorder(
           borderRadius:
-          BorderRadius.circular(20.0), // Adjust the border radius as needed
+              BorderRadius.circular(20.0), // Adjust the border radius as needed
         ),
         color: themeCubit.darkBackgroundColor,
         elevation: 0,
@@ -325,9 +332,9 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                           text: _showFullText
                               ? _fullText
                               : (_fullText.length > 150
-                              ? _fullText.substring(0, 150)
-                              : _fullText) ??
-                              "No description available",
+                                      ? _fullText.substring(0, 150)
+                                      : _fullText) ??
+                                  "No description available",
                           style: TextStyle(color: themeCubit.textColor),
                         ),
                         if (_fullText.length > 150)
@@ -426,7 +433,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
               children: [
                 Container(
                     width:
-                    AppConstants.responsiveWidth(context, percentage: 66),
+                        AppConstants.responsiveWidth(context, percentage: 66),
                     child: const ContactCard(
                       name: "Jesse",
                       url: "",
@@ -459,14 +466,13 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
             DividerCosntants.divider1,
             ...List.generate(
                 contacts.length,
-                    (index) =>
-                    ContactCard(
-                        imageSize: 45,
-                        name: contacts[index].name,
-                        title: contacts[index].title,
-                        url: contacts[index].url,
-                        // contact: contacts[index],
-                        showShareIcon: false)),
+                (index) => ContactCard(
+                    imageSize: 45,
+                    name: contacts[index].name,
+                    title: contacts[index].title,
+                    url: contacts[index].url,
+                    // contact: contacts[index],
+                    showShareIcon: false)),
             SizedBoxConstants.sizedBoxSixtyH(),
           ],
         ),
@@ -515,13 +521,18 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          flex:2,
+                          flex: 2,
                           child: TextComponent(groupName,
                               maxLines: 3,
                               style: FontStylesConstants.style28(
                                   color: ColorConstants.white)),
                         ),
-                        ImageComponent(height:100,width:100,isAsset:true,imgUrl:AssetConstants.ticketWithCircle , imgProviderCallback: (imgProviderCallback){}),
+                        ImageComponent(
+                            height: 100,
+                            width: 100,
+                            isAsset: true,
+                            imgUrl: AssetConstants.ticketWithCircle,
+                            imgProviderCallback: (imgProviderCallback) {}),
                       ],
                     ),
                     TextComponent(StringConstants.group,
@@ -551,7 +562,6 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                     SizedBoxConstants.sizedBoxTenH(),
                     Row(
                       children: [
-
                         SvgPicture.asset(
                           height: 35,
                           AssetConstants.chatMsg,
@@ -601,7 +611,8 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                   ],
                 ),
               ),
-              Container(margin:EdgeInsets.only(left: 20,right: 20),
+              Container(
+                margin: EdgeInsets.only(left: 20, right: 20),
                 child: ButtonComponent(
                   buttonText: StringConstants.join,
                   textColor: themeCubit.backgroundColor,
@@ -667,8 +678,8 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
         children: [
           TextComponent(
             StringConstants.questionsFromCreator,
-            style: FontStylesConstants.style18(
-                color: ColorConstants.primaryColor),
+            style:
+                FontStylesConstants.style18(color: ColorConstants.primaryColor),
           ),
           SizedBoxConstants.sizedBoxTenH(),
           Column(
@@ -741,7 +752,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                   ),
                   Container(
                     width:
-                    AppConstants.responsiveWidth(context, percentage: 60),
+                        AppConstants.responsiveWidth(context, percentage: 60),
                     padding: const EdgeInsets.only(top: 10),
                     child: TextComponent(
                       StringConstants.joinTheGroupSuccessfully,
@@ -758,12 +769,12 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                   ),
                   Container(
                     width:
-                    AppConstants.responsiveWidth(context, percentage: 60),
+                        AppConstants.responsiveWidth(context, percentage: 60),
                     child: TextComponent(
                       StringConstants.inviteYourFriend,
                       maxLines: 6,
                       style:
-                      TextStyle(fontSize: 15, color: themeCubit.textColor),
+                          TextStyle(fontSize: 15, color: themeCubit.textColor),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -804,11 +815,22 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                   //   customTextColor: themeCubit.textColor,
                   //   iconSize: 60,
                   // ),
-                  Column(children: [
-                    ImageComponent(height: 60,width: 60,imgUrl:  AssetConstants.instagram, imgProviderCallback: (imageProvider){},),
-                    SizedBoxConstants.sizedBoxTenH(),
-                    TextComponent(StringConstants.instagram,style: FontStylesConstants.style12(color: ColorConstants.white),)
-                  ],),
+                  Column(
+                    children: [
+                      ImageComponent(
+                        height: 60,
+                        width: 60,
+                        imgUrl: AssetConstants.instagram,
+                        imgProviderCallback: (imageProvider) {},
+                      ),
+                      SizedBoxConstants.sizedBoxTenH(),
+                      TextComponent(
+                        StringConstants.instagram,
+                        style: FontStylesConstants.style12(
+                            color: ColorConstants.white),
+                      )
+                    ],
+                  ),
                   IconComponent(
                     svgData: AssetConstants.share,
                     iconColor: ColorConstants.black,
@@ -843,7 +865,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                 padding: const EdgeInsets.only(
                     left: 18.0, top: 10, bottom: 16, right: 18),
                 child: SearchTextField(
-                  filledColor:  ColorConstants.backgroundColor.withOpacity(0.3),
+                  filledColor: ColorConstants.backgroundColor.withOpacity(0.3),
                   title: "Search",
                   hintText: "Search name, postcode..",
                   onSearch: (text) {

@@ -27,10 +27,19 @@ class SuccessShareBottomSheet extends StatefulWidget {
   final Function()? onShare;
   final Function()? onContactShareTap;
 
-   SuccessShareBottomSheet({super.key, required this.contacts,required this.successTitle, this.onCopyLink, this.onFacbook, this.onInstagram, this.onShare, this.onContactShareTap});
+  SuccessShareBottomSheet(
+      {super.key,
+      required this.contacts,
+      required this.successTitle,
+      this.onCopyLink,
+      this.onFacbook,
+      this.onInstagram,
+      this.onShare,
+      this.onContactShareTap});
 
   @override
-  State<SuccessShareBottomSheet> createState() => _SuccessShareBottomSheetState();
+  State<SuccessShareBottomSheet> createState() =>
+      _SuccessShareBottomSheetState();
 }
 
 class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
@@ -47,8 +56,7 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0)),
+            topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
         color: themeCubit.darkBackgroundColor,
       ),
       constraints: const BoxConstraints(maxHeight: 700),
@@ -79,7 +87,13 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                 width: double.infinity,
               ),
               SizedBoxConstants.sizedBoxTenH(),
-              ImageComponent(imgUrl: AssetConstants.confetti, imgProviderCallback: (imageProvider){},height: 80,width: 80,isAsset: true,),
+              ImageComponent(
+                imgUrl: AssetConstants.confetti,
+                imgProviderCallback: (imageProvider) {},
+                height: 80,
+                width: 80,
+                isAsset: true,
+              ),
               // Image.asset(
               //   AssetConstants.confetti,
               //   width: 100,
@@ -106,8 +120,7 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                 child: TextComponent(
                   StringConstants.inviteYourFriend,
                   maxLines: 5,
-                  style:
-                  TextStyle(fontSize: 15, color: themeCubit.textColor),
+                  style: TextStyle(fontSize: 15, color: themeCubit.textColor),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -138,7 +151,7 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                 iconSize: 30,
                 customText: StringConstants.facebook,
                 customTextColor: themeCubit.textColor,
-                onTap:  widget.onFacbook,
+                onTap: widget.onFacbook,
               ),
               // IconComponent(
               //   svgDataCheck: false,
@@ -151,7 +164,7 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
               //   iconSize: 60,
               // ),
               GestureDetector(
-                onTap:  widget.onInstagram,
+                onTap: widget.onInstagram,
                 child: Column(
                   children: [
                     ImageComponent(
@@ -177,7 +190,7 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                 circleSize: 60,
                 customText: StringConstants.share,
                 customTextColor: themeCubit.textColor,
-                onTap:  widget.onShare,
+                onTap: widget.onShare,
               )
             ],
           ),

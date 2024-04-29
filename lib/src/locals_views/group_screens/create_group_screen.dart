@@ -245,7 +245,6 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   const SizedBox(
                     height: 10,
                   ),
-
                   SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
@@ -393,17 +392,14 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
     );
   }
 
-
   _createEventBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body:SuccessShareBottomSheet(
+        body: SuccessShareBottomSheet(
             contacts: contacts,
             successTitle: StringConstants.groupCreatedSuccessfully));
-
   }
-
 
   _goBackBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
