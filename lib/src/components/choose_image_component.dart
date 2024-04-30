@@ -70,7 +70,9 @@ class _ChooseImageComponentState extends State<ChooseImageComponent> {
                           onPressed: () async {
                             List<File> files = [];
                             final XFile? pickedImage = await ImagePicker()
-                                .pickImage(source: ImageSource.camera);
+                                .pickImage(
+                                    source: ImageSource.camera,
+                                    preferredCameraDevice: CameraDevice.front);
                             if (pickedImage != null) {
                               widget.onImagePick(pickedImage);
                             }
