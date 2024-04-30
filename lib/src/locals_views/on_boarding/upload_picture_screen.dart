@@ -163,8 +163,9 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
               buttonText: StringConstants.takeASelfie,
               onPressed: () async {
                 List<File> files = [];
-                final XFile? cameraImage =
-                    await ImagePicker().pickImage(source: ImageSource.camera);
+                final XFile? cameraImage = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                    preferredCameraDevice: CameraDevice.front);
                 if (cameraImage != null) {
                   // files.add(File(cameraImage.path));
                   // setState(() {
