@@ -8,9 +8,9 @@ class SignUpInitial extends SignUpState {}
 class SignUpLoadingState extends SignUpState {}
 
 class SignUpSignUpState extends SignUpState {
-  final String verificationId;
+  // final String verificationId;
 
-  SignUpSignUpState(this.verificationId);
+  // SignUpSignUpState(this.verificationId);
 }
 
 class SignUpSignInState extends SignUpState {}

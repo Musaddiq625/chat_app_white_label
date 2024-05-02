@@ -35,7 +35,7 @@ class _OtpScreenState extends State<OtpScreen> {
   final TextEditingController otpController = TextEditingController();
   bool _isOtpValid = false;
   Timer? _timer;
-  int _counter = 15;
+  int _counter = 30;
 
   late OTPCubit otpCubit = BlocProvider.of<OTPCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
@@ -184,7 +184,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 ),
                 if (_counter > 0)
                   TextComponent(
-                      '${StringConstants.didntReciveCode} ${_counter > 0 ? StringUtil.getFormattedTime(_counter.toString()) : ""}',
+                      '${StringConstants.didntReciveCode}${_counter > 0 ? StringUtil.getFormattedTime(_counter.toString()) : ""}',
                       style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

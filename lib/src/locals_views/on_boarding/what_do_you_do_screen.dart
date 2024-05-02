@@ -92,6 +92,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
               buttonText: StringConstants.continues,
               onPressed: () {
                 userDetailModel?.aboutMe = _aboutMeController.text;
+                if( isFieldsValidate)
                 NavigationUtil.push(context, RouteConstants.genderScreen);
               }),
         )

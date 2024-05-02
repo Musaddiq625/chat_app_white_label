@@ -177,7 +177,9 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 child: ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
 
-                  textColor: ColorConstants.black,
+                  textColor: isFieldsValidate
+                      ? ColorConstants.black
+                      : ColorConstants.grey1,
 
                   buttonText: StringConstants.continues,
                   onPressed: isFieldsValidate ? onContinuePressed : null,
@@ -193,7 +195,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
 
   void onContinuePressed() {
     if (_formKey.currentState!.validate()) {
-      signupCubit.loginUser(_emailcontroller.text.trim(), "Test@123");
+      signupCubit.loginUser(_emailcontroller.text.trim());
       // if (widget.routeType == "number") {
       //   NavigationUtil.push(context, RouteConstants.otpScreenLocal,
       //       args: OtpArg("", "", "", "setPasswordAfterNumber"));

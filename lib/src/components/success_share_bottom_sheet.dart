@@ -242,6 +242,7 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
               itemBuilder: (ctx, index) {
                 final contact = filteredContacts[index];
                 return ContactCard(
+                  imageSize: 45,
                   name: contact.name,
                   title: contact.title,
                   url: contact.url,

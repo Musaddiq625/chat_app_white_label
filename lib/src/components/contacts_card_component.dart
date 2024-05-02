@@ -70,6 +70,7 @@ class ContactCard extends StatelessWidget {
                 ),
                 SizedBoxConstants.sizedBoxTenW(),
                 Expanded(
+                  flex: 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

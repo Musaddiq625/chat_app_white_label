@@ -56,7 +56,7 @@ class StringConstants {
   static const String setYourAccountPassword = "Set your\naccount's password?";
   static const String enterTheVerificationCode = "Enter the\nverification code";
   static const String verificationCode = "verification code";
-  static const String didntReciveCode = "Didnt receive the code? Resend in";
+  static const String didntReciveCode = "Didn't receive the code? Resend in 00 : ";
   static const String createEvent = "Create Event";
   static const String createGroup = "Create Group";
   static const String categories = "Categories";
@@ -75,7 +75,7 @@ class StringConstants {
   static const String takeASelfie = "Take a selfie";
   static const String resendCode = "Resend Code";
   static const String registerCreateManageEvents =
-      "Register,create and manage events.";
+      "Register, create and manage events.";
   static const String agreeToOur = "By continuing,you agree to our";
   static const String termsAndConditions = "Terms & Conditions";
   static const String connectWithPeople = "Connect with people";
@@ -125,7 +125,7 @@ class StringConstants {
   static const String block = "Block";
   static const String anyQuestionWhenEventCreated =
       "Any question that is entered when event created*";
-  static const String reportEvent = "Report event";
+  static const String reportEvent = "Report Event";
   static const String report = "Report";
   static const String dateofBirth = "Date of Birth";
   static const String date = "Date";
@@ -231,7 +231,7 @@ class StringConstants {
   static const String yesExit = "Yes, please exit";
   static const String yesPlease = "Yes, please ";
   static const String yesRemove = "Yes, please remove";
-  static const String eventShared = "Event Shared !";
+  static const String eventShared = "Event Shared!";
   static const String shared = "Shared !";
   static const String amountToWithDraw =
       "Enter the amount you would like to withdraw ";
@@ -285,7 +285,7 @@ class StringConstants {
   static const String requestSent = "Request Sent!";
   static const String transactionComplete = "Transaction Complete!";
   static const String requestStatus =
-      "You will be notifiy when your request is accepted";
+      "You will be notified when your request is accepted.";
   static const String transactionStatus =
       "The money will be in transferred to your bank account in 3-5 working days.";
   static const String typeYourMessage = "Type your message here...";

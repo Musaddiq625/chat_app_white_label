@@ -13,6 +13,9 @@ class UserModel {
   bool? isOnline;
   String? lastActive;
   String? pushToken;
+  String? status;
+  bool? isProfileCompleted;
+  String? token;
 
   UserModel({
     this.id,
@@ -29,25 +32,33 @@ class UserModel {
     this.isOnline,
     this.lastActive,
     this.pushToken,
+    this.status,
+    this.isProfileCompleted,
+    this.token,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-        id: json['_id'],
-        firstName: json['firstName'],
-        lastName: json['lastName'],
-        email: json['email'],
-        password: json['password'],
-        image: json['image'],
-        about: json['about'],
-        fcmToken: json['fcm_token'],
-        phoneNumber: json['phoneNumber'],
-        chats: json['chats'] == null ? [] : json['chats'].cast<String>(),
-        isProfileComplete: json['is_profile_complete'],
-        isOnline: json['is_online'],
-        lastActive: json['last_active'],
-        pushToken: json['push_token']);
+      id: json['_id'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      email: json['email'],
+      password: json['password'],
+      image: json['image'],
+      about: json['about'],
+      fcmToken: json['fcm_token'],
+      phoneNumber: json['phoneNumber'],
+      chats: json['chats'] == null ? [] : json['chats'].cast<String>(),
+      isProfileComplete: json['is_profile_complete'],
+      isOnline: json['is_online'],
+      lastActive: json['last_active'],
+      pushToken: json['push_token'],
+      status: json['status'],
+      isProfileCompleted: json['isProfileCompleted'],
+      token: json['token'],
+    );
   }
+
   factory UserModel.fromJsonSignUp(Map<String, dynamic> json) {
     return UserModel(
         firstName: json['firstName'],
@@ -58,6 +69,7 @@ class UserModel {
         phoneNumber: json['phoneNumber'],
         isProfileComplete: json['is_profile_complete']);
   }
+
   factory UserModel.fromJsonLogin(Map<String, dynamic> json) {
     return UserModel(
         firstName: json['firstName'],
@@ -68,6 +80,7 @@ class UserModel {
         phoneNumber: json['phoneNumber'],
         isProfileComplete: json['is_profile_complete']);
   }
+
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
@@ -84,6 +97,9 @@ class UserModel {
     data['is_online'] = isOnline;
     data['last_active'] = lastActive;
     data['push_token'] = pushToken;
+    data['status'] = status;
+    data['isProfileCompleted'] = isProfileCompleted;
+    data['token'] = token;
     return data;
   }
 
