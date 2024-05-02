@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chat_app_white_label/globals.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -11,7 +12,9 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -38,9 +41,11 @@ class _OtpScreenState extends State<OtpScreen> {
   Timer? _timer;
   int _counter = 30;
 
+  // late UserModel userModel ;
   late OTPCubit otpCubit = BlocProvider.of<OTPCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late final appCubit = BlocProvider.of<AppSettingCubit>(context);
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
@@ -55,7 +60,11 @@ class _OtpScreenState extends State<OtpScreen> {
         LoadingDialog.showLoadingDialog(context);
       }
       else if (state is OTPSuccessUserState){
-        appCubit.setToken(state.token);
+        LoggerUtil.logs("state.userModel?.toJson  ${state.userModel?.toJson()}");
+        onBoardingCubit.initializeUserData(state.userModel!);
+        LoggerUtil.logs("state.userModel?.id.toString() ${state.userModel?.id.toString()}");
+        appCubit.setToken(state.userModel?.token);
+
         LoadingDialog.hideLoadingDialog(context);
         NavigationUtil.push(context, RouteConstants.nameScreen);
       }

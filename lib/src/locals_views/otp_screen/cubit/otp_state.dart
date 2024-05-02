@@ -20,9 +20,9 @@ class OtpSuccessResendState extends OTPState {
 }
 
 class OTPSuccessUserState extends OTPState {
-  final String? token;
+  final UserModel? userModel;
 
-  OTPSuccessUserState(this.token);
+  OTPSuccessUserState(this.userModel);
 
 }
 

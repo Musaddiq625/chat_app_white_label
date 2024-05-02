@@ -25,7 +25,9 @@ class GenderSelection extends StatefulWidget {
 
 class _GenderSelectionState extends State<GenderSelection> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   String? _selectedOption;
+
   // late final OnBoardingUserStepTwoState onBoardingUserStepTwoState;
   final Map<String, dynamic> _ListofIdentities = {
     "Male": true,
@@ -37,14 +39,23 @@ class _GenderSelectionState extends State<GenderSelection> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+//       localContacts = await ContactsService.getContacts(withThumbnails: false);
+      LoggerUtil.logs(
+          "In Binding onBoardingUserStepTwoState ${onBoardingCubit.userModel.toJson()} ");
+    });
+
+
+    LoggerUtil.logs(
+        "onBoardingUserStepTwoState ${onBoardingCubit.userModel.id} ${onBoardingCubit.userModel.aboutMe} ${onBoardingCubit.userModel.dateOfBirth}");
+
+    LoggerUtil.logs(
+        "onBoardingUserStepTwoState ${onBoardingCubit.userModel.toJson()} ");
     // LoggerUtil.logs(
     //     "onBoardingUserStepTwoState dob:${onBoardingUserStepTwoState.dob} aboutMe:${onBoardingUserStepTwoState.aboutMe} gender:${onBoardingUserStepTwoState.gender}");
     _selectedOption = _ListofIdentities.entries.first.key;
     setState(() {});
   }
-
-  late OnboardingCubit onBoardingCubit =
-      BlocProvider.of<OnboardingCubit>(context);
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +118,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                       onPressed: () {
                         setState(() {
                           _selectedOption = (identity);
+                          LoggerUtil.logs("_selectedOption ${_selectedOption}");
                         });
                       });
                 },
@@ -122,8 +134,12 @@ class _GenderSelectionState extends State<GenderSelection> {
                   : ColorConstants.lightGray,
               buttonText: StringConstants.continues,
               onPressed: () {
+                onBoardingCubit.setGenderValues(_selectedOption);
                 onBoardingCubit.userDetailSecondStep(
-                    "date", "aboutme", "gender");
+                    onBoardingCubit.userModel.id.toString(),
+                    onBoardingCubit.userModel.dateOfBirth.toString(),
+                    onBoardingCubit.userModel.aboutMe.toString(),
+                    onBoardingCubit.userModel.gender.toString());
                 // NavigationUtil.push(context, RouteConstants.aboutYouScreen);
               })
         ],

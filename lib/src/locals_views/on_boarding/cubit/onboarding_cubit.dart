@@ -14,9 +14,12 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
 
   UserDetailModel? userDetailModel;
 
-  UserModel? userModel;
+  UserModel userModel = UserModel();
 
-  userDetailFirstStep(String? selectedImage) async {
+  // verify OTP
+  void initializeUserData(UserModel user) => userModel = user;
+
+  void userDetailFirstStep(String? selectedImage) async {
     emit(OnBoardingLoadingState());
     try {
       userDetailModel?.profileImage = selectedImage;
@@ -27,16 +30,18 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
     }
   }
 
-  void setDobValues(String? dob){
-    userModel?.dateOfBirth = dob;
-  }
-  void setAboutMeValues(String? aboutMe){
-    userModel?.aboutMe = aboutMe;
-  }
-  void setGenderValues(String? gender){
-    userModel?.gender = gender;
+  void setDobValues(String? dob) {
+    userModel = userModel.copyWith(dateOfBirth: dob);
   }
 
+  void setAboutMeValues(String? aboutMe) {
+    userModel = userModel.copyWith(aboutMe: aboutMe);
+  }
+
+  void setGenderValues(String? gender) {
+    // userModel?.gender = gender;
+    userModel = userModel.copyWith(gender: gender);
+  }
 
   // void secondStepInputValues(String? dob,String? aboutMe,String? gender){
   //   userModel?.dateOfBirth = dob;
@@ -45,11 +50,11 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
   // }
 
   userDetailSecondStep(
-      String dateOfBirth, String aboutMe, String gender) async {
+      String userId, String dateOfBirth, String aboutMe, String gender) async {
     emit(OnBoardingLoadingState());
     try {
       var resp = await OnBoardingRepository.updateUserDobToGender(
-          dateOfBirth, aboutMe, gender);
+          userId, dateOfBirth, aboutMe, gender);
       // await FirebaseUtils.updateUserStepTwo(userDetailModel
       //     // dateOfBirth, aboutMe, gender, bio,
       //     // moreAboutMeModel, socialLinkModel, hobbies, creativity

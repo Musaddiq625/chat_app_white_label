@@ -13,6 +13,7 @@ part 'otp_state.dart';
 
 class OTPCubit extends Cubit<OTPState> {
   FirebaseService firebaseService = getIt<FirebaseService>();
+  UserModel? userDetailModel;
 
   OTPCubit() : super(OTPInitial());
 
@@ -61,7 +62,8 @@ class OTPCubit extends Cubit<OTPState> {
 
     try {
       var resp = await AuthRepository.verifyOtp(identifier,otp);
-      emit(OTPSuccessUserState(resp.data?.token.toString()));
+      // LoggerUtil.logs("userDetailModel ${userDetailModel?.toJson()}");
+      emit(OTPSuccessUserState(resp.data));
       LoggerUtil.logs(resp);
     } catch (error) {
       emit(OTPFailureState(error.toString()));

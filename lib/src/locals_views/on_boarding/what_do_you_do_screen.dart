@@ -27,6 +27,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
   bool isFieldsValidate = false;
   UserDetailModel? userDetailModel;
   // late final OnBoardingUserStepTwoState onBoardingUserStepTwoState;
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _aboutMeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -96,6 +97,7 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                 userDetailModel?.aboutMe = _aboutMeController.text;
 
                 if( isFieldsValidate) {
+                  onBoardingCubit.setAboutMeValues(_aboutMeController.value.text);
                   setState(() {
                     // onBoardingUserStepTwoState.dob =_aboutMeController.value.text;
                   });

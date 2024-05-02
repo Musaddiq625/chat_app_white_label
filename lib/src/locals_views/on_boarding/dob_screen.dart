@@ -88,10 +88,8 @@ class _DOBScreenState extends State<DOBScreen> {
                 onPressed: () {
                   if(_dateController.value.text.isNotEmpty) {
                     // onBoardingCubit.secondStepInputValues("dob");
-                    onBoardingCubit.setDobValues("dob");
-                    setState(() {
-                      // onBoardingUserStepTwoState.dob =_dateController.value.text;
-                    });
+                    onBoardingCubit.setDobValues(_dateController.value.text);
+
                     NavigationUtil.push(
                         context, RouteConstants.whatDoYouDoScreen);
                   }
