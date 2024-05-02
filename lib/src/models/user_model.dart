@@ -4,8 +4,10 @@ class UserModel {
   String? lastName;
   String? email;
   String? password;
+  String? dateOfBirth;
+  String? gender;
   String? image;
-  String? about;
+  String? aboutMe;
   String? phoneNumber;
   String? fcmToken;
   List<String>? chats;
@@ -17,6 +19,9 @@ class UserModel {
   String? status;
   bool? isProfileCompleted;
   String? token;
+  List<dynamic>? blockedFriendIds;
+  List<dynamic>? favouriteEvent;
+  List<dynamic>? authToken;
 
   UserModel({
     this.id,
@@ -25,7 +30,9 @@ class UserModel {
     this.lastName,
     this.email,
     this.password,
-    this.about,
+    this.dateOfBirth,
+    this.gender,
+    this.aboutMe,
     this.fcmToken,
     this.phoneNumber,
     this.chats,
@@ -36,6 +43,9 @@ class UserModel {
     this.status,
     this.isProfileCompleted,
     this.token,
+    this.blockedFriendIds,
+    this.favouriteEvent,
+    this.authToken,
     this.userPhotos,
   });
 
@@ -46,8 +56,10 @@ class UserModel {
       lastName: json['lastName'],
       email: json['email'],
       password: json['password'],
+      dateOfBirth: json['dateOfBirth'],
+      gender: json['gender'],
       image: json['image'],
-      about: json['about'],
+      aboutMe: json['aboutMe'],
       fcmToken: json['fcm_token'],
       phoneNumber: json['phoneNumber'],
       chats: json['chats'] == null ? [] : json['chats'].cast<String>(),
@@ -59,6 +71,9 @@ class UserModel {
       status: json['status'],
       isProfileCompleted: json['isProfileCompleted'],
       token: json['token'],
+      blockedFriendIds: json['blockedFriendIds'],
+      favouriteEvent: json['favouriteEvent'],
+      authToken: json['authToken'],
     );
   }
   //
@@ -86,13 +101,15 @@ class UserModel {
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['id'] = id;
+    data['_id'] = id;
     data['firstName'] = firstName;
     data['lastName'] = lastName;
     data['email'] = email;
     data['password'] = password;
+    data['dateOfBirth'] = dateOfBirth;
+    data['gender'] = gender;
     data['image'] = image;
-    data['about'] = about;
+    data['aboutMe'] = aboutMe;
     data['fcm_token'] = fcmToken;
     data['phoneNumber'] = phoneNumber;
     data['chats'] = chats;
@@ -104,6 +121,9 @@ class UserModel {
     data['isProfileCompleted'] = isProfileCompleted;
     data['userPhotos'] = userPhotos;
     data['token'] = token;
+    data['blockedFriendIds'] = blockedFriendIds;
+    data['favouriteEvent'] = favouriteEvent;
+    data['authToken'] = authToken;
     return data;
   }
 
@@ -114,7 +134,9 @@ class UserModel {
     String? email,
     String? password,
     String? image,
-    String? about,
+    String? dateOfBirth,
+    String? gender,
+    String? aboutMe,
     String? fcmToken,
     String? phoneNumber,
     List<String>? chats,
@@ -126,6 +148,9 @@ class UserModel {
     bool? isProfileCompleted,
     List<String>? userPhotos,
     String? token,
+    List<dynamic>? blockedFriendIds,
+    List<dynamic>? favouriteEvent,
+    List<dynamic>?authToken,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -133,8 +158,10 @@ class UserModel {
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
       password: password ?? this.password,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      gender: gender ?? this.gender,
       image: image ?? this.image,
-      about: about ?? this.about,
+      aboutMe: aboutMe ?? this.aboutMe,
       fcmToken: fcmToken ?? this.fcmToken,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       chats: chats ?? this.chats,
@@ -145,6 +172,9 @@ class UserModel {
       status: status ?? this.status,
       isProfileCompleted: isProfileCompleted ?? this.isProfileCompleted,
       token: token ?? this.token,
+      blockedFriendIds: blockedFriendIds ?? this.blockedFriendIds,
+      favouriteEvent: favouriteEvent ?? this.favouriteEvent,
+      authToken: authToken ?? this.authToken,
       userPhotos: userPhotos ?? this.userPhotos,
     );
   }

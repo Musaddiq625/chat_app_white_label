@@ -33,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     if (widget.isEdit == true) {
       nameController.text = FirebaseUtils.user?.firstName ?? '';
-      aboutController.text = FirebaseUtils.user?.about ?? '';
+      aboutController.text = FirebaseUtils.user?.aboutMe ?? '';
       imageUrl = FirebaseUtils.user?.image;
     }
   }

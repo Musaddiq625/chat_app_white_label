@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/dio_client_network.dart';
@@ -24,6 +22,27 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
   }
 
   Future<void> updateUserPhoto(List<String> profileImages) async {
+  void setDobValues(String? dob) {
+    _userDetailModel = _userDetailModel.copyWith(dateOfBirth: dob);
+  }
+
+  void setAboutMeValues(String? aboutMe) {
+    _userDetailModel = _userDetailModel.copyWith(aboutMe: aboutMe);
+  }
+
+  void setGenderValues(String? gender) {
+    // userModel?.gender = gender;
+    _userDetailModel = _userDetailModel.copyWith(gender: gender);
+  }
+
+  // void secondStepInputValues(String? dob,String? aboutMe,String? gender){
+  //   userModel?.dateOfBirth = dob;
+  //   userModel?.aboutMe = aboutMe;
+  //   userModel?.gender = gender;
+  // }
+
+  userDetailSecondStep(
+      String userId, String dateOfBirth, String aboutMe, String gender) async {
     emit(OnBoardingLoadingState());
     try {
       DioClientNetwork.initializeDio();
@@ -34,6 +53,14 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
           _userDetailModel.lastName!,
           profileImages);
       emit(OnBoardingUserNameImageSuccessState());
+      var resp = await OnBoardingRepository.updateUserDobToGender(
+          userId, dateOfBirth, aboutMe, gender);
+      // await FirebaseUtils.updateUserStepTwo(userDetailModel
+      //     // dateOfBirth, aboutMe, gender, bio,
+      //     // moreAboutMeModel, socialLinkModel, hobbies, creativity
+      //     );
+      emit(OnBoardingUserDataSecondStepSuccessState());
+      LoggerUtil.logs(resp);
     } catch (e) {
       emit(OnBoardingFailureState(e.toString()));
     }

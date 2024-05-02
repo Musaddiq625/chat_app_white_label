@@ -5,11 +5,8 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
 import '../../components/app_bar_component.dart';
 import '../../components/button_component.dart';
-import '../../components/icon_component.dart';
 import '../../constants/font_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../constants/size_box_constants.dart';
@@ -74,7 +71,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       } else if (state is SignUpCancleState) {
         LoadingDialog.hideLoadingDialog(context);
       }
-    }, builder: (context, state) {
+    },
+        builder: (context, state) {
       return UIScaffold(
           appBar: AppBarComponent(""),
           resizeToAvoidBottomInset: false,

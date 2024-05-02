@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -26,10 +27,14 @@ class DOBScreen extends StatefulWidget {
 class _DOBScreenState extends State<DOBScreen> {
   bool _isDobValid = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
+   // final OnBoardingUserStepTwoState onBoardingUserStepTwoState;
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
   TextEditingController _dateController = TextEditingController();
+
   late final DateTime? picked;
   DateTime selectedDate = DateTime.now();
 
@@ -81,9 +86,14 @@ class _DOBScreenState extends State<DOBScreen> {
                     : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressed: () {
-                  if(_dateController.value.text.isNotEmpty)
-                  NavigationUtil.push(
-                      context, RouteConstants.whatDoYouDoScreen);
+                  if(_dateController.value.text.isNotEmpty) {
+                    // onBoardingCubit.secondStepInputValues("dob");
+                    onBoardingCubit.setDobValues(_dateController.value.text);
+
+                    NavigationUtil.push(
+                        context, RouteConstants.whatDoYouDoScreen);
+                  }
+
                 }),
           )
         ],

@@ -22,6 +22,7 @@ class AppSettingCubit extends Cubit<AppSettingState> {
 
   String appName = 'WeUno Chat';
   String appLogo = 'assets/images/logo.jpg';
+  String? userId ;
 
   void setFlavor(String packageName) async {
     if (packageName == 'com.example.chat_app_white_label') {

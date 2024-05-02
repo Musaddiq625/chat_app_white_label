@@ -8,6 +8,7 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/models/user_detail_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
@@ -25,6 +26,8 @@ class WhatDoYouDoScreen extends StatefulWidget {
 class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
   bool isFieldsValidate = false;
   UserDetailModel? userDetailModel;
+  // late final OnBoardingUserStepTwoState onBoardingUserStepTwoState;
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final TextEditingController _aboutMeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -92,8 +95,14 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
               buttonText: StringConstants.continues,
               onPressed: () {
                 userDetailModel?.aboutMe = _aboutMeController.text;
-                if( isFieldsValidate)
-                NavigationUtil.push(context, RouteConstants.genderScreen);
+
+                if( isFieldsValidate) {
+                  onBoardingCubit.setAboutMeValues(_aboutMeController.value.text);
+                  setState(() {
+                    // onBoardingUserStepTwoState.dob =_aboutMeController.value.text;
+                  });
+                  NavigationUtil.push(context, RouteConstants.genderScreen);
+                }
               }),
         )
       ],
