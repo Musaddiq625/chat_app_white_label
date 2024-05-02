@@ -19,6 +19,12 @@ class OtpSuccessResendState extends OTPState {
   OtpSuccessResendState(this.verificationId);
 }
 
+class OTPSuccessUserState extends OTPState {
+  final String? token;
+
+  OTPSuccessUserState(this.token);
+
+}
 
 class OTPSuccessNewUserState extends OTPState {
   final String phoneNumber;

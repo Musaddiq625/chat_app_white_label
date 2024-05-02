@@ -42,7 +42,7 @@ class LoginResponseWrapper {
     map['code'] = code;
     map['status'] = status;
     if (data != null) {
-      map['data'] = data?.LoginToJson();
+      map['data'] = data?.toJson();
     }
     map['meta'] = meta;
     return map;

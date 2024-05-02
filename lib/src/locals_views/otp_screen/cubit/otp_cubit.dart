@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../main.dart';
+import '../../../network/repositories/auth_repository.dart';
 import '../../../utils/service/firbase_service.dart';
 
 part 'otp_state.dart';
@@ -54,6 +55,21 @@ class OTPCubit extends Cubit<OTPState> {
     }
   }
 
+
+  Future<void> verifyOtpUser(String identifier,String otp) async {
+    emit(OTPLoadingState());
+
+    try {
+      var resp = await AuthRepository.verifyOtp(identifier,otp);
+      emit(OTPSuccessUserState(resp.data?.token.toString()));
+      LoggerUtil.logs(resp);
+    } catch (error) {
+      emit(OTPFailureState(error.toString()));
+      LoggerUtil.logs("General Error: $error");
+    }
+  }
+
+
   resendOtptoUser(String phoneNumber) async {
     emit(OTPLoadingState());
     try {
@@ -76,4 +92,6 @@ class OTPCubit extends Cubit<OTPState> {
       print("Error $e");
     }
   }
+
+
 }

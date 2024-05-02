@@ -24,16 +24,17 @@ class AuthRepository {
   // }
 
   static Future<SendOtpResponseWrapper> login(String email) async {
+    DioClientNetwork.initializeDio(removeToken: false);
     final response = await getIt<DioClientNetwork>().postRequest(
         HttpConstants.sendOtp, {"email": email});
     return SendOtpResponseWrapper.fromJson(response);
   }
 
 
-  static Future<SendOtpResponseWrapper> verifyOtp(String email,String otp) async {
+  static Future<LoginResponseWrapper> verifyOtp(String email,String otp) async {
     final response = await getIt<DioClientNetwork>().postRequest(
         HttpConstants.verifyOtp, {"email": email,"otp":otp});
-    return SendOtpResponseWrapper.fromJson(response);
+    return LoginResponseWrapper.fromJson(response);
   }
 
   Future<ForgetResponseWrapper> forgetPassword(String email) async {

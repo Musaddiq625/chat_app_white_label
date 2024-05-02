@@ -1,10 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:chat_app_white_label/main.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
+import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/permission_utils.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:chat_app_white_label/src/models/contacts_model.dart';
 import 'package:meta/meta.dart';
@@ -15,6 +18,7 @@ part 'app_setting_state.dart';
 class AppSettingCubit extends Cubit<AppSettingState> {
   AppSettingCubit() : super(AppSettingInitial());
   FirebaseService firebaseService = getIt<FirebaseService>();
+  SharedPreferencesUtil sharedPreferencesUtil = getIt<SharedPreferencesUtil>();
 
   String appName = 'WeUno Chat';
   String appLogo = 'assets/images/logo.jpg';
@@ -28,6 +32,11 @@ class AppSettingCubit extends Cubit<AppSettingState> {
       appLogo = 'assets/images/whatsapp.png';
     }
     emit(SetFlavorState());
+  }
+
+
+  setToken(String? token)async{
+    await sharedPreferencesUtil.setString(SharedPreferenceConstants.apiAuthToken, token);
   }
 
   List<CameraDescription> cameras = [];

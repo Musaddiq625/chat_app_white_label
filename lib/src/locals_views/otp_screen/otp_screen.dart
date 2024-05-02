@@ -12,6 +12,7 @@ import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -39,6 +40,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   late OTPCubit otpCubit = BlocProvider.of<OTPCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late final appCubit = BlocProvider.of<AppSettingCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
@@ -51,7 +53,14 @@ class _OtpScreenState extends State<OtpScreen> {
       LoggerUtil.logs('login state: $state');
       if (state is OTPLoadingState) {
         LoadingDialog.showLoadingDialog(context);
-      } else if (state is OTPSuccessNewUserState) {
+      }
+      else if (state is OTPSuccessUserState){
+        appCubit.setToken(state.token);
+        LoadingDialog.hideLoadingDialog(context);
+        NavigationUtil.push(context, RouteConstants.nameScreen);
+      }
+      else if (state is OTPSuccessNewUserState) {
+
         // if (state.fcmToken != null) {
         //   await FirebaseUtils.addFcmToken(state.phoneNumber, state.fcmToken!);
         // }
@@ -69,28 +78,40 @@ class _OtpScreenState extends State<OtpScreen> {
         } else if (widget.otpArg.type == "afterEmail") {
           NavigationUtil.push(context, RouteConstants.nameScreen,
               args: "OnBoarding");
-        } else if (widget.otpArg.type == "setPasswordBeforeNumber") {
-          NavigationUtil.push(context, RouteConstants.passwordScreen,
-              args: "phoneNumber");
+        }
+        // else if (widget.otpArg.type == "setPasswordBeforeNumber") {
+        //   NavigationUtil.push(context, RouteConstants.passwordScreen,
+        //       args: "phoneNumber");
+        // } else if (widget.otpArg.type == "setPasswordAfterNumber") {
+        //   NavigationUtil.push(context, RouteConstants.passwordScreen,
+        //       args: "OnBoarding");
+        // }
+        else if (widget.otpArg.type == "setPasswordBeforeNumber") {
+          NavigationUtil.push(context, RouteConstants.nameScreen,
+              args: "OnBoarding");
         } else if (widget.otpArg.type == "setPasswordAfterNumber") {
-          NavigationUtil.push(context, RouteConstants.passwordScreen,
+          NavigationUtil.push(context, RouteConstants.nameScreen,
               args: "OnBoarding");
         }
-      } else if (state is OtpSuccessResendState) {
+      }
+      else if (state is OtpSuccessResendState) {
         LoadingDialog.hideLoadingDialog(context);
         setState(() {
           _counter = 15; // Reset the counter
           startTimer(); // Restart the timer
         });
-      } else if (state is OTPSuccessOldUserState) {
+      }
+      else if (state is OTPSuccessOldUserState) {
         NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen);
-      } else if (state is OTPFailureState) {
+      }
+      else if (state is OTPFailureState) {
         LoadingDialog.hideLoadingDialog(context);
         // ToastComponent.showToast(state.error.toString(), context: context);
         // AppConstants.openKeyboard(context);
 
         ToastComponent.showToast("Invalid Otp", context: context);
-      } else if (state is OTPCancleState) {
+      }
+      else if (state is OTPCancleState) {
         LoadingDialog.hideLoadingDialog(context);
       }
     }, builder: (context, state) {
@@ -239,16 +260,18 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void handleOTPResponse() async {
     AppConstants.closeKeyboard();
-    if (widget.otpArg.type == "setPasswordBeforeNumber") {
-      NavigationUtil.push(context, RouteConstants.passwordScreen,
-          args: "phoneNumber");
-    } else {
-      await otpCubit.otpUser(
-        widget.otpArg.verificationId,
-        otpController.text,
-        widget.otpArg.phoneNumber,
-      );
-    }
+    // if (widget.otpArg.type == "setPasswordBeforeNumber") {
+    //   NavigationUtil.push(context, RouteConstants.passwordScreen,
+    //       args: "phoneNumber");
+    // } else {
+    //   await otpCubit.otpUser(
+    //     widget.otpArg.verificationId,
+    //     otpController.text,
+    //     widget.otpArg.phoneNumber,
+    //   );
+
+      await otpCubit.verifyOtpUser( widget.otpArg.phoneNumber, otpController.text);
+    // }
   }
 }
 

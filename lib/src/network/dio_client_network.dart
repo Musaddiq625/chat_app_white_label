@@ -9,26 +9,29 @@ import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:dio/dio.dart';
 
 class DioClientNetwork {
-  Future<Dio> _getApiClient() async {
-    final dio = Dio(); //builtin
+  static late Dio _dio; //builtin
+
+  // Future<Dio> _getApiClient() async {
+  static Future<Dio> initializeDio({bool removeToken = false}) async {
+    _dio = Dio();
     final token = await getIt<SharedPreferencesUtil>()
         .getString(SharedPreferenceConstants.apiAuthToken);
 
-    dio.options = BaseOptions(
+    _dio.options = BaseOptions(
       baseUrl: HttpConstants.base,
     );
     if (token != null) {
-      dio.options.headers['Authorization'] = 'Bearer $token';
+      _dio.options.headers['Authorization'] = 'Bearer $token';
     }
-    dio.interceptors.clear();
+    _dio.interceptors.clear();
 
-    dio.interceptors.add(
+    _dio.interceptors.add(
       LogInterceptor(
         responseBody: true,
         requestBody: true,
       ),
     );
-    return dio;
+    return _dio;
   }
 
   Future<bool> _checkInternetConnectivity() async {
@@ -49,11 +52,11 @@ class DioClientNetwork {
   };
 
   Future postRequest(String url, Map<String, dynamic> data) async {
-    final dio = await _getApiClient();
+    // final dio = await _getApiClient();
     try {
       final connected = await _checkInternetConnectivity();
       if (connected) {
-        final response = await dio.post(url, data: data);
+        final response = await _dio.post(url, data: data);
         return response.data;
       } else {
         return _internetError;
@@ -63,7 +66,7 @@ class DioClientNetwork {
 
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
         data: data,
       );
@@ -71,11 +74,11 @@ class DioClientNetwork {
   }
 
   Future putRequest(String url, dynamic data) async {
-    final dio = await _getApiClient();
+    // final dio = await _getApiClient();
     try {
       final connected = await _checkInternetConnectivity();
       if (connected) {
-        final response = await dio.put(url, data: data);
+        final response = await _dio.put(url, data: data);
 
         return response.data;
       } else {
@@ -86,7 +89,7 @@ class DioClientNetwork {
 
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
         data: data,
       );
@@ -94,11 +97,11 @@ class DioClientNetwork {
   }
 
   Future getRequest(String url, {Map<String, dynamic>? queryParameter}) async {
-    final dio = await _getApiClient();
+    // final dio = await _getApiClient();
     try {
       final connected = await _checkInternetConnectivity();
       if (connected) {
-        final response = await dio.get(url, queryParameters: queryParameter);
+        final response = await _dio.get(url, queryParameters: queryParameter);
         return response.data;
       } else {
         return _internetError;
@@ -106,18 +109,18 @@ class DioClientNetwork {
     } catch (e) {
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
       );
     }
   }
 
   Future patchRequest(String url, Map<String, dynamic> data) async {
-    final dio = await _getApiClient();
+    // final dio = await _getApiClient();
     try {
       final connected = await _checkInternetConnectivity();
       if (connected) {
-        final response = await dio.patch(url, data: data);
+        final response = await _dio.patch(url, data: data);
         return response.data;
       } else {
         return _internetError;
@@ -125,21 +128,21 @@ class DioClientNetwork {
     } on SocketException catch (e) {
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
         data: data,
       );
     } on FormatException catch (e) {
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
         data: data,
       );
     } catch (e) {
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
         data: data,
       );
@@ -147,11 +150,11 @@ class DioClientNetwork {
   }
 
   Future deleteRequest(String url) async {
-    final dio = await _getApiClient();
+    // final dio = await _getApiClient();
     try {
       final connected = await _checkInternetConnectivity();
       if (connected) {
-        final response = await dio.delete(url);
+        final response = await _dio.delete(url);
         return response.data;
       } else {
         return _internetError;
@@ -159,19 +162,19 @@ class DioClientNetwork {
     } on SocketException catch (e) {
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
       );
     } on FormatException catch (e) {
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
       );
     } catch (e) {
       return NetworkExceptions.getDioException(
         e,
-        dio,
+        _dio,
         HttpConstants.base + url,
       );
     }
