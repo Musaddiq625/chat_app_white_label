@@ -22,6 +22,7 @@ class SharedPreferencesUtil {
     return stringValue;
   }
 
+
   ///set int value in prefs
   Future setInt(String? key, int? value) async {
     LoggerUtil.logs('setInt $key');
