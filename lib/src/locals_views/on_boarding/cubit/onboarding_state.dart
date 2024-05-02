@@ -7,38 +7,16 @@ class OnBoardingInitial extends OnBoardingState {}
 
 class OnBoardingLoadingState extends OnBoardingState {}
 
-class OnBoardingUserDataFirstStepSuccessState extends OnBoardingState{
-  // final String firstName;
-  // final String lastName;
-  // final List<File> userImages;
-  // final String selectedImage;
+class OnBoardingUserNameImageSuccessState extends OnBoardingState {}
 
-  // OnBoardingUserDataFirstStepSuccessState(this.firstName,this.lastName,this.userImages,this.selectedImage);
-}
+class OnBoardingUserDataSecondStepSuccessState extends OnBoardingState {}
 
-class OnBoardingUserStepTwoState  extends OnBoardingState{
-   final String? dob;
-   final String? aboutMe;
-   final String? gender;
+class OnBoardingUserStepTwoState extends OnBoardingState {
+  final String? dob;
+  final String? aboutMe;
+  final String? gender;
 
-  OnBoardingUserStepTwoState(
-      this.dob,
-      this.aboutMe,
-      this.gender
-      );
-}
-
-class OnBoardingUserDataSecondStepSuccessState extends OnBoardingState{
-  // final String dob;
-  // final String aboutMe;
-  // final String gender;
-  // final List<File> moreAboutMe;
-  // final List<File> interest;
-
-  // OnBoardingUserDataSecondStepSuccessState(
-  //     this.dob,this.aboutMe,this.gender,this.moreAboutMe,this.interest
-  //
-  //     );
+  OnBoardingUserStepTwoState(this.dob, this.aboutMe, this.gender);
 }
 
 class OnBoardingFailureState extends OnBoardingState {
