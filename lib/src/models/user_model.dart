@@ -4,8 +4,10 @@ class UserModel {
   String? lastName;
   String? email;
   String? password;
+  String? dateOfBirth;
+  String? gender;
   String? image;
-  String? about;
+  String? aboutMe;
   String? phoneNumber;
   String? fcmToken;
   List<String>? chats;
@@ -24,7 +26,9 @@ class UserModel {
     this.lastName,
     this.email,
     this.password,
-    this.about,
+    this.dateOfBirth,
+    this.gender,
+    this.aboutMe,
     this.fcmToken,
     this.phoneNumber,
     this.chats,
@@ -44,8 +48,10 @@ class UserModel {
       lastName: json['lastName'],
       email: json['email'],
       password: json['password'],
+      dateOfBirth: json['dateOfBirth'],
+      gender: json['gender'],
       image: json['image'],
-      about: json['about'],
+      aboutMe: json['aboutMe'],
       fcmToken: json['fcm_token'],
       phoneNumber: json['phoneNumber'],
       chats: json['chats'] == null ? [] : json['chats'].cast<String>(),
@@ -88,8 +94,10 @@ class UserModel {
     data['lastName'] = lastName;
     data['email'] = email;
     data['password'] = password;
+    data['dateOfBirth'] = dateOfBirth;
+    data['gender'] = gender;
     data['image'] = image;
-    data['about'] = about;
+    data['about'] = aboutMe;
     data['fcm_token'] = fcmToken;
     data['phoneNumber'] = phoneNumber;
     data['chats'] = chats;

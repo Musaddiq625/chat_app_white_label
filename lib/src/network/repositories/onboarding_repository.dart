@@ -17,4 +17,35 @@ class OnBoardingRepository {
     );
     return UserModel.fromJson(response.data);
   }
+
+
+ static Future<UserModel> updateUserDobToGender(
+      String dateOfBirth, String aboutMe, String gender) async {
+    Response response = await getIt<DioClientNetwork>().postRequest(
+      HttpConstants.users,
+      {
+        "dateOfBirth": dateOfBirth,
+        "aboutMe": aboutMe,
+        "gender": gender
+      },
+    );
+    return UserModel.fromJson(response.data);
+  }
+
+  Future<UserModel> updateUserAboutYouToInterest(
+      String bio, String socialLinks, String moreAbout,List<String> hobbies,List<String> creativity) async {
+    Response response = await getIt<DioClientNetwork>().postRequest(
+      HttpConstants.users,
+      {
+        "bio": bio,
+        "socialLink": socialLinks,
+        "moreAbout": moreAbout,
+        "interest" : {
+          "hobbies":hobbies,
+          "creativity":creativity,
+        }
+      },
+    );
+    return UserModel.fromJson(response.data);
+  }
 }

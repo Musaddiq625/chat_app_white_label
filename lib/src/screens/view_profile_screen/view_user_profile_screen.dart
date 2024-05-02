@@ -95,7 +95,7 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
                       ),
-                      Text(widget.user.about ?? '',
+                      Text(widget.user.aboutMe ?? '',
                           style: const TextStyle(
                               color: Colors.black54, fontSize: 15)),
                     ],

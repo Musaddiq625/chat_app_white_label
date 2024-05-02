@@ -23,7 +23,7 @@ class APIs {
       id: user.uid,
       firstName: user.displayName.toString(),
       phoneNumber: user.phoneNumber,
-      about: "Hey, I'm using We Chat!",
+      aboutMe: "Hey, I'm using We Chat!",
       image: user.photoURL.toString(),
       isOnline: false,
       lastActive: '',
@@ -144,7 +144,7 @@ class APIs {
     final chatUser = UserModel(
         id: user.uid,
         firstName: user.displayName.toString(),
-        about: "Hey, I'm using We Chat!",
+        aboutMe: "Hey, I'm using We Chat!",
         image: user.photoURL.toString(),
         isOnline: false,
         lastActive: time,
@@ -195,7 +195,7 @@ class APIs {
   static Future<void> updateUserInfo() async {
     await firestore.collection('users').doc(user.uid).update({
       'name': me.firstName,
-      'about': me.about,
+      'about': me.aboutMe,
     });
   }
 
