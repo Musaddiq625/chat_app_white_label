@@ -13,12 +13,26 @@ part 'signup_state.dart';
 class SignUpCubit extends Cubit<SignUpState> {
   SignUpCubit() : super(SignUpInitial());
   FirebaseService firebaseService = getIt<FirebaseService>();
+  //
+  // Future<void> loginUser(String identifier, String password) async {
+  //   emit(SignUpLoadingState());
+  //
+  //   try {
+  //     var resp = await AuthRepository.login(identifier, password);
+  //     LoggerUtil.logs(resp);
+  //   } catch (error) {
+  //     emit(SignUpFailureState(error.toString()));
+  //     LoggerUtil.logs("General Error: $error");
+  //   }
+  // }
 
-  Future<void> loginUser(String identifier, String password) async {
+
+  Future<void> loginUser(String identifier) async {
     emit(SignUpLoadingState());
 
     try {
-      var resp = await AuthRepository.login(identifier, password);
+      var resp = await AuthRepository.login(identifier);
+      emit(SignUpSignUpState());
       LoggerUtil.logs(resp);
     } catch (error) {
       emit(SignUpFailureState(error.toString()));

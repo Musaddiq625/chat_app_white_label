@@ -55,7 +55,7 @@ class _DOBScreenState extends State<DOBScreen> {
               TextComponent(StringConstants.whensYouDob,
                   style:
                       FontStylesConstants.style22(color: ColorConstants.white)),
-              SizedBoxConstants.sizedBoxThirtyH(),
+              SizedBoxConstants.sizedBoxForthyH(),
               InkWell(
                   onTap: () => _selectDate(context),
                   child: _dateController.value.text.isNotEmpty
@@ -81,6 +81,7 @@ class _DOBScreenState extends State<DOBScreen> {
                     : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressed: () {
+                  if(_dateController.value.text.isNotEmpty)
                   NavigationUtil.push(
                       context, RouteConstants.whatDoYouDoScreen);
                 }),

@@ -211,8 +211,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onPressed: () {
                     // NavigationUtil.pop(context);
                     // _connectionRemovedBottomSheet();
-                    // NavigationUtil.popAllAndPush(
-                    //     context, RouteConstants.homeScreenLocal);
+                    NavigationUtil.popAllAndPush(
+                        context, RouteConstants.splashScreenLocal);
                   },
                 ),
               ],
@@ -263,6 +263,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   textColor: themeCubit.textColor,
                   buttonText: StringConstants.yesPlease,
                   onPressed: () {
+                    NavigationUtil.popAllAndPush(
+                        context, RouteConstants.splashScreenLocal);
                     // NavigationUtil.pop(context);
                     // _connectionRemovedBottomSheet();
                     // NavigationUtil.popAllAndPush(

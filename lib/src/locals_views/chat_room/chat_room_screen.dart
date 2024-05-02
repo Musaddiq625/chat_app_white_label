@@ -137,21 +137,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               ],
             ),
             const Spacer(),
-            CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.grey.withOpacity(0.2),
-              child: PopupMenuButton<String>(
-                color: themeCubit.darkBackgroundColor,
-                icon: Icon(
-                  Icons.more_horiz,
-                  size: 15,
-                  color: themeCubit.textColor,
-                ),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                onSelected: (String value) => _selectedOption(value),
-                itemBuilder: (BuildContext context) => _buildPopupItems(),
+            PopupMenuButton<String>(
+              color: themeCubit.darkBackgroundColor,
+              icon: IconComponent(
+                svgData: AssetConstants.more,
+                borderColor: Colors.transparent,
+                backgroundColor: ColorConstants.iconBg,
+                iconColor: Colors.white,
+                circleSize: 30,
+                iconSize: 4,
               ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              onSelected: (String value) => _selectedOption(value),
+              itemBuilder: (BuildContext context) => _buildPopupItems(),
             ),
           ],
         ),

@@ -300,8 +300,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _infoWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+      margin: EdgeInsets.only(left: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -372,7 +373,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
-              SizedBoxConstants.sizedBoxTenH(),
               Row(
                 children: [
                   const Icon(
@@ -417,15 +417,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 10),
                   IconComponent(
                     svgData: AssetConstants.share,
                     // iconData: Icons.share,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
                     iconColor: Colors.white,
-                    circleSize: 38,
-                    iconSize: 15,
+                    circleSize: 33,
+                    iconSize: 13,
                     onTap: () {
                       ShareBottomSheet.shareBottomSheet(
                           context, contacts, StringConstants.profile);
@@ -434,7 +434,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   showMore(),
                 ],
               ),
-              SizedBoxConstants.sizedBoxEightyH(),
+              SizedBoxConstants.sizedBoxHundredH(),
             ],
           )
         ],
@@ -455,8 +455,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderColor: Colors.transparent,
         backgroundColor: ColorConstants.iconBg,
         iconColor: Colors.white,
-        circleSize: 40,
-        iconSize: 6,
+        circleSize: 33,
+        iconSize: 5,
       ),
       itemBuilder: (BuildContext context) => [
         PopupMenuItem(

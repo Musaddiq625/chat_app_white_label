@@ -115,7 +115,7 @@ class QuestionComponent {
                         });
                       },
                       child: Padding(
-                          padding: const EdgeInsets.only(right: 20, bottom: 5),
+                          padding: const EdgeInsets.only(right: 10, bottom: 5),
                           child: IconComponent(
                             iconData: Icons.menu,
                             borderColor: ColorConstants.transparent,
@@ -367,7 +367,7 @@ class QuestionComponent {
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(32.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

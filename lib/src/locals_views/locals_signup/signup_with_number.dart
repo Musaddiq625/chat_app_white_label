@@ -59,7 +59,8 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
           if (widget.routeType == "afterEmail") {
             NavigationUtil.push(context, RouteConstants.otpScreenLocal,
                 args: OtpArg(
-                    state.verificationId,
+                  "",
+                    // state.verificationId,
                     "${_countryCodeController.text}${_phoneNumbercontroller.text}",
                     _countryCodeController.text,
                     "afterEmail"));
@@ -68,7 +69,8 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
               context,
               RouteConstants.otpScreenLocal,
               args: OtpArg(
-                  state.verificationId,
+                "",
+                  // state.verificationId,
                   "${_countryCodeController.text}${_phoneNumbercontroller.text}",
                   _countryCodeController.text,
                   "number"),
@@ -208,8 +210,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
       //       "number"),
       // );
       await signUpCubit.loginUser(
-          (_countryCodeController.text + _phoneNumbercontroller.text).trim(),
-          "Test@123");
+          (_countryCodeController.text + _phoneNumbercontroller.text).trim());
     }
   }
 

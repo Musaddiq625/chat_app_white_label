@@ -134,7 +134,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         }),
       },
       child: Container(
-        width: 100,
+        width: AppConstants.responsiveWidth(context,percentage: 25),
         margin: const EdgeInsets.symmetric(horizontal: 8),
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 25),
         decoration: BoxDecoration(
@@ -271,17 +271,17 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               ),
                               SizedBoxConstants.sizedBoxSixH(),
                               Column(
-                                children: List.generate(6, (index) {
+                                children: List.generate(7, (index) {
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         top: 2.0, left: 0, bottom: 0),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: ColorConstants.grey,
+                                        color: ColorConstants.blackLight,
                                         borderRadius: BorderRadius.circular(5),
                                       ),
-                                      height: 3,
-                                      width: 3,
+                                      height: 2,
+                                      width: 2,
                                     ),
                                   );
                                 }),
@@ -294,7 +294,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             ],
                           ),
                           Container(
-                            margin: EdgeInsets.only(left: 20),
+                            margin: EdgeInsets.only(left: 10),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,

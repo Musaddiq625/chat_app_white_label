@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Widget getStarted() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,8 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 "Attend Events.",
                 maxLines: 5,
                 style: TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 36,
                     color: themeCubit.backgroundColor,
                     fontFamily: FontConstants.fontProtestStrike),
               ),
@@ -77,8 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 "Connect with People.",
                 maxLines: 5,
                 style: TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 36,
                     color: themeCubit.backgroundColor,
                     fontFamily: FontConstants.fontProtestStrike),
                 textAlign: TextAlign.center,
@@ -87,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 height: 20,
               ),
               TextComponent(
-                "It all start here.",
+                "It all starts here.",
                 maxLines: 5,
                 style:
                     TextStyle(fontSize: 15, color: themeCubit.backgroundColor),
@@ -216,6 +214,19 @@ class _SplashScreenState extends State<SplashScreen> {
                               }),
                         ),
                         SizedBoxConstants.sizedBoxTenH(),
+                        if (!Platform.isIOS)
+                        ButtonComponent(
+                            leadingImgPath: AssetConstants.google,
+                            bgcolor: ColorConstants.white,
+                            textColor: ColorConstants.black,
+                            buttonText: StringConstants.continueWithGoogle,
+                            onPressed: () {
+                              NavigationUtil.push(
+                                // context, RouteConstants.genderScreen
+                                context,
+                                RouteConstants.signUpNumber,
+                              );
+                            }),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -243,12 +254,12 @@ class _SplashScreenState extends State<SplashScreen> {
                                   ),
                                 ),
                               ),
+
+                            if (Platform.isIOS)
                             SizedBox(
-                              width: Platform.isIOS
-                                  ? AppConstants.responsiveWidth(context,
-                                      percentage: 40)
-                                  : AppConstants.responsiveWidth(context,
-                                      percentage: 87),
+                              width:  AppConstants.responsiveWidth(context,
+                                      percentage: 40),
+
                               child: GestureDetector(
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -266,12 +277,12 @@ class _SplashScreenState extends State<SplashScreen> {
                                       //     AssetConstants.google,
                                       //   ),
                                       // ),
-                                      if (!Platform.isIOS)
-                                        ImageComponent(
-                                            imgUrl: AssetConstants.google,
-                                            isAsset: true,
-                                            imgProviderCallback:
-                                                (imgProviderCallback) {}),
+                                      // if (!Platform.isIOS)
+                                      //   ImageComponent(
+                                      //       imgUrl: AssetConstants.google,
+                                      //       isAsset: true,
+                                      //       imgProviderCallback:
+                                      //           (imgProviderCallback) {}),
                                       if (Platform.isIOS)
                                         SvgPicture.asset(
                                           height: 20,
@@ -280,13 +291,13 @@ class _SplashScreenState extends State<SplashScreen> {
                                               themeCubit.backgroundColor,
                                               BlendMode.srcIn),
                                         ),
-                                      SizedBoxConstants.sizedBoxTenW(),
-                                      if (!Platform.isIOS)
-                                        TextComponent(
-                                          StringConstants.continueWithGoogle,
-                                          style: FontStylesConstants.style14(
-                                              fontWeight: FontWeight.bold),
-                                        )
+                                      // SizedBoxConstants.sizedBoxTenW(),
+                                      // if (!Platform.isIOS)
+                                      //   TextComponent(
+                                      //     StringConstants.continueWithGoogle,
+                                      //     style: FontStylesConstants.style14(
+                                      //         fontWeight: FontWeight.bold),
+                                      //   )
                                       // Icon(
                                       //   Icons.svg,
                                       //   color: ColorConstants.black,
@@ -307,9 +318,9 @@ class _SplashScreenState extends State<SplashScreen> {
                             StringConstants.termsAndConditions,
                           ],
                           listOfTextStyle: [
-                            FontStylesConstants.style14(
+                            FontStylesConstants.style13(
                                 color: ColorConstants.lightGray),
-                            FontStylesConstants.style14(
+                            FontStylesConstants.style13(
                                 color: ColorConstants.lightGray,
                                 underLine: true),
                           ],
