@@ -58,28 +58,28 @@ class UserModel {
       token: json['token'],
     );
   }
-
-  factory UserModel.fromJsonSignUp(Map<String, dynamic> json) {
-    return UserModel(
-        firstName: json['firstName'],
-        lastName: json['lastName'],
-        email: json['email'],
-        password: json['password'],
-        image: json['image'],
-        phoneNumber: json['phoneNumber'],
-        isProfileComplete: json['is_profile_complete']);
-  }
-
-  factory UserModel.fromJsonLogin(Map<String, dynamic> json) {
-    return UserModel(
-        firstName: json['firstName'],
-        lastName: json['lastName'],
-        email: json['email'],
-        password: json['password'],
-        image: json['image'],
-        phoneNumber: json['phoneNumber'],
-        isProfileComplete: json['is_profile_complete']);
-  }
+  //
+  // factory UserModel.fromJsonSignUp(Map<String, dynamic> json) {
+  //   return UserModel(
+  //       firstName: json['firstName'],
+  //       lastName: json['lastName'],
+  //       email: json['email'],
+  //       password: json['password'],
+  //       image: json['image'],
+  //       phoneNumber: json['phoneNumber'],
+  //       isProfileComplete: json['is_profile_complete']);
+  // }
+  //
+  // factory UserModel.fromJsonLogin(Map<String, dynamic> json) {
+  //   return UserModel(
+  //       firstName: json['firstName'],
+  //       lastName: json['lastName'],
+  //       email: json['email'],
+  //       password: json['password'],
+  //       image: json['image'],
+  //       phoneNumber: json['phoneNumber'],
+  //       isProfileComplete: json['is_profile_complete']);
+  // }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -103,37 +103,37 @@ class UserModel {
     return data;
   }
 
-  Map<String, dynamic> LoginToJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['firstName'] = firstName;
-    data['lastName'] = lastName;
-    data['email'] = email;
-    data['password'] = password;
-    data['image'] = image;
-    data['about'] = about;
-    data['fcm_token'] = fcmToken;
-    data['phoneNumber'] = phoneNumber;
-    data['chats'] = chats;
-    data['is_profile_complete'] = isProfileComplete;
-
-    return data;
-  }
-
-  Map<String, dynamic> SignupToJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['firstName'] = firstName;
-    data['lastName'] = lastName;
-    data['email'] = email;
-    data['password'] = password;
-    data['image'] = image;
-    data['about'] = about;
-    data['fcm_token'] = fcmToken;
-    data['phoneNumber'] = phoneNumber;
-    data['chats'] = chats;
-    data['is_profile_complete'] = isProfileComplete;
-
-    return data;
-  }
+  // Map<String, dynamic> LoginToJson() {
+  //   final data = <String, dynamic>{};
+  //   data['id'] = id;
+  //   data['firstName'] = firstName;
+  //   data['lastName'] = lastName;
+  //   data['email'] = email;
+  //   data['password'] = password;
+  //   data['image'] = image;
+  //   data['about'] = about;
+  //   data['fcm_token'] = fcmToken;
+  //   data['phoneNumber'] = phoneNumber;
+  //   data['chats'] = chats;
+  //   data['is_profile_complete'] = isProfileComplete;
+  //
+  //   return data;
+  // }
+  //
+  // Map<String, dynamic> SignupToJson() {
+  //   final data = <String, dynamic>{};
+  //   data['id'] = id;
+  //   data['firstName'] = firstName;
+  //   data['lastName'] = lastName;
+  //   data['email'] = email;
+  //   data['password'] = password;
+  //   data['image'] = image;
+  //   data['about'] = about;
+  //   data['fcm_token'] = fcmToken;
+  //   data['phoneNumber'] = phoneNumber;
+  //   data['chats'] = chats;
+  //   data['is_profile_complete'] = isProfileComplete;
+  //
+  //   return data;
+  // }
 }

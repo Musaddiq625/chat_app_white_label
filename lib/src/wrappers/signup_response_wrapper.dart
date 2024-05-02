@@ -32,7 +32,7 @@ class SignupResponseWrapper {
     message = json['message'];
     code = json['code'];
     status = json['status'];
-    data = json['data'] != null ? UserModel.fromJsonSignUp(json['data']) : null;
+    data = json['data'] != null ? UserModel.fromJson(json['data']) : null;
     meta = json['meta'];
   }
 
@@ -42,7 +42,7 @@ class SignupResponseWrapper {
     map['code'] = code;
     map['status'] = status;
     if (data != null) {
-      map['data'] = data?.SignupToJson();
+      map['data'] = data?.toJson();
     }
     map['meta'] = meta;
     return map;
