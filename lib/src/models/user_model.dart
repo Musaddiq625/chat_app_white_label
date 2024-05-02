@@ -103,6 +103,46 @@ class UserModel {
     return data;
   }
 
+  UserModel copyWith({
+    String? id,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? password,
+    String? image,
+    String? about,
+    String? fcmToken,
+    String? phoneNumber,
+    List<String>? chats,
+    bool? isProfileComplete,
+    bool? isOnline,
+    String? lastActive,
+    String? pushToken,
+    String? status,
+    bool? isProfileCompleted,
+    String? token,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      image: image ?? this.image,
+      about: about ?? this.about,
+      fcmToken: fcmToken ?? this.fcmToken,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      chats: chats ?? this.chats,
+      isProfileComplete: isProfileComplete ?? this.isProfileComplete,
+      isOnline: isOnline ?? this.isOnline,
+      lastActive: lastActive ?? this.lastActive,
+      pushToken: pushToken ?? this.pushToken,
+      status: status ?? this.status,
+      isProfileCompleted: isProfileCompleted ?? this.isProfileCompleted,
+      token: token ?? this.token,
+    );
+  }
+
   // Map<String, dynamic> LoginToJson() {
   //   final data = <String, dynamic>{};
   //   data['id'] = id;
