@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/choose_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -12,6 +13,8 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/models/user_detail_model.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -64,151 +67,174 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   }
 
   enterName() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextComponent(
-              StringConstants.letsPutAFace,
-              style: FontStylesConstants.style22(color: ColorConstants.white),
-            ),
-            SizedBoxConstants.sizedBoxTwelveH(),
-            TextComponent(
-              StringConstants.requiredPictures,
-              style:
-                  FontStylesConstants.style14(color: ColorConstants.lightGray),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
+    return BlocConsumer<OnboardingCubit, OnBoardingState>(
+        listener: (context, state) {
+      if (state is OnBoardingLoadingState) {
+        LoadingDialog.showLoadingDialog(context);
+      } else if (state is OnBoardingUserNameImageSuccessState) {
+        LoadingDialog.hideLoadingDialog(context);
 
-            Container(
-              height: 250,
-              width: AppConstants.responsiveWidth(context),
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 250,
-                    width:
-                        AppConstants.responsiveWidth(context, percentage: 60),
-                    margin: const EdgeInsets.only(right: 20),
-                    child: ChooseImageComponent(
-                      image: selectedImages[index],
-                      showImageSelectionBottomSheet: false,
-                      onImagePick: (image) {
-                        setState(() {
-                          insertImage(image, index: index);
-                          // selectedImages.insert(0, image.path);
-                          // selectedImages = tempEmptyImageData;
+        NavigationUtil.push(context, RouteConstants.selectProfileScreen,
+            args: selectedImages);
+      } else {
+        LoadingDialog.hideLoadingDialog(context);
 
-                          // selectedImages.removeLast();
-                        });
-                      },
-                    ),
-                  );
-                },
-                itemCount: selectedImages.length,
+        ToastComponent.showToast(state.toString(), context: context);
+      }
+      // if (state is OnBoardingUserNameImageFailureState) {
+      //   LoadingDialog.hideLoadingDialog(context);
+      // }
+    }, builder: (BuildContext context, OnBoardingState state) {
+      LoggerUtil.logs(onBoardingCubit.getUserName());
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextComponent(
+                StringConstants.letsPutAFace,
+                style: FontStylesConstants.style22(color: ColorConstants.white),
               ),
-            ),
-            // ChooseImageComponent(
-            //   selectedImages: selectedImages,
-            // )
-          ],
-        ),
-        const Spacer(),
-        SizedBox(
-          width: MediaQuery.sizeOf(context).width * 0.9,
-          child: ButtonComponent(
-              bgcolor: ColorConstants.lightGray.withOpacity(0.5),
-              textColor: ColorConstants.white,
-              buttonText: StringConstants.addPhotoFromGallery,
-              onPressed: () async {
-                if (selectedImage == null) {
-                  final XFile? image = await ImagePicker()
-                      .pickImage(source: ImageSource.gallery);
-                  if (image != null) {
-                    // setState(() {
-                    //   selectedImages.add(File(image.path));
-                    // });
-                    insertImage(image);
-                    // selectedImages = tempEmptyImageData;
+              SizedBoxConstants.sizedBoxTwelveH(),
+              TextComponent(
+                StringConstants.requiredPictures,
+                style: FontStylesConstants.style14(
+                    color: ColorConstants.lightGray),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
 
-                    // selectedImages.removeLast();
-                  }
-                } else {
-                  selectedImage = null;
-                }
-                setState(() {});
-              }),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        SizedBox(
-          width: MediaQuery.sizeOf(context).width * 0.9,
-          child: ButtonComponent(
-              bgcolor:
-                  selectedImages.where((e) => e.isNotEmpty).toList().length >= 2
-                      ? ColorConstants.lightGray.withOpacity(0.5)
-                      : ColorConstants.white,
-              textColor:
-                  selectedImages.where((e) => e.isNotEmpty).toList().length >= 2
-                      ? ColorConstants.white
-                      : const Color.fromRGBO(0, 0, 0, 1),
-              buttonText: StringConstants.takeASelfie,
-              onPressed: () async {
-                List<File> files = [];
-                final XFile? cameraImage = await ImagePicker().pickImage(
-                    source: ImageSource.camera,
-                    preferredCameraDevice: CameraDevice.front);
-                if (cameraImage != null) {
-                  // files.add(File(cameraImage.path));
-                  // setState(() {
-                  //   selectedImages.add(File(cameraImage.path));
-                  // });
+              Container(
+                height: 250,
+                width: AppConstants.responsiveWidth(context),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      height: 250,
+                      width:
+                          AppConstants.responsiveWidth(context, percentage: 60),
+                      margin: const EdgeInsets.only(right: 20),
+                      child: ChooseImageComponent(
+                        image: selectedImages[index],
+                        showImageSelectionBottomSheet: false,
+                        onImagePick: (image) {
+                          setState(() {
+                            insertImage(image, index: index);
+                            // selectedImages.insert(0, image.path);
+                            // selectedImages = tempEmptyImageData;
 
-                  insertImage(cameraImage);
-
-                  // selectedImages.insert(0, cameraImage.path);
-                  // selectedImages = tempEmptyImageData;
-
-                  // selectedImages.removeLast();
-
-                  setState(() {});
-                }
-              }),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-
-        // if (selectedImages.every((element) => element.isNotEmpty))
-
-        if (selectedImages.where((e) => e.isNotEmpty).toList().length >= 2)
+                            // selectedImages.removeLast();
+                          });
+                        },
+                      ),
+                    );
+                  },
+                  itemCount: selectedImages.length,
+                ),
+              ),
+              // ChooseImageComponent(
+              //   selectedImages: selectedImages,
+              // )
+            ],
+          ),
+          const Spacer(),
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: ButtonComponent(
-              bgcolor: themeCubit.primaryColor,
-              textColor: ColorConstants.black,
-              buttonText: StringConstants.continues,
-              onPressed: () {
-                userDetailModel?.userPhotos = selectedImages.toList();
-                selectedImages.removeWhere((element) => element.isEmpty);
+                bgcolor: ColorConstants.lightGray.withOpacity(0.5),
+                textColor: ColorConstants.white,
+                buttonText: StringConstants.addPhotoFromGallery,
+                onPressed: () async {
+                  if (selectedImage == null) {
+                    final XFile? image = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery);
+                    if (image != null) {
+                      // setState(() {
+                      //   selectedImages.add(File(image.path));
+                      // });
+                      insertImage(image);
+                      // selectedImages = tempEmptyImageData;
 
-                NavigationUtil.push(context, RouteConstants.selectProfileScreen,
-                    args: selectedImages);
-              },
-            ),
+                      // selectedImages.removeLast();
+                    }
+                  } else {
+                    selectedImage = null;
+                  }
+                  setState(() {});
+                }),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: MediaQuery.sizeOf(context).width * 0.9,
+            child: ButtonComponent(
+                bgcolor:
+                    selectedImages.where((e) => e.isNotEmpty).toList().length >=
+                            2
+                        ? ColorConstants.lightGray.withOpacity(0.5)
+                        : ColorConstants.white,
+                textColor:
+                    selectedImages.where((e) => e.isNotEmpty).toList().length >=
+                            2
+                        ? ColorConstants.white
+                        : const Color.fromRGBO(0, 0, 0, 1),
+                buttonText: StringConstants.takeASelfie,
+                onPressed: () async {
+                  List<File> files = [];
+                  final XFile? cameraImage = await ImagePicker().pickImage(
+                      source: ImageSource.camera,
+                      preferredCameraDevice: CameraDevice.front);
+                  if (cameraImage != null) {
+                    // files.add(File(cameraImage.path));
+                    // setState(() {
+                    //   selectedImages.add(File(cameraImage.path));
+                    // });
+
+                    insertImage(cameraImage);
+
+                    // selectedImages.insert(0, cameraImage.path);
+                    // selectedImages = tempEmptyImageData;
+
+                    // selectedImages.removeLast();
+
+                    setState(() {});
+                  }
+                }),
+          ),
+          const SizedBox(
+            height: 10,
           ),
 
-        // }))
-      ],
-    );
+          // if (selectedImages.every((element) => element.isNotEmpty))
+
+          if (selectedImages.where((e) => e.isNotEmpty).toList().length >= 2)
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width * 0.9,
+              child: ButtonComponent(
+                bgcolor: themeCubit.primaryColor,
+                textColor: ColorConstants.black,
+                buttonText: StringConstants.continues,
+                onPressed: () async {
+                  removeEmptyImages();
+                  onBoardingCubit.updateUserPhoto((selectedImages));
+                },
+              ),
+            ),
+
+          // }))
+        ],
+      );
+    });
+  }
+
+  void removeEmptyImages() {
+    selectedImages.removeWhere((element) => element.isEmpty);
   }
 
   void insertImage(XFile image, {int? index}) {

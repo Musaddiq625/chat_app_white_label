@@ -33,7 +33,6 @@ class _NameScreenState extends State<NameScreen> {
   final TextEditingController _secondNameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  UserDetailModel? userDetailModel;
   bool isFieldsValidate = false;
 
   @override
@@ -114,8 +113,9 @@ class _NameScreenState extends State<NameScreen> {
   }
 
   void onContinuePressed() {
-    userDetailModel?.firstName = _firstNameController.text;
-    userDetailModel?.lastName = _secondNameController.text;
+    //Todo add in shared pref
+    onBoardingCubit.updateUserName(
+        _firstNameController.text, _secondNameController.text);
     AppConstants.closeKeyboard();
     NavigationUtil.push(context, RouteConstants.uploadProfileScreen);
   }

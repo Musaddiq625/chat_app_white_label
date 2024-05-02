@@ -1,38 +1,39 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:chat_app_white_label/src/models/user_detail_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/network/dio_client_network.dart';
+import 'package:chat_app_white_label/src/network/repositories/onboarding_repository.dart';
 import 'package:flutter/material.dart';
-import '../../../models/OnBoardingNewModel.dart';
-import '../../../utils/firebase_utils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'onboarding_state.dart';
 
 class OnboardingCubit extends Cubit<OnBoardingState> {
   OnboardingCubit() : super(OnBoardingInitial());
 
-  UserDetailModel? userDetailModel;
+  UserModel _userDetailModel = UserModel();
 
-  userDetailFirstStep(String? selectedImage) async {
-    emit(OnBoardingLoadingState());
-    try {
-      userDetailModel?.profileImage = selectedImage;
-      await FirebaseUtils.updateUserStepOne(userDetailModel);
-      emit(OnBoardingUserDataFirstStepSuccessState());
-    } catch (e) {
-      emit(OnBoardingFailureState(e.toString()));
-    }
+  void updateUserName(String firstName, String lastName) {
+    _userDetailModel =
+        _userDetailModel.copyWith(firstName: firstName, lastName: lastName);
   }
 
-  userDetailSecondStep(String selectedImage) async {
+  String getUserName() {
+    return "${_userDetailModel.firstName} ${_userDetailModel.lastName}";
+  }
+
+  Future<void> updateUserPhoto(List<String> profileImages) async {
     emit(OnBoardingLoadingState());
     try {
-      await FirebaseUtils.updateUserStepTwo(userDetailModel
-          // dateOfBirth, aboutMe, gender, bio,
-          // moreAboutMeModel, socialLinkModel, hobbies, creativity
-          );
+      DioClientNetwork.initializeDio();
+      _userDetailModel = _userDetailModel.copyWith(image: profileImages.first);
 
-      emit(OnBoardingUserDataFirstStepSuccessState());
+      await OnBoardingRepository.updateUserNameWithPhoto(
+          _userDetailModel.firstName!,
+          _userDetailModel.lastName!,
+          profileImages);
+      emit(OnBoardingUserNameImageSuccessState());
     } catch (e) {
       emit(OnBoardingFailureState(e.toString()));
     }

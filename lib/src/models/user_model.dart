@@ -9,6 +9,7 @@ class UserModel {
   String? phoneNumber;
   String? fcmToken;
   List<String>? chats;
+  List<String>? userPhotos;
   bool? isProfileComplete;
   bool? isOnline;
   String? lastActive;
@@ -35,6 +36,7 @@ class UserModel {
     this.status,
     this.isProfileCompleted,
     this.token,
+    this.userPhotos,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class UserModel {
       fcmToken: json['fcm_token'],
       phoneNumber: json['phoneNumber'],
       chats: json['chats'] == null ? [] : json['chats'].cast<String>(),
+      userPhotos: json['userPhotos'] ?? [],
       isProfileComplete: json['is_profile_complete'],
       isOnline: json['is_online'],
       lastActive: json['last_active'],
@@ -99,6 +102,7 @@ class UserModel {
     data['push_token'] = pushToken;
     data['status'] = status;
     data['isProfileCompleted'] = isProfileCompleted;
+    data['userPhotos'] = userPhotos;
     data['token'] = token;
     return data;
   }
@@ -120,6 +124,7 @@ class UserModel {
     String? pushToken,
     String? status,
     bool? isProfileCompleted,
+    List<String>? userPhotos,
     String? token,
   }) {
     return UserModel(
@@ -140,6 +145,7 @@ class UserModel {
       status: status ?? this.status,
       isProfileCompleted: isProfileCompleted ?? this.isProfileCompleted,
       token: token ?? this.token,
+      userPhotos: userPhotos ?? this.userPhotos,
     );
   }
 

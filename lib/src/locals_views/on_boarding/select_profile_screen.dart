@@ -66,7 +66,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
         LoggerUtil.logs('login state: $state');
         if (state is OnBoardingLoadingState) {
           LoadingDialog.showLoadingDialog(context);
-        } else if (state is OnBoardingUserDataFirstStepSuccessState) {
+        } else if (state is OnBoardingUserNameImageSuccessState) {
           LoadingDialog.hideLoadingDialog(context);
           NavigationUtil.push(context, RouteConstants.dobScreen);
         }
@@ -191,7 +191,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.confirmProfilePicture,
                 onPressed: () {
-                  onBoardingCubit.userDetailFirstStep("selectedImage");
+                  // onBoardingCubit.userDetailFirstStep("selectedImage");
                 }),
           )
         ],
