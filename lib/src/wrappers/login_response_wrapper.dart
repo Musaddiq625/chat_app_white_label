@@ -32,7 +32,7 @@ class LoginResponseWrapper {
     message = json['message'];
     code = json['code'];
     status = json['status'];
-    data = json['data'] != null ? UserModel.fromJsonLogin(json['data']) : null;
+    data = json['data'] != null ? UserModel.fromJson(json['data']) : null;
     meta = json['meta'];
   }
 
