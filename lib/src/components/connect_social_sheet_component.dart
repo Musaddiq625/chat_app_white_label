@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,20 +15,25 @@ class SocialSheetComponent extends StatefulWidget {
   final String? textfieldHint;
   final String? image;
   final bool isSvg;
+  final TextEditingController? textEditingController;
+  final Function(String)? onUpdate;
 
   const SocialSheetComponent(
       {super.key,
       this.heading,
       this.image,
       this.isSvg = false,
-      this.textfieldHint});
+      this.textfieldHint,
+      this.textEditingController ,
+        this.onUpdate,
+      });
 
   @override
   State<SocialSheetComponent> createState() => _SocialSheetComponentState();
 }
 
 class _SocialSheetComponentState extends State<SocialSheetComponent> {
-  final TextEditingController _textEditingController = TextEditingController();
+  // final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +81,7 @@ class _SocialSheetComponentState extends State<SocialSheetComponent> {
 
           SizedBoxConstants.sizedBoxThirtyH(),
           TextFieldComponent(
-            _textEditingController,
+            widget.textEditingController ?? TextEditingController(),
             filled: true,
             hintText: widget.textfieldHint ?? '',
           ),
@@ -84,7 +90,10 @@ class _SocialSheetComponentState extends State<SocialSheetComponent> {
             buttonText: StringConstants.save,
             textColor: themeCubit.backgroundColor,
             bgcolor: themeCubit.primaryColor,
-            onPressed: () {},
+            onPressed: () {
+              widget.onUpdate?.call(widget.textEditingController?.text ?? "");
+              NavigationUtil.pop(context);
+            },
           )
         ],
       ),

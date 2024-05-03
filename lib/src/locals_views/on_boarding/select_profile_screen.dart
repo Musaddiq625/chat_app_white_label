@@ -191,6 +191,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.confirmProfilePicture,
                 onPressed: () {
+                  NavigationUtil.push(context, RouteConstants.dobScreen);
                   // onBoardingCubit.userDetailFirstStep("selectedImage");
                 }),
           )

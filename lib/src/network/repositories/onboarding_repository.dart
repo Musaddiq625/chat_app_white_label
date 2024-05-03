@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/constants/http_constansts.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/dio_client_network.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/wrappers/on_boarding_response_wrapper.dart';
 import 'package:dio/dio.dart';
 
 class OnBoardingRepository {
@@ -37,30 +38,24 @@ class OnBoardingRepository {
     return UserModel.fromJson(response);
   }
 
-  static Future<UserModel> updateUserDobToGender(
+  static Future<OnBoardingResponseWrapper> updateUserDobToGender(
       String userId, String dateOfBirth, String aboutMe, String gender) async {
-    LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
-    Response response = await getIt<DioClientNetwork>().putRequest(
+    // LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
+    final response = await getIt<DioClientNetwork>().putRequest(
       "${HttpConstants.users}$userId",
       {"dateOfBirth": dateOfBirth, "aboutMe": aboutMe, "gender": gender},
     );
-    return UserModel.fromJson(response.data);
+    return OnBoardingResponseWrapper.fromJson(response);
   }
 
-  Future<UserModel> updateUserAboutYouToInterest(String bio, String socialLinks,
-      String moreAbout, List<String> hobbies, List<String> creativity) async {
-    Response response = await getIt<DioClientNetwork>().postRequest(
-      HttpConstants.users,
-      {
-        "bio": bio,
-        "socialLink": socialLinks,
-        "moreAbout": moreAbout,
-        "interest": {
-          "hobbies": hobbies,
-          "creativity": creativity,
-        }
-      },
+  static Future<OnBoardingResponseWrapper> updateUserAboutYouToInterest(
+      String userId, String bio, SocialLink? socialLink, MoreAbout? moreAbout,Interest? interest) async {
+    // LoggerUtil.logs("SocialLink Value ${socialLink.toJson()}");
+    final response = await getIt<DioClientNetwork>().putRequest(
+      "${HttpConstants.users}$userId",
+      {"bio": bio, "socialLink": socialLink?.toJson(), "moreAbout": moreAbout?.toJson(),"interest":interest?.toJson()},
     );
-    return UserModel.fromJson(response.data);
+    return OnBoardingResponseWrapper.fromJson(response);
   }
+
 }

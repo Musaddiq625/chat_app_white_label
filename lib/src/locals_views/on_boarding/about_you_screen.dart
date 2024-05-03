@@ -9,19 +9,22 @@ import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
-import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../constants/route_constants.dart';
+import '../../models/user_model.dart';
+
 class AboutYouScreen extends StatefulWidget {
   final bool comingFromEditProfile;
+
   const AboutYouScreen({super.key, this.comingFromEditProfile = false});
 
   @override
@@ -30,11 +33,22 @@ class AboutYouScreen extends StatefulWidget {
 
 class _AboutYouScreenState extends State<AboutYouScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final TextEditingController _bioController = TextEditingController();
+  final TextEditingController linkedInController = TextEditingController();
+  final TextEditingController instaController = TextEditingController();
+  final TextEditingController facebookController = TextEditingController();
   final TextEditingController _secondNameController = TextEditingController();
   FixedExtentScrollController? scrollController =
       new FixedExtentScrollController();
-
+  var data = {
+    'diet': ['Love Meat', 'vegeterian', 'vegan', 'Everything is fine'],
+    'workout': ['Active', 'Sometimes', 'Almost Never', 'id rather not say'],
+    'smoking': ['Socially', 'Regularly', 'Never', 'id rather not say'],
+    'drinking': ['Socially', 'Regularly', 'Never', 'id rather not say'],
+    'pets': ['Cat', 'Dog', 'Never', 'id rather not say'],
+    // Add more keys as needed
+  };
   final Map<String, dynamic> _moreAboutYou = {
     StringConstants.diet: {
       "Love Meat": true,
@@ -56,6 +70,18 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
       "Never": false,
       "i'd rather not say ": false
     },
+
+    // StringConstants.smoking: {},
+    // {
+    // smoking: [a, b, c],
+    // }
+    // a, b, c
+    // smoking = {
+    // a: false,
+    // b: false,
+    // c: false
+    // }
+
     StringConstants.drinking: {
       "Socially": true,
       "Regularly": false,
@@ -143,6 +169,12 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
     '9\'11 (302 cm)',
     '10\'0 (305 cm)',
   ];
+
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -284,6 +316,25 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                 textColor: themeCubit.backgroundColor,
                 buttonText: StringConstants.continues,
                 onPressed: () {
+                  SocialLink socialLink = SocialLink(
+                    linkedin: linkedInController.text,
+                    instagram: instaController.text,
+                    facebook: facebookController.text,
+                  );
+                  MoreAbout moreAbout = MoreAbout(
+                    diet: _tempmoreAboutValue[StringConstants.diet],
+                    workout: _tempmoreAboutValue[StringConstants.workout],
+                    height: _tempmoreAboutValue[StringConstants.height],
+                    weight: _tempmoreAboutValue[StringConstants.weight],
+                    smoking: _tempmoreAboutValue[StringConstants.smoking],
+                    drinking: _tempmoreAboutValue[StringConstants.pets],
+                    pets: _tempmoreAboutValue[StringConstants.pets],
+                  );
+                  onBoardingCubit.setAboutYou(_bioController.text.toString(), socialLink, moreAbout);
+                  // onBoardingCubit.userDetailAboutYouToInterestStep(
+                  //   onBoardingCubit.userModel.id.toString(),
+                  //     _bioController.text.toString(), socialLink, moreAbout
+                  // );
                   NavigationUtil.push(context, RouteConstants.interestScreen);
                 }),
           )
@@ -308,26 +359,41 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
           ),
           // SizedBoxConstants.sizedBoxTenH(),
           ListTileComponent(
-              // icon: Icons.location_on,
-              // iconColor: ColorConstants.white,
               leadingText: StringConstants.linkedIn,
-              trailingIcon: Icons.add_circle,
+              trailingIcon: linkedInController.text.isNotEmpty
+                  ? Icons.check_circle
+                  : Icons.add_circle,
               trailingIconSize: 30,
               leadingIcon: AssetConstants.linkedin,
               // isLeadingImageProfileImage: true,
               isLeadingImageSVG: true,
               isSocialConnected: true,
-              subIconColor: themeCubit.textColor,
-              trailingText: "",
+              subIconColor: linkedInController.text.isNotEmpty
+                  ? themeCubit.primaryColor
+                  : themeCubit.textColor,
+              trailingText: linkedInController.text.isNotEmpty
+                  ? StringConstants.connected
+                  : "",
+              subTextColor: themeCubit.primaryColor,
               onTap: () {
                 BottomSheetComponent.showBottomSheet(
                   context,
                   isShowHeader: false,
-                  body: const SocialSheetComponent(
-                    heading: StringConstants.whatsYourLinkedin,
-                    isSvg: true,
-                    textfieldHint: StringConstants.linkedinHintText,
-                    image: AssetConstants.linkedin,
+                  body: StatefulBuilder(
+                    builder: (context,state) {
+                      return SocialSheetComponent(
+                        heading: StringConstants.whatsYourLinkedin,
+                        isSvg: true,
+                        textfieldHint: StringConstants.linkedinHintText,
+                        image: AssetConstants.linkedin,
+                        textEditingController: linkedInController,
+                        onUpdate: (newValue) {
+                          setState(() {
+                            linkedInController.text = newValue;
+                          });
+                        },
+                      );
+                    }
                   ),
                 );
               }),
@@ -340,10 +406,16 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               leadingIcon: AssetConstants.instagram,
               isSocialConnected: true,
               leadingText: StringConstants.instagram,
-              subIconColor: themeCubit.primaryColor,
+              subIconColor: instaController.text.isNotEmpty
+                  ? themeCubit.primaryColor
+                  : themeCubit.textColor,
               trailingIconSize: 30,
-              trailingIcon: Icons.check_circle,
-              trailingText: StringConstants.connected,
+              trailingIcon: instaController.text.isNotEmpty
+                  ? Icons.check_circle
+                  : Icons.add_circle,
+              trailingText: instaController.text.isNotEmpty
+                  ? StringConstants.connected
+                  : "",
               subTextColor: themeCubit.primaryColor,
               // isLeadingImageCircular: true,
               isLeadingImageSVG: true,
@@ -351,11 +423,17 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                 BottomSheetComponent.showBottomSheet(
                   context,
                   isShowHeader: false,
-                  body: const SocialSheetComponent(
+                  body: SocialSheetComponent(
                     heading: StringConstants.whatsYourInstagram,
                     isSvg: true,
                     textfieldHint: StringConstants.instagramHintText,
                     image: AssetConstants.instagram,
+                    textEditingController: instaController,
+                    onUpdate: (newValue) {
+                      setState(() {
+                        instaController.text = newValue;
+                      });
+                    },
                   ),
                 );
               }),
@@ -368,10 +446,16 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               leadingIcon: AssetConstants.facebook,
               isSocialConnected: true,
               leadingText: StringConstants.facebook,
-              subIconColor: themeCubit.primaryColor,
+              subIconColor: facebookController.text.isNotEmpty
+                  ? themeCubit.primaryColor
+                  : themeCubit.textColor,
               trailingIconSize: 30,
-              trailingIcon: Icons.check_circle,
-              trailingText: StringConstants.connected,
+              trailingIcon: facebookController.text.isNotEmpty
+                  ? Icons.check_circle
+                  : Icons.add_circle,
+              trailingText: facebookController.text.isNotEmpty
+                  ? StringConstants.connected
+                  : "",
               subTextColor: themeCubit.primaryColor,
               // isLeadingImageCircular: true,
               isLeadingImageSVG: true,
@@ -379,11 +463,17 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                 BottomSheetComponent.showBottomSheet(
                   context,
                   isShowHeader: false,
-                  body: const SocialSheetComponent(
+                  body: SocialSheetComponent(
                     heading: StringConstants.whatsYourFacebook,
                     isSvg: true,
                     textfieldHint: StringConstants.facebookHintText,
                     image: AssetConstants.facebook,
+                    textEditingController: facebookController,
+                    onUpdate: (newValue) {
+                      setState(() {
+                        facebookController.text = newValue;
+                      });
+                    },
                   ),
                 );
               }),
@@ -420,11 +510,15 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               isLeadingImageSVG: true,
               trailingText: _tempmoreAboutValue[StringConstants.diet],
               onTap: () {
+                var parsedDataOutPut= parseData(data);
                 moreAboutYouSelection(
                     AssetConstants.diet,
                     "${StringConstants.whatIsYour + StringConstants.diet} ?",
                     StringConstants.diet,
-                    _moreAboutYou[StringConstants.diet]);
+                    // parsedDataOutPut[StringConstants.diet,]
+                    _moreAboutYou[StringConstants.diet]
+
+                );
               }),
           const SizedBox(
             height: 10,
@@ -705,5 +799,24 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
             },
           ),
         ));
+  }
+
+
+  Map<String, Map<String, bool>> parseData(Map<String, List<String>> inputData) {
+    Map<String, Map<String, bool>> parsedData = {};
+
+    // Iterate over each key in the input data
+    inputData.forEach((key, values) {
+      // Create a map for the current key with values set to false
+      Map<String, bool> keyValueMap = {};
+      values.forEach((value) {
+        keyValueMap[value] = false;
+      });
+
+      // Add the map to the parsed data
+      parsedData[key] = keyValueMap;
+    });
+
+    return parsedData;
   }
 }

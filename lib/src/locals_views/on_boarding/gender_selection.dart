@@ -16,6 +16,8 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../components/toast_component.dart';
+
 class GenderSelection extends StatefulWidget {
   const GenderSelection({super.key});
 
@@ -61,11 +63,16 @@ class _GenderSelectionState extends State<GenderSelection> {
   Widget build(BuildContext context) {
     return BlocConsumer<OnboardingCubit, OnBoardingState>(
       listener: (context, state) {
-        if (state is OnBoardingUserDataSecondStepSuccessState) {
+        if (state is OnBoardingDobToGenderSuccessState) {
           LoadingDialog.hideLoadingDialog(context);
+          onBoardingCubit.initializeUserData(state.userModel!);
           NavigationUtil.push(context, RouteConstants.aboutYouScreen);
-        } else {
+        } else if (state is OnBoardingDobToGenderFailureState) {
           LoadingDialog.hideLoadingDialog(context);
+          // ToastComponent.showToast(state.error.toString(), context: context);
+          // AppConstants.openKeyboard(context);
+          LoggerUtil.logs("Error ${state.error}");
+          // ToastComponent.showToast(state.error, context: context);
         }
         // TODO: implement listener
       },
@@ -135,7 +142,7 @@ class _GenderSelectionState extends State<GenderSelection> {
               buttonText: StringConstants.continues,
               onPressed: () {
                 onBoardingCubit.setGenderValues(_selectedOption);
-                onBoardingCubit.userDetailSecondStep(
+                onBoardingCubit.userDetailDobToGenderStep(
                     onBoardingCubit.userModel.id.toString(),
                     onBoardingCubit.userModel.dateOfBirth.toString(),
                     onBoardingCubit.userModel.aboutMe.toString(),

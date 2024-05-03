@@ -1,4 +1,7 @@
+import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../utils/theme_cubit/theme_cubit.dart';
 
 class TagComponent extends StatelessWidget {
-  final IconData? iconData;
+  final String? iconData;
   final double iconSize;
   final Color iconColor;
   final Color backgroundColor;
@@ -77,16 +80,18 @@ class TagComponent extends StatelessWidget {
                         SizedBox(
                           width: 5,
                         ),
-                        Icon(
-                          iconData,
-                          size: iconSize,
-                          color: iconColor,
-                        ),
+
+                        ImageComponent(imgUrl: iconData ?? AssetConstants.sad,width: iconSize,height: iconSize, isAsset: true,imgProviderCallback: (imgProviderCallback){}),
+                        // Icon(
+                        //   iconData,
+                        //   size: iconSize,
+                        //   color: iconColor,
+                        // ),
                         SizedBox(
                           width: 5,
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 5.0),
+                          padding: const EdgeInsets.only(right: 10.0),
                           child: TextComponent(
                             customIconText ?? '',
                             style: TextStyle(color: customTextColor),

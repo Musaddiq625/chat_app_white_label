@@ -222,7 +222,10 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 buttonText: StringConstants.continues,
                 onPressed: () async {
                   removeEmptyImages();
-                  onBoardingCubit.updateUserPhoto((selectedImages));
+                  // onBoardingCubit.updateUserPhoto((selectedImages));
+
+                  NavigationUtil.push(context, RouteConstants.selectProfileScreen,
+                      args: selectedImages);
                 },
               ),
             ),
