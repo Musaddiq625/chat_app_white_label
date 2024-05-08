@@ -102,11 +102,18 @@ class _DOBScreenState extends State<DOBScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    // DateTime specificLastDate = lastDate.subtract(Duration(days: 365));
+    DateTime now = DateTime.now(); // Get the current date and time
+    int currentYear = now.year - 16;
+    DateTime lastDate = DateTime(currentYear, 12,31);
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: DateTime(1990),
       firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      lastDate: lastDate,
+      // lastDate: lastDate.subtract(const Duration(days: 16 * 365)),
+      // lastDate: .subtract(const Duration(days: 16 * 365)),
     );
     if (picked != null) {
       setState(() {

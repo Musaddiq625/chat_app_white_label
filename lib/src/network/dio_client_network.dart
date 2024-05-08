@@ -21,6 +21,7 @@ class DioClientNetwork {
       baseUrl: HttpConstants.base,
     );
     if (token != null) {
+      LoggerUtil.logs("token value $token");
       // _dio.options.headers['Authorization'] = 'Bearer $token';
       _dio.options.headers['x-access-token'] = token;
     }

@@ -16,8 +16,6 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../components/toast_component.dart';
-
 class GenderSelection extends StatefulWidget {
   const GenderSelection({super.key});
 
@@ -43,16 +41,15 @@ class _GenderSelectionState extends State<GenderSelection> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
 //       localContacts = await ContactsService.getContacts(withThumbnails: false);
-      LoggerUtil.logs(
-          "In Binding onBoardingUserStepTwoState ${onBoardingCubit.userModel.toJson()} ");
+//       LoggerUtil.logs(
+//           "In Binding onBoardingUserStepTwoState ${onBoardingCubit.userModel.toJson()} ");
     });
 
-
-    LoggerUtil.logs(
-        "onBoardingUserStepTwoState ${onBoardingCubit.userModel.id} ${onBoardingCubit.userModel.aboutMe} ${onBoardingCubit.userModel.dateOfBirth}");
-
-    LoggerUtil.logs(
-        "onBoardingUserStepTwoState ${onBoardingCubit.userModel.toJson()} ");
+    // LoggerUtil.logs(
+    //     "onBoardingUserStepTwoState ${onBoardingCubit.userModel.id} ${onBoardingCubit.userModel.aboutMe} ${onBoardingCubit.userModel.dateOfBirth}");
+    //
+    // LoggerUtil.logs(
+    //     "onBoardingUserStepTwoState ${onBoardingCubit.userModel.toJson()} ");
     // LoggerUtil.logs(
     //     "onBoardingUserStepTwoState dob:${onBoardingUserStepTwoState.dob} aboutMe:${onBoardingUserStepTwoState.aboutMe} gender:${onBoardingUserStepTwoState.gender}");
     _selectedOption = _ListofIdentities.entries.first.key;
@@ -63,12 +60,14 @@ class _GenderSelectionState extends State<GenderSelection> {
   Widget build(BuildContext context) {
     return BlocConsumer<OnboardingCubit, OnBoardingState>(
       listener: (context, state) {
-        if (state is OnBoardingDobToGenderSuccessState) {
-          LoadingDialog.hideLoadingDialog(context);
+        if (state is OnBoardingUserDobToGenderLoadingState) {
+          // LoadingDialog.showLoadingDialog(context);
+        } else if (state is OnBoardingDobToGenderSuccessState) {
+          // LoadingDialog.hideLoadingDialog(context);
           onBoardingCubit.initializeUserData(state.userModel!);
-          NavigationUtil.push(context, RouteConstants.aboutYouScreen);
+
         } else if (state is OnBoardingDobToGenderFailureState) {
-          LoadingDialog.hideLoadingDialog(context);
+          // LoadingDialog.hideLoadingDialog(context);
           // ToastComponent.showToast(state.error.toString(), context: context);
           // AppConstants.openKeyboard(context);
           LoggerUtil.logs("Error ${state.error}");
@@ -147,6 +146,7 @@ class _GenderSelectionState extends State<GenderSelection> {
                     onBoardingCubit.userModel.dateOfBirth.toString(),
                     onBoardingCubit.userModel.aboutMe.toString(),
                     onBoardingCubit.userModel.gender.toString());
+                NavigationUtil.push(context, RouteConstants.aboutYouScreen);
                 // NavigationUtil.push(context, RouteConstants.aboutYouScreen);
               })
         ],

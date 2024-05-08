@@ -425,7 +425,7 @@ class MoreAbout {
     this.diet,
     this.workout,
     this.height,
-    this.weight,
+    // this.weight,
     this.smoking,
     this.drinking,
     this.pets,});
@@ -434,7 +434,7 @@ class MoreAbout {
     diet = json['diet'];
     workout = json['workout'];
     height = json['height'];
-    weight = json['weight'];
+    // weight = json['weight'];
     smoking = json['smoking'];
     drinking = json['drinking'];
     pets = json['pets'];
@@ -442,21 +442,21 @@ class MoreAbout {
   String? diet;
   String? workout;
   String? height;
-  String? weight;
+  // String? weight;
   String? smoking;
   String? drinking;
   String? pets;
   MoreAbout copyWith({  String? diet,
     String? workout,
     String? height,
-    String? weight,
+    // String? weight,
     String? smoking,
     String? drinking,
     String? pets,
   }) => MoreAbout(  diet: diet ?? this.diet,
     workout: workout ?? this.workout,
     height: height ?? this.height,
-    weight: weight ?? this.weight,
+    // weight: weight ?? this.weight,
     smoking: smoking ?? this.smoking,
     drinking: drinking ?? this.drinking,
     pets: pets ?? this.pets,
@@ -466,7 +466,7 @@ class MoreAbout {
     map['diet'] = diet;
     map['workout'] = workout;
     map['height'] = height;
-    map['weight'] = weight;
+    // map['weight'] = weight;
     map['smoking'] = smoking;
     map['drinking'] = drinking;
     map['pets'] = pets;

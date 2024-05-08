@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboardi
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/wrappers/interest_response_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -116,6 +117,17 @@ class _InterestScreenState extends State<InterestScreen> {
     // Add more tag data items as required
   ];
 
+  List<Hobbies>? hobbiesData = [];
+  List<Creativity>? creativityData = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    onBoardingCubit.getInterestData();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     //  convertedCreativityList = selectedCreativityTagList.map((item) {
@@ -126,12 +138,22 @@ class _InterestScreenState extends State<InterestScreen> {
     // }).toList();
     return BlocConsumer<OnboardingCubit, OnBoardingState>(
       listener: (context, state) {
-        if (state is OnBoardingAboutYouToInterestSuccessState) {
-          LoadingDialog.hideLoadingDialog(context);
+        if (state is OnBoardingUserAboutYouToInterestLoadingState) {
+          // LoadingDialog.showLoadingDialog(context);
+        } else if (state is OnBoardingAboutYouToInterestSuccessState) {
+          // LoadingDialog.hideLoadingDialog(context);
           onBoardingCubit.initializeUserData(state.userModel!);
-          NavigationUtil.push(context, RouteConstants.doneScreen);
+          // NavigationUtil.push(context, RouteConstants.doneScreen);
         } else if (state is OnBoardingAboutYouToInterestFailureState) {
-          LoadingDialog.hideLoadingDialog(context);
+          // LoadingDialog.hideLoadingDialog(context);
+          LoggerUtil.logs("Error ${state.error}");
+        } else if (state is OnBoardingInterestSuccess) {
+          onBoardingCubit.initializeInterestData(state.interestData);
+          hobbiesData = onBoardingCubit.interestWrapper.data?.first.hobbies;
+          creativityData =
+              onBoardingCubit.interestWrapper.data?.first.creativity;
+        } else if (state is OnBoardingInterestFailureState) {
+          // LoadingDialog.hideLoadingDialog(context);
           LoggerUtil.logs("Error ${state.error}");
         }
       },
@@ -140,8 +162,16 @@ class _InterestScreenState extends State<InterestScreen> {
           appBar: AppBarComponent(
             "",
             action: GestureDetector(
-              onTap: () =>
-                  NavigationUtil.push(context, RouteConstants.doneScreen),
+              onTap: () =>{
+              onBoardingCubit.userDetailAboutYouToInterestStep(
+              onBoardingCubit.userModel.id.toString(),
+              onBoardingCubit.userModel.bio.toString(),
+              onBoardingCubit.userModel.socialLink,
+              onBoardingCubit.userModel.moreAbout,
+              null),
+                NavigationUtil.push(context, RouteConstants.doneScreen),
+              },
+
               child: TextComponent(StringConstants.skip,
                   style:
                       FontStylesConstants.style14(color: themeCubit.textColor)),
@@ -155,21 +185,33 @@ class _InterestScreenState extends State<InterestScreen> {
           floatingActionButton: SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.8,
             child: ButtonComponent(
-                bgcolor: themeCubit.primaryColor,
-                textColor: themeCubit.backgroundColor,
+                bgcolor: selectedInterestedTags.isNotEmpty ||
+                    selectedCreativityTagList.isNotEmpty
+                    ? themeCubit.primaryColor
+                    : ColorConstants.blackLightBtn,
+                textColor: selectedInterestedTags.isNotEmpty ||
+                    selectedCreativityTagList.isNotEmpty
+                    ? ColorConstants.black
+                    : ColorConstants.lightGray,
                 buttonText: StringConstants.continues,
                 onPressed: () {
-                  Interest interest = Interest(
-                      hobbies: selectedInterestedTags,
-                      creativity: selectedCreativityTagList);
-                  onBoardingCubit.setInterest(interest);
-                  onBoardingCubit.userDetailAboutYouToInterestStep(
-                      onBoardingCubit.userModel.id.toString(),
-                      onBoardingCubit.userModel.bio.toString(),
-                      onBoardingCubit.userModel.socialLink,
-                      onBoardingCubit.userModel.moreAbout,
-                      onBoardingCubit.userModel.interest);
-                  // NavigationUtil.push(context, RouteConstants.doneScreen);
+                  if (selectedInterestedTags.isNotEmpty ||
+                      selectedCreativityTagList.isNotEmpty) {
+                    Interest interest = Interest(
+                        hobbies: selectedInterestedTags,
+                        creativity: selectedCreativityTagList);
+                    onBoardingCubit.setInterest(interest);
+                    onBoardingCubit.userDetailAboutYouToInterestStep(
+                        onBoardingCubit.userModel.id.toString(),
+                        onBoardingCubit.userModel.bio.toString(),
+                        onBoardingCubit.userModel.socialLink,
+                        onBoardingCubit.userModel.moreAbout,
+                        onBoardingCubit.userModel.interest);
+
+                    NavigationUtil.push(context, RouteConstants.doneScreen);
+                  }
+
+
                 }),
           ),
         );
@@ -214,10 +256,10 @@ class _InterestScreenState extends State<InterestScreen> {
             hobbies(),
             SizedBoxConstants.sizedBoxTwentyH(),
             creativity(),
-            SizedBoxConstants.sizedBoxTwentyH(),
-            hobbies(),
-            SizedBoxConstants.sizedBoxTwentyH(),
-            creativity(),
+            // SizedBoxConstants.sizedBoxTwentyH(),
+            // hobbies(),
+            // SizedBoxConstants.sizedBoxTwentyH(),
+            // creativity(),
             SizedBox(
               height: 50,
             ),
@@ -239,8 +281,8 @@ class _InterestScreenState extends State<InterestScreen> {
         SizedBoxConstants.sizedBoxTenH(),
         Wrap(
           children: [
-            ...interestedNewTagList
-                .map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
+            ...?hobbiesData
+                ?.map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: TagComponent(
@@ -306,8 +348,8 @@ class _InterestScreenState extends State<InterestScreen> {
         SizedBoxConstants.sizedBoxTenH(),
         Wrap(
           children: [
-            ...creativityNewTagList
-                .map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
+            ...?creativityData
+                ?.map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: TagComponent(

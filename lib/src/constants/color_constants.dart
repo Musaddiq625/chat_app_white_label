@@ -15,6 +15,7 @@ class ColorConstants {
   static const Color tagBgColor = Color.fromRGBO(248, 248, 248, 1);
 
   static const Color blackLight = Color.fromARGB(255, 73, 73, 73);
+  static const Color blackLightBtn = Color(0xff1A1A1A);
   static const Color lightGray = Color.fromARGB(255, 126, 122, 122);
 
   static const Color green = Color(0xff25d366);

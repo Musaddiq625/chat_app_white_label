@@ -81,7 +81,7 @@ class TagComponent extends StatelessWidget {
                           width: 5,
                         ),
 
-                        ImageComponent(imgUrl: iconData ?? AssetConstants.sad,width: iconSize,height: iconSize, isAsset: true,imgProviderCallback: (imgProviderCallback){}),
+                        ImageComponent(imgUrl: iconData ?? AssetConstants.sad,width: iconSize,height: iconSize,imgProviderCallback: (imgProviderCallback){}),
                         // Icon(
                         //   iconData,
                         //   size: iconSize,

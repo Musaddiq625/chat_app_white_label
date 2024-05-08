@@ -69,23 +69,22 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   enterName() {
     return BlocConsumer<OnboardingCubit, OnBoardingState>(
         listener: (context, state) {
-      if (state is OnBoardingLoadingState) {
-        LoadingDialog.showLoadingDialog(context);
-      } else if (state is OnBoardingUserNameImageSuccessState) {
-        LoadingDialog.hideLoadingDialog(context);
-
-        NavigationUtil.push(context, RouteConstants.selectProfileScreen,
-            args: selectedImages);
-      } else {
-        LoadingDialog.hideLoadingDialog(context);
-
-        ToastComponent.showToast(state.toString(), context: context);
-      }
+      // if (state is OnBoardingLoadingState) {
+      //   // LoadingDialog.showLoadingDialog(context);
+      // } else if (state is OnBoardingUserNameImageSuccessState) {
+      //   LoadingDialog.hideLoadingDialog(context);
+      //
+      //   NavigationUtil.push(context, RouteConstants.selectProfileScreen,
+      //       args: selectedImages);
+      // } else {
+      //   LoadingDialog.hideLoadingDialog(context);
+      //   // ToastComponent.showToast(state.toString(), context: context);
+      // }
       // if (state is OnBoardingUserNameImageFailureState) {
       //   LoadingDialog.hideLoadingDialog(context);
       // }
     }, builder: (BuildContext context, OnBoardingState state) {
-      LoggerUtil.logs(onBoardingCubit.getUserName());
+      // LoggerUtil.logs(onBoardingCubit.getUserName());
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -222,8 +221,8 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 buttonText: StringConstants.continues,
                 onPressed: () async {
                   removeEmptyImages();
-                  // onBoardingCubit.updateUserPhoto((selectedImages));
-
+                  onBoardingCubit.uploadUserPhoto((selectedImages));
+                  LoggerUtil.logs("uploadUserPhotos $selectedImages}");
                   NavigationUtil.push(context, RouteConstants.selectProfileScreen,
                       args: selectedImages);
                 },

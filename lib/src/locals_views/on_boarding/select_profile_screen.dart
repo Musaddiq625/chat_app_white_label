@@ -17,6 +17,7 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../components/toast_component.dart';
 import '../../constants/font_styles.dart';
 
 class SelectProfileImageScreen extends StatefulWidget {
@@ -64,11 +65,16 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
     return BlocConsumer<OnboardingCubit, OnBoardingState>(
       listener: (context, state) {
         LoggerUtil.logs('login state: $state');
-        if (state is OnBoardingLoadingState) {
-          LoadingDialog.showLoadingDialog(context);
+        if (state is OnBoardingUserNameImageLoadingState) {
+          // LoadingDialog.showLoadingDialog(context);
         } else if (state is OnBoardingUserNameImageSuccessState) {
-          LoadingDialog.hideLoadingDialog(context);
-          NavigationUtil.push(context, RouteConstants.dobScreen);
+          // LoadingDialog.hideLoadingDialog(context);
+          onBoardingCubit.initializeUserData(state.userModel!);
+
+        }
+        else if(state is OnBoardingUserNameImageFailureState){
+          // LoadingDialog.hideLoadingDialog(context);
+          // ToastComponent.showToast(state.toString(), context: context);
         }
       },
       builder: (context, state) {
@@ -122,7 +128,8 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                   itemCount: widget.selectedImages.length, // imgList.length,
                   itemBuilder: (context, index) {
                     final file = widget.selectedImages[index];
-                    return Row(
+                    return
+                      Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ClipRRect(
@@ -186,13 +193,20 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
           ),
           SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.9,
-            child: ButtonComponent(
+            child:
+            ButtonComponent(
                 bgcolor: themeCubit.primaryColor,
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.confirmProfilePicture,
                 onPressed: () {
+                  double currentPage = _pageController.page!;
+                  int currentIndex = currentPage.round();
+                  var currentImage = widget.selectedImages[currentIndex];
+                  widget.selectedImages.removeAt(currentIndex);
+                  widget.selectedImages.insert(0, currentImage);
+                  LoggerUtil.logs("updated List ${widget.selectedImages}");
+                   onBoardingCubit.updateUserPhoto(widget.selectedImages);
                   NavigationUtil.push(context, RouteConstants.dobScreen);
-                  // onBoardingCubit.userDetailFirstStep("selectedImage");
                 }),
           )
         ],

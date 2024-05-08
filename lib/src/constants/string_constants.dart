@@ -100,7 +100,7 @@ class StringConstants {
   static const String createANewGroup = "Create a new group";
   static const String skip = "Skip";
   static const String socials = "Socials";
-  static const String diet = "Diet";
+  static const String diet = "diet";
   static const String notifications = "Notifications";
   static const String contactUs = "Contact Us";
   static const String termsOfService = "Terms of service";
@@ -109,12 +109,12 @@ class StringConstants {
   static const String addBankDetails = "Add Bank Details";
   static const String logOut = "Log out";
   static const String deleteYourAccount = "Delete your account";
-  static const String workout = "Workout";
-  static const String height = "Height";
-  static const String weight = "Weight";
-  static const String smoking = "Smoking";
+  static const String workout = "workout";
+  static const String height = "height";
+  static const String weight = "weight";
+  static const String smoking = "smoking";
   static const String smoke = "Smoke";
-  static const String drinking = "Drinking";
+  static const String drinking = "drinking";
   static const String drink = "Drink";
   static const String moreAboutYou = "More about you";
   static const String personalInfo = "Personal info";
@@ -156,7 +156,7 @@ class StringConstants {
   static const String capacity = "Capacity";
   static const String questions = "Questions";
   static const String visibility = "Visibility";
-  static const String pets = "Pets";
+  static const String pets = "pets";
   static const String linkedIn = "LinkedIn";
   static const String editQuestions = "Edit Questions";
   static const String participants = "Participants";

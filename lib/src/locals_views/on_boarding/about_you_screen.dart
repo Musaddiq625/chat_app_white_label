@@ -7,6 +7,7 @@ import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
@@ -21,6 +22,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/route_constants.dart';
 import '../../models/user_model.dart';
+import '../../utils/loading_dialog.dart';
+import '../../utils/logger_util.dart';
+import '../../wrappers/more_about_wrapper.dart';
 
 class AboutYouScreen extends StatefulWidget {
   final bool comingFromEditProfile;
@@ -42,11 +46,11 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
   FixedExtentScrollController? scrollController =
       new FixedExtentScrollController();
   var data = {
-    'diet': ['Love Meat', 'vegeterian', 'vegan', 'Everything is fine'],
-    'workout': ['Active', 'Sometimes', 'Almost Never', 'id rather not say'],
-    'smoking': ['Socially', 'Regularly', 'Never', 'id rather not say'],
-    'drinking': ['Socially', 'Regularly', 'Never', 'id rather not say'],
-    'pets': ['Cat', 'Dog', 'Never', 'id rather not say'],
+    'Diet': ['Love Meat', 'vegeterian', 'vegan', 'Everything is fine'],
+    'Workout': ['Active', 'Sometimes', 'Almost Never', 'id rather not say'],
+    'Smoking': ['Socially', 'Regularly', 'Never', 'id rather not say'],
+    'Drinking': ['Socially', 'Regularly', 'Never', 'id rather not say'],
+    'Pets': ['Cat', 'Dog', 'Never', 'id rather not say'],
     // Add more keys as needed
   };
   final Map<String, dynamic> _moreAboutYou = {
@@ -97,6 +101,9 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
   };
 
   final Map<String, dynamic> _tempmoreAboutValue = {};
+
+  List<String> newHeight = [];
+
   List<String> height = [
     '3\'3 (99 cm)',
     '3\'4 (102 cm)',
@@ -170,30 +177,90 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
     '10\'0 (305 cm)',
   ];
 
+  var parsedDataOutPut;
 
-
-
-
+  @override
+  void initState() {
+    onBoardingCubit.getMoreAboutData();
+    // onBoardingCubit.initializeMoreAboutData();
+    print("MoreAboutData Values ${onBoardingCubit.moreAboutWrapper.toJson()}");
+    super.initState();
+  }
 
 
   @override
   Widget build(BuildContext context) {
-    return widget.comingFromEditProfile
-        ? onBoarding()
-        : UIScaffold(
-            appBar: widget.comingFromEditProfile
-                ? null
-                : AppBarComponent(
-                    "",
-                    action: TextComponent(StringConstants.skip,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: themeCubit.textColor,
-                        )),
-                  ),
-            removeSafeAreaPadding: false,
-            bgColor: themeCubit.backgroundColor,
-            widget: onBoarding());
+
+    return BlocConsumer<OnboardingCubit, OnBoardingState>(
+        listener: (context, state) {
+          print("state $state");
+          if (state is OnBoardingMoreAboutSuccess) {
+            // LoadingDialog.hideLoadingDialog(context);
+            onBoardingCubit.initializeMoreAboutData(state.moreAbout);
+            parsedDataOutPut= parseData(convertData(onBoardingCubit.moreAboutWrapper.data));
+            if(onBoardingCubit.moreAboutWrapper.data?.first.height != null){
+              newHeight= onBoardingCubit.moreAboutWrapper.data!.first.height!;
+            }
+          } else if (state is OnBoardingMoreAboutFailureState) {
+            // LoadingDialog.hideLoadingDialog(context);
+            LoggerUtil.logs("Error ${state.error}");
+          }
+          // TODO: implement listener
+        },
+      builder: (context, state) {
+        return widget.comingFromEditProfile
+            ? onBoarding()
+            : UIScaffold(
+                appBar: widget.comingFromEditProfile
+                    ? null
+                    : AppBarComponent(
+                        "",
+                        action: GestureDetector(
+                          onTap: ()=> NavigationUtil.push(context, RouteConstants.interestScreen),
+                          child: TextComponent(StringConstants.skip,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: themeCubit.textColor,
+                              )),
+                        ),
+                      ),
+                removeSafeAreaPadding: false,
+                bgColor: themeCubit.backgroundColor,
+                widget: onBoarding(),
+            floatingActionButton: ButtonComponent(
+              isSmallBtn: true,
+                bgcolor: _bioController.value.text.isNotEmpty
+                    ? themeCubit.primaryColor
+                    : ColorConstants.blackLightBtn,
+                textColor: _bioController.value.text.isNotEmpty
+                    ? ColorConstants.black
+                    : ColorConstants.lightGray,
+            buttonText: StringConstants.continues,
+            btnWidth: AppConstants.responsiveWidth(context,percentage: 90),
+            onPressed: () {
+                if(_bioController.value.text.isNotEmpty) {
+                  SocialLink socialLink = SocialLink(
+                    linkedin: linkedInController.text,
+                    instagram: instaController.text,
+                    facebook: facebookController.text,
+                  );
+                  MoreAbout moreAbout = MoreAbout(
+                    diet: _tempmoreAboutValue[StringConstants.diet],
+                    workout: _tempmoreAboutValue[StringConstants.workout],
+                    height: _tempmoreAboutValue[StringConstants.height],
+                    // weight: _tempmoreAboutValue[StringConstants.weight],
+                    smoking: _tempmoreAboutValue[StringConstants.smoking],
+                    drinking: _tempmoreAboutValue[StringConstants.pets],
+                    pets: _tempmoreAboutValue[StringConstants.pets],
+                  );
+                  onBoardingCubit.setAboutYou(_bioController.text.toString(), socialLink, moreAbout);
+                  NavigationUtil.push(context, RouteConstants.interestScreen);
+                }
+
+            })
+        );
+      }
+    );
   }
 
   Widget onBoarding() {
@@ -302,42 +369,45 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
             const Divider(
               thickness: 0.1,
             ),
+            if(onBoardingCubit.moreAboutWrapper.data != null)
             moreAboutYou(),
           ],
         ),
         // const SizedBox(
         //   height: 10,
         // ),
-        if (!widget.comingFromEditProfile)
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ButtonComponent(
-                bgcolor: themeCubit.primaryColor,
-                textColor: themeCubit.backgroundColor,
-                buttonText: StringConstants.continues,
-                onPressed: () {
-                  SocialLink socialLink = SocialLink(
-                    linkedin: linkedInController.text,
-                    instagram: instaController.text,
-                    facebook: facebookController.text,
-                  );
-                  MoreAbout moreAbout = MoreAbout(
-                    diet: _tempmoreAboutValue[StringConstants.diet],
-                    workout: _tempmoreAboutValue[StringConstants.workout],
-                    height: _tempmoreAboutValue[StringConstants.height],
-                    weight: _tempmoreAboutValue[StringConstants.weight],
-                    smoking: _tempmoreAboutValue[StringConstants.smoking],
-                    drinking: _tempmoreAboutValue[StringConstants.pets],
-                    pets: _tempmoreAboutValue[StringConstants.pets],
-                  );
-                  onBoardingCubit.setAboutYou(_bioController.text.toString(), socialLink, moreAbout);
-                  // onBoardingCubit.userDetailAboutYouToInterestStep(
-                  //   onBoardingCubit.userModel.id.toString(),
-                  //     _bioController.text.toString(), socialLink, moreAbout
-                  // );
-                  NavigationUtil.push(context, RouteConstants.interestScreen);
-                }),
-          )
+SizedBoxConstants.sizedBoxSixtyH(),
+        //////////////
+        // if (!widget.comingFromEditProfile)
+        //   Padding(
+        //     padding: const EdgeInsets.all(20.0),
+        //     child: ButtonComponent(
+        //         bgcolor: themeCubit.primaryColor,
+        //         textColor: themeCubit.backgroundColor,
+        //         buttonText: StringConstants.continues,
+        //         onPressed: () {
+        //           SocialLink socialLink = SocialLink(
+        //             linkedin: linkedInController.text,
+        //             instagram: instaController.text,
+        //             facebook: facebookController.text,
+        //           );
+        //           MoreAbout moreAbout = MoreAbout(
+        //             diet: _tempmoreAboutValue[StringConstants.diet],
+        //             workout: _tempmoreAboutValue[StringConstants.workout],
+        //             height: _tempmoreAboutValue[StringConstants.height],
+        //             // weight: _tempmoreAboutValue[StringConstants.weight],
+        //             smoking: _tempmoreAboutValue[StringConstants.smoking],
+        //             drinking: _tempmoreAboutValue[StringConstants.pets],
+        //             pets: _tempmoreAboutValue[StringConstants.pets],
+        //           );
+        //           onBoardingCubit.setAboutYou(_bioController.text.toString(), socialLink, moreAbout);
+        //           // onBoardingCubit.userDetailAboutYouToInterestStep(
+        //           //   onBoardingCubit.userModel.id.toString(),
+        //           //     _bioController.text.toString(), socialLink, moreAbout
+        //           // );
+        //           NavigationUtil.push(context, RouteConstants.interestScreen);
+        //         }),
+        //   )
       ],
     );
   }
@@ -498,7 +568,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                 )),
           ),
           // SizedBoxConstants.sizedBoxEightH(),
-
+          if(onBoardingCubit.moreAboutWrapper.data?.first.diet != null)
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -510,19 +580,21 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               isLeadingImageSVG: true,
               trailingText: _tempmoreAboutValue[StringConstants.diet],
               onTap: () {
-                var parsedDataOutPut= parseData(data);
+
                 moreAboutYouSelection(
                     AssetConstants.diet,
                     "${StringConstants.whatIsYour + StringConstants.diet} ?",
                     StringConstants.diet,
-                    // parsedDataOutPut[StringConstants.diet,]
-                    _moreAboutYou[StringConstants.diet]
+                    parsedDataOutPut[StringConstants.diet]
+                   // _moreAboutYou[StringConstants.diet]
 
                 );
               }),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.workout != null)
           const SizedBox(
             height: 10,
           ),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.workout != null)
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -534,15 +606,20 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
               subIconColor: ColorConstants.iconBg,
               trailingText: _tempmoreAboutValue[StringConstants.workout],
               onTap: () {
+                // var parsedDataOutPut= parseData(data);
                 moreAboutYouSelection(
                     AssetConstants.workout,
                     "${StringConstants.doYou + StringConstants.workout} ?",
                     StringConstants.workout,
-                    _moreAboutYou[StringConstants.workout]);
+                    // _moreAboutYou[StringConstants.workout]
+                    parsedDataOutPut[StringConstants.workout],
+                );
               }),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.height != null)
           const SizedBox(
             height: 10,
           ),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.height != null)
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -558,12 +635,15 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                     AssetConstants.height,
                     "${StringConstants.whatIsYour + StringConstants.height} ?",
                     StringConstants.height,
-                    _moreAboutYou[StringConstants.height],
+                    parsedDataOutPut[StringConstants.height],
+                    // _moreAboutYou[StringConstants.height],
                     isHeight: true);
               }),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.smoking != null)
           const SizedBox(
             height: 10,
           ),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.smoking != null)
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -578,11 +658,13 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                     AssetConstants.smoking,
                     "${StringConstants.doYou + StringConstants.smoke} ?",
                     StringConstants.smoking,
-                    _moreAboutYou[StringConstants.smoking]);
+                    parsedDataOutPut[StringConstants.smoking]);
               }),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.drinking != null)
           const SizedBox(
             height: 10,
           ),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.drinking != null)
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -597,11 +679,13 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                     AssetConstants.drinking,
                     "${StringConstants.doYou + StringConstants.drink} ?",
                     StringConstants.drinking,
-                    _moreAboutYou[StringConstants.drinking]);
+                    parsedDataOutPut[StringConstants.drinking]);
               }),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.pets != null)
           const SizedBox(
             height: 10,
           ),
+          if(onBoardingCubit.moreAboutWrapper.data?.first.pets != null)
           ListTileComponent(
               // icon: Icons.location_on,
               // iconColor: ColorConstants.white,
@@ -616,7 +700,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                     AssetConstants.pets,
                     "${StringConstants.doYouHave + StringConstants.pets} ?",
                     StringConstants.pets,
-                    _moreAboutYou[StringConstants.pets]);
+                    parsedDataOutPut[StringConstants.pets]);
               }),
         ],
       ),
@@ -624,7 +708,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
   }
 
   Future<void> moreAboutYouSelection(
-      String image, String title, String key, Map<String, dynamic> data,
+      String image, String title, String key, Map<String, dynamic>? data,
       {bool isHeight = false}) {
     String? selectedValue = "";
     bool selection = false;
@@ -682,15 +766,16 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                           squeeze: 1.2,
                           useMagnifier: true,
                           scrollController: FixedExtentScrollController(
-                            initialItem: height.indexOf(selectedValue ?? "0"),
+                            initialItem: newHeight.indexOf(selectedValue ?? "0")//height.indexOf(selectedValue ?? "0"),
                           ),
                           onSelectedItemChanged: (value) {
-                            addSelection(height[value]);
+                            addSelection(newHeight[value]);  // addSelection(height[value]);
 
                             setState1(() {});
                             // setState(() {});
                           },
-                          children: height.map((e) {
+                          // children: height.map((e) {
+                          children: newHeight.map((e) {
                             return Container(
                               alignment: Alignment.center,
                               child: TextComponent(
@@ -732,6 +817,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                           // })),
                         ))
                   else
+                    if(data != null)
                     Column(
                         children: data.entries.map((e) {
                       if (e.key == selectedValue) {
@@ -770,7 +856,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                       buttonText: isHeight
                           ? StringConstants.done
                           : StringConstants.save,
-                      textColor: themeCubit.backgroundColor,
+                      textColor: selection?themeCubit.backgroundColor:themeCubit.textColor,
                       bgcolor: themeCubit.primaryColor,
                       onPressed: selection == false
                           ? null
@@ -802,13 +888,13 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
   }
 
 
-  Map<String, Map<String, bool>> parseData(Map<String, List<String>> inputData) {
-    Map<String, Map<String, bool>> parsedData = {};
+  Map<String, Map<String, dynamic>> parseData(Map<String, List<String>> inputData) {
+    Map<String, Map<String, dynamic>> parsedData = {};
 
     // Iterate over each key in the input data
     inputData.forEach((key, values) {
       // Create a map for the current key with values set to false
-      Map<String, bool> keyValueMap = {};
+      Map<String, dynamic> keyValueMap = {};
       values.forEach((value) {
         keyValueMap[value] = false;
       });
@@ -818,5 +904,30 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
     });
 
     return parsedData;
+  }
+
+  Map<String, List<String>> convertData(List<MoreAboutList>? data) {
+    Map<String, List<String>> convertedData = {};
+
+    data?.forEach((item) {
+      if (item.diet != null) {
+        convertedData['diet'] = item.diet!;
+      }
+      if (item.workout != null) {
+        convertedData['workout'] = item.workout!;
+      }
+      if (item.smoking != null) {
+        convertedData['smoking'] = item.smoking!;
+      }
+      if (item.drinking != null) {
+        convertedData['drinking'] = item.drinking!;
+      }
+      if (item.pets != null) {
+        convertedData['pets'] = item.pets!;
+      }
+      // Add more keys as needed
+    });
+
+    return convertedData;
   }
 }
