@@ -16,7 +16,9 @@ import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
-import 'package:chat_app_white_label/src/models/event_data_model.dart';
+import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/models/event_model.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +31,11 @@ import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/search_text_field_component.dart';
+import '../../components/text_field_component.dart';
+import '../../components/toast_component.dart';
 import '../../models/contact.dart';
+import '../../utils/loading_dialog.dart';
+import '../../utils/logger_util.dart';
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({super.key});
@@ -39,7 +45,7 @@ class CreateEventScreen extends StatefulWidget {
 }
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
-  EventDataModel? _eventDataModel;
+  // EventDataModel? _eventDataModel;
   final TextEditingController _controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
   TextEditingController searchControllerConnections = TextEditingController();
@@ -47,6 +53,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   bool askQuestion = false;
   bool editQuestion = false;
   bool locationVisible = true;
+  bool editEventName = false;
   String? selectedVisibilityValue = "Public";
   String? selectedValue = "";
   final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
@@ -62,14 +69,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<String> values = ['Public', 'Private'];
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
-    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
-    ContactModel('Json Ebert', 'Tester', "","03323333333"),
-    ContactModel('Mack', 'Intern', "","03312233445"),
-    ContactModel('Julia', 'Developer', "","88552233644"),
-    ContactModel('Rose', 'Human Resource', "","55366114532"),
-    ContactModel('Frank', 'xyz', "","25651412344"),
-    ContactModel('Taylor', 'Test', "","5511772266"),
+    ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
+    ContactModel('Json Ebert', 'Tester', "", "03323333333"),
+    ContactModel('Mack', 'Intern', "", "03312233445"),
+    ContactModel('Julia', 'Developer', "", "88552233644"),
+    ContactModel('Rose', 'Human Resource', "", "55366114532"),
+    ContactModel('Frank', 'xyz', "", "25651412344"),
+    ContactModel('Taylor', 'Test', "", "5511772266"),
   ];
 
   // final List<Map<String, dynamic>> contacts = [
@@ -80,38 +87,66 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   //   {'name': 'Jesse Ebert', 'title': 'Graphic Designer', 'url': ''},
   //   {'name': 'John Doe', 'title': 'Developer', 'url': ''},
   // ];
-  String eventName = 'xyz Event';
+  String intialEventName = 'Create Event Name';
+  String? eventName;
   String? selectedImagePath;
   String? startDate;
   String? endDate;
+  String? selectedLocation;
   List<String> questions = ['Question 1'];
+  late FocusNode myFocusNode;
   List<TextEditingController> _questionControllers =
       []; // Initialize with one question
+
+  Map<int, String> selectedQuestionPublic={};
+  Map<int, String> selectedQuestionRequired={};
   final TextEditingController _controllerQuestions = TextEditingController();
+  final TextEditingController _controllerDescription = TextEditingController();
+  final TextEditingController eventNameController = TextEditingController();
+  late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
 
   @override
   void initState() {
     super.initState();
+    LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     _questionControllers =
         List.generate(questions.length, (index) => TextEditingController());
+    myFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _questionControllers.forEach((controller) => controller.dispose());
+    myFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-        bgColor: themeCubit.backgroundColor,
-        appBar: AppBarComponent(
-          StringConstants.createEvent,
-          centerTitle: false,
-          isBackBtnCircular: false,
-        ),
-        widget: _createEvent());
+    LoggerUtil.logs("Build UserId-- ${AppConstants.userId}");
+    return BlocConsumer<EventCubit, EventState>(
+      listener: (context, state) {
+        if (state is EventLoadingState) {
+          LoadingDialog.showLoadingDialog(context);
+        } else if (state is CreateEventSuccessState) {
+          LoadingDialog.hideLoadingDialog(context);
+          _createBottomSheet();
+        } else if (state is CreateEventFailureState) {
+          LoadingDialog.hideLoadingDialog(context);
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+      },
+      builder: (context, state) {
+        return UIScaffold(
+            bgColor: themeCubit.backgroundColor,
+            appBar: AppBarComponent(
+              StringConstants.createEvent,
+              centerTitle: false,
+              isBackBtnCircular: false,
+            ),
+            widget: _createEvent());
+      },
+    );
   }
 
   toggleTaped() {
@@ -131,10 +166,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         setState(() {
           selectedPriceValue =
               ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex];
+          eventCubit.addPrice(selectedPriceValue=="Free"?"0":selectedPriceValue);
         }),
       },
       child: Container(
-        width: AppConstants.responsiveWidth(context,percentage: 25),
+        width: AppConstants.responsiveWidth(context, percentage: 25),
         margin: const EdgeInsets.symmetric(horizontal: 8),
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 25),
         decoration: BoxDecoration(
@@ -186,9 +222,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       top: AppConstants.responsiveHeight(context,
                           percentage: 60),
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 32.0,
-                        ),
+                        padding: const EdgeInsets.only(left: 32.0, right: 32),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -200,6 +234,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   setState(() {
                                     selectedImagePath = image
                                         .path; // Update the state with the selected image path
+                                    eventCubit.addImage(selectedImagePath);
                                   });
                                 }
                               },
@@ -225,12 +260,82 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 ],
                               ),
                             ),
-                            TextComponent(
-                              eventName,
-                              style: TextStyle(
-                                  fontSize: 38,
-                                  fontFamily: FontConstants.fontProtestStrike,
-                                  color: ColorConstants.white),
+                            Container(
+                              width: AppConstants.responsiveWidth(context,
+                                  percentage: 100),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  // editEventName ?
+                                  Container(
+                                    // color: ColorConstants.blue,
+                                    child: SizedBox(
+                                      width: AppConstants.responsiveWidth(
+                                          context,
+                                          percentage: 55),
+                                      child: AbsorbPointer(
+                                        absorbing: editEventName,
+                                        child: TextFieldComponent(
+                                          eventNameController,
+                                          keyboardType: TextInputType.name,
+                                          focusNode: myFocusNode,
+                                          hintTextColor: ColorConstants.white,
+                                          hintText: "Create Event",
+                                          maxLines: 2,
+                                          onChanged: (_) {
+                                            eventName =
+                                                eventNameController.text;
+                                            eventCubit.addTitle(eventNameController.text);
+                                          },
+                                          onFieldSubmitted: (_) {
+                                            setState(() {
+                                              editEventName = true;
+                                              eventName =
+                                                  eventNameController.text;
+                                              print("eventName ${eventName}");
+                                              eventCubit.eventModel
+                                                  .copyWith(title: eventName);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  //:
+                                  // Container(
+                                  //   width: AppConstants.responsiveWidth(context,percentage: 55),
+                                  //   child: TextComponent(
+                                  //     eventName ?? intialEventName,
+                                  //     maxLines: 3,
+                                  //     style: TextStyle(
+                                  //         fontSize: 38,
+                                  //         fontFamily: FontConstants.fontProtestStrike,
+                                  //         color: ColorConstants.white),
+                                  //   ),
+                                  // ),
+                                  Container(
+                                    // color: ColorConstants.red,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          myFocusNode.requestFocus();
+                                          editEventName = false;
+                                          print("setState ${editEventName}");
+                                        });
+                                      },
+                                      child: IconComponent(
+                                        iconData: Icons.edit,
+                                        borderColor: ColorConstants.transparent,
+                                        circleSize: 40,
+                                        backgroundColor:
+                                            ColorConstants.transparent,
+                                        iconColor: ColorConstants.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -744,7 +849,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ),
                 SizedBoxConstants.sizedBoxTenH(),
                 TextField(
-                  controller: _controllerQuestions,
+                  controller: _controllerDescription,
+                  onChanged:(_){
+                    eventCubit.addDescription(_controllerDescription.value.text);
+                },
                   maxLines: 4,
                   style: TextStyle(color: themeCubit.textColor),
                   decoration: InputDecoration(
@@ -766,10 +874,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         borderRadius: BorderRadius.circular(23.0),
                         borderSide: const BorderSide(
                             color: ColorConstants.transparent)),
-                    // suffixIcon: IconButton(
-                    //   icon: Icon(Icons.send),
-                    //   onPressed: _sendMessage,
-                    // ),
                   ),
                 ),
                 SizedBoxConstants.sizedBoxTwentyH(),
@@ -807,6 +911,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   onSwitchChanged: (bool value) {
                     setState(() {
                       requireGuest = value;
+                      eventCubit.addRequiredGuestApproval(requireGuest);
                     });
                   },
                 ),
@@ -825,6 +930,28 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         context,
                         _questionControllers,
                         questions,
+                        selectedQuestionRequired,
+                        selectedQuestionPublic,
+                         (List<Question> questionsList) {
+
+                          // List<Question> questionsList = eventCubit.eventModel.question?? [];
+                          // for(int i = 0; i < _questionControllers.length; i++){
+                          //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                          //   Question newQuestion = Question(
+                          //     questionId: FirebaseUtils.getDateTimeNowAsId(), // Assuming you have a mechanism to generate unique IDs
+                          //     question: _questionControllers[i].value.text, // Pass the entire list of controllers
+                          //     isPublic: selectedQuestionPublic[i]=="Public"?true:false ,
+                          //     isRequired: selectedQuestionRequired[i]=="Required"?true:false ,
+                          //   );
+                          //   questionsList.add(newQuestion);
+                          // }
+
+                          // NavigationUtil.pop(context);
+                          eventCubit.addQuestions(questionsList);
+                          LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
+                          LoggerUtil.logs("eventCubit.eventModel.tojson ${eventCubit.eventModel.toJson()}");
+                        }
+
                       );
                     }
                   },
@@ -839,7 +966,32 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     askQuestion = value;
                     if (askQuestion == true) {
                       QuestionComponent.selectQuestion(
-                          context, _questionControllers, questions);
+                          context,
+                          _questionControllers,
+                          questions,
+                          selectedQuestionRequired,
+                          selectedQuestionPublic,
+                              (List<Question> questionsList) {
+                                eventCubit.addQuestions(questionsList);
+                            // List<Question> questionsList = eventCubit.eventModel.question?? [];
+                            // for(int i = 0; i < _questionControllers.length; i++){
+                            //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                            //   Question newQuestion = Question(
+                            //     questionId: "auto", // Assuming you have a mechanism to generate unique IDs
+                            //     question: _questionControllers[i].value.text, // Pass the entire list of controllers
+                            //     isPublic: selectedQuestionPublic[i]=="Public"?true:false ,
+                            //     isRequired: selectedQuestionRequired[i]=="Required"?true:false ,
+                            //   );
+                            //   questionsList.add(newQuestion);
+                            // }
+                            // eventCubit.eventModel.copyWith(question: questionsList);
+                            // NavigationUtil.pop(context);
+
+                            LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
+                                LoggerUtil.logs("eventCubit.eventModel.tojson ${eventCubit.eventModel.toJson()}");
+                          }
+
+                      );
 
                       // _selectQuestion();
                     } else if (askQuestion == false) {
@@ -858,10 +1010,17 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     buttonText: StringConstants.createEvent,
                     textColor: themeCubit.backgroundColor,
                     onPressed: () {
-                      // EventUtils.createEvent(_eventDataModel!);
-                      _createBottomSheet();
-                      // NavigationUtil.push(
-                      //     context, RouteConstants.localsEventScreen);
+                      eventCubit.addStartDate(startDate);
+                      eventCubit.addEndDate(endDate);
+                      if (startDate != null &&
+                          endDate != null &&
+                          eventName != null &&
+                          selectedPriceValue.isNotEmpty &&
+                          capacityValue.isNotEmpty) {
+                        eventCubit.createEventData(AppConstants.userId,eventCubit.eventModel);
+
+                      }
+                      // _createBottomSheet();
                     },
                   ),
                 )
@@ -1128,6 +1287,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         setState(() {
                           selectedPriceValue =
                               "${"£" + _inputPriceValuecontroller.text}";
+                          eventCubit.addPrice(_inputPriceValuecontroller.value.text.isNotEmpty?selectedPriceValue: "0");
                         });
                       },
                       keyboardType: TextInputType.number,
@@ -1169,6 +1329,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         textColor: ColorConstants.black,
                         buttonText: StringConstants.done,
                         onPressed: () {
+                          print("_inputPriceValuecontroller.text ${_inputPriceValuecontroller.text}, selectedvalue ${selectedPriceValue}");
                           NavigationUtil.pop(context);
                           // _yesShareItBottomSheet();
                           // NavigationUtil.push(
@@ -1287,6 +1448,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               _inputCapacityValuecontroller.text.isNotEmpty
                                   ? _inputCapacityValuecontroller.text
                                   : "Unlimited";
+                          eventCubit.addCapacity(capacityValue);
                         });
                         NavigationUtil.pop(context);
                         // _yesShareItBottomSheet();
@@ -1311,6 +1473,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           onValueSelected: (String? newValue) {
             setState(() {
               selectedVisibilityValue = newValue;
+              eventCubit.addVisibility(selectedVisibilityValue=="Public"?true:false);
             });
           },
         ));

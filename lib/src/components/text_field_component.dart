@@ -41,6 +41,7 @@ class TextFieldComponent extends StatefulWidget {
   final bool digitsOnly;
   final bool filled;
   final Color textColor;
+  final Color hintTextColor;
   final Widget? prefixWidget;
 
   final dart_ui.TextDirection? textDirection;
@@ -79,6 +80,7 @@ class TextFieldComponent extends StatefulWidget {
     this.changeDirection = false,
     this.textDirection,
     this.textColor = ColorConstants.white,
+    this.hintTextColor =ColorConstants.lightGray,
     this.textFieldFontSize = 30,
     this.autoFocus = false,
     this.autovalidateMode = AutovalidateMode.disabled,
@@ -278,7 +280,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
               decoration: TextDecoration.none,
               fontSize: widget.textFieldFontSize)
           : TextStyle(
-              color: ColorConstants.lightGray,
+              color: widget.hintTextColor,
               fontFamily: FontConstants.fontProtestStrike,
               fontSize: widget.textFieldFontSize),
     );
@@ -292,7 +294,7 @@ class _TextFieldComponentState extends State<TextFieldComponent> {
       hintText: widget.hintText,
       counter: const Offstage(),
       hintStyle: TextStyle(
-          color: ColorConstants.lightGray,
+          color: widget.hintTextColor,
           fontFamily: FontConstants.fontProtestStrike,
           fontSize: widget.textFieldFontSize),
     );

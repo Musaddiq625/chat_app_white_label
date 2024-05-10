@@ -10,17 +10,24 @@ import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/models/event_model.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../locals_views/create_event_screen/cubit/event_cubit.dart';
+import '../utils/firebase_utils.dart';
+
+
 class QuestionComponent {
-  static selectQuestion(BuildContext context,
-      List<TextEditingController> questionControllers, List<String> questions) {
+  static void selectQuestion(BuildContext context, List<TextEditingController> questionControllers,List<String> questions, Map<int, String> selectedQuestionRequired ,  Map<int, String> selectedQuestionPublic,  Function(List<Question>) onDone) {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-    Map<int, String> selectedQuestionRequired = {};
-    Map<int, String> selectedQuestionPublic = {};
+    late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
+    // Map<int, String> selectedQuestionRequired = {};
+    // Map<int, String> selectedQuestionPublic = {};
+    List<Question> questionsList = eventCubit.eventModel.question?? [];
 
     Widget question(StateSetter setStateBottomSheet) {
       late final themeCubit = BlocProvider.of<ThemeCubit>(context);
@@ -426,9 +433,42 @@ class QuestionComponent {
                       bgcolor: ColorConstants.primaryColor,
                       textColor: ColorConstants.black,
                       buttonText: StringConstants.done,
-                      onPressed: () {
-                        NavigationUtil.pop(context);
-                      },
+
+                      onPressed: (){
+                          List<Question> questionsList = eventCubit.eventModel.question?? [];
+                          questionsList.clear();
+                          for(int i = 0; i < questionControllers.length; i++){
+                            LoggerUtil.logs("questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                            Question newQuestion = Question(
+                              questionId: FirebaseUtils.getDateTimeNowAsId(), // Assuming you have a mechanism to generate unique IDs
+                              question: questionControllers[i].value.text, // Pass the entire list of controllers
+                              isPublic: selectedQuestionPublic[questionControllers[i]]=="Public"?true:false ,
+                              isRequired: selectedQuestionRequired[questionControllers[i]]=="Required"?true:false ,
+                              sequence: i+1,
+                            );
+                            questionsList.add(newQuestion);
+                          }
+                        onDone(questionsList);
+                          NavigationUtil.pop(context);
+                        },
+                      // onPressed: () {
+                      //
+                      //   List<Question> questionsList = eventCubit.eventModel.question?? [];
+                      //   for(int i = 0; i < questionControllers.length; i++){
+                      //     LoggerUtil.logs("questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                      //     Question newQuestion = Question(
+                      //       questionId: "auto", // Assuming you have a mechanism to generate unique IDs
+                      //       question: questionControllers[i].value.text, // Pass the entire list of controllers
+                      //       isPublic: selectedQuestionPublic[questionControllers[i]]=="Public"?true:false ,
+                      //       isRequired: selectedQuestionRequired[questionControllers[i]]=="Required"?true:false ,
+                      //     );
+                      //     questionsList.add(newQuestion);
+                      //   }
+                      //   eventCubit.eventModel.copyWith(question: questionsList);
+                      //   // NavigationUtil.pop(context);
+                      //
+                      //   LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
+                      // },
                     ),
                   ],
                 ),

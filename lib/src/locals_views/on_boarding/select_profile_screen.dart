@@ -204,7 +204,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                   var currentImage = widget.selectedImages[currentIndex];
                   widget.selectedImages.removeAt(currentIndex);
                   widget.selectedImages.insert(0, currentImage);
-                  LoggerUtil.logs("updated List ${widget.selectedImages}");
+                  LoggerUtil.logs("updated-List ${widget.selectedImages}");
                    onBoardingCubit.updateUserPhoto(widget.selectedImages);
                   NavigationUtil.push(context, RouteConstants.dobScreen);
                 }),

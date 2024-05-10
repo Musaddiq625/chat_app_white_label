@@ -31,6 +31,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../models/event_model.dart';
+import '../../utils/logger_util.dart';
+
 class CreateGroupScreens extends StatefulWidget {
   const CreateGroupScreens({super.key});
 
@@ -69,6 +72,8 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
     ContactModel('Taylor', 'Test', "","5511772266"),
   ];
 
+  Map<int, String> selectedQuestionPublic={};
+  Map<int, String> selectedQuestionRequired={};
   List<String> questions = ['Question 1'];
   List<TextEditingController> _questionControllers =
       []; // Initialize with one question
@@ -337,9 +342,30 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                       if (askQuestion == true) {
                         // _selectQuestion();
                         QuestionComponent.selectQuestion(
-                          context,
-                          _questionControllers,
-                          questions,
+                            context,
+                            _questionControllers,
+                            questions,
+                            selectedQuestionRequired,
+                            selectedQuestionPublic,
+                                (List<Question> questionsList) {
+
+                              // List<Question> questionsList = eventCubit.eventModel.question?? [];
+                              // for(int i = 0; i < _questionControllers.length; i++){
+                              //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                              //   Question newQuestion = Question(
+                              //     questionId: "auto", // Assuming you have a mechanism to generate unique IDs
+                              //     question: _questionControllers[i].value.text, // Pass the entire list of controllers
+                              //     isPublic: selectedQuestionPublic[i]=="Public"?true:false ,
+                              //     isRequired: selectedQuestionRequired[i]=="Required"?true:false ,
+                              //   );
+                              //   questionsList.add(newQuestion);
+                              // }
+                              // eventCubit.eventModel.copyWith(question: questionsList);
+                              // // NavigationUtil.pop(context);
+                              //
+                              // LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
+                            }
+
                         );
                       }
                     },
@@ -354,7 +380,31 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                       askQuestion = value;
                       if (askQuestion == true) {
                         QuestionComponent.selectQuestion(
-                            context, _questionControllers, questions);
+                            context,
+                            _questionControllers,
+                            questions,
+                            selectedQuestionRequired,
+                            selectedQuestionPublic,
+                               (List<Question> questionsList) {
+                              //
+                              // List<Question> questionsList = eventCubit.eventModel.question?? [];
+                              // for(int i = 0; i < _questionControllers.length; i++){
+                              //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                              //   Question newQuestion = Question(
+                              //     questionId: "auto", // Assuming you have a mechanism to generate unique IDs
+                              //     question: _questionControllers[i].value.text, // Pass the entire list of controllers
+                              //     isPublic: selectedQuestionPublic[i]=="Public"?true:false ,
+                              //     isRequired: selectedQuestionRequired[i]=="Required"?true:false ,
+                              //   );
+                              //   questionsList.add(newQuestion);
+                              // }
+                              // eventCubit.eventModel.copyWith(question: questionsList);
+                              // // NavigationUtil.pop(context);
+                              //
+                              // LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
+                           }
+
+                        );
 
                         // _selectQuestion();
                       } else if (askQuestion == false) {
