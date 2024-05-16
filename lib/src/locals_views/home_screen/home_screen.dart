@@ -6,18 +6,23 @@ import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/filter_screen/filter_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../components/button_component.dart';
 import '../../constants/route_constants.dart';
@@ -42,65 +47,126 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
-    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
-    ContactModel('Json Ebert', 'Tester', "","03323333333"),
-    ContactModel('Mack', 'Intern', "","03312233445"),
-    ContactModel('Julia', 'Developer', "","88552233644"),
-    ContactModel('Rose', 'Human Resource', "","55366114532"),
-    ContactModel('Frank', 'xyz', "","25651412344"),
-    ContactModel('Taylor', 'Test', "","5511772266"),
+    ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
+    ContactModel('Json Ebert', 'Tester', "", "03323333333"),
+    ContactModel('Mack', 'Intern', "", "03312233445"),
+    ContactModel('Julia', 'Developer', "", "88552233644"),
+    ContactModel('Rose', 'Human Resource', "", "55366114532"),
+    ContactModel('Frank', 'xyz', "", "25651412344"),
+    ContactModel('Taylor', 'Test', "", "5511772266"),
   ];
+  int _currentPage = 0;
+  int currentPageValue = 1;
+  bool isApiCalled = false;
+  late PageController _pageController;
   double radius = 30;
-
+  late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
   late final mainScreenCubit = BlocProvider.of<MainScreenCubit>(context);
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await eventCubit.fetchEventDataByKeys(currentPageValue.toString());
+    });
+    _pageController = PageController(initialPage: 0);
+    _pageController.addListener(_onPageChanged);
+    // ..addListener(() {
+    //   setState(() {
+    //     _currentPage = _pageController.page!.round();
+    //   });
+    // });
+    super.initState();
+  }
+
+  void _onPageChanged() {
+    print(
+        "Page changed to: ${_pageController.page!.round()}  currentPAgeValue ${currentPageValue}");
+    int currentPage = _pageController.page!.round();
+    if (currentPage == eventCubit.eventModelList.length - 1) {
+      LoggerUtil.logs("Page is last-01");
+
+      if (eventCubit.eventResponseWrapper.meta!.remainingCount! > 0) {
+        if (isApiCalled == false) {
+          currentPageValue++;
+          eventCubit.fetchEventDataByKeys(currentPageValue.toString());
+        }
+
+        setState(() {
+          isApiCalled = true;
+        });
+      }
+    } else {
+      setState(() {
+        isApiCalled = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        PageView(
-          scrollDirection: Axis.vertical,
+    return BlocConsumer<EventCubit, EventState>(
+      listener: (context, state) {
+        if(state is EventFetchLoadingState){
+          // LoadingDialog.showProgressLoadingDialog(context);
+        }
+        else if (state is EventFetchSuccessState) {
+          // LoadingDialog.hideLoadingDialog(context);
+          eventCubit.eventModelList.addAll(state.eventModel ?? []);
+          // eventCubit.initializeEventData(state.eventModel ?? []);
+          eventCubit.initializeEventWrapperData(state.eventModelWrapper!);
+          LoggerUtil.logs("fetch data value ${state.eventModel?[0].toJson()}");
+        } else if (state is EventFetchFailureState) {
+          // LoadingDialog.hideLoadingDialog(context);
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+      },
+      builder: (context, state) {
+        print(
+            "eventCubit.eventModelList.length ${eventCubit.eventModelList.length}");
+        return Stack(
           children: [
+            (eventCubit.eventModelList.isNotEmpty)?
+            PageView.builder(
+              controller: _pageController,
+              itemCount: eventCubit.eventModelList.length,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (BuildContext context, int index) {
+                // isLast = index == eventCubit.eventModelList.length - 1;
+                return
+
+                  Container(
+                  width: AppConstants.responsiveWidth(context),
+                  // color: ColorConstants.red,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                        // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                        eventCubit.eventModelList[index].images!.isNotEmpty
+                            ? eventCubit.eventModelList[index].images!.first
+                            : "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg"),
+                    fit: BoxFit.cover,
+                  )),
+                  child: _eventWidget(index),
+                );
+              },
+            ):
             Container(
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-                ),
-                fit: BoxFit.cover,
-              )),
-              child: _eventWidget(),
-              // child: UIScaffold(
-              //   bgImage:
-              //       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-              //   widget: _eventWidget(),
-              //   // bottomNavigationBar: Container(child: const BottomNavBar()),
-              // ),
+              width: AppConstants.responsiveWidth(context),
+              // color: ColorConstants.red,
+              decoration: BoxDecoration(
+                  color: Colors.black,
+
+                  ),
+              child: LoadingDialog.circularProgressLoader(),
             ),
-            Container(
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  "https://images.unsplash.com/photo-1570207174888-a99203647cbd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                ),
-                fit: BoxFit.cover,
-              )),
-              child: _eventWidget(),
-              // child: UIScaffold(
-              //   bgImage:
-              //       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-              //   widget: _eventWidget(),
-              //   // bottomNavigationBar: Container(child: const BottomNavBar()),
-              // ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: _topData(),
             ),
           ],
-        ),
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: _topData(),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -153,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _eventWidget() {
+  Widget _eventWidget(int index) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 80),
       child: Column(
@@ -169,19 +235,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Align children vertically
                 children: [
                   SizedBox(
-                    width: radius * images.length.toDouble(),
+                    width: radius * 3, //radius * images.length.toDouble(),
                     // Calculate the total width of images
                     height: radius,
                     // Set the height to match the image size
                     child: Stack(
                       children: [
-                        for (int i = 0; i < images.length; i++)
+                        // ?? images.length
+                        for (int i = 0;
+                            i <
+                                (eventCubit.eventModelList[index]
+                                        .eventParticipants!.isNotEmpty
+                                    ? eventCubit.eventModelList[index]
+                                        .eventParticipants!.length
+                                    : images.length);
+                            i++)
                           Positioned(
                             left: i * radius / 1.5,
                             // Adjust the left offset
                             child: ClipOval(
                                 child: ImageComponent(
-                              imgUrl: images[i],
+                              imgUrl: eventCubit.eventModelList[index]
+                                      .eventParticipants!.isNotEmpty
+                                  ? eventCubit.eventModelList[index]
+                                      .eventParticipants![i].image!
+                                  : images[i],
                               width: radius,
                               height: radius,
                               imgProviderCallback:
@@ -199,15 +277,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   TextComponent(
-                    "+1456 ${StringConstants.joined}",
+                    "+${eventCubit.eventModelList[index].eventTotalParticipants} ${StringConstants.joined}",
                     style: FontStylesConstants.style14(
                         color: ColorConstants.white),
                   ),
                 ],
               ),
               TextComponent(
-                "Property \nnetworking event",
+                eventCubit.eventModelList[index].title ?? "",
                 style: FontStylesConstants.style35(),
+                maxLines: 2,
 
                 // style: TextStyle(
                 //     fontSize: 38,
@@ -219,7 +298,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 10,
               ),
               TextComponent(
-                "17 Feb . 11AM - 2PM . Manchester",
+                "",
+                listOfText: [
+                  DateFormat('d MMM \'at\' hh a').format(DateTime.parse(
+                      (eventCubit.eventModelList[index].venues ?? [])
+                              .first
+                              .startDatetime ??
+                          "")),
+                  //    DateFormat('d MMM \'at\' hh a').format(DateTime.parse(eventCubit.eventModelList[index].venues?.first.endDatetime ?? "")),
+                  "-",
+                  DateFormat('d MMM \'at\' hh a').format(DateTime.parse(
+                      (eventCubit.eventModelList[index].venues ?? [])
+                              .first
+                              .endDatetime ??
+                          "")),
+                  "-",
+                  eventCubit.eventModelList[index].venues?.first.location ??
+                      "asdasddas"
+                ],
+                listOfTextStyle: [
+                  FontStylesConstants.style14(color: ColorConstants.white),
+                  FontStylesConstants.style14(color: ColorConstants.white),
+                  FontStylesConstants.style14(color: ColorConstants.white),
+                  FontStylesConstants.style14(color: ColorConstants.white),
+                  FontStylesConstants.style14(color: ColorConstants.white),
+                ],
                 style: FontStylesConstants.style14(color: ColorConstants.white),
               ),
               const SizedBox(
@@ -234,8 +337,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       buttonText: StringConstants.viewEvent,
                       isSmallBtn: true,
                       onPressed: () {
-                        NavigationUtil.push(
-                            context, RouteConstants.eventScreen);
+                        NavigationUtil.push(context, RouteConstants.eventScreen,
+                            args: eventCubit.eventModelList[index].id);
                       }),
                   const Spacer(),
                   IconComponent(

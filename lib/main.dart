@@ -1,11 +1,13 @@
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/cubit/signup_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/network/dio_client_network.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
@@ -27,6 +29,7 @@ import 'globals.dart';
 final getIt = GetIt.I;
 
 late Size mq;
+ String? token ;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +42,9 @@ void main() async {
 
   print("USER ${FirebaseAuth.instance.currentUser?.uid}");
   await _initRepos();
+  token = await getIt<SharedPreferencesUtil>()
+      .getString(SharedPreferenceConstants.apiAuthToken);
+  print("Token Value $token");
   // SystemChrome.setSystemUIOverlayStyle(
   //   const SystemUiOverlayStyle(
   //     statusBarColor: ColorConstants.greenMain,
@@ -90,6 +96,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => EventCubit(),
         ),
+        BlocProvider(
+          create: (context) => ViewYourEventScreenCubit(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
@@ -100,7 +109,7 @@ class MyApp extends StatelessWidget {
               fontFamily: FontConstants.fontNunitoSans,
               useMaterial3: true,
             ),
-            initialRoute: RouteConstants.splashScreenLocal,
+          initialRoute:(token != null && token!.isNotEmpty) ? RouteConstants.mainScreen:RouteConstants.splashScreenLocal,
             onGenerateRoute: generateRoute,
             debugShowCheckedModeBanner: false,
           );

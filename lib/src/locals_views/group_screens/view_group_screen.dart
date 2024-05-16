@@ -65,6 +65,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
     "Hello Question 3",
   ];
 
+
   final List<ContactModel> contacts = [
     ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
     ContactModel('Albert Ebert', 'Manager', "","45612378123"),
@@ -121,11 +122,16 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                       JoinBottomSheet.showJoinBottomSheet(
                           context,
                           _messageController,
+                          "",
+                          "",
+                          "",
+                          "",
                           "Property networking event",
                           "Group",
                           "ABC",
                           "",
-                          questions: questions);
+                          // questions: questions
+                      );
                       // _showJoinBottomSheet();
                     },
                   ),
@@ -684,7 +690,9 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
           SizedBoxConstants.sizedBoxTenH(),
           Column(
             children: [
-              CreatorQuestionsAnswer(questions: questions),
+              CreatorQuestionsAnswer(questions: [],
+                  // questions: questions
+              ),
             ],
           ),
           // TextComponent(

@@ -56,12 +56,12 @@ class DioClientNetwork {
     'errorCode': 'internet_connection_error',
   };
 
-  Future postRequest(String url, Map<String, dynamic> data) async {
+  Future postRequest(String url, Map<String, dynamic> data, {Map<String,dynamic>? queryParameters}) async {
     // final dio = await _getApiClient();
     try {
       final connected = await _checkInternetConnectivity();
       if (connected) {
-        final response = await _dio.post(url, data: data);
+        final response = await _dio.post(url, data: data,queryParameters: queryParameters);
         return response.data;
       } else {
         return _internetError;

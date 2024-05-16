@@ -1,11 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
+import 'package:chat_app_white_label/src/models/ticket_model.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/wrappers/event_response_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/ticket_model_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../constants/app_constants.dart';
 import '../../../network/repositories/event_repository.dart';
 
 part 'event_state.dart';
@@ -15,20 +17,32 @@ class EventCubit extends Cubit<EventState> {
 
   UserModel userModel = UserModel();
   EventModel eventModel = EventModel();
+  EventRequest eventRequestModel = EventRequest();
+  List<EventModel> eventModelList = [];
+  EventResponseWrapper eventResponseWrapper = EventResponseWrapper();
+
+  // List<EventModel> eventModelList = EventModel();
   Venue venue = Venue();
+  Query query = Query();
   Pricing? pricing;
 
   void initializeUserData(UserModel user) => userModel = user;
 
   void initializeEventData(EventModel event) => eventModel = event;
 
-  Future<void> createEventData(String? userId,EventModel eventData) async {
+  void initializeEventListData(List<EventModel> event) =>
+      eventModelList = event;
+
+  void initializeEventWrapperData(EventResponseWrapper event) =>
+      eventResponseWrapper = event;
+
+  Future<void> createEventData(String? userId, EventModel eventData) async {
     emit(EventLoadingState());
     try {
       eventModel = eventModel.copyWith(venue: [venue]);
       eventModel = eventModel.copyWith(pricing: pricing ?? Pricing(price: '0'));
       eventModel = eventModel.copyWith(
-          userId:   userId ,
+          userId: userId,
           isPublic: eventModel.isPublic ?? true,
           isApprovalRequired: eventModel.isApprovalRequired ?? true,
           isFree: pricing?.price == '0'
@@ -41,6 +55,53 @@ class EventCubit extends Cubit<EventState> {
       LoggerUtil.logs(resp.toJson());
     } catch (e) {
       emit(CreateEventFailureState(e.toString()));
+    }
+  }
+
+  Future<void> fetchEventDataByKeys(String pageValue) async {
+    emit(EventFetchLoadingState());
+    try {
+      var resp = await EventRepository.fetchEventByKeys(pageValue);
+      LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+      emit(EventFetchSuccessState(resp, resp.data2));
+    } catch (e) {
+      emit(EventFetchFailureState(e.toString()));
+    }
+  }
+
+  Future<void> fetchEventDataById(String id) async {
+    emit(EventFetchByIdLoadingState());
+    try {
+      var resp = await EventRepository.fetchEventById(id);
+      LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+      emit(EventFetchByIdSuccessState(resp.data?.first));
+    } catch (e) {
+      emit(EventFetchByIdFailureState(e.toString()));
+    }
+  }
+
+  Future<void> sendEventRequest(
+      String eventId, EventRequest eventRequest) async {
+    emit(SendEventRequestLoadingState());
+    try {
+      var resp = await EventRepository.sendEventJoinRequest(
+          eventId, eventRequest);
+      LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+      emit(SendEventRequestSuccessState(resp.data));
+    } catch (e) {
+      emit(SendEventRequestFailureState(e.toString()));
+    }
+  }
+
+
+  Future<void> buyTicketRequest(TicketModel ticketModel) async {
+    emit(BuyTicketRequestLoadingState());
+    try {
+      var resp = await EventRepository.buyTicketRequest(ticketModel);
+      LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+      emit(BuyTicketRequestSuccessState(resp));
+    } catch (e) {
+      emit(BuyTicketRequestFailureState(e.toString()));
     }
   }
 
@@ -92,5 +153,12 @@ class EventCubit extends Cubit<EventState> {
 
   addQuestions(List<Question> questions) {
     eventModel = eventModel.copyWith(question: questions);
+  }
+
+  addEventRequestQuery(String queryQuest) {
+    query = query.copyWith(question: queryQuest,answer: "");
+  }
+  addEventRequestAnswers(List<EventQuestions> eventQuestions) {
+    eventRequestModel =eventRequestModel.copyWith(eventQuestions: eventQuestions);
   }
 }

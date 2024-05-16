@@ -133,6 +133,7 @@ class StringConstants {
   static const String shareEvent = "Share event";
   static const String ticket = "Ticket";
   static const String creator = "Creator";
+  static const String pending = "Pending";
   static const String viewTicket = "View Ticket";
   static const String viewInMap = "View in Map";
   static const String addToAppleWallet = "Add to apple Wallet";
@@ -266,11 +267,12 @@ class StringConstants {
       "Exact location after joining";
   static const String ticketrequired = "Ticket required to attend event";
   static const String freeToJoin = "Free to Join";
-  static const String noCharityRequired = "No charity support required";
+  static const String noCharityRequired = "No ticket required";
   static const String capacityOf = "Capacity of";
   static const String people = "People";
   static const String limitedGuests = "Limited guests";
   static const String members = "Members";
+  static const String requestedMembers = "Requested Members";
   static const String events = "Events";
   static const String event = "Event";
   static const String yourEvents = "Your Events";

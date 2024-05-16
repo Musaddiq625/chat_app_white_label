@@ -65,9 +65,13 @@ class _OtpScreenState extends State<OtpScreen> {
         AppConstants.userId =state.userModel?.id;
         LoggerUtil.logs("state.userModel?.id.toString() ${state.userModel?.id.toString()}");
         appCubit.setToken(state.userModel?.token);
-
         LoadingDialog.hideLoadingDialog(context);
-        NavigationUtil.push(context, RouteConstants.createEventScreen);
+        if(state.userModel?.isProfileCompleted == true){
+          NavigationUtil.push(context, RouteConstants.mainScreen);
+        }
+        else{
+          NavigationUtil.push(context, RouteConstants.nameScreen);
+        }
       }
       else if (state is OTPSuccessNewUserState) {
 

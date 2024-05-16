@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
+import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/font_styles.dart';
@@ -18,8 +19,12 @@ class MemberResponseComponent extends StatelessWidget {
   final String title;
   final bool showShareIcon;
   final bool dividerValue;
+  final bool isPending;
+  final Function()? onTapPending;
   final String? messageValue;
-  final List<Map<String, String>>? questionsAndAnswers;
+  // final List<Map<String, String>>? questionsAndAnswers;
+  final List<EventQuestions>? questionsAndAnswers;
+  final List<Question>? questions;
 
   MemberResponseComponent({
     this.contact,
@@ -30,20 +35,48 @@ class MemberResponseComponent extends StatelessWidget {
     required this.url,
     this.messageValue,
     this.questionsAndAnswers,
+    this.questions,
+    this.onTapPending,
+    this.isPending = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ContactCard(
-          name: name,
-          url: url,
-          title: title,
-          // contact: contact,
-          showShareIcon: showShareIcon,
-          showDivider: dividerValue,
-          imageSize: 40,
+        Row(
+          children: [
+            Container(
+              // margin: EdgeInsets.only(left: 5),
+              width:
+              AppConstants.responsiveWidth(context, percentage: 63),
+              child: ContactCard(
+                name: name,
+                url: url,
+                title: title,
+                // contact: contact,
+                showShareIcon: showShareIcon,
+                showDivider: dividerValue,
+                imageSize: 40,
+              ),
+            ),
+            if(isPending == true)
+            GestureDetector(
+              onTap: onTapPending,
+              child: Container(
+                // margin:const EdgeInsets.only(right: 0) ,
+                padding: const EdgeInsets.only(
+                    left: 16, right: 16, top: 3, bottom: 3),
+                decoration: const BoxDecoration(
+                  color: ColorConstants.primaryColor,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  // color: themeCubit.darkBackgroundColor,
+                ),
+                child: TextComponent(StringConstants.pending,
+                    textAlign: TextAlign.right),
+              ),
+            ),
+          ],
         ),
         SizedBoxConstants.sizedBoxTenH(),
         Container(
@@ -54,13 +87,14 @@ class MemberResponseComponent extends StatelessWidget {
           ),
           child: Column(
             children: [
-              if (messageValue != null)
+              if (messageValue != null && (messageValue ?? "").isNotEmpty)
                 CustomBubbleComponent(
                   headingValue:   StringConstants.messageForYou,
                   detailValue: messageValue,
                 ),
               CustomBubbleComponent(
                   questionAnswerPairs: questionsAndAnswers,
+                questions: questions,
               ),
                 // Container(
                 //   width: AppConstants.responsiveWidth(context, percentage: 65),

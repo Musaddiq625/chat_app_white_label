@@ -134,13 +134,17 @@ class ListTileComponent extends StatelessWidget {
                             url: leadingIcon,
                             size: 40,
                           )
-                        : ImageComponent(
-                            imgUrl: leadingIcon!,
-                            imgProviderCallback: (imgProvider) {},
-                            width: isSocialConnected ? 30 : leadingIconWidth,
-                            height: isSocialConnected ? 30 : leadingIconHeight,
-                            isAsset: isLeadingIconAsset,
-                          ),
+                        : Container(
+                      // color: ColorConstants.blue,
+                          child: ImageComponent(
+                              imgUrl: leadingIcon!,
+                              imgProviderCallback: (imgProvider) {},
+                              width: isSocialConnected ? 30 : leadingIconWidth,
+                              height: isSocialConnected ? 30 : leadingIconHeight,
+                              isAsset: isLeadingIconAsset,
+                            ),
+                        ),
+
                   if (title != null)
                     Center(
                       child: TextComponent(
@@ -162,7 +166,7 @@ class ListTileComponent extends StatelessWidget {
                     ),
                   if (leadingIcon != null)
                     const SizedBox(
-                      width: 10,
+                      width: 14,
                     ),
                   if (leadingText != null)
                     Expanded(
@@ -170,11 +174,17 @@ class ListTileComponent extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextComponent(
-                            leadingText!,
-                            maxLines: 4,
-                            style: TextStyle(
-                                fontSize: 15, color: themeCubit.textColor),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 0.0),
+                            child: Container(
+                              // color: ColorConstants.red,
+                              child: TextComponent(
+                                leadingText!,
+                                maxLines: 4,
+                                style: TextStyle(
+                                    fontSize: 15, color: themeCubit.textColor),
+                              ),
+                            ),
                           ),
                           if (leadingsubText != null)
                             TextComponent(

@@ -18,26 +18,46 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/event_screen/payment_success_screen.dart';
+import 'package:chat_app_white_label/src/models/event_model.dart';
+import 'package:chat_app_white_label/src/models/ticket_model.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
 import '../../components/circle_button_component.dart';
-import '../../components/contacts_card_component.dart';
 import '../../components/icon_component.dart';
 import '../../components/icons_button_component.dart';
 import '../../components/info_sheet_component.dart';
 import '../../components/profile_image_component.dart';
+import '../../components/toast_component.dart';
 import '../../constants/color_constants.dart';
 import '../../models/contact.dart';
+import '../on_boarding/cubit/onboarding_cubit.dart';
 
 class EventScreen extends StatefulWidget {
-  const EventScreen({super.key});
+  String? eventId;
+  String? userId;
+  String? userName;
+  String? userImage;
+  String? userAboutMe;
+
+  EventScreen(
+      {super.key,
+      this.eventId,
+      this.userId,
+      this.userName,
+      this.userImage,
+      this.userAboutMe});
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -51,22 +71,20 @@ final TextEditingController _controller = TextEditingController();
 
 class _EventScreenState extends State<EventScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
-    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
-    ContactModel('Json Ebert', 'Tester', "","03323333333"),
-    ContactModel('Mack', 'Intern', "","03312233445"),
-    ContactModel('Julia', 'Developer', "","88552233644"),
-    ContactModel('Rose', 'Human Resource', "","55366114532"),
-    ContactModel('Frank', 'xyz', "","25651412344"),
-    ContactModel('Taylor', 'Test', "","5511772266"),
+    ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
+    ContactModel('Json Ebert', 'Tester', "", "03323333333"),
+    ContactModel('Mack', 'Intern', "", "03312233445"),
+    ContactModel('Julia', 'Developer', "", "88552233644"),
+    ContactModel('Rose', 'Human Resource', "", "55366114532"),
+    ContactModel('Frank', 'xyz', "", "25651412344"),
+    ContactModel('Taylor', 'Test', "", "5511772266"),
   ];
   final List<String> images = [
     "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
-
     "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
-
     "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
     // Replace with your asset path
     // Add more image providers as needed
@@ -74,102 +92,139 @@ class _EventScreenState extends State<EventScreen> {
   double radius = 30;
 
   int _count = 0;
-  int _price = 100;
+  int _price = 0;
   int _totalAmount = 0;
+  late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      eventCubit.eventModel = EventModel();
+      await eventCubit.fetchEventDataById(widget.eventId!);
+      if (eventCubit.eventModel.pricing?.price != "0" &&
+          (eventCubit.eventModel.pricing?.price ?? "").isNotEmpty) {
+        _price = int.parse(eventCubit.eventModel.pricing?.price ?? "");
+      }
+      _price = 50;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-      // appBar: AppBarComponent(""),
-      removeSafeAreaPadding: false,
-      bgColor: ColorConstants.backgroundColor,
-      widget: SingleChildScrollView(
-        // physics: BouncingScrollPhysics(),
-        child: Container(
-          color: themeCubit.backgroundColor,
-          child: Column(
-            children: [_eventWidget(), _members()],
+    return BlocConsumer<EventCubit, EventState>(
+      listener: (context, state) {
+        if (state is EventFetchByIdLoadingState) {
+        } else if (state is EventFetchByIdSuccessState) {
+          eventCubit.initializeEventData(state.eventModel!);
+          print(
+              "eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
+        } else if (state is EventFetchByIdFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        } else if (state is BuyTicketRequestLoadingState) {
+        } else if (state is BuyTicketRequestSuccessState) {
+          Navigator.pop(context);
+          NavigationUtil.push(
+            context,
+            RouteConstants.paymentSuccessScreen,
+            args: PaymentSuccessArg(
+                eventCubit.eventModel.title ?? "",
+                eventCubit.eventModel.venues?.first.startDatetime ?? "",
+                eventCubit.eventModel.venues?.first.endDatetime ?? "",
+                eventCubit.eventModel.venues?.first.location ?? "",
+                eventCubit.eventModel.images?.first ?? ""),
+          );
+          // eventCubit.initializeEventData(state.eventModel!);
+          // print("eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
+        } else if (state is BuyTicketRequestFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+      },
+      builder: (context, state) {
+        return UIScaffold(
+          removeSafeAreaPadding: false,
+          bgColor: ColorConstants.backgroundColor,
+          widget: SingleChildScrollView(
+            child: Container(
+              color: themeCubit.backgroundColor,
+              child: Column(
+                children: [
+                  _eventWidget(),
+                  (eventCubit.eventModel.eventTotalParticipants != null)
+                      ? _members()
+                      : Container(
+                          color: ColorConstants.black,
+                          height: 500,
+                        )
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // ButtonComponent(
-            //   isSmallBtn: true,
-            //   btnHeight: 35,
-            //   overrideFontStyle:
-            //       FontStylesConstants.style12(fontWeight: FontWeight.bold),
-            //   buttonText: StringConstants.getTicket,
-            //   onPressed: () {
-            //     _getTicketBottomSheet();
-            //   },
-            //   textColor: ColorConstants.black,
-            //   bgcolor: ColorConstants.btnGradientColor,
-            // ),
-            SizedBox(
-              width: AppConstants.responsiveWidth(context, percentage: 30),
-              child: ButtonWithIconComponent(
-                btnText: '${StringConstants.getTicket}',
-                // icon: Icons.add_circle,
-                showIcon: false,
-                // bgcolor: themeCubit.primaryColor,
-                // btnTextColor: themeCubit.textColor,
-                onPressed: () {
-                  _getTicketBottomSheet();
-                  // JoinBottomSheet.showJoinBottomSheet(context, _controller,
-                  //     "Property networking event", "Group", "ABC", "");
-                  // _showJoinBottomSheet();
-                },
-              ),
-            ),
-            // SizedBox(
-            //   width: AppConstants.responsiveWidth(context, percentage: 31),
-            //   child: ButtonWithIconComponent(
-            //     btnText: '  ${StringConstants.getTicket}',
-            //     // icon: Icons.add_circle,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: AppConstants.responsiveWidth(context, percentage: 30),
+                  child: ButtonWithIconComponent(
+                    btnText: '${StringConstants.getTicket}',
+                    showIcon: false,
+                    onPressed: () {
+                      _getTicketBottomSheet();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: AppConstants.responsiveWidth(context, percentage: 30),
+                  child: ButtonWithIconComponent(
+                    btnText: '  ${StringConstants.join}',
+                    icon: Icons.add_circle,
 
-            //     bgcolor: themeCubit.primaryColor,
-            //     // btnTextColor: themeCubit.textColor,
-            //     onPressed: () {
-            //       JoinBottomSheet.showJoinBottomSheet(context, _controller,
-            //           "Property networking event", "Group", "ABC", "");
-            //       // _showJoinBottomSheet();
-            //     },
-            //   ),
-            // ),
-            SizedBox(
-              width: AppConstants.responsiveWidth(context, percentage: 30),
-              child: ButtonWithIconComponent(
-                btnText: '  ${StringConstants.join}',
-                icon: Icons.add_circle,
-
-                bgcolor: themeCubit.primaryColor,
-                // btnTextColor: themeCubit.textColor,
-                onPressed: () {
-                  JoinBottomSheet.showJoinBottomSheet(context, _controller,
-                      "Property networking event", "Group", "ABC", "");
-                  // _showJoinBottomSheet();
-                },
-              ),
+                    bgcolor: themeCubit.primaryColor,
+                    // btnTextColor: themeCubit.textColor,
+                    onPressed: () {
+                      JoinBottomSheet.showJoinBottomSheet(
+                          context,
+                          _controller,
+                          eventCubit.eventModel.id ?? "",
+                          eventCubit.eventModel.userId,
+                          eventCubit.eventModel.userName,
+                          eventCubit.eventModel.userImages,
+                          eventCubit.eventModel.title ?? "",
+                          (eventCubit.eventModel.isFree ?? true)
+                              ? "Free to join"
+                              : "",
+                          "ABC",
+                          "",
+                          questions: eventCubit.eventModel.question);
+                      // _showJoinBottomSheet();
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        );
+      },
     );
   }
 
   Widget _eventWidget() {
     return Stack(children: [
-      Image.network(
-        "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-        fit: BoxFit.fill,
-        width: double.infinity,
-        height: 500,
-      ),
+      (eventCubit.eventModel.images?.first != null)
+          ? Image.network(
+              eventCubit.eventModel.images?.first ?? "",
+              fit: BoxFit.fill,
+              width: double.infinity,
+              height: 500,
+            )
+          : Container(
+              color: ColorConstants.black,
+              height: 500,
+            ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -187,58 +242,136 @@ class _EventScreenState extends State<EventScreen> {
                 onTap: () => Navigator.pop(context),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: radius * images.length.toDouble(),
-                    height: radius,
-                    child: Stack(
-                      children: [
-                        for (int i = 0; i < images.length; i++)
-                          Positioned(
-                            left: i * radius / 1.5,
-                            child: ClipOval(
-                              child: ImageComponent(
-                                imgUrl: images[i],
-                                width: radius,
-                                height: radius,
-                                imgProviderCallback:
-                                    (ImageProvider<Object> imgProvider) {},
+
+            (eventCubit.eventModel.title != null)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: radius *
+                                  3, //radius * images.length.toDouble(),
+                              // Calculate the total width of images
+                              height: radius,
+                              // Set the height to match the image size
+                              child: Stack(
+                                children: [
+                                  // ?? images.length
+                                  for (int i = 0;
+                                      i <
+                                          ((eventCubit.eventModel
+                                                          .eventParticipants ??
+                                                      [])
+                                                  .isNotEmpty
+                                              ? (eventCubit.eventModel
+                                                          .eventParticipants ??
+                                                      [])
+                                                  .length
+                                              : images.length);
+                                      i++)
+                                    Positioned(
+                                      left: i * radius / 1.5,
+                                      // Adjust the left offset
+                                      child: ClipOval(
+                                          child: ImageComponent(
+                                        imgUrl: (eventCubit.eventModel
+                                                        .eventParticipants ??
+                                                    [])
+                                                .isNotEmpty
+                                            ? (eventCubit.eventModel
+                                                        .eventParticipants ??
+                                                    [])[i]
+                                                .image!
+                                            : images[i],
+                                        width: radius,
+                                        height: radius,
+                                        imgProviderCallback:
+                                            (ImageProvider<Object>
+                                                imgProvider) {},
+                                      )
+                                          // Image(
+                                          //   image: images[i],
+                                          //   width: radius,
+                                          //   height: radius,
+                                          //   fit: BoxFit.cover,
+                                          // ),
+                                          ),
+                                    ),
+                                ],
                               ),
-                              // Image(
-                              //   image: images[i],
-                              //   width: radius,
-                              //   height: radius,
-                              //   fit: BoxFit.cover,
-                              // ),
                             ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  TextComponent(
-                    "+1456 ${StringConstants.joined}",
-                    style: FontStylesConstants.style16(),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: TextComponent("Property \nnetworking event",
-                  style:
-                      FontStylesConstants.style30(color: ColorConstants.white)),
-            ),
-            SizedBoxConstants.sizedBoxTenH(),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: TextComponent("17 Feb . 11AM - 2PM . Manchester",
-                  style:
-                      FontStylesConstants.style16(color: ColorConstants.white)),
-            ),
+                            TextComponent(
+                              "+${eventCubit.eventModel.eventTotalParticipants ?? 0} ${StringConstants.joined}",
+                              style: FontStylesConstants.style16(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: TextComponent(
+                          eventCubit.eventModel.title ?? "",
+                          style: FontStylesConstants.style30(
+                              color: ColorConstants.white),
+                          maxLines: 2,
+                        ),
+                      ),
+                      SizedBoxConstants.sizedBoxTenH(),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: eventCubit.eventModel.venues != null &&
+                                (eventCubit.eventModel.venues ?? []).isNotEmpty
+                            ? TextComponent(
+                                "",
+                                listOfText: [
+                                  if (eventCubit.eventModel.venues != null &&
+                                      (eventCubit.eventModel.venues ?? [])
+                                          .isNotEmpty)
+                                    DateFormat('d MMM \'at\' hh a').format(
+                                        DateTime.parse(
+                                            (eventCubit.eventModel.venues ?? [])
+                                                    .first
+                                                    .startDatetime ??
+                                                "")),
+                                  // eventCubit.eventModel.venues?.first.startDatetime ?? "",
+                                  "-",
+                                  if (eventCubit.eventModel.venues != null &&
+                                      (eventCubit.eventModel.venues ?? [])
+                                          .isNotEmpty)
+                                    DateFormat('d MMM \'at\' hh a').format(
+                                        DateTime.parse(
+                                            (eventCubit.eventModel.venues ?? [])
+                                                    .first
+                                                    .endDatetime ??
+                                                "")),
+                                  // eventCubit.eventModel.venues?.first.endDatetime ?? "asdasd",
+                                  eventCubit
+                                          .eventModel.venues?.first.location ??
+                                      "asdasddas"
+                                ],
+                                listOfTextStyle: [
+                                  FontStylesConstants.style14(
+                                      color: ColorConstants.white),
+                                  FontStylesConstants.style14(
+                                      color: ColorConstants.white),
+                                  FontStylesConstants.style14(
+                                      color: ColorConstants.white),
+                                  FontStylesConstants.style14(
+                                      color: ColorConstants.white),
+                                ],
+                                style: FontStylesConstants.style14(
+                                    color: ColorConstants.white),
+                              )
+                            : const TextComponent(""),
+                      ),
+                    ],
+                  )
+                : _shimmerTopEventData(),
+
             SizedBoxConstants.sizedBoxTenH(),
             Padding(
               padding: const EdgeInsets.only(left: 10),
@@ -249,11 +382,11 @@ class _EventScreenState extends State<EventScreen> {
                     backgroundColor:
                         ColorConstants.darkBackgrounddColor.withOpacity(0.9),
                     iconColor: Colors.red,
-                    customIconText: "22",
+                    customIconText:
+                        "${eventCubit.eventModel.eventFavouriteBy?.length ?? 0}",
                     circleSize: 70,
                     circleHeight: 36,
                     iconSize: 20,
-
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
@@ -269,15 +402,6 @@ class _EventScreenState extends State<EventScreen> {
                         // _shareEventBottomSheet();
                       }),
                   showMore(),
-                  // IconComponent(
-                  //   // iconData: Icons.menu,
-                  //   svgData: AssetConstants.more,
-                  //   backgroundColor:
-                  //       ColorConstants.darkBackgrounddColor.withOpacity(0.9),
-                  //   circleSize: 35,
-                  //   iconSize: 6,
-                  //   onTap: _showMoreBottomSheet,
-                  // )
                 ],
               ),
             ),
@@ -289,99 +413,325 @@ class _EventScreenState extends State<EventScreen> {
     ]);
   }
 
+  Widget _shimmerTopEventData() {
+    return Shimmer.fromColors(
+      baseColor: ColorConstants.lightGray, //Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      enabled: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: radius * 3, //radius * images.length.toDouble(),
+                  // Calculate the total width of images
+                  height: radius,
+                  // Set the height to match the image size
+                  child: Stack(
+                    children: [
+                      // ?? images.length
+                      for (int i = 0;
+                          i <
+                              ((eventCubit.eventModel.eventParticipants ?? [])
+                                      .isNotEmpty
+                                  ? (eventCubit.eventModel.eventParticipants ??
+                                          [])
+                                      .length
+                                  : images.length);
+                          i++)
+                        Positioned(
+                          left: i * radius / 1.5,
+                          // Adjust the left offset
+                          child: ClipOval(
+                              child: ImageComponent(
+                            imgUrl: (eventCubit.eventModel.eventParticipants ??
+                                        [])
+                                    .isNotEmpty
+                                ? (eventCubit.eventModel.eventParticipants ??
+                                        [])[i]
+                                    .image!
+                                : images[i],
+                            width: radius,
+                            height: radius,
+                            imgProviderCallback:
+                                (ImageProvider<Object> imgProvider) {},
+                          )
+                              // Image(
+                              //   image: images[i],
+                              //   width: radius,
+                              //   height: radius,
+                              //   fit: BoxFit.cover,
+                              // ),
+                              ),
+                        ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10, top: 15),
+                  height: 15,
+                  width: AppConstants.responsiveWidth(context, percentage: 30),
+                  color: ColorConstants.white,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              height: 10,
+              width: AppConstants.responsiveWidth(context, percentage: 60),
+              color: ColorConstants.white,
+            ),
+          ),
+          SizedBoxConstants.sizedBoxTenH(),
+          Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              height: 10,
+              width: AppConstants.responsiveWidth(context, percentage: 60),
+              color: ColorConstants.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _shimmerAboutTheEvent() {
+    return Card(
+        color: themeCubit.darkBackgroundColor,
+        elevation: 0,
+        child: Shimmer.fromColors(
+          baseColor: ColorConstants.lightGray, //Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          enabled: true,
+          child: Padding(
+            padding: const EdgeInsets.all(0),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 15,
+                      width: 200,
+                      color: ColorConstants.white,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      height: 10,
+                      width: 100,
+                      color: ColorConstants.white,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBoxConstants.sizedBoxTwentyH(),
+              Container(
+                margin: const EdgeInsets.only(left: 18, right: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      height: 15,
+                      width: AppConstants.responsiveWidth(context),
+                      color: ColorConstants.white,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      height: 15,
+                      width: AppConstants.responsiveWidth(context),
+                      color: ColorConstants.white,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      height: 15,
+                      width: AppConstants.responsiveWidth(context),
+                      color: ColorConstants.white,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      height: 15,
+                      width: AppConstants.responsiveWidth(context),
+                      color: ColorConstants.white,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      height: 15,
+                      width: AppConstants.responsiveWidth(context),
+                      color: ColorConstants.white,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      height: 15,
+                      width: AppConstants.responsiveWidth(context),
+                      color: ColorConstants.white,
+                    ),
+                    SizedBoxConstants.sizedBoxTenH()
+                  ],
+                ),
+              ),
+            ]),
+          ),
+        ));
+  }
+
   Widget _aboutTheEvent() {
     return Card(
         color: themeCubit.darkBackgroundColor,
         elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextComponent(StringConstants.abouttheEvent,
-                      style: FontStylesConstants.style18(
-                          color: themeCubit.primaryColor)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _showFullText = !_showFullText;
-                      });
-                    },
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: _showFullText
-                                ? _fullText
-                                : (_fullText.length > 150
-                                        ? _fullText.substring(0, 150)
-                                        : _fullText) ??
-                                    "No description available",
-                            style: TextStyle(color: themeCubit.textColor),
-                          ),
-                          if (_fullText.length > 150)
-                            TextSpan(
-                              text: _showFullText
-                                  ? ' ${StringConstants.showLess}'
-                                  : ' ...${StringConstants.readMore}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: themeCubit.textColor),
+        child: eventCubit.eventModel.title == null
+            ? _shimmerAboutTheEvent()
+            : Padding(
+                padding: const EdgeInsets.all(0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 18.0, left: 18, right: 18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextComponent(StringConstants.abouttheEvent,
+                                style: FontStylesConstants.style18(
+                                    color: themeCubit.primaryColor)),
+                            SizedBox(
+                              height: 10,
                             ),
-                        ],
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _showFullText = !_showFullText;
+                                });
+                              },
+                              child: RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: _showFullText
+                                          ? eventCubit.eventModel.description
+                                          : (((eventCubit.eventModel.description
+                                                              ?.length) ??
+                                                          0) >
+                                                      150
+                                                  ? eventCubit
+                                                      .eventModel.description
+                                                      ?.substring(0, 150)
+                                                  : eventCubit.eventModel
+                                                      .description) ??
+                                              "No description available",
+                                      style: TextStyle(
+                                          color: themeCubit.textColor),
+                                    ),
+                                    if ((eventCubit.eventModel.description
+                                                ?.length ??
+                                            0) >
+                                        150)
+                                      TextSpan(
+                                        text: _showFullText
+                                            ? ' ${StringConstants.showLess}'
+                                            : ' ...${StringConstants.readMore}',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: themeCubit.textColor),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBoxConstants.sizedBoxTwentyH(),
-            Container(
-              // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
-              child: Column(
-                children: [
-                  AboutEventComponent(
-                    name: "1456 ${StringConstants.participants}",
-                    detail: "Elena, Ilsa and more",
-                    icon: AssetConstants.happy,
-                    showPersonIcon: true,
-                    selectedImages: images,
-                  ),
-                  AboutEventComponent(
-                    name: StringConstants.flexibleDate,
-                    detail: StringConstants.dateWillbeDecidelater,
-                    icon: AssetConstants.calendar,
-                  ),
-                  AboutEventComponent(
-                    name: "Manchester",
-                    detail: StringConstants.exactLocationAfterJoining,
-                    icon: AssetConstants.marker,
-                  ),
-                  if (ticketRequired == true)
-                    AboutEventComponent(
-                      name: "SR 150",
-                      detail: StringConstants.ticketrequired,
-                      icon: AssetConstants.ticket,
-                    ),
-                  AboutEventComponent(
-                    divider: false,
-                    name: StringConstants.freeToJoin,
-                    detail: StringConstants.noCharityRequired,
-                    icon: AssetConstants.tag,
-                  ),
-                  SizedBoxConstants.sizedBoxTenH()
-                ],
-              ),
-            ),
-          ]),
-        ));
+                      SizedBoxConstants.sizedBoxTwentyH(),
+                      Container(
+                        child: Column(
+                          children: [
+                            AboutEventComponent(
+                              name:
+                                  "${eventCubit.eventModel.eventTotalParticipants} ${StringConstants.participants}",
+                              detail:
+                                  "${eventCubit.eventModel.eventParticipants?.take(1).map((e) => e.name).join(', ')} and more",
+                              //"Elena, Ilsa and more",
+                              icon: AssetConstants.happy,
+                              eventParticipants:
+                                  eventCubit.eventModel.eventParticipants,
+                              showPersonIcon: true,
+                              selectedImages: images,
+                            ),
+                            AboutEventComponent(
+                              name: StringConstants.flexibleDate,
+                              detail: eventCubit.eventModel.venues != null &&
+                                      (eventCubit.eventModel.venues ?? [])
+                                          .isNotEmpty
+                                  ? "${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(eventCubit.eventModel.venues!.first.startDatetime!))} - ${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(eventCubit.eventModel.venues?.first.endDatetime ?? ""))}"
+                                  : StringConstants.dateWillbeDecidelater,
+                              //StringConstants.dateWillbeDecidelater,
+                              icon: AssetConstants.calendar,
+                            ),
+                            AboutEventComponent(
+                              name: eventCubit.eventModel.venues != null &&
+                                      (eventCubit.eventModel.venues ?? [])
+                                          .isNotEmpty
+                                  ? ((eventCubit.eventModel.venues ?? [])
+                                          .first
+                                          .location ??
+                                      "")
+                                  : "",
+                              detail: StringConstants.exactLocationAfterJoining,
+                              icon: AssetConstants.marker,
+                              divider: (eventCubit.eventModel.pricing?.price !=
+                                          "0" &&
+                                      (eventCubit.eventModel.pricing?.price ??
+                                              "")
+                                          .isNotEmpty)
+                                  ? true
+                                  : false,
+                            ),
+                            if (eventCubit.eventModel.pricing?.price != "0" &&
+                                (eventCubit.eventModel.pricing?.price ?? "")
+                                    .isNotEmpty) //(ticketRequired == true)
+                              AboutEventComponent(
+                                name: (eventCubit.eventModel.pricing?.price ??
+                                    ""),
+                                detail: StringConstants.ticketrequired,
+                                icon: AssetConstants.ticket,
+                                divider: (eventCubit
+                                                .eventModel.pricing?.price !=
+                                            "0" &&
+                                        (eventCubit.eventModel.pricing?.price ??
+                                                "")
+                                            .isNotEmpty)
+                                    ? true
+                                    : false,
+                              ),
+                            if (eventCubit.eventModel.pricing?.price != "0" &&
+                                (eventCubit.eventModel.pricing?.price ?? "")
+                                    .isEmpty)
+                              AboutEventComponent(
+                                divider: false,
+                                name: StringConstants.freeToJoin,
+                                detail: StringConstants.noCharityRequired,
+                                icon: AssetConstants.tag,
+                              ),
+                            SizedBoxConstants.sizedBoxTenH()
+                          ],
+                        ),
+                      ),
+                    ]),
+              ));
   }
 
   Widget _members() {
@@ -408,7 +758,8 @@ class _EventScreenState extends State<EventScreen> {
                     children: <TextSpan>[
                       const TextSpan(text: "${StringConstants.members}  "),
                       TextSpan(
-                        text: contacts.length.toString(),
+                        text: eventCubit.eventModel.eventTotalParticipants ??
+                            "0", //contacts.length.toString(),
                         style: TextStyle(
                             color: ColorConstants.lightGray.withOpacity(0.5)),
                       ),
@@ -420,16 +771,23 @@ class _EventScreenState extends State<EventScreen> {
               separatorBuilder: (context, index) => const DividerComponent(),
               physics: BouncingScrollPhysics(),
               shrinkWrap: true,
-              itemCount: contacts.length,
+              itemCount: (eventCubit.eventModel.eventParticipants ?? []).length,
+              //contacts.length,
               itemBuilder: (context, index) => ListTileComponent(
-                leadingText: contacts[index].name, // StringConstants.linkedIn,
+                leadingText:
+                    eventCubit.eventModel.eventParticipants?[index].name,
+                // StringConstants.linkedIn,
                 removeBorderFromTile: true,
                 customPadding: const EdgeInsets.only(left: 20, right: 16),
-                leadingsubText: contacts[index].title, // 'Graphic Designer',
+                leadingsubText:
+                    eventCubit.eventModel.eventParticipants?[index].aboutMe,
+                //contacts[index].title,
+                // 'Graphic Designer',
                 // trailingIcon: Icons.add_circle,
                 trailingIconSize: 30,
                 leadingIcon:
-                    'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
+                    eventCubit.eventModel.eventParticipants?[index].image,
+                //'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                 leadingIconHeight: 20,
                 leadingIconWidth: 20,
                 isLeadingImageProfileImage: true,
@@ -1088,12 +1446,16 @@ class _EventScreenState extends State<EventScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ButtonComponent(
-                  btnWidth: AppConstants.responsiveWidth(context,percentage: 90),
+                  btnWidth:
+                      AppConstants.responsiveWidth(context, percentage: 90),
                   buttonText: StringConstants.next,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
+                    NavigationUtil.pop(context);
+                    _getPaymentBottomSheet();
                     // _sendMessage();
-                    NavigationUtil.push(context, RouteConstants.paymentSuccessScreen);
+                    // NavigationUtil.push(
+                    //     context, RouteConstants.paymentSuccessScreen);
                     // _navigateToBack();
                     // BottomSheetComponent.showBottomSheet(
                     //   context,
@@ -1119,212 +1481,299 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   _getPaymentBottomSheet() {
-    BottomSheetComponent.showBottomSheet(context, isShowHeader: false,takeFullHeightWhenPossible: true,
+    BottomSheetComponent.showBottomSheet(context,
+        isShowHeader: false,
+        takeFullHeightWhenPossible: true,
+        isScrollable: false,
         body: StatefulBuilder(builder: (context, setState) {
       return Container(
-        // padding: const EdgeInsets.only(left: 20, right: 10, top: 20),
-        decoration: BoxDecoration(
+        height: AppConstants.responsiveHeight(context),
+        decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           // color: themeCubit.darkBackgroundColor,
         ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: IconComponent(
-                      iconData: Icons.close,
-                      borderColor: Colors.transparent,
-                      iconColor: themeCubit.textColor,
-                      circleSize: 50,
-                      backgroundColor: Colors.transparent,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Image.network(
-                "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-                fit: BoxFit.cover,
-                height: 120,
-                width: 120,
-              ),
-            ),
-            SizedBoxConstants.sizedBoxSixteenH(),
-            TextComponent(
-              "Fireworks Night",
-              style: FontStylesConstants.style18(color: ColorConstants.white),
-            ),
-            TextComponent("17 Feb . 11AM - 2PM . Manchester",
-                style:
-                    FontStylesConstants.style14(color: ColorConstants.white)),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                children: [
-                  SizedBoxConstants.sizedBoxEighteenH(),
-                  Container(
-                    // margin: EdgeInsets.all(20),
-                    padding: const EdgeInsets.only(
-                        left: 15, right: 15, top: 20, bottom: 20),
-                    decoration: BoxDecoration(
-                      color: ColorConstants.iconBg,
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      // color: themeCubit.darkBackgroundColor,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextComponent(
-                          StringConstants.ticket,
-                          style: TextStyle(color: ColorConstants.white),
-                        ),
-                        TextComponent(
-                          "${_count}",
-                          style: TextStyle(color: ColorConstants.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBoxConstants.sizedBoxThirtyH(),
-                  TextComponent(
-                    StringConstants.anyQuestionWhenEventCreated,
-                    style: TextStyle(color: ColorConstants.white),
-                    maxLines: 3,
-                  ),
-                  SizedBoxConstants.sizedBoxTenH(),
-                  TextFieldComponent(
-                    _controller,
-                    filled: true,
-                    textFieldFontSize: 12,
-                    hintText:
-                        "There could be multiple questions aligned so they will come here",
-                    fieldColor: ColorConstants.lightGray.withOpacity(0.5),
-                    maxLines: 4,
-                    minLines: 4,
-                  ),
-                  SizedBoxConstants.sizedBoxSixtyH(),
-                ],
-              ),
-            ),
-            Divider(
-              thickness: 0.1,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      TextComponent(
-                        StringConstants.total,
-                        style: TextStyle(color: ColorConstants.white),
+            Expanded(
+              flex: 2,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () => Navigator.pop(context),
+                            child: IconComponent(
+                              iconData: Icons.close,
+                              borderColor: Colors.transparent,
+                              iconColor: themeCubit.textColor,
+                              circleSize: 50,
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                        ],
                       ),
-                      TextComponent(
-                        "SAR ${_totalAmount}",
-                        style: FontStylesConstants.style30(
-                            color: ColorConstants.white),
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Image.network(
+                        eventCubit.eventModel.images?.first ??
+                            "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                        fit: BoxFit.cover,
+                        height: 120,
+                        width: 120,
                       ),
-                    ],
-                  )
-                ],
+                    ),
+                    SizedBoxConstants.sizedBoxSixteenH(),
+                    TextComponent(
+                      eventCubit.eventModel.title ?? "",
+                      //"Fireworks Night",
+                      style: FontStylesConstants.style18(
+                          color: ColorConstants.white),
+                    ),
+                    // TextComponent("17 Feb . 11AM - 2PM . Manchester",
+                    //     style: FontStylesConstants.style14(
+                    //         color: ColorConstants.white)),
+                    eventCubit.eventModel.venues != null &&
+                            (eventCubit.eventModel.venues ?? []).isNotEmpty
+                        ? TextComponent(
+                            "",
+                            listOfText: [
+                              if (eventCubit.eventModel.venues != null &&
+                                  (eventCubit.eventModel.venues ?? [])
+                                      .isNotEmpty)
+                                DateFormat('d MMM \'at\' hh a').format(
+                                    DateTime.parse(
+                                        (eventCubit.eventModel.venues ?? [])
+                                                .first
+                                                .startDatetime ??
+                                            "")),
+                              // eventCubit.eventModel.venues?.first.startDatetime ?? "",
+                              "-",
+                              if (eventCubit.eventModel.venues != null &&
+                                  (eventCubit.eventModel.venues ?? [])
+                                      .isNotEmpty)
+                                DateFormat('d MMM \'at\' hh a').format(
+                                    DateTime.parse(
+                                        (eventCubit.eventModel.venues ?? [])
+                                                .first
+                                                .endDatetime ??
+                                            "")),
+                              // eventCubit.eventModel.venues?.first.endDatetime ?? "asdasd",
+                              eventCubit.eventModel.venues?.first.location ??
+                                  "asdasddasasdasd asdasd asd"
+                            ],
+                            listOfTextStyle: [
+                              FontStylesConstants.style14(
+                                  color: ColorConstants.white),
+                              FontStylesConstants.style14(
+                                  color: ColorConstants.white),
+                              FontStylesConstants.style14(
+                                  color: ColorConstants.white),
+                              FontStylesConstants.style14(
+                                  color: ColorConstants.white),
+                            ],
+                            style: FontStylesConstants.style14(
+                                color: ColorConstants.white),
+                          )
+                        : const TextComponent(""),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Column(
+                        children: [
+                          SizedBoxConstants.sizedBoxEighteenH(),
+                          Container(
+                            // margin: EdgeInsets.all(20),
+                            padding: const EdgeInsets.only(
+                                left: 15, right: 15, top: 20, bottom: 20),
+                            decoration: BoxDecoration(
+                              color: ColorConstants.iconBg,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                              // color: themeCubit.darkBackgroundColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextComponent(
+                                  StringConstants.ticket,
+                                  style: TextStyle(color: ColorConstants.white),
+                                ),
+                                TextComponent(
+                                  "${_count}",
+                                  style: TextStyle(color: ColorConstants.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBoxConstants.sizedBoxThirtyH(),
+                          TextComponent(
+                            StringConstants.anyQuestionWhenEventCreated,
+                            style: TextStyle(color: ColorConstants.white),
+                            maxLines: 3,
+                          ),
+                          SizedBoxConstants.sizedBoxTenH(),
+                          TextFieldComponent(
+                            _controller,
+                            filled: true,
+                            textFieldFontSize: 12,
+                            hintText:
+                                "There could be multiple questions aligned so they will come here",
+                            fieldColor:
+                                ColorConstants.lightGray.withOpacity(0.5),
+                            maxLines: 4,
+                            minLines: 4,
+                          ),
+                          SizedBoxConstants.sizedBoxSixtyH(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: AppConstants.responsiveWidth(context,percentage: 40),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 0, vertical: 4),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: ColorConstants.white),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.apple,
-                          color: ColorConstants.black,
-                        ),
-                        TextComponent(
-                          StringConstants.pay,
-                          style: FontStylesConstants.style16(
-                              color: ColorConstants.black,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                  // ButtonComponent(
-                  //   horizontalLength:
-                  //   AppConstants.responsiveWidth(context, percentage: 18),
-                  //   buttonText: StringConstants.pay,
-                  //   textColor: themeCubit.backgroundColor,
-                  //   onPressedFunction: () {
-                  //     _sendMessage();
-                  //     Navigator.pop(context);
-                  //     _navigateToBack();
-                  //     BottomSheetComponent.showBottomSheet(
-                  //       context,
-                  //       isShowHeader: false,
-                  //       body: InfoSheetComponent(
-                  //         heading: StringConstants.requestSent,
-                  //         body: StringConstants.requestStatus,
-                  //         image: AssetConstants.paperPlaneImage,
-                  //         // svg: true,
-                  //       ),
-                  //       // whenComplete:_navigateToBack(),
-                  //     );
-                  //   },
-                  //   bgcolor: ColorConstants.white,
-                  // ),
+            // Expanded(
+            //     flex: 1,
+            //     child: Column(
+            //   children: [   TextComponent("teasdasd",style: TextStyle(color: Colors.white),),
+            //     TextComponent("teasdasd",style: TextStyle(color: Colors.white),),
+            //     TextComponent("teasdasd",style: TextStyle(color: Colors.white),),
+            //     TextComponent("teasdasd",style: TextStyle(color: Colors.white),),],
+            // ))
 
-                  SizedBox(
-                    width: AppConstants.responsiveWidth(context, percentage: 40),
-                    child: ButtonWithIconComponent(
-                      btnText: '${StringConstants.payWithCard}',
-                      // icon: Icons.add_circle,
-                      showIcon: false,
-                      bgcolor: themeCubit.primaryColor,
-                      // btnTextColor: themeCubit.textColor,
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _paymentSuccessBottomSheet();
-                        // JoinBottomSheet.showJoinBottomSheet(context, _controller,
-                        //     "Property networking event", "Group", "ABC", "");
-                        // _showJoinBottomSheet();
-                      },
+            Expanded(
+                flex: 1,
+                child: Column(
+                  children: [
+                    const Divider(
+                      thickness: 0.1,
                     ),
-                  ),
-                  // ButtonWithIconComponent(
-                  //   btnWidth:  AppConstants.responsiveWidth(context,percentage: 40),
-                  //   isSmallBtn: true,
-                  //   buttonText: StringConstants.payWithCard,
-                  //   textColor: themeCubit.backgroundColor,
-                  //   onPressed: () {
-                  //     Navigator.pop(context);
-                  //     _paymentSuccessBottomSheet();
-                  //   },
-                  //   bgcolor: themeCubit.primaryColor,
-                  // )
-                ],
-              ),
-            ),
-            SizedBoxConstants.sizedBoxTenH(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              TextComponent(
+                                StringConstants.total,
+                                style: TextStyle(color: ColorConstants.white),
+                              ),
+                              TextComponent(
+                                "SAR ${_totalAmount}",
+                                style: FontStylesConstants.style30(
+                                    color: ColorConstants.white),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: AppConstants.responsiveWidth(context,
+                                percentage: 40),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 4),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: ColorConstants.white),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.apple,
+                                  color: ColorConstants.black,
+                                ),
+                                TextComponent(
+                                  StringConstants.pay,
+                                  style: FontStylesConstants.style16(
+                                      color: ColorConstants.black,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                          ),
+                          // ButtonComponent(
+                          //   horizontalLength:
+                          //   AppConstants.responsiveWidth(context, percentage: 18),
+                          //   buttonText: StringConstants.pay,
+                          //   textColor: themeCubit.backgroundColor,
+                          //   onPressedFunction: () {
+                          //     _sendMessage();
+                          //     Navigator.pop(context);
+                          //     _navigateToBack();
+                          //     BottomSheetComponent.showBottomSheet(
+                          //       context,
+                          //       isShowHeader: false,
+                          //       body: InfoSheetComponent(
+                          //         heading: StringConstants.requestSent,
+                          //         body: StringConstants.requestStatus,
+                          //         image: AssetConstants.paperPlaneImage,
+                          //         // svg: true,
+                          //       ),
+                          //       // whenComplete:_navigateToBack(),
+                          //     );
+                          //   },
+                          //   bgcolor: ColorConstants.white,
+                          // ),
+
+                          SizedBox(
+                            width: AppConstants.responsiveWidth(context,
+                                percentage: 40),
+                            child: ButtonWithIconComponent(
+                              btnText: '${StringConstants.payWithCard}',
+                              // icon: Icons.add_circle,
+                              showIcon: false,
+                              bgcolor: themeCubit.primaryColor,
+                              // btnTextColor: themeCubit.textColor,
+                              onPressed: () {
+                                TicketModel ticketModel = TicketModel(
+                                  eventId: eventCubit.eventModel.id,
+                                  userId: onBoardingCubit.userModel.id,
+                                  transectionId:
+                                      FirebaseUtils.getDateTimeNowAsId(),
+                                  ticketQty: _count.toString(),
+                                  ticketPrice: _price.toString(),
+                                  ticketTotalPrice: _totalAmount.toString(),
+                                );
+                                eventCubit.buyTicketRequest(ticketModel);
+
+                                // _paymentSuccessBottomSheet();
+                                // JoinBottomSheet.showJoinBottomSheet(context, _controller,
+                                //     "Property networking event", "Group", "ABC", "");
+                                // _showJoinBottomSheet();
+                              },
+                            ),
+                          ),
+                          // ButtonWithIconComponent(
+                          //   btnWidth:  AppConstants.responsiveWidth(context,percentage: 40),
+                          //   isSmallBtn: true,
+                          //   buttonText: StringConstants.payWithCard,
+                          //   textColor: themeCubit.backgroundColor,
+                          //   onPressed: () {
+                          //     Navigator.pop(context);
+                          //     _paymentSuccessBottomSheet();
+                          //   },
+                          //   bgcolor: themeCubit.primaryColor,
+                          // )
+                        ],
+                      ),
+                    ),
+                    SizedBoxConstants.sizedBoxTenH(),
+                  ],
+                ))
           ],
         ),
       );
@@ -1341,8 +1790,7 @@ class _EventScreenState extends State<EventScreen> {
               topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           // color: themeCubit.darkBackgroundColor,
         ),
-        child:
-        Column(
+        child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 10, top: 10),

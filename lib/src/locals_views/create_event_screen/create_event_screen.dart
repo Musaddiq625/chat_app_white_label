@@ -17,6 +17,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -104,6 +105,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   final TextEditingController _controllerDescription = TextEditingController();
   final TextEditingController eventNameController = TextEditingController();
   late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
+  late OnboardingCubit onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
 
   @override
   void initState() {
@@ -124,6 +126,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     LoggerUtil.logs("Build UserId-- ${AppConstants.userId}");
+    LoggerUtil.logs("Build onBoardingCubit UserId-- ${onBoardingCubit.userModel.id}");
     return BlocConsumer<EventCubit, EventState>(
       listener: (context, state) {
         if (state is EventLoadingState) {
@@ -376,7 +379,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               ),
                               SizedBoxConstants.sizedBoxSixH(),
                               Column(
-                                children: List.generate(7, (index) {
+                                children: List.generate(4, (index) {
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         top: 2.0, left: 0, bottom: 0),
@@ -398,6 +401,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               ),
                             ],
                           ),
+                          SizedBoxConstants.sizedBoxSixW(),
                           Container(
                             margin: EdgeInsets.only(left: 10),
                             child: Column(
@@ -800,6 +804,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   height: 10,
                 ),
                 ListTileComponent(
+                  isLeadingIconAsset: true,
                   leadingIconWidth: 25,
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.marker,
@@ -813,6 +818,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   height: 10,
                 ),
                 ListTileComponent(
+                  isLeadingIconAsset: true,
                   leadingIconWidth: 25,
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.ticket,
@@ -830,7 +836,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   leadingIconWidth: 18,
                   leadingIconHeight: 18,
                   leadingIcon: AssetConstants.scalability,
-                  leadingText: StringConstants.capacity,
+                  leadingText: " ${StringConstants.capacity}",
                   trailingText: capacityValue,
                   trailingIcon: Icons.arrow_forward_ios,
                   onTap: _selectCapacity,
@@ -1006,15 +1012,26 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 Container(
                   margin: EdgeInsets.only(left: 8, right: 8, top: 8),
                   child: ButtonComponent(
-                    bgcolor: themeCubit.primaryColor,
+                    bgcolor: startDate != null &&
+                        endDate != null &&
+                        eventName != null &&
+                        selectedImagePath != null &&
+                        selectedPriceValue.isNotEmpty &&
+                        capacityValue.isNotEmpty?themeCubit.primaryColor:themeCubit.darkBackgroundColor,
                     buttonText: StringConstants.createEvent,
-                    textColor: themeCubit.backgroundColor,
+                    textColor: startDate != null &&
+                        endDate != null &&
+                        eventName != null &&
+                        selectedImagePath != null &&
+                        selectedPriceValue.isNotEmpty &&
+                        capacityValue.isNotEmpty?themeCubit.backgroundColor:ColorConstants.grey1,
                     onPressed: () {
                       eventCubit.addStartDate(startDate);
                       eventCubit.addEndDate(endDate);
                       if (startDate != null &&
                           endDate != null &&
                           eventName != null &&
+                          selectedImagePath != null &&
                           selectedPriceValue.isNotEmpty &&
                           capacityValue.isNotEmpty) {
                         eventCubit.createEventData(AppConstants.userId,eventCubit.eventModel);

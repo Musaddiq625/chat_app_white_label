@@ -12,12 +12,14 @@ import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../constants/color_constants.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
-  const PaymentSuccessScreen({super.key});
+  final PaymentSuccessArg? paymentSuccessArg;
+  const PaymentSuccessScreen({super.key,this.paymentSuccessArg});
 
   @override
   State<PaymentSuccessScreen> createState() => _PaymentSuccessScreenState();
@@ -40,7 +42,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
               width: AppConstants.responsiveWidth(context),
               height: AppConstants.responsiveHeight(context),
                 imgUrl:
-                    "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                widget.paymentSuccessArg?.eventImage ?? "",
                 imgProviderCallback: (imageProvider) {}),
           ),
           _eventWidget(),
@@ -99,31 +101,31 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
                 ),
                 SizedBoxConstants.sizedBoxSixteenH(),
                 TextComponent(
-                  "Fireworks Night",
+                  widget.paymentSuccessArg?.eventName ?? "",
                   style: FontStylesConstants.style18(color: ColorConstants.white),
                 ),
                 SizedBoxConstants.sizedBoxSixteenH(),
                 TextComponent(
                   StringConstants.when,
                   style: FontStylesConstants.style14(
-                      color: ColorConstants.lightGray),
+                      color: ColorConstants.grey1),
                 ),
                 SizedBoxConstants.sizedBoxSixteenH(),
                 TextComponent(
-                  "17 Feb . 11AM - 2PM ",
+                  "${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(widget.paymentSuccessArg?.eventStartDate ?? ""))} - ${ DateFormat('d MMM \'at\' hh a').format(DateTime.parse(widget.paymentSuccessArg?.eventEndDate ?? ""))}  ",
                   style: FontStylesConstants.style14(color: ColorConstants.white),
                 ),
                 SizedBoxConstants.sizedBoxSixteenH(),
                 TextComponent(
                   StringConstants.where,
                   style: FontStylesConstants.style14(
-                      color: ColorConstants.lightGray),
+                      color: ColorConstants.grey1),
                 ),
                 SizedBoxConstants.sizedBoxSixteenH(),
                 Padding(
                   padding: const EdgeInsets.only(left: 70, right: 70),
                   child: TextComponent(
-                    "Pique Cafe\n Al-Semairi, Yanbu Al Bahir 46455 Riyadh Saudia Arabia",
+                    "${ widget.paymentSuccessArg?.eventLocation ?? ""}",
                     style:
                         FontStylesConstants.style14(color: ColorConstants.white),
                     maxLines: 4,
@@ -194,4 +196,14 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
       ),
     );
   }
+}
+
+class PaymentSuccessArg {
+  final String eventName;
+  final String eventStartDate;
+  final String eventEndDate;
+  final String eventLocation;
+  final String eventImage;
+
+  PaymentSuccessArg(this.eventName, this.eventStartDate, this.eventEndDate, this.eventLocation,this.eventImage);
 }

@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../screens/app_setting_cubit/app_setting_cubit.dart';
 import '../../utils/dialogs.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -29,6 +31,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late final appCubit = BlocProvider.of<AppSettingCubit>(context);
   Uri gmailUrl =
       Uri.parse('mailto:test@example.org?subject=Greetings&body=Hello%20World');
   @override
@@ -209,6 +212,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   textColor: themeCubit.textColor,
                   buttonText: StringConstants.yesPlease,
                   onPressed: () {
+                    appCubit.setToken("");
+                    setState(() {
+                      token = "";
+                    });
+
                     // NavigationUtil.pop(context);
                     // _connectionRemovedBottomSheet();
                     NavigationUtil.popAllAndPush(

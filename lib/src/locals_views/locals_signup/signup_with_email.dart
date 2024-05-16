@@ -1,10 +1,12 @@
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../components/app_bar_component.dart';
 import '../../components/button_component.dart';
 import '../../constants/font_constants.dart';
@@ -20,6 +22,7 @@ import 'cubit/signup_cubit.dart';
 
 class SignUpWithEmail extends StatefulWidget {
   String? routeType;
+
   SignUpWithEmail({
     super.key,
     this.routeType,
@@ -58,10 +61,12 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         LoadingDialog.hideLoadingDialog(context);
         if (widget.routeType == "number") {
           NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-              args: OtpArg("", _emailcontroller.text.trim(), "", "setPasswordAfterNumber"));
+              args: OtpArg("", _emailcontroller.text.trim(), "",
+                  "setPasswordAfterNumber"));
         } else {
           NavigationUtil.push(context, RouteConstants.otpScreenLocal,
-              args: OtpArg("", _emailcontroller.text.trim(), "", "setPasswordBeforeNumber"));
+              args: OtpArg("", _emailcontroller.text.trim(), "",
+                  "setPasswordBeforeNumber"));
         }
       } else if (state is SignUpSignInState) {
         LoadingDialog.hideLoadingDialog(context);
@@ -71,14 +76,16 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
       } else if (state is SignUpCancleState) {
         LoadingDialog.hideLoadingDialog(context);
       }
-    },
-        builder: (context, state) {
-      return UIScaffold(
-          appBar: AppBarComponent(""),
-          resizeToAvoidBottomInset: false,
-          // removeSafeAreaPadding: enablePasswordField ? true : false,
-          bgColor: themeCubit.backgroundColor,
-          widget: continueWithEmail());
+    }, builder: (context, state) {
+      return GestureDetector(
+        onTap: AppConstants.closeKeyboard,
+        child: UIScaffold(
+            appBar: AppBarComponent(""),
+            // resizeToAvoidBottomInset: false,
+            // removeSafeAreaPadding: enablePasswordField ? true : false,
+            bgColor: themeCubit.backgroundColor,
+            widget: continueWithEmail()),
+      );
     });
   }
 
@@ -119,6 +126,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                     validator: (email) {
                       return ValidationService.validateEmail(email!);
                     },
+                    // keyboardType: TextInputType.number,
                     hintText: StringConstants.emailTextFieldHint,
                     title: StringConstants.email,
                     textColor: themeCubit.textColor,
@@ -174,11 +182,9 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                 width: MediaQuery.sizeOf(context).width * 0.9,
                 child: ButtonComponent(
                   bgcolor: themeCubit.primaryColor,
-
                   textColor: isFieldsValidate
                       ? ColorConstants.black
                       : ColorConstants.grey1,
-
                   buttonText: StringConstants.continues,
                   onPressed: isFieldsValidate ? onContinuePressed : null,
                   // onPressedFunction: () {
@@ -192,6 +198,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
   }
 
   void onContinuePressed() {
+    AppConstants.closeKeyboard();
     if (_formKey.currentState!.validate()) {
       signupCubit.loginUser(_emailcontroller.text.trim());
       // if (widget.routeType == "number") {

@@ -20,7 +20,7 @@ class LoadingDialog {
             }
           },
           child: Scaffold(
-            backgroundColor: Colors.grey.withOpacity(.7),
+            backgroundColor: Colors.grey.withOpacity(.3),
             // backgroundColor: Colors.transparent,
             // backgroundColor: ColorConstants.white.withOpacity(ColorConstants.btnOpacity2),
             body: const Center(
@@ -33,7 +33,49 @@ class LoadingDialog {
                       // Image.asset(AssetConstants.logo)
                       CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
-                              ColorConstants.greenMain))
+                              ColorConstants.blackLight))
+                      // Shimmer.fromColors(
+                      //   child: Image.asset(AssetConstants.logo),
+                      //   baseColor: ColorConstants.niceBlue,
+                      //   highlightColor: ColorConstants.red,
+                      // ),
+                    ],
+                  )),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  static Future showProgressLoadingDialog(BuildContext context) async {
+    bool forceFullyBackEnable = kDebugMode;
+    await showDialog(
+      context: context,
+      barrierDismissible: forceFullyBackEnable,
+      builder: (_) => WillPopScope(
+        onWillPop: () async => forceFullyBackEnable,
+        child: GestureDetector(
+          onTap: () {
+            if (forceFullyBackEnable) {
+              NavigationUtil.pop(context);
+            }
+          },
+          child: Scaffold(
+
+            // backgroundColor: Colors.grey.withOpacity(.3),
+            backgroundColor: Colors.transparent,
+            // backgroundColor: ColorConstants.white.withOpacity(ColorConstants.btnOpacity2),
+            body: const Center(
+              child: SizedBox(
+                  width: 180,
+                  height: 230,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Image.asset(AssetConstants.logo)
+                      CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              ColorConstants.blackLight))
                       // Shimmer.fromColors(
                       //   child: Image.asset(AssetConstants.logo),
                       //   baseColor: ColorConstants.niceBlue,
@@ -52,9 +94,10 @@ class LoadingDialog {
 
   static circularProgressLoader() => const Center(
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.deepOrange),
+          valueColor: AlwaysStoppedAnimation<Color>(ColorConstants.grey1),
         ),
       );
+
 
   static somethingWentWrongWidget() =>
       const TextComponent(StringConstants.errSomethingWentWrong);

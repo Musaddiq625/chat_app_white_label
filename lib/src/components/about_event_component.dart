@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +16,7 @@ class AboutEventComponent extends StatelessWidget {
   final String icon;
   final bool divider;
   final List<String>? selectedImages;
+  final List<EventParticipants>? eventParticipants;
   final Function()? onShareTap;
   final Function()? onProfileTap;
   final bool showPersonIcon;
@@ -29,7 +31,8 @@ class AboutEventComponent extends StatelessWidget {
       required this.name,
       required this.detail,
       required this.icon,
-      this.selectedImages})
+      this.selectedImages,
+      this.eventParticipants})
       : super(key: key);
 
   @override
@@ -73,32 +76,39 @@ class AboutEventComponent extends StatelessWidget {
                 if (showPersonIcon)
                   if (selectedImages != null)
                     SizedBox(
-                      width: radius * selectedImages!.length.toDouble(),
+                      width: radius * 3, //radius * images.length.toDouble(),
 // Calculate the total width of images
                       height: radius,
 // Set the height to match the image size
                       child: Stack(
                         children: [
-                          for (int i = 0; i < selectedImages!.length; i++)
+// ?? images.length
+                          for (int i = 0;
+                              i <
+                                  ((eventParticipants ?? []).isNotEmpty
+                                      ? (eventParticipants ?? []).length
+                                      : 0);
+                              i++)
                             Positioned(
                               left: i * radius / 1.5,
 // Adjust the left offset
                               child: ClipOval(
-                                child: ImageComponent(
-                                  imgUrl: selectedImages![i],
-                                  width: radius,
-                                  height: radius,
-                                  imgProviderCallback:
-                                      (ImageProvider<Object> imgProvider) {},
-                                ),
+                                  child: ImageComponent(
+                                imgUrl: (eventParticipants ?? []).isNotEmpty
+                                    ? (eventParticipants ?? [])[i].image!
+                                    : "",
+                                width: radius,
+                                height: radius,
+                                imgProviderCallback:
+                                    (ImageProvider<Object> imgProvider) {},
+                              )
 // Image(
-// // color: Colors.red,
-//                                   image: selectedImages![i],
-//                                   width: radius,
-//                                   height: radius,
-//                                   fit: BoxFit.cover,
-//                                 ),
-                              ),
+//   image: images[i],
+//   width: radius,
+//   height: radius,
+//   fit: BoxFit.cover,
+// ),
+                                  ),
                             ),
                         ],
                       ),
