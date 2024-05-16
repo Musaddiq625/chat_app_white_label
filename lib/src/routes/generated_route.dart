@@ -78,8 +78,15 @@ Route generateRoute(RouteSettings settings) {
     //   ));
 
     case RouteConstants.eventScreen:
-      // final arg = settings.arguments! as String;
-      return materialRoute(const EventScreen());
+      final arg = settings.arguments! as String;
+      return materialRoute( EventScreen(
+        eventId:arg,
+      ));
+
+      // final arg = settings.arguments as String?;
+      // return materialRoute(SignUpWithNumber(
+      //   routeType: arg,
+      // ));
 
     case RouteConstants.editProfileScreen:
       // final arg = settings.arguments as bool;
@@ -210,7 +217,10 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const ViewGroupScreen());
 
     case RouteConstants.paymentSuccessScreen:
-      return materialRoute(const PaymentSuccessScreen());
+      final arg = settings.arguments as PaymentSuccessArg;
+      return materialRoute( PaymentSuccessScreen(
+        paymentSuccessArg: arg,
+      ));
 
     case RouteConstants.settingsScreen:
       return materialRoute(const SettingsScreen());
