@@ -14,11 +14,17 @@ class EventFetchByIdLoadingState extends EventState {}
 class SendEventRequestLoadingState extends EventState {}
 
 class BuyTicketRequestLoadingState extends EventState {}
+class EventFavRequestLoadingState extends EventState {}
 
 class CreateEventSuccessState extends EventState {
   final EventModel? eventModel;
 
   CreateEventSuccessState(this.eventModel);
+}
+class EventFavSuccessState extends EventState {
+  final EventModel? eventModel;
+
+  EventFavSuccessState(this.eventModel);
 }
 
 class EventFetchByIdSuccessState extends EventState {
@@ -74,4 +80,9 @@ class BuyTicketRequestFailureState extends EventState {
   final String error;
 
   BuyTicketRequestFailureState(this.error);
+}
+class EventFavRequestFailureState extends EventState {
+  final String error;
+
+  EventFavRequestFailureState(this.error);
 }

@@ -30,7 +30,8 @@ import '../../constants/asset_constants.dart';
 import '../../models/event_model.dart';
 
 class ViewYourEventScreen extends StatefulWidget {
-  const ViewYourEventScreen({super.key});
+  String? eventId;
+   ViewYourEventScreen({super.key,this.eventId});
 
   @override
   State<ViewYourEventScreen> createState() => _ViewYourEventScreenState();

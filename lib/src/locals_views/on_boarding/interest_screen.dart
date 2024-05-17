@@ -168,7 +168,7 @@ class _InterestScreenState extends State<InterestScreen> {
               onBoardingCubit.userModel.bio.toString(),
               onBoardingCubit.userModel.socialLink,
               onBoardingCubit.userModel.moreAbout,
-              null),
+              null,true),
                 NavigationUtil.push(context, RouteConstants.doneScreen),
               },
 
@@ -206,7 +206,7 @@ class _InterestScreenState extends State<InterestScreen> {
                         onBoardingCubit.userModel.bio.toString(),
                         onBoardingCubit.userModel.socialLink,
                         onBoardingCubit.userModel.moreAbout,
-                        onBoardingCubit.userModel.interest);
+                        onBoardingCubit.userModel.interest,true);
 
                     NavigationUtil.push(context, RouteConstants.doneScreen);
                   }

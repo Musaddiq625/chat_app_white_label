@@ -12,7 +12,7 @@ import '../dio_client_network.dart';
 
 class EventRepository {
   static Future<EventResponseWrapper> createEvent(EventModel eventModel) async {
-    // LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
+    LoggerUtil.logs("eventModel.createEventToJson ${eventModel.toJson()}");
     final response = await getIt<DioClientNetwork>().putRequest(
       "${HttpConstants.event}/",
       eventModel.createEventToJson(),
@@ -21,13 +21,15 @@ class EventRepository {
   }
 
   static Future<EventResponseWrapper> fetchEventByKeys(String pageValue) async {
-    await DioClientNetwork.initializeDio(removeToken: false);
+    // await DioClientNetwork.initializeDio(removeToken: false);
     // LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
     final response =
         await getIt<DioClientNetwork>().postRequest(HttpConstants.event, {
       "keys": [
         "_id",
         "title",
+        "userId",
+        "isMyEvent",
         "venue",
         "images",
         "eventParticipants",
@@ -66,7 +68,7 @@ class EventRepository {
   static Future<EventResponseWrapper> sendEventFavById(String eventId,bool fav) async {
     final response =
     await getIt<DioClientNetwork>().putRequest("${HttpConstants.event}/$eventId",{
-      "fav":fav
+      "isFavourite":fav
     });
     final x = EventResponseWrapper.fromJson(response);
     return x;
@@ -86,7 +88,7 @@ class EventRepository {
   static Future<EventResponseWrapper> sendEventJoinRequest(String eventId,EventRequest eventRequestModel) async {
     final response =
     await getIt<DioClientNetwork>().putRequest("${HttpConstants.event}/$eventId",{
-      "event_request": [eventRequestModel.toJson()]
+      "event_request": [eventRequestModel.toRequestJson()]
     });
     final x = EventResponseWrapper.fromJson(response);
     return x;

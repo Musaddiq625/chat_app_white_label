@@ -36,13 +36,12 @@ class EventCubit extends Cubit<EventState> {
   void initializeEventWrapperData(EventResponseWrapper event) =>
       eventResponseWrapper = event;
 
-  Future<void> createEventData(String? userId, EventModel eventData) async {
+  Future<void> createEventData(EventModel eventData) async {
     emit(EventLoadingState());
     try {
       eventModel = eventModel.copyWith(venue: [venue]);
       eventModel = eventModel.copyWith(pricing: pricing ?? Pricing(price: '0'));
       eventModel = eventModel.copyWith(
-          userId: userId,
           isPublic: eventModel.isPublic ?? true,
           isApprovalRequired: eventModel.isApprovalRequired ?? true,
           isFree: pricing?.price == '0'
@@ -66,6 +65,17 @@ class EventCubit extends Cubit<EventState> {
       emit(EventFetchSuccessState(resp, resp.data2));
     } catch (e) {
       emit(EventFetchFailureState(e.toString()));
+    }
+  }
+
+  Future<void> sendEventFavById(String eventId,bool fav) async {
+    emit(EventFavRequestLoadingState());
+    try {
+      var resp = await EventRepository.sendEventFavById(eventId,fav);
+      LoggerUtil.logs(" Event data by favourite${resp.toJson()}");
+      emit(EventFavSuccessState(resp.data));
+    } catch (e) {
+      emit(EventFavRequestFailureState(e.toString()));
     }
   }
 

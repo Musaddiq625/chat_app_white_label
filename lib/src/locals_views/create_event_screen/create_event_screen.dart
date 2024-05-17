@@ -110,6 +110,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   void initState() {
     super.initState();
+    eventCubit.eventModel = EventModel();
     LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     _questionControllers =
         List.generate(questions.length, (index) => TextEditingController());
@@ -237,7 +238,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                   setState(() {
                                     selectedImagePath = image
                                         .path; // Update the state with the selected image path
-                                    eventCubit.addImage(selectedImagePath);
+                                    // eventCubit.addImage(selectedImagePath);
+                                    eventCubit.addImage("https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
                                   });
                                 }
                               },
@@ -1034,7 +1036,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           selectedImagePath != null &&
                           selectedPriceValue.isNotEmpty &&
                           capacityValue.isNotEmpty) {
-                        eventCubit.createEventData(AppConstants.userId,eventCubit.eventModel);
+                        eventCubit.createEventData(eventCubit.eventModel);
 
                       }
                       // _createBottomSheet();

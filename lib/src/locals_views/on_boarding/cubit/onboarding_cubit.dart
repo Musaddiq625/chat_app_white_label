@@ -72,11 +72,11 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
   }
 
   userDetailAboutYouToInterestStep(String userId, String bio,
-      SocialLink? socialLink, MoreAbout? moreAbout, Interest? interest) async {
+      SocialLink? socialLink, MoreAbout? moreAbout, Interest? interest, bool? isProfileCompleted ) async {
     emit(OnBoardingUserAboutYouToInterestLoadingState());
     try {
       var resp = await OnBoardingRepository.updateUserAboutYouToInterest(
-          userId, bio, socialLink, moreAbout, interest);
+          userId, bio, socialLink, moreAbout, interest,isProfileCompleted);
       emit(OnBoardingAboutYouToInterestSuccessState(resp.data));
       print("resp data ${resp.toJson()}");
     } catch (e) {

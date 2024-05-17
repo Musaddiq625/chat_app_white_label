@@ -211,7 +211,10 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const AllConnections());
 
     case RouteConstants.viewYourEventScreen:
-      return materialRoute(const ViewYourEventScreen());
+      final arg = settings.arguments as String?;
+      return materialRoute(ViewYourEventScreen(
+        eventId : arg
+      ));
 
     case RouteConstants.viewGroupScreen:
       return materialRoute(const ViewGroupScreen());

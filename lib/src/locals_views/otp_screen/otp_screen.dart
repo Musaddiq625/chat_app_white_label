@@ -15,6 +15,7 @@ import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/network/dio_client_network.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -65,6 +66,7 @@ class _OtpScreenState extends State<OtpScreen> {
         AppConstants.userId =state.userModel?.id;
         LoggerUtil.logs("state.userModel?.id.toString() ${state.userModel?.id.toString()}");
         appCubit.setToken(state.userModel?.token);
+        DioClientNetwork.initializeDio(removeToken: false);
         LoadingDialog.hideLoadingDialog(context);
         if(state.userModel?.isProfileCompleted == true){
           NavigationUtil.push(context, RouteConstants.mainScreen);

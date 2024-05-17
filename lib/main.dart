@@ -45,6 +45,7 @@ void main() async {
   token = await getIt<SharedPreferencesUtil>()
       .getString(SharedPreferenceConstants.apiAuthToken);
   print("Token Value $token");
+  DioClientNetwork.initializeDio(removeToken: false);
   // SystemChrome.setSystemUIOverlayStyle(
   //   const SystemUiOverlayStyle(
   //     statusBarColor: ColorConstants.greenMain,

@@ -35,6 +35,7 @@ class EventModel {
     this.isPublic,
     this.isApprovalRequired,
     this.isQuestionPublic,
+    this.isMyEvent,
   });
 
   EventModel.fromJson(dynamic json) {
@@ -75,17 +76,20 @@ class EventModel {
         eventRequest?.add(EventRequest.fromJson(v));
       });
     }
-    eventTotalParticipants= json["eventTotalParticipants"].toString();
+    print('json["eventTotalParticipants"] ${json["eventTotalParticipants"].runtimeType}');
+    eventTotalParticipants= int.tryParse(json["eventTotalParticipants"].toString()) == null?null:json["eventTotalParticipants"].toString();
     isFree = json['isFree'];
     isPublic = json['isPublic'];
     isApprovalRequired = json['isApprovalRequired'];
     isQuestionPublic = json['isQuestionPublic'];
+    isMyEvent = json['isMyEvent'];
   }
 
   EventModel.keysFromJson(dynamic json) {
     id = json['_id'];
     title = json['title'];
     images = json['images'] != null ? json['images'].cast<String>() : [];
+    isMyEvent = json['isMyEvent'];
     if (json['venue'] != null) {
       venues = [];
       json['venue'].forEach((v) {
@@ -101,7 +105,8 @@ class EventModel {
         eventParticipants?.add(EventParticipants.fromJson(v));
       });
     }
-    eventTotalParticipants= json["eventTotalParticipants"].toString();
+
+    eventTotalParticipants= int.tryParse(json["eventTotalParticipants"].toString()) == null?null:json["eventTotalParticipants"].toString();
   }
 
   String? id;
@@ -123,6 +128,7 @@ class EventModel {
   bool? isPublic;
   bool? isApprovalRequired;
   bool? isQuestionPublic;
+  bool? isMyEvent;
 
   EventModel copyWith({
     String? id,
@@ -144,6 +150,7 @@ class EventModel {
     bool? isPublic,
     bool? isApprovalRequired,
     bool? isQuestionPublic,
+    bool? isMyEvent,
   }) =>
       EventModel(
         id: id ?? this.id,
@@ -165,6 +172,7 @@ class EventModel {
         isPublic: isPublic ?? this.isPublic,
         isApprovalRequired: isApprovalRequired ?? this.isApprovalRequired,
         isQuestionPublic: isQuestionPublic ?? this.isQuestionPublic,
+        isMyEvent: isMyEvent ?? this.isMyEvent,
       );
 
   Map<String, dynamic> toJson() {
@@ -198,15 +206,14 @@ class EventModel {
     map['isPublic'] = isPublic;
     map['isApprovalRequired'] = isApprovalRequired;
     map['isQuestionPublic'] = isQuestionPublic;
+    map['isMyEvent'] = isMyEvent;
     return map;
   }
 
   Map<String, dynamic> createEventToJson() {
     final map = <String, dynamic>{};
-    map['userId'] = userId;
     map['title'] = title;
     map['description'] = description;
-    map['eventTotalParticipants'] = eventTotalParticipants;
     map['images'] = images;
     if (venues != null) {
       map['venue'] = venues?.map((v) => v.toJson()).toList();
@@ -303,6 +310,18 @@ class EventRequest {
     map['name'] = name;
     map['aboutMe'] = aboutMe;
     map['image'] = image;
+    map['request_status'] = requestStatus;
+    if (eventQuestions != null) {
+      map['event_questions'] = eventQuestions?.map((v) => v.toJson()).toList();
+    }
+    if (query != null) {
+      map['query'] = query?.toJson();
+    }
+    return map;
+  }
+  Map<String, dynamic> toRequestJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
     map['request_status'] = requestStatus;
     if (eventQuestions != null) {
       map['event_questions'] = eventQuestions?.map((v) => v.toJson()).toList();

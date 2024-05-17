@@ -220,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _eventWidget(int index) {
+    print("eventCubit.eventModelList[index].eventTotalParticipants ${eventCubit.eventModelList[index].eventTotalParticipants}");
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 80),
       child: Column(
@@ -277,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   TextComponent(
-                    "+${eventCubit.eventModelList[index].eventTotalParticipants} ${StringConstants.joined}",
+                    "+${(eventCubit.eventModelList[index].eventTotalParticipants ?? 0 )} ${StringConstants.joined}",
                     style: FontStylesConstants.style14(
                         color: ColorConstants.white),
                   ),
@@ -300,18 +301,18 @@ class _HomeScreenState extends State<HomeScreen> {
               TextComponent(
                 "",
                 listOfText: [
-                  DateFormat('d MMM \'at\' hh a').format(DateTime.parse(
+                  DateFormat('d MMM \'at\' hh a').format(DateTime.tryParse(
                       (eventCubit.eventModelList[index].venues ?? [])
                               .first
                               .startDatetime ??
-                          "")),
+                          "") ?? DateTime.now()),
                   //    DateFormat('d MMM \'at\' hh a').format(DateTime.parse(eventCubit.eventModelList[index].venues?.first.endDatetime ?? "")),
                   "-",
-                  DateFormat('d MMM \'at\' hh a').format(DateTime.parse(
+                  DateFormat('d MMM \'at\' hh a').format(DateTime.tryParse(
                       (eventCubit.eventModelList[index].venues ?? [])
                               .first
                               .endDatetime ??
-                          "")),
+                          "")?? DateTime.now()),
                   "-",
                   eventCubit.eventModelList[index].venues?.first.location ??
                       "asdasddas"
@@ -337,8 +338,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       buttonText: StringConstants.viewEvent,
                       isSmallBtn: true,
                       onPressed: () {
-                        NavigationUtil.push(context, RouteConstants.eventScreen,
-                            args: eventCubit.eventModelList[index].id);
+                        // LoggerUtil.logs("eventCubit.eventModelList[index].isMyEvent ${eventCubit.eventModelList[index].toJson()}");
+                        // if(  eventCubit.eventModelList[index].isMyEvent == true){
+                        //   NavigationUtil.push(context, RouteConstants.viewYourEventScreen,
+                        //       args: eventCubit.eventModelList[index].id);
+                        // }
+                        // else{
+                          NavigationUtil.push(context, RouteConstants.eventScreen,
+                              args: eventCubit.eventModelList[index].id);
+                        // }
+
                       }),
                   const Spacer(),
                   IconComponent(

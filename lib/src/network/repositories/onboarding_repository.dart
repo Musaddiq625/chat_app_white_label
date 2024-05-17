@@ -55,7 +55,9 @@ class OnBoardingRepository {
       String bio,
       SocialLink? socialLink,
       MoreAbout? moreAbout,
-      Interest? interest) async {
+      Interest? interest,
+      bool? isProfileCompleted
+      ) async {
     // LoggerUtil.logs("SocialLink Value ${socialLink.toJson()}");
     final response = await getIt<DioClientNetwork>().putRequest(
       "${HttpConstants.users}$userId",
@@ -63,7 +65,8 @@ class OnBoardingRepository {
         "bio": bio,
         "socialLink": socialLink?.toJson() ?? {},
         "moreAbout": moreAbout?.toJson() ?? {},
-        "interest": interest?.toJson() ?? {}
+        "interest": interest?.toJson() ?? {},
+        "isProfileCompleted":isProfileCompleted
       },
     );
     return OnBoardingResponseWrapper.fromJson(response);
