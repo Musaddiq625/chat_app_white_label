@@ -19,7 +19,7 @@ class OnBoardingRepository {
     // ];
 
     var response = await getIt<DioClientNetwork>().putRequest(
-      "${HttpConstants.users}$userId", //Todo change to userId
+      "${HttpConstants.users}/$userId", //Todo change to userId
       {
         "firstName": firstName,
         "lastName": lastName,
@@ -44,7 +44,7 @@ class OnBoardingRepository {
       String userId, String dateOfBirth, String aboutMe, String gender) async {
     // LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
     final response = await getIt<DioClientNetwork>().putRequest(
-      "${HttpConstants.users}$userId",
+      "${HttpConstants.users}/$userId",
       {"dateOfBirth": dateOfBirth, "aboutMe": aboutMe, "gender": gender},
     );
     return OnBoardingResponseWrapper.fromJson(response);
@@ -60,7 +60,7 @@ class OnBoardingRepository {
       ) async {
     // LoggerUtil.logs("SocialLink Value ${socialLink.toJson()}");
     final response = await getIt<DioClientNetwork>().putRequest(
-      "${HttpConstants.users}$userId",
+      "${HttpConstants.users}/$userId",
       {
         "bio": bio,
         "socialLink": socialLink?.toJson() ?? {},

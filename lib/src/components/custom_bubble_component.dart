@@ -98,12 +98,14 @@ class CustomBubbleComponent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if(qa.questionId == question.questionId)
                   TextComponent(
                     question.question!,
                     style: FontStylesConstants.style14(
                         color: ColorConstants.grey.withOpacity(0.8)),
                     maxLines: 10,
                   ),
+                  if(qa.questionId == question.questionId)
                   TextComponent(
                     qa.answer!,
                     style:
@@ -114,11 +116,14 @@ class CustomBubbleComponent extends StatelessWidget {
               ),
             ),
           );
+          if(qa.questionId == question.questionId) {
+            if (i < questionAnswerPairs!.length - 1) {
+              widgets.add(DividerCosntants.divider1);
+            }
+          }
         }
 
-        if (i < questionAnswerPairs!.length - 1) {
-          widgets.add(DividerCosntants.divider1);
-        }
+
       }
     }
     return widgets;

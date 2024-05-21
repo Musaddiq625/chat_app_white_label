@@ -17,6 +17,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -37,16 +38,16 @@ import '../../models/contact.dart';
 import '../../utils/loading_dialog.dart';
 import '../../utils/logger_util.dart';
 
-class CreateEventScreen extends StatefulWidget {
+class EditEventScreen extends StatefulWidget {
   EventModel? eventModel;
 
-  CreateEventScreen({super.key, this.eventModel});
+  EditEventScreen({super.key, this.eventModel});
 
   @override
-  State<CreateEventScreen> createState() => _CreateEventScreenState();
+  State<EditEventScreen> createState() => _EditEventScreenState();
 }
 
-class _CreateEventScreenState extends State<CreateEventScreen> {
+class _EditEventScreenState extends State<EditEventScreen> {
   // EventDataModel? _eventDataModel;
   final TextEditingController _controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
@@ -89,6 +90,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   //   {'name': 'Jesse Ebert', 'title': 'Graphic Designer', 'url': ''},
   //   {'name': 'John Doe', 'title': 'Developer', 'url': ''},
   // ];
+
   String intialEventName = 'Create Event Name';
   String? eventName;
   String? selectedImagePath;
@@ -102,23 +104,90 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
   Map<int, String> selectedQuestionPublic = {};
   Map<int, String> selectedQuestionRequired = {};
+  Map<int, String> questionId = {};
   final TextEditingController _controllerQuestions = TextEditingController();
   final TextEditingController _controllerDescription = TextEditingController();
   final TextEditingController eventNameController = TextEditingController();
   late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
+  late EditEventCubit editEventCubit = BlocProvider.of<EditEventCubit>(context);
   late OnboardingCubit onBoardingCubit =
       BlocProvider.of<OnboardingCubit>(context);
 
   @override
   void initState() {
     super.initState();
-    eventCubit.eventModel = EventModel();
-    print(
-        "widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
-    selectedImagePath = widget.eventModel?.images?.first;
-    LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     _questionControllers =
         List.generate(questions.length, (index) => TextEditingController());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      editEventCubit.eventModel = EventModel();
+      editEventCubit.eventModel = EventModel();
+      editEventCubit.eventModel =
+          EventModel.fromJson(widget.eventModel?.toJson() ?? {});
+      editEventCubit.initializeEventData(editEventCubit.eventModel);
+    });
+    print("widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
+    print(
+        "eventCubit.eventModel.pricing?.price ${eventCubit.eventModel.pricing?.price}");
+
+    setState(() {
+      selectedImagePath = widget.eventModel?.images?.first;
+      eventNameController.value =
+          TextEditingValue(text: editEventCubit.eventModel.title ?? '');
+      eventName = editEventCubit.eventModel.title ?? '';
+      _controllerDescription.value =
+          TextEditingValue(text: editEventCubit.eventModel.description ?? '');
+      startDate = editEventCubit.eventModel.venues?.first.startDatetime ?? "";
+      endDate = editEventCubit.eventModel.venues?.first.endDatetime ?? "";
+      endDate = editEventCubit.eventModel.venues?.first.endDatetime ?? "";
+      capacityValue = editEventCubit.eventModel.venues?.first.capacity ?? "";
+      selectedVisibilityValue =
+          (editEventCubit.eventModel.isPublic ?? true) ? "Public" : "Private";
+      requireGuest = editEventCubit.eventModel.isApprovalRequired ?? true;
+      if (editEventCubit.eventModel.pricing?.price != "0" &&
+          editEventCubit.eventModel.pricing?.price != null) {
+        selectedPriceValue = editEventCubit.eventModel.pricing?.price ?? "0";
+      } else {
+        selectedPriceValue = "Free";
+      }
+
+      LoggerUtil.logs(
+          "editEventCubit.eventModel.question? ${editEventCubit.eventModel.question?.map((e) => e.question)}");
+      for (int i = 0;
+          i < ((editEventCubit.eventModel.question?.length) ?? 0);
+          i++) {
+        if(questions.length <= i) {
+          questions.add("Question ${i+1}");
+        }
+        // Dynamically add controllers to the list if they don't exist yet
+        if (_questionControllers.length <= i) {
+          _questionControllers.add(TextEditingController());
+        }
+        LoggerUtil.logs(
+            "questionControllers ${(editEventCubit.eventModel.question?[i].question)}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+        _questionControllers[i].text =
+            editEventCubit.eventModel.question?[i].question ?? "";
+
+        if (editEventCubit.eventModel.question?[i].isRequired == true) {
+          selectedQuestionRequired[i] = "Required";
+        } else {
+          selectedQuestionRequired[i] = "Optional";
+        }
+
+        if (editEventCubit.eventModel.question?[i].isPublic == true) {
+          selectedQuestionPublic[i] = "Public";
+        } else {
+          selectedQuestionPublic[i] = "Private";
+        }
+        questionId[i] = editEventCubit.eventModel.question?[i].questionId ?? "";
+      }
+    });
+
+    LoggerUtil.logs("QuestionController values ${_questionControllers.map((e) => e.text)} ");
+    LoggerUtil.logs("required values ${selectedQuestionRequired.values} ");
+    LoggerUtil.logs("public values ${selectedQuestionPublic.values} ");
+    LoggerUtil.logs("questionId ${questionId.values} ");
+
+    LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     myFocusNode = FocusNode();
   }
 
@@ -134,7 +203,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     LoggerUtil.logs("Build UserId-- ${AppConstants.userId}");
     LoggerUtil.logs(
         "Build onBoardingCubit UserId-- ${onBoardingCubit.userModel.id}");
-    return BlocConsumer<EventCubit, EventState>(
+    return BlocConsumer<EditEventCubit, EditEventState>(
       listener: (context, state) {
         if (state is EventLoadingState) {
           LoadingDialog.showLoadingDialog(context);
@@ -150,7 +219,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         return UIScaffold(
             bgColor: themeCubit.backgroundColor,
             appBar: AppBarComponent(
-              StringConstants.createEvent,
+              StringConstants.editEvent,
               centerTitle: false,
               isBackBtnCircular: false,
             ),
@@ -176,7 +245,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         setState(() {
           selectedPriceValue =
               ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex];
-          eventCubit.addPrice(
+          editEventCubit.addPrice(
               selectedPriceValue == "Free" ? "0" : selectedPriceValue);
         }),
       },
@@ -246,7 +315,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                     selectedImagePath = image
                                         .path; // Update the state with the selected image path
                                     // eventCubit.addImage(selectedImagePath);
-                                    eventCubit.addImage(
+                                    editEventCubit.addImage(
                                         "https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
                                   });
                                 }
@@ -294,12 +363,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                           keyboardType: TextInputType.name,
                                           focusNode: myFocusNode,
                                           hintTextColor: ColorConstants.white,
-                                          hintText: "Create Event",
+                                          hintText: "Edit Event",
                                           maxLines: 2,
                                           onChanged: (_) {
                                             eventName =
                                                 eventNameController.text;
-                                            eventCubit.addTitle(
+                                            editEventCubit.addTitle(
                                                 eventNameController.text);
                                           },
                                           onFieldSubmitted: (_) {
@@ -308,7 +377,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                               eventName =
                                                   eventNameController.text;
                                               print("eventName ${eventName}");
-                                              eventCubit.eventModel
+                                              editEventCubit.eventModel
                                                   .copyWith(title: eventName);
                                             });
                                           },
@@ -868,7 +937,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 TextField(
                   controller: _controllerDescription,
                   onChanged: (_) {
-                    eventCubit
+                    editEventCubit
                         .addDescription(_controllerDescription.value.text);
                   },
                   maxLines: 4,
@@ -929,7 +998,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   onSwitchChanged: (bool value) {
                     setState(() {
                       requireGuest = value;
-                      eventCubit.addRequiredGuestApproval(requireGuest);
+                      editEventCubit.addRequiredGuestApproval(requireGuest);
                     });
                   },
                 ),
@@ -937,13 +1006,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 SwitchPermissionComponent(
                   name: StringConstants.askQuestionWhenPeopleJoin,
                   detail: StringConstants.askQuestionWhenPeopleJoinBody,
-                  switchValue: _questionControllers.isNotEmpty &&
-                          _questionControllers.first.text.isNotEmpty
+                  switchValue: _questionControllers.isNotEmpty
+                      // && _questionControllers.first.text.isNotEmpty
                       ? true
                       : false,
                   editQuestionsTap: () {
-                    if (askQuestion == true) {
+                    if (_questionControllers.isNotEmpty || askQuestion == true) {
                       // _selectQuestion();
+                      print("_questionControllers.length ${_questionControllers.map((e) => e.text)}");
                       QuestionComponent.selectQuestion(
                           context,
                           _questionControllers,
@@ -964,16 +1034,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         // }
 
                         // NavigationUtil.pop(context);
-                        eventCubit.addQuestions(questionsList);
+                            editEventCubit.addQuestions(questionsList);
                         LoggerUtil.logs(
                             "eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
                         LoggerUtil.logs(
                             "eventCubit.eventModel.tojson ${eventCubit.eventModel.toJson()}");
-                      });
+                      }, questionId: questionId);
                     }
                   },
-                  editQuestions: _questionControllers.isNotEmpty &&
-                          _questionControllers.first.text.isNotEmpty
+                  editQuestions: _questionControllers.isNotEmpty
+                      // && _questionControllers.first.text.isNotEmpty
                       ? true
                       : false,
                   onSwitchChanged: (bool value) {
@@ -981,7 +1051,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
                     // askQuestion = value;
                     askQuestion = value;
-                    if (askQuestion == true) {
+                    if (_questionControllers.isNotEmpty ||
+                        askQuestion == true) {
                       QuestionComponent.selectQuestion(
                           context,
                           _questionControllers,
@@ -989,7 +1060,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           selectedQuestionRequired,
                           selectedQuestionPublic,
                           (List<Question> questionsList) {
-                        eventCubit.addQuestions(questionsList);
+                            editEventCubit.addQuestions(questionsList);
                         // List<Question> questionsList = eventCubit.eventModel.question?? [];
                         // for(int i = 0; i < _questionControllers.length; i++){
                         //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
@@ -1008,7 +1079,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             "eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
                         LoggerUtil.logs(
                             "eventCubit.eventModel.tojson ${eventCubit.eventModel.toJson()}");
-                      });
+                      },
+                          questionId: questionId);
 
                       // _selectQuestion();
                     } else if (askQuestion == false) {
@@ -1031,7 +1103,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             capacityValue.isNotEmpty
                         ? themeCubit.primaryColor
                         : themeCubit.darkBackgroundColor,
-                    buttonText: StringConstants.createEvent,
+                    buttonText: StringConstants.updateEvent,
                     textColor: startDate != null &&
                             endDate != null &&
                             eventName != null &&
@@ -1041,15 +1113,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         ? themeCubit.backgroundColor
                         : ColorConstants.grey1,
                     onPressed: () {
-                      eventCubit.addStartDate(startDate);
-                      eventCubit.addEndDate(endDate);
+                      editEventCubit.addStartDate(startDate);
+                      editEventCubit.addEndDate(endDate);
                       if (startDate != null &&
                           endDate != null &&
                           eventName != null &&
                           selectedImagePath != null &&
                           selectedPriceValue.isNotEmpty &&
                           capacityValue.isNotEmpty) {
-                        eventCubit.createEventData(eventCubit.eventModel);
+                        editEventCubit.updateEventData(editEventCubit.eventModel);
                       }
                       // _createBottomSheet();
                     },
@@ -1318,7 +1390,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         setState(() {
                           selectedPriceValue =
                               "${"£" + _inputPriceValuecontroller.text}";
-                          eventCubit.addPrice(
+                          editEventCubit.addPrice(
                               _inputPriceValuecontroller.value.text.isNotEmpty
                                   ? selectedPriceValue
                                   : "0");
@@ -1483,7 +1555,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               _inputCapacityValuecontroller.text.isNotEmpty
                                   ? _inputCapacityValuecontroller.text
                                   : "Unlimited";
-                          eventCubit.addCapacity(capacityValue);
+                          editEventCubit.addCapacity(capacityValue);
                         });
                         NavigationUtil.pop(context);
                         // _yesShareItBottomSheet();
@@ -1508,7 +1580,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           onValueSelected: (String? newValue) {
             setState(() {
               selectedVisibilityValue = newValue;
-              eventCubit.addVisibility(
+              editEventCubit.addVisibility(
                   selectedVisibilityValue == "Public" ? true : false);
             });
           },

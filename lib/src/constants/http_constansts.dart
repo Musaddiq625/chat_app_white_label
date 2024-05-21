@@ -6,7 +6,7 @@ class HttpConstants {
   static const String sendOtp = '/users/send-otp';
   static const String verifyOtp = '/users/verify-otp';
   static const String forgetPassword = '/forgot-password';
-  static const String users = '/users/';
+  static const String users = '/users';
   static const String moreAbout = '/more_abouts';
   static const String interests = '/interests';
   static const String event = '/event';

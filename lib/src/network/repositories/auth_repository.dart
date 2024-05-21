@@ -6,6 +6,7 @@ import 'package:chat_app_white_label/src/wrappers/forget_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/login_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/send_otp_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/signup_response_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/user_model_wrapper.dart';
 import 'package:http/http.dart';
 
 class AuthRepository {
@@ -28,5 +29,20 @@ class AuthRepository {
         .postRequest(HttpConstants.forgetPassword, {"email": email});
 
     return ForgetResponseWrapper.fromJson(response);
+  }
+
+  static Future<UserModelWrapper> fetchUserData(String id) async {
+    final response = await getIt<DioClientNetwork>()
+        .postRequest(HttpConstants.users, {
+      "query": {
+        "_id": {
+          "\$eq": id
+        }
+      },
+    });
+
+
+    final x = UserModelWrapper.fromJson(response);
+    return x;
   }
 }

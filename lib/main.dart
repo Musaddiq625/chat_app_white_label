@@ -2,11 +2,13 @@ import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/cubit/signup_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/network/dio_client_network.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
@@ -98,7 +100,13 @@ class MyApp extends StatelessWidget {
           create: (context) => EventCubit(),
         ),
         BlocProvider(
+          create: (context) => EditEventCubit(),
+        ),
+        BlocProvider(
           create: (context) => ViewYourEventScreenCubit(),
+        ),
+        BlocProvider(
+          create: (context) => UserScreenCubit(),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(

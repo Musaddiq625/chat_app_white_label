@@ -14,6 +14,7 @@ import 'package:chat_app_white_label/src/constants/dark_theme_color_constants.da
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/cubit/view_your_event_screen_cubit.dart';
@@ -31,7 +32,8 @@ import '../../models/event_model.dart';
 
 class ViewYourEventScreen extends StatefulWidget {
   String? eventId;
-   ViewYourEventScreen({super.key,this.eventId});
+
+  ViewYourEventScreen({super.key, this.eventId});
 
   @override
   State<ViewYourEventScreen> createState() => _ViewYourEventScreenState();
@@ -119,7 +121,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       viewYourEventCubit.eventModel = EventModel();
-      await viewYourEventCubit.viewOwnEventDataById("6644a7791d98d12f648b0467");
+      await viewYourEventCubit.viewOwnEventDataById(widget.eventId ?? ""); //6644a7791d98d12f648b0467
       // if (eventCubit.eventModel.pricing?.price != "0" &&
       //     (eventCubit.eventModel.pricing?.price ?? "").isNotEmpty) {
       //   _price = int.parse(eventCubit.eventModel.pricing?.price ?? "");
@@ -373,6 +375,11 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                               circleSize: 60,
                               circleHeight: 35,
                               iconSize: 20,
+                              onTap: () {
+                                NavigationUtil.push(
+                                    context, RouteConstants.editEventScreen,
+                                    args: viewYourEventCubit.eventModel);
+                              },
                             ),
                           ],
                         ),
@@ -716,7 +723,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                     child: ContactCard(
                       name: (viewYourEventCubit.eventModel.userName ?? ""),
                       url: (viewYourEventCubit.eventModel.userImages ?? ""),
-                      title: (viewYourEventCubit.eventModel.description ?? ""),
+                      title: (viewYourEventCubit.eventModel.userAboutMe ?? ""),
                       showShareIcon: false,
                       showDivider: false,
                       imageSize: 40,
@@ -855,14 +862,39 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                backgroundColor: DarkTheme.darkBackgroundColor100,
-                                title: const TextComponent("Reply to Query",style: TextStyle(color: ColorConstants.white),),
+                                backgroundColor:
+                                    DarkTheme.darkBackgroundColor100,
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const TextComponent(
+                                      "Reply to Query",
+                                      style: TextStyle(
+                                          color: ColorConstants.white),
+                                    ),
+                                    InkWell(
+                                      onTap: () => {
+                                        _queryController.clear(),
+                                        Navigator.pop(context)
+                                      },
+                                      child: IconComponent(
+                                        iconData: Icons.close,
+                                        borderColor: Colors.transparent,
+                                        iconColor: themeCubit.textColor,
+                                        circleSize: 50,
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 content: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    TextComponent(
-                                        details.query?.question ?? "",style: TextStyle(color: ColorConstants.white)),
+                                    TextComponent(details.query?.question ?? "",
+                                        style: TextStyle(
+                                            color: ColorConstants.white)),
                                     SizedBoxConstants.sizedBoxTenH(),
                                     TextFieldComponent(_queryController,
                                         hintText: "",
@@ -870,34 +902,57 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                                         autovalidateMode:
                                             AutovalidateMode.onUserInteraction,
                                         textColor: themeCubit.textColor,
-                                        onChanged: (value) {})
+                                        onChanged: (value) {
+
+                                      Query queryReply = Query(
+                                          question:
+                                              details.query?.question ?? "",
+                                          answer: _queryController.value.text);
+                                      viewYourEventCubit.addQuery(queryReply);
+                                    })
                                   ],
                                 ),
                                 actions: <Widget>[
-                                  ButtonComponent(
-                                    buttonText: "Cancel",
-                                    textColor: ColorConstants.white,
-                                    bgcolor: ColorConstants.blackLight,
-                                    onPressed: () {
-                                      NavigationUtil.pop(context);
-                                    },
+                                  SizedBoxConstants.sizedBoxTenH(),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ButtonComponent(
+                                          isSmallBtn: true,
+                                          buttonText: "Accept",
+                                          bgcolor: ColorConstants.blackLight,
+                                          textColor: ColorConstants.white,
+                                          onPressed: () {
+                                            _queryController.clear();
+                                            viewYourEventCubit.replyQueryById(
+                                                viewYourEventCubit
+                                                        .eventModel.id ??
+                                                    "",
+                                                details.id ?? "",
+                                                "Accepted",
+                                                viewYourEventCubit.eventRequest.query ?? Query());
+                                            NavigationUtil.pop(context);
+                                          }),
+                                      ButtonComponent(
+                                          isSmallBtn: true,
+                                          buttonText: "Reject",
+                                          bgcolor: ColorConstants.blackLight,
+                                          textColor: ColorConstants.white,
+                                          onPressed: () {
+                                            _queryController.clear();
+                                            viewYourEventCubit.replyQueryById(
+                                                viewYourEventCubit
+                                                    .eventModel.id ??
+                                                    "",
+                                                details.id?? "",
+                                                "Accepted",
+                                                viewYourEventCubit.eventRequest.query ?? Query());
+                                            NavigationUtil.pop(context);
+                                          }),
+                                    ],
                                   ),
                                   SizedBoxConstants.sizedBoxTenH(),
-                                  ButtonComponent(
-                                      buttonText: "Accept",
-                                      bgcolor: ColorConstants.blackLight,
-                                      textColor: ColorConstants.white,
-                                      onPressed: () {
-                                        NavigationUtil.pop(context);
-                                      }),
-                                  SizedBoxConstants.sizedBoxTenH(),
-                                  ButtonComponent(
-                                      buttonText: "Reject",
-                                      bgcolor: ColorConstants.blackLight,
-                                      textColor: ColorConstants.white,
-                                      onPressed: () {
-                                        NavigationUtil.pop(context);
-                                      }),
                                 ],
                               );
                             },

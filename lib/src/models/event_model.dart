@@ -27,11 +27,13 @@ class EventModel {
     this.venues,
     this.question,
     this.pricing,
+    this.transectionData,
     this.eventFavouriteBy,
     this.eventParticipants,
     this.eventTotalParticipants,
     this.eventRequest,
     this.isFree,
+    this.isFavourite,
     this.isPublic,
     this.isApprovalRequired,
     this.isQuestionPublic,
@@ -59,8 +61,8 @@ class EventModel {
         question?.add(Question.fromJson(v));
       });
     }
-    pricing =
-        json['pricing'] != null ? Pricing.fromJson(json['pricing']) : null;
+    pricing = json['pricing'] != null ? Pricing.fromJson(json['pricing']) : null;
+    transectionData = json['transectionData'] != null ? TransactionData.fromJson(json['transectionData']) : null;
     eventFavouriteBy = json['eventFavouriteBy'] != null
         ? json['eventFavouriteBy'].cast<String>()
         : [];
@@ -80,9 +82,35 @@ class EventModel {
     eventTotalParticipants= int.tryParse(json["eventTotalParticipants"].toString()) == null?null:json["eventTotalParticipants"].toString();
     isFree = json['isFree'];
     isPublic = json['isPublic'];
+    isFavourite = json['isFavourite'];
     isApprovalRequired = json['isApprovalRequired'];
     isQuestionPublic = json['isQuestionPublic'];
     isMyEvent = json['isMyEvent'];
+  }
+  EventModel.updateEventfromJson(dynamic json) {
+    id = json['_id'];
+    userId = json['userId'];
+    title = json['title'];
+    description = json['description'];
+    images = json['images'] != null ? json['images'].cast<String>() : [];
+    if (json['venue'] != null) {
+      venues = [];
+      json['venue'].forEach((v) {
+        venues?.add(Venue.fromJson(v));
+      });
+    }
+    if (json['questions'] != null) {
+      question = [];
+      json['questions'].forEach((v) {
+        question?.add(Question.fromJson(v));
+      });
+    }
+    pricing = json['pricing'] != null ? Pricing.fromJson(json['pricing']) : null;
+    isFree = json['isFree'];
+    isPublic = json['isPublic'];
+    isFavourite = json['isFavourite'];
+    isApprovalRequired = json['isApprovalRequired'];
+    isQuestionPublic = json['isQuestionPublic'];
   }
 
   EventModel.keysFromJson(dynamic json) {
@@ -99,12 +127,16 @@ class EventModel {
     // eventParticipants = json['eventParticipants'] != null
     //     ? json['eventParticipants'].cast<String>()
     //     : [];
+    isFavourite = json['isFavourite'];
     if (json['eventParticipants'] != null) {
       eventParticipants = [];
       json['eventParticipants'].forEach((v) {
         eventParticipants?.add(EventParticipants.fromJson(v));
       });
     }
+    eventFavouriteBy = json['eventFavouriteBy'] != null
+        ? json['eventFavouriteBy'].cast<String>()
+        : [];
 
     eventTotalParticipants= int.tryParse(json["eventTotalParticipants"].toString()) == null?null:json["eventTotalParticipants"].toString();
   }
@@ -121,11 +153,13 @@ class EventModel {
   List<Venue>? venues;
   List<Question>? question;
   Pricing? pricing;
+  TransactionData? transectionData;
   List<String>? eventFavouriteBy;
   List<EventRequest>? eventRequest;
   List<EventParticipants>? eventParticipants;
   bool? isFree;
   bool? isPublic;
+  bool? isFavourite;
   bool? isApprovalRequired;
   bool? isQuestionPublic;
   bool? isMyEvent;
@@ -143,11 +177,13 @@ class EventModel {
     List<Venue>? venue,
     List<Question>? question,
     Pricing? pricing,
+    TransactionData? transectionData,
     List<String>? eventFavouriteBy,
     List<EventRequest>? eventRequest,
     List<EventParticipants>? eventParticipants,
     bool? isFree,
     bool? isPublic,
+    bool? isFavourite,
     bool? isApprovalRequired,
     bool? isQuestionPublic,
     bool? isMyEvent,
@@ -165,10 +201,12 @@ class EventModel {
         venues: venue ?? this.venues,
         question: question ?? this.question,
         pricing: pricing ?? this.pricing,
+        transectionData: transectionData ?? this.transectionData,
         eventFavouriteBy: eventFavouriteBy ?? this.eventFavouriteBy,
         eventRequest: eventRequest ?? this.eventRequest,
         eventParticipants: eventParticipants ?? this.eventParticipants,
         isFree: isFree ?? this.isFree,
+        isFavourite: isFavourite ?? this.isFavourite,
         isPublic: isPublic ?? this.isPublic,
         isApprovalRequired: isApprovalRequired ?? this.isApprovalRequired,
         isQuestionPublic: isQuestionPublic ?? this.isQuestionPublic,
@@ -195,6 +233,9 @@ class EventModel {
     if (pricing != null) {
       map['pricing'] = pricing?.toJson();
     }
+    if (transectionData != null) {
+      map['transectionData'] = transectionData?.toJson();
+    }
     map['eventFavouriteBy'] = eventFavouriteBy;
     if (eventRequest != null) {
       map['event_request'] = eventRequest?.map((v) => v.toJson()).toList();
@@ -203,6 +244,7 @@ class EventModel {
       map['eventParticipants'] = eventParticipants?.map((v) => v.toJson()).toList();
     }
     map['isFree'] = isFree;
+    map['isFavourite'] = isFavourite;
     map['isPublic'] = isPublic;
     map['isApprovalRequired'] = isApprovalRequired;
     map['isQuestionPublic'] = isQuestionPublic;
@@ -230,6 +272,27 @@ class EventModel {
     }
     if (eventParticipants != null) {
       map['eventParticipants'] = eventParticipants?.map((v) => v.toJson()).toList();
+    }
+    map['isFree'] = isFree;
+    map['isPublic'] = isPublic;
+    map['isApprovalRequired'] = isApprovalRequired;
+    map['isQuestionPublic'] = isQuestionPublic ?? false;
+    return map;
+  }
+  Map<String, dynamic> updateEventToJson() {
+    final map = <String, dynamic>{};
+    map['_id'] = id;
+    map['title'] = title;
+    map['description'] = description;
+    map['images'] = images;
+    if (venues != null) {
+      map['venue'] = venues?.map((v) => v.toJson()).toList();
+    }
+    if (question != null) {
+      map['questions'] = question?.map((v) => v.toJson()).toList();
+    }
+    if (pricing != null) {
+      map['pricing'] = pricing?.toJson();
     }
     map['isFree'] = isFree;
     map['isPublic'] = isPublic;
@@ -322,7 +385,6 @@ class EventRequest {
   Map<String, dynamic> toRequestJson() {
     final map = <String, dynamic>{};
     map['id'] = id;
-    map['request_status'] = requestStatus;
     if (eventQuestions != null) {
       map['event_questions'] = eventQuestions?.map((v) => v.toJson()).toList();
     }
@@ -456,8 +518,8 @@ class Pricing {
   });
 
   Pricing.fromJson(dynamic json) {
-    originalPrice = json['originalPrice'];
-    price = json['price'];
+    originalPrice = json['originalPrice'].toString();
+    price = json['price'].toString();
     if (json['couponCode'] != null) {
       couponCode = [];
       json['couponCode'].forEach((v) {
@@ -483,11 +545,49 @@ class Pricing {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['originalPrice'] = originalPrice;
-    map['price'] = price;
+    map['originalPrice'] = originalPrice.toString();
+    map['price'] = price.toString();
     if (couponCode != null) {
       map['couponCode'] = couponCode?.map((v) => v.toJson()).toList();
     }
+    return map;
+  }
+}
+
+
+
+/// totalEarned : "0"
+/// ticketSold : "0"
+
+class TransactionData {
+  TransactionData({
+    this.totalEarned,
+    this.ticketSold,
+  });
+
+  TransactionData.fromJson(dynamic json) {
+    totalEarned = json['totalEarned'].toString();
+    ticketSold = json['ticketSold'].toString();
+
+  }
+
+  String? totalEarned;
+  String? ticketSold;
+
+  TransactionData copyWith({
+    String? totalEarned,
+    String? ticketSold,
+  }) =>
+      TransactionData(
+        totalEarned: totalEarned ?? this.totalEarned,
+        ticketSold: ticketSold ?? this.ticketSold,
+      );
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['totalEarned'] = totalEarned.toString();
+    map['ticketSold'] = ticketSold.toString();
+
     return map;
   }
 }
@@ -549,7 +649,7 @@ class Question {
   });
 
   Question.fromJson(dynamic json) {
-    questionId = json['questionId'];
+    questionId = json['questionId'].toString();
     question = json['question'];
     isPublic = json['isPublic'];
     isRequired = json['isRequired'];
@@ -579,7 +679,7 @@ class Question {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['questionId'] = questionId;
+    map['questionId'] = questionId.toString();
     map['question'] = question;
     map['isPublic'] = isPublic;
     map['isRequired'] = isRequired;

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/chat_room/chat_room_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/edit_event_screen/edit_event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/all_event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/payment_success_screen.dart';
@@ -30,6 +31,7 @@ import 'package:chat_app_white_label/src/locals_views/user_profile_screen/edit_p
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/view_your_event_screen.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
+import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/camera_screen.dart';
 import 'package:chat_app_white_label/src/screens/create_group_chat/create_group_screen.dart';
@@ -78,9 +80,9 @@ Route generateRoute(RouteSettings settings) {
     //   ));
 
     case RouteConstants.eventScreen:
-      final arg = settings.arguments! as String;
+      final arg = settings.arguments! as EventScreenArg;
       return materialRoute( EventScreen(
-        eventId:arg,
+        eventScreenArg:arg,
       ));
 
       // final arg = settings.arguments as String?;
@@ -156,7 +158,17 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const ChatRoomScreen());
 
     case RouteConstants.createEventScreen:
-      return materialRoute(const CreateEventScreen());
+      final arg = settings.arguments as EventModel?;
+      return materialRoute( CreateEventScreen(
+        eventModel: arg,
+      ));
+
+    case RouteConstants.editEventScreen:
+      final arg = settings.arguments as EventModel?;
+      return materialRoute( EditEventScreen(
+        eventModel: arg,
+      ));
+
 
     case RouteConstants.createGroupScreenLocals:
       return materialRoute(const CreateGroupScreens());
@@ -267,7 +279,7 @@ Route generateRoute(RouteSettings settings) {
       return materialRoute(const InterestScreen());
 
     case RouteConstants.aboutYouScreen:
-      return materialRoute(const AboutYouScreen());
+      return materialRoute( AboutYouScreen());
 
     case RouteConstants.whatDoYouDoScreen:
       return materialRoute(const WhatDoYouDoScreen());

@@ -15,6 +15,7 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/filter_screen/filter_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
@@ -338,15 +339,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       buttonText: StringConstants.viewEvent,
                       isSmallBtn: true,
                       onPressed: () {
-                        // LoggerUtil.logs("eventCubit.eventModelList[index].isMyEvent ${eventCubit.eventModelList[index].toJson()}");
-                        // if(  eventCubit.eventModelList[index].isMyEvent == true){
-                        //   NavigationUtil.push(context, RouteConstants.viewYourEventScreen,
-                        //       args: eventCubit.eventModelList[index].id);
-                        // }
-                        // else{
-                          NavigationUtil.push(context, RouteConstants.eventScreen,
+                        LoggerUtil.logs("eventCubit.eventModelList[index].isMyEvent ${eventCubit.eventModelList[index].toJson()}");
+                        if(  eventCubit.eventModelList[index].isMyEvent == true){
+                          NavigationUtil.push(context, RouteConstants.viewYourEventScreen,
                               args: eventCubit.eventModelList[index].id);
-                        // }
+                        }
+                        else{
+                          NavigationUtil.push(context, RouteConstants.eventScreen,
+                              args: EventScreenArg(eventCubit.eventModelList[index].id ?? "", index.toString()));
+                        }
 
                       }),
                   const Spacer(),
@@ -354,9 +355,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     iconData: Icons.favorite,
                     borderColor: Colors.transparent,
                     backgroundColor: ColorConstants.iconBg,
-                    iconColor: Colors.white,
+                    iconColor: eventCubit.eventModelList[index].isFavourite == false || eventCubit.eventModelList[index].isFavourite == null?Colors.white: ColorConstants.red,
                     circleSize: 35,
                     iconSize: 20,
+                    onTap: (){
+                      if(eventCubit.eventModelList[index].isFavourite == false || eventCubit.eventModelList[index].isFavourite == null){
+                        eventCubit.eventModelList[index] = eventCubit.eventModelList[index].copyWith(isFavourite: true);
+                        eventCubit.sendEventFavById(eventCubit.eventModelList[index].id ?? "",true);
+                      }
+                      else{
+                        eventCubit.eventModelList[index] = eventCubit.eventModelList[index].copyWith(isFavourite: false);
+                        eventCubit.sendEventFavById(eventCubit.eventModelList[index].id ?? "",false);
+                      }
+
+                    },
                   ),
                   const SizedBox(width: 10),
                   IconComponent(

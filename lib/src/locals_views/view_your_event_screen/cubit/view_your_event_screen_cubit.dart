@@ -14,6 +14,7 @@ class ViewYourEventScreenCubit extends Cubit<ViewYourEventScreenState> {
 
   UserModel userModel = UserModel();
   EventModel eventModel = EventModel();
+  EventRequest eventRequest = EventRequest();
 
   void initializeUserData(UserModel user) => userModel = user;
 
@@ -28,5 +29,20 @@ class ViewYourEventScreenCubit extends Cubit<ViewYourEventScreenState> {
     } catch (e) {
       emit(ViewYourEventScreenFailureState(e.toString()));
     }
+  }
+
+  Future<void> replyQueryById(String eventId,String id,String requestStatus,Query query) async {
+    emit(SendEventRequestQueryAndStatusLoadingState());
+    try {
+      var resp = await EventRepository.sendEventRequestQueryAndStatus(eventId,id,requestStatus,query);
+      LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+      emit(SendEventRequestQueryAndStatusSuccessState(resp.data));
+    } catch (e) {
+      emit(SendEventRequestQueryAndStatusFailureState(e.toString()));
+    }
+  }
+
+  addQuery(Query queryReply) {
+    eventRequest = eventRequest.copyWith(query: queryReply);
   }
 }

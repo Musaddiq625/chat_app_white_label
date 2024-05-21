@@ -22,7 +22,7 @@ import '../utils/firebase_utils.dart';
 
 
 class QuestionComponent {
-  static void selectQuestion(BuildContext context, List<TextEditingController> questionControllers,List<String> questions, Map<int, String> selectedQuestionRequired ,  Map<int, String> selectedQuestionPublic,  Function(List<Question>) onDone) {
+  static void selectQuestion(BuildContext context,List<TextEditingController> questionControllers,List<String> questions, Map<int, String> selectedQuestionRequired ,  Map<int, String> selectedQuestionPublic,  Function(List<Question>) onDone,{Map<int, String>? questionId }) {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
     late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
     // Map<int, String> selectedQuestionRequired = {};
@@ -440,7 +440,7 @@ class QuestionComponent {
                           for(int i = 0; i < questionControllers.length; i++){
                             LoggerUtil.logs("questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
                             Question newQuestion = Question(
-                              questionId: FirebaseUtils.getDateTimeNowAsId(), // Assuming you have a mechanism to generate unique IDs
+                              questionId: questionId?[i] ?? FirebaseUtils.getDateTimeNowAsId(), // Assuming you have a mechanism to generate unique IDs
                               question: questionControllers[i].value.text, // Pass the entire list of controllers
                               isPublic: selectedQuestionPublic[questionControllers[i]]=="Public"?true:false ,
                               isRequired: selectedQuestionRequired[questionControllers[i]]=="Required"?true:false ,

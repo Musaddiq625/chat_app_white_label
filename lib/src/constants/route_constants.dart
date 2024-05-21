@@ -26,6 +26,7 @@ class RouteConstants {
   static const String chatListingScreen = 'chatListingScreen';
   static const String chatRoomScreen = 'chatRoomScreen';
   static const String createEventScreen = 'createEventScreen';
+  static const String editEventScreen = 'editEventScreen';
   static const String createGroupScreenLocals = 'createGroupScreenLocals';
   static const String chatListing = 'chatListing';
   static const String doneScreen = 'doneScreen';

@@ -221,12 +221,7 @@ class JoinBottomSheet {
                         eventCubit.eventRequestModel =
                             eventCubit.eventRequestModel.copyWith(
                                 id: FirebaseUtils.getDateTimeNowAsId(),
-                                userId: onBoardingCubit.userModel.id,
-                                name: "${onBoardingCubit.userModel.firstName} ${onBoardingCubit.userModel.lastName}",
-                                aboutMe:onBoardingCubit.userModel.aboutMe,
-                                image: onBoardingCubit.userModel.userPhotos?.first,
                               query: eventCubit.query,
-                              requestStatus: "Pending"
                             );
                         print("eventCubit.eventRequestModel ${eventCubit.eventRequestModel.toJson()}");
                         eventCubit.sendEventRequest(eventId, eventCubit.eventRequestModel);

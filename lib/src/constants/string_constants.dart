@@ -58,6 +58,8 @@ class StringConstants {
   static const String verificationCode = "verification code";
   static const String didntReciveCode = "Didn't receive the code? Resend in 00 : ";
   static const String createEvent = "Create Event";
+  static const String updateEvent = "Update Event";
+  static const String editEvent = "Edit Event";
   static const String createGroup = "Create Group";
   static const String categories = "Categories";
   static const String private = "Private";

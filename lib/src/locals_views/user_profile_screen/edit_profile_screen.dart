@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
@@ -19,13 +18,18 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
+
+import '../../components/toast_component.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -35,6 +39,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  late UserScreenCubit userScreenCubit = BlocProvider.of<UserScreenCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final _formKey = GlobalKey<FormState>();
 
@@ -50,8 +55,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-
-    tempImageData.addAll(imageData);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      userScreenCubit.fetchUserData("66472edbbb880ed91c93213d");
+    });
+    // tempImageData.addAll(imageData);
+    tempImageData.addAll(userScreenCubit.userModelList.first.userPhotos ?? []);
     tempEmptyImageData.addAll(List.filled(6 - imageData.length, ""));
 
     // tempImageData.addAll(imageData.where((element) => element.isEmpty));
@@ -90,176 +98,201 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-      appBar: AppBarComponent(
-        StringConstants.editProfile,
-        isBackBtnCircular: false,
-        centerTitle: false,
-        action: GestureDetector(
-          onTap: () {
-            print('_FORMKEY: ${_formKey}');
+    return BlocConsumer<UserScreenCubit, UserScreenState>(
+      listener: (context, state) {
+        if (state is UserScreenLoadingState) {
+        } else if (state is UserScreenSuccessState) {
+          userScreenCubit.initializeUserData(state.userModelList!);
+          LoggerUtil.logs(
+              "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
+        } else if (state is UserScreenFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+      },
+      builder: (context, state) {
+        return UIScaffold(
+          appBar: AppBarComponent(
+            StringConstants.editProfile,
+            isBackBtnCircular: false,
+            centerTitle: false,
+            action: GestureDetector(
+              onTap: () {
+                print('_FORMKEY: ${_formKey}');
 
-            if (_formKey.currentState?.validate() == true) {
-              Navigator.pop(context);
-            }
-          },
-          child: TextComponent(StringConstants.saveChanges,
-              style: TextStyle(
-                fontSize: 14,
-                color: themeCubit.textColor,
-              )),
-        ),
-      ),
-      removeSafeAreaPadding: false,
-      bgColor: themeCubit.backgroundColor,
-      widget: SingleChildScrollView(
-        child: Column(
-          children: [
-            ReorderableGridView.count(
-              shrinkWrap: true,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15,
-              padding: const EdgeInsets.all(16),
-              childAspectRatio: 0.85,
-
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              footer: tempEmptyImageData
-                  .map(
-                    (image) => ChooseImageComponent(
-                      image:
-                          image, // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-                      key: ValueKey('value ${Random().nextInt(1000)}'),
-                      onImagePick: (pickedImage) {
-                        NavigationUtil.pop(context);
-
-                        tempEmptyImageData.removeLast();
-                        tempImageData.add(pickedImage.path);
-
-                        setState(() {});
-                      },
-                    ),
-                  )
-                  .toList(),
-              // dragWidgetBuilderV2: DragWidgetBuilderV2(
-              //   builder: (index, child, screenshot) {
-              //     if (screenshot.toString() == "") return ;
-              //     return Text(screenshot.toString());
-              //   },
-              // ),
-              onDragStart: (dragIndex) {
-                if (tempImageData[dragIndex].isEmpty) {
-                  return; // Don't allow drag if the item is empty
+                if (_formKey.currentState?.validate() == true) {
+                  Navigator.pop(context);
                 }
               },
-              onReorder: (oldIndex, newIndex) {
-                if (tempImageData[oldIndex].isEmpty) {
-                  return;
-                }
-                setState(() {
-                  final element = tempImageData.removeAt(oldIndex);
-                  tempImageData.insert(newIndex, element);
-                });
-              },
+              child: TextComponent(StringConstants.saveChanges,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: themeCubit.textColor,
+                  )),
+            ),
+          ),
+          removeSafeAreaPadding: false,
+          bgColor: themeCubit.backgroundColor,
+          widget: SingleChildScrollView(
+            child: Column(
+              children: [
+                ReorderableGridView.count(
+                  shrinkWrap: true,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                  padding: const EdgeInsets.all(16),
+                  childAspectRatio: 0.85,
 
-              // onReorder: (oldIndex, newIndex) {
-              //   setState(() {
-              //     final element = tempImageData.removeAt(oldIndex);
-              //     tempImageData.insert(newIndex, element);
-              //     // data.add(newIndex.toString());
-              //   });
-              // },
-              children: tempImageData
-                  .map(
-                    (image) => ChooseImageComponent(
-                      isCurrentProfilePic: image == tempImageData.first,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  footer: tempEmptyImageData
+                      .map(
+                        (image) => ChooseImageComponent(
+                          image: image,
+                          // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
+                          key: ValueKey('value ${Random().nextInt(1000)}'),
+                          onImagePick: (pickedImage) {
+                            NavigationUtil.pop(context);
 
-                      image:
-                          image, // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-                      key: ValueKey('value ${Random().nextInt(1000)}'),
-                      onImagePick: (pickedImage) {
-                        tempEmptyImageData.add(pickedImage.path);
-                      },
-                    ),
-                  )
-                  .toList(),
+                            tempEmptyImageData.removeLast();
+                            tempImageData.add(pickedImage.path);
+
+                            setState(() {});
+                          },
+                        ),
+                      )
+                      .toList(),
+                  // dragWidgetBuilderV2: DragWidgetBuilderV2(
+                  //   builder: (index, child, screenshot) {
+                  //     if (screenshot.toString() == "") return ;
+                  //     return Text(screenshot.toString());
+                  //   },
+                  // ),
+                  onDragStart: (dragIndex) {
+                    if (tempImageData[dragIndex].isEmpty) {
+                      return; // Don't allow drag if the item is empty
+                    }
+                  },
+                  onReorder: (oldIndex, newIndex) {
+                    if (tempImageData[oldIndex].isEmpty) {
+                      return;
+                    }
+                    setState(() {
+                      final element = tempImageData.removeAt(oldIndex);
+                      tempImageData.insert(newIndex, element);
+                    });
+                  },
+
+                  // onReorder: (oldIndex, newIndex) {
+                  //   setState(() {
+                  //     final element = tempImageData.removeAt(oldIndex);
+                  //     tempImageData.insert(newIndex, element);
+                  //     // data.add(newIndex.toString());
+                  //   });
+                  // },
+                  children: tempImageData
+                      .map(
+                        (image) => ChooseImageComponent(
+                          isCurrentProfilePic: image == tempImageData.first,
+
+                          image: image,
+                          // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
+                          key: ValueKey('value ${Random().nextInt(1000)}'),
+                          onImagePick: (pickedImage) {
+                            tempEmptyImageData.add(pickedImage.path);
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+                TextComponent(StringConstants.dragAndHold,
+                    style: TextStyle(color: themeCubit.textColor)),
+                SizedBoxConstants.sizedBoxTenH(),
+                const DividerComponent(),
+                ( userScreenCubit.userModelList.isNotEmpty)?
+                 AboutYouScreen(
+                  comingFromEditProfile: true,
+                   userModel: userScreenCubit.userModelList.first,
+                ):
+                Container(),
+                const DividerComponent(),
+                Container(
+                  width: AppConstants.responsiveWidth(context),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                          child: TextComponent(StringConstants.myInterests,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: ColorConstants.lightGray,
+                              )),
+                        ),
+                        SizedBoxConstants.sizedBoxTenH(),
+                        Container(
+                          width: AppConstants.responsiveWidth(context),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                              color: themeCubit.darkBackgroundColor,
+                              borderRadius: BorderRadius.circular(16)),
+                          child: Wrap(
+                              children: interestTagList
+                                  .map((tag) => Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.all(5),
+                                              child: TagComponent(
+                                                iconData:
+                                                    tag['iconData'].toString(),
+                                                customTextColor:
+                                                    themeCubit.textColor,
+                                                backgroundColor: ColorConstants
+                                                    .lightGray
+                                                    .withOpacity(0.3),
+                                                iconColor:
+                                                    themeCubit.primaryColor,
+                                                customIconText: tag['name'],
+                                                circleHeight: 35,
+                                                iconSize: 20,
+                                              ),
+                                            ),
+                                            // SizedBoxConstants.sizedBoxTenW(),
+                                          ]))
+                                  .toList()),
+                        ),
+                      ]),
+                ),
+                const DividerComponent(),
+                ( userScreenCubit.userModelList.isNotEmpty)?
+                PersonalInfoWidget(
+                  personalInfoFormKey: _formKey,
+                  userModel: userScreenCubit.userModelList.first,
+                ):Container(),
+              ],
             ),
-            TextComponent(StringConstants.dragAndHold,
-                style: TextStyle(color: themeCubit.textColor)),
-            SizedBoxConstants.sizedBoxTenH(),
-            const DividerComponent(),
-            const AboutYouScreen(
-              comingFromEditProfile: true,
-            ),
-            const DividerComponent(),
-            Container(
-              width: AppConstants.responsiveWidth(context),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                      child: TextComponent(StringConstants.myInterests,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: ColorConstants.lightGray,
-                          )),
-                    ),
-                    SizedBoxConstants.sizedBoxTenH(),
-                    Container(
-                      width: AppConstants.responsiveWidth(context),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                          color: themeCubit.darkBackgroundColor,
-                          borderRadius: BorderRadius.circular(16)),
-                      child: Wrap(
-                          children: interestTagList
-                              .map((tag) => Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.all(5),
-                                          child: TagComponent(
-                                            iconData: tag['iconData'],
-                                            customTextColor:
-                                                themeCubit.textColor,
-                                            backgroundColor: ColorConstants
-                                                .lightGray
-                                                .withOpacity(0.3),
-                                            iconColor: themeCubit.primaryColor,
-                                            customIconText: tag['name'],
-                                            circleHeight: 35,
-                                            iconSize: 20,
-                                          ),
-                                        ),
-                                        // SizedBoxConstants.sizedBoxTenW(),
-                                      ]))
-                              .toList()),
-                    ),
-                  ]),
-            ),
-            const DividerComponent(),
-            PersonalInfoWidget(
-              personalInfoFormKey: _formKey,
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
 
 class PersonalInfoWidget extends StatefulWidget {
   final GlobalKey<FormState> personalInfoFormKey;
-  const PersonalInfoWidget({super.key, required this.personalInfoFormKey});
+  UserModel? userModel;
+
+   PersonalInfoWidget({super.key, required this.personalInfoFormKey,this.userModel});
 
   @override
   State<PersonalInfoWidget> createState() => _PersonalInfoWidgetState();
 }
 
 class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
+  late UserScreenCubit userScreenCubit = BlocProvider.of<UserScreenCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
   // final _formKey = GlobalKey<FormState>();
@@ -285,6 +318,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
 
   DateTime selectedDate = DateTime.now();
 
+
   final Map<String, dynamic> genderList = {
     StringConstants.male: true,
     StringConstants.female: false,
@@ -298,6 +332,21 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
   void initState() {
     super.initState();
     selectedGender = genderList.keys.first;
+    _firstNameController.text = widget.userModel?.firstName ?? "";
+    _lastNameController.text = widget.userModel?.lastName ?? "";
+    _emailcontroller.text = widget.userModel?.email ?? "";
+    _phoneNumberController.text = widget.userModel?.phoneNumber ?? "";
+    _genderController.text = widget.userModel?.gender ?? "";
+    _genderController.text = widget.userModel?.gender ?? "";
+    print("selectedDate Before ${selectedDate}" );
+    DateTime selectedDateAfter =  DateFormat("dd MM yyyy").parse(widget.userModel?.dateOfBirth ?? "");
+    print("selectedDate after will be ${widget.userModel?.dateOfBirth}" );
+    print("selectedDate after will be ${selectedDateAfter}" );
+    // selectedDate = selectedDateAfter;
+    _yearTextController.text =selectedDateAfter.year.toString();
+    _monthTextController.text =selectedDateAfter.month.toString();
+    _dayTextController.text =selectedDateAfter.day.toString();
+    // selectedDate = DateTime.parse(widget.userModel?.dateOfBirth ?? "");
     setState(() {});
   }
 

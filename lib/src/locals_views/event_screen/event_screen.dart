@@ -46,6 +46,7 @@ import '../on_boarding/cubit/onboarding_cubit.dart';
 
 class EventScreen extends StatefulWidget {
   String? eventId;
+EventScreenArg? eventScreenArg;
   String? userId;
   String? userName;
   String? userImage;
@@ -54,6 +55,7 @@ class EventScreen extends StatefulWidget {
   EventScreen(
       {super.key,
       this.eventId,
+      this.eventScreenArg,
       this.userId,
       this.userName,
       this.userImage,
@@ -70,6 +72,7 @@ bool ticketRequired = true;
 final TextEditingController _controller = TextEditingController();
 
 class _EventScreenState extends State<EventScreen> {
+  List<EventRequest>? acceptedRequests;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final List<ContactModel> contacts = [
@@ -100,7 +103,7 @@ class _EventScreenState extends State<EventScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       eventCubit.eventModel = EventModel();
-      await eventCubit.fetchEventDataById(widget.eventId!);
+      await eventCubit.fetchEventDataById(widget.eventScreenArg?.eventId ?? "");
       if (eventCubit.eventModel.pricing?.price != "0" &&
           (eventCubit.eventModel.pricing?.price ?? "").isNotEmpty) {
         _price = int.parse(eventCubit.eventModel.pricing?.price ?? "");
@@ -115,14 +118,21 @@ class _EventScreenState extends State<EventScreen> {
     return BlocConsumer<EventCubit, EventState>(
       listener: (context, state) {
         if (state is EventFetchByIdLoadingState) {
-        } else if (state is EventFetchByIdSuccessState) {
+        }
+        else if (state is EventFetchByIdSuccessState) {
           eventCubit.initializeEventData(state.eventModel!);
           print(
               "eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
-        } else if (state is EventFetchByIdFailureState) {
+          acceptedRequests = eventCubit.eventModel.eventRequest
+              ?.where(
+                  (eventRequest) => eventRequest.requestStatus == "Accepted")
+              .toList();
+        }
+        else if (state is EventFetchByIdFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
         } else if (state is BuyTicketRequestLoadingState) {
-        } else if (state is BuyTicketRequestSuccessState) {
+        }
+        else if (state is BuyTicketRequestSuccessState) {
           Navigator.pop(context);
           NavigationUtil.push(
             context,
@@ -136,8 +146,14 @@ class _EventScreenState extends State<EventScreen> {
           );
           // eventCubit.initializeEventData(state.eventModel!);
           // print("eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
-        } else if (state is BuyTicketRequestFailureState) {
+        }
+        else if (state is BuyTicketRequestFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
+        }
+        else if (state is EventFavSuccessState) {
+          eventCubit.initializeEventData(state.eventModel!);
+          print(
+              "eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
         }
       },
       builder: (context, state) {
@@ -150,7 +166,7 @@ class _EventScreenState extends State<EventScreen> {
               child: Column(
                 children: [
                   _eventWidget(),
-                  (eventCubit.eventModel.eventTotalParticipants != null)
+                  (eventCubit.eventModel.eventTotalParticipants != null && eventCubit.eventModel.eventTotalParticipants != "0")
                       ? _members()
                       : Container(
                           color: ColorConstants.black,
@@ -381,12 +397,26 @@ class _EventScreenState extends State<EventScreen> {
                     iconData: Icons.favorite,
                     backgroundColor:
                         ColorConstants.darkBackgrounddColor.withOpacity(0.9),
-                    iconColor: Colors.red,
+                    iconColor: eventCubit.eventModel.isFavourite == false || eventCubit.eventModel.isFavourite == null?Colors.white: ColorConstants.red,
                     customIconText:
                         "${eventCubit.eventModel.eventFavouriteBy?.length ?? 0}",
                     circleSize: 70,
                     circleHeight: 36,
                     iconSize: 20,
+                    onTap: (){
+                      if(eventCubit.eventModel.isFavourite == false || eventCubit.eventModel.isFavourite == null){
+                        eventCubit.eventModel.eventFavouriteBy?.length ++;
+                        eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0" )] = eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0")].copyWith(isFavourite: true);
+                        eventCubit.eventModel = eventCubit.eventModel.copyWith(isFavourite: true);
+                        eventCubit.sendEventFavById(eventCubit.eventModel.id ?? "",true);
+                      }
+                      else{
+                        eventCubit.eventModel.eventFavouriteBy?.length --;
+                        eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0" )] = eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0")].copyWith(isFavourite: false);
+                        eventCubit.eventModel = eventCubit.eventModel.copyWith(isFavourite: false);
+                        eventCubit.sendEventFavById(eventCubit.eventModel.id ?? "",false);
+                      }
+                    },
                   ),
                   const SizedBox(width: 10),
                   IconComponent(
@@ -771,22 +801,22 @@ class _EventScreenState extends State<EventScreen> {
               separatorBuilder: (context, index) => const DividerComponent(),
               physics: BouncingScrollPhysics(),
               shrinkWrap: true,
-              itemCount: (eventCubit.eventModel.eventParticipants ?? []).length,
+              itemCount:(acceptedRequests??[]).length,// (eventCubit.eventModel.eventParticipants ?? []).length,
               //contacts.length,
               itemBuilder: (context, index) => ListTileComponent(
                 leadingText:
-                    eventCubit.eventModel.eventParticipants?[index].name,
+                acceptedRequests?[index].name,// eventCubit.eventModel.eventParticipants?[index].name,
                 // StringConstants.linkedIn,
                 removeBorderFromTile: true,
                 customPadding: const EdgeInsets.only(left: 20, right: 16),
                 leadingsubText:
-                    eventCubit.eventModel.eventParticipants?[index].aboutMe,
+                acceptedRequests?[index].aboutMe,//eventCubit.eventModel.eventParticipants?[index].aboutMe,
                 //contacts[index].title,
                 // 'Graphic Designer',
                 // trailingIcon: Icons.add_circle,
                 trailingIconSize: 30,
                 leadingIcon:
-                    eventCubit.eventModel.eventParticipants?[index].image,
+                acceptedRequests?[index].image,//eventCubit.eventModel.eventParticipants?[index].image,
                 //'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                 leadingIconHeight: 20,
                 leadingIconWidth: 20,
@@ -2024,4 +2054,16 @@ class _EventScreenState extends State<EventScreen> {
           onBtnTap: () {},
         ));
   }
+}
+
+class EventScreenArg {
+  final String eventId;
+  final String indexValue;
+
+
+  EventScreenArg(
+      this.eventId,
+      this.indexValue,
+
+      );
 }

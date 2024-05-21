@@ -14,6 +14,7 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,8 +29,10 @@ import '../../wrappers/more_about_wrapper.dart';
 
 class AboutYouScreen extends StatefulWidget {
   final bool comingFromEditProfile;
+  UserModel? userModel;
 
-  const AboutYouScreen({super.key, this.comingFromEditProfile = false});
+
+   AboutYouScreen({super.key, this.comingFromEditProfile = false, this.userModel});
 
   @override
   State<AboutYouScreen> createState() => _AboutYouScreenState();
@@ -177,11 +180,26 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
     '10\'0 (305 cm)',
   ];
 
+  late UserScreenCubit userScreenCubit =
+  BlocProvider.of<UserScreenCubit>(context);
+
   var parsedDataOutPut;
 
   @override
   void initState() {
     onBoardingCubit.getMoreAboutData();
+    _bioController.text = widget.userModel?.bio ?? "";
+    linkedInController.text = widget.userModel?.socialLink?.linkedin ?? "";
+    facebookController.text = widget.userModel?.socialLink?.facebook ?? "";
+    instaController.text = widget.userModel?.socialLink?.instagram ?? "";
+    instaController.text = widget.userModel?.socialLink?.instagram ?? "";
+    _tempmoreAboutValue[StringConstants.diet] = widget.userModel?.moreAbout?.diet;
+    _tempmoreAboutValue[StringConstants.workout] = widget.userModel?.moreAbout?.workout;
+    _tempmoreAboutValue[StringConstants.height] = widget.userModel?.moreAbout?.height;
+    _tempmoreAboutValue[StringConstants.smoking] = widget.userModel?.moreAbout?.smoking;
+    _tempmoreAboutValue[StringConstants.drinking] = widget.userModel?.moreAbout?.drinking;
+    _tempmoreAboutValue[StringConstants.pets] = widget.userModel?.moreAbout?.pets;
+    print("_bioController Values ${_bioController.text} - ${userScreenCubit.userModelList.first.bio} - ${widget.userModel?.bio} ");
     // onBoardingCubit.initializeMoreAboutData();
     print("MoreAboutData Values ${onBoardingCubit.moreAboutWrapper.toJson()}");
     super.initState();
@@ -250,7 +268,7 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                     height: _tempmoreAboutValue[StringConstants.height],
                     // weight: _tempmoreAboutValue[StringConstants.weight],
                     smoking: _tempmoreAboutValue[StringConstants.smoking],
-                    drinking: _tempmoreAboutValue[StringConstants.pets],
+                    drinking: _tempmoreAboutValue[StringConstants.drinking],
                     pets: _tempmoreAboutValue[StringConstants.pets],
                   );
                   onBoardingCubit.setAboutYou(_bioController.text.toString(), socialLink, moreAbout);
