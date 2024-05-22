@@ -44,7 +44,6 @@ class UserModel {
     this.moreAbout,
     this.socialLink,
     this.interest,
-    this.isProfileComplete,
     this.isOnline,
     this.lastActive,
     this.pushToken,
@@ -73,7 +72,6 @@ class UserModel {
     moreAbout = json['moreAbout'] != null ? MoreAbout.fromJson(json['moreAbout']) : null;
     socialLink = json['socialLink'] != null ? SocialLink.fromJson(json['socialLink']) : null;
     interest = json['interest'] != null ? Interest.fromJson(json['interest']) : null;
-    isProfileComplete = json['isProfileComplete'];
     isOnline = json['isOnline'];
     lastActive = json['lastActive'];
     pushToken = json['pushToken'];
@@ -101,7 +99,6 @@ class UserModel {
   MoreAbout? moreAbout;
   SocialLink? socialLink;
   Interest? interest;
-  bool? isProfileComplete;
   bool? isOnline;
   String? lastActive;
   String? pushToken;
@@ -128,7 +125,6 @@ class UserModel {
     MoreAbout? moreAbout,
     SocialLink? socialLink,
     Interest? interest,
-    bool? isProfileComplete,
     bool? isOnline,
     String? lastActive,
     String? pushToken,
@@ -155,7 +151,6 @@ class UserModel {
     moreAbout: moreAbout ?? this.moreAbout,
     socialLink: socialLink ?? this.socialLink,
     interest: interest ?? this.interest,
-    isProfileComplete: isProfileComplete ?? this.isProfileComplete,
     isOnline: isOnline ?? this.isOnline,
     lastActive: lastActive ?? this.lastActive,
     pushToken: pushToken ?? this.pushToken,
@@ -191,7 +186,6 @@ class UserModel {
     if (interest != null) {
       map['interest'] = interest?.toJson();
     }
-    map['isProfileComplete'] = isProfileComplete;
     map['isOnline'] = isOnline;
     map['lastActive'] = lastActive;
     map['pushToken'] = pushToken;

@@ -15,15 +15,18 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/wrappers/interest_response_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -40,6 +43,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   late UserScreenCubit userScreenCubit = BlocProvider.of<UserScreenCubit>(context);
+  late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final _formKey = GlobalKey<FormState>();
 
@@ -57,17 +61,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       userScreenCubit.fetchUserData("66472edbbb880ed91c93213d");
+      userScreenCubit.getInterestData();
+
     });
     // tempImageData.addAll(imageData);
-    tempImageData.addAll(userScreenCubit.userModelList.first.userPhotos ?? []);
-    tempEmptyImageData.addAll(List.filled(6 - imageData.length, ""));
+    //
+    // tempEmptyImageData.addAll(List.filled(6 - imageData.length, ""));
 
     // tempImageData.addAll(imageData.where((element) => element.isEmpty));
     // setState(() {});
     // tempImageData = List.filled(6, null, growable: true);
     // tempImageData.insertAll(0, imageData.take(min(imageData.length, 6)));
   }
-
+  List<InterestData>? hobbiesData = [];
+  List<InterestData>? creativityData = [];
+  List<Hobbies>? hobbiesDataList = [];
+  List<Creativity>? creativityDataList = [];
+  List<InterestData>? interestData = [];
   List<Map<String, dynamic>> interestTagList = [
     {
       'iconData': Icons.favorite,
@@ -100,12 +110,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<UserScreenCubit, UserScreenState>(
       listener: (context, state) {
+        print('-----  $state');
         if (state is UserScreenLoadingState) {
         } else if (state is UserScreenSuccessState) {
           userScreenCubit.initializeUserData(state.userModelList!);
+          tempImageData.addAll(userScreenCubit.userModelList.first.userPhotos ?? []);
+          tempEmptyImageData.addAll(List.filled(6 - (userScreenCubit.userModelList.first.userPhotos ?? []).length, ""));
+          hobbiesData = userScreenCubit.userModelList.first.interest?.hobbies;
+          creativityData = userScreenCubit.userModelList.first.interest?.creativity;
+          interestData?.addAll(hobbiesData ?? []);
+          interestData?.addAll(creativityData ?? []);
+          // creativityData = userScreenCubit.interestWrapper.data?.first.creativity;
           LoggerUtil.logs(
               "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
-        } else if (state is UserScreenFailureState) {
+        }
+        else if(state is InterestSuccessState){
+          userScreenCubit.initializeInterestData(state.interestData);
+          hobbiesDataList = userScreenCubit.interestWrapper.data?.first.hobbies;
+          creativityDataList = userScreenCubit.interestWrapper.data?.first.creativity;
+        }
+        else if (state is UserScreenFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
         }
       },
@@ -123,11 +147,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Navigator.pop(context);
                 }
               },
-              child: TextComponent(StringConstants.saveChanges,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: themeCubit.textColor,
-                  )),
+              child: GestureDetector(
+                onTap: (){
+                  // LoggerUtil.logs("Updated userScreenCubit.userModel ${userScreenCubit.userModelList.first.toJson()}");
+                  userScreenCubit.updateUserData("66472edbbb880ed91c93213d", userScreenCubit.userModelList.first);
+                },
+                child: TextComponent(StringConstants.saveChanges,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: themeCubit.textColor,
+                    )),
+              ),
             ),
           ),
           removeSafeAreaPadding: false,
@@ -155,7 +185,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                             tempEmptyImageData.removeLast();
                             tempImageData.add(pickedImage.path);
-
+                            userScreenCubit.uploadUserPhoto(tempImageData);
                             setState(() {});
                           },
                         ),
@@ -180,6 +210,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       final element = tempImageData.removeAt(oldIndex);
                       tempImageData.insert(newIndex, element);
                     });
+                    userScreenCubit.uploadUserPhoto(tempImageData);
                   },
 
                   // onReorder: (oldIndex, newIndex) {
@@ -222,14 +253,129 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
+                         Padding(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                          child: TextComponent(StringConstants.myInterests,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: ColorConstants.lightGray,
-                              )),
+                              EdgeInsets.only(left: 15, top: 5,bottom: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const TextComponent(StringConstants.myInterests,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: ColorConstants.lightGray,
+                                  )),
+                              GestureDetector(
+                                onTap: (){
+                                  print("hobbiesData ${hobbiesData?.map((e) => e.value)}");
+                                  List<InterestData> tempHobbies = [];
+                                  List<InterestData>? tempCreativity;
+                                  tempHobbies = [...?hobbiesData];
+                                  tempCreativity = [...?creativityData];
+                                  BottomSheetComponent.showBottomSheet(
+                                    context,
+                                    isShowHeader: false,
+                                    body: StatefulBuilder(
+                                        builder: (context,state) {
+
+                                          return Padding(
+                                            padding: const EdgeInsets.all(18.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        // LoggerUtil.logs("selectedInterestTagList ${convertedCreativityList}");
+                                                      },
+                                                      child: TextComponent(
+                                                        StringConstants.whatsYourInterest,
+                                                        style: FontStylesConstants.style22(),
+                                                      ),
+                                                    ),
+                                                    SizedBoxConstants.sizedBoxTenH(),
+                                                    TextComponent(
+                                                      StringConstants.pickUp4Things,
+                                                      style:
+                                                      FontStylesConstants.style14(color: ColorConstants.lightGray),
+                                                      maxLines: 5,
+                                                    ),
+                                                    SizedBoxConstants.sizedBoxTwentyH(),
+                                                    // hobbies(state),
+                                                    hobbies((bool isTagSelected, InterestData x){
+                                                      state(() {
+                                                        if(!isTagSelected) {
+                                                          tempHobbies!.add(x);
+                                                        } else  {
+                                                          print("remove Tag Value ${x.value}");
+                                                          tempHobbies!.removeWhere((element) => element.value == x.value);
+                                                        }
+                                                        // final InterestData? y = tempHobbies!.firstWhere((element) => element.value == x.value, orElse: ()=> null);
+                                                        // if(y== null){
+                                                        //
+                                                        // }
+
+                                                      }
+                                                      );
+                                                      print("tempHobbies ${tempHobbies?.map((e) => e.value)}" );
+                                                    }, tempHobbies ?? []),
+                                                    SizedBoxConstants.sizedBoxTwentyH(),
+                                                    creativity((bool isTagSelected, InterestData x){
+                                                      state(() {
+                                                        if(!isTagSelected) {
+                                                          tempCreativity!.add(x);
+                                                        } else if(isTagSelected == true) {
+                                                          print("remove Tag Value ${x.value}");
+                                                          tempCreativity!.removeWhere((element) => element.value == x.value);
+                                                        }
+                                                      }
+                                                      );
+                                                      print("tempCreativity ${tempCreativity?.map((e) => e.value)}" );
+                                                    }, tempCreativity ?? []),
+                                                    SizedBoxConstants.sizedBoxTwentyH(),
+                                                    ButtonComponent(buttonText: "Done",textColor: ColorConstants.black,onPressed: (){
+                                                      hobbiesData  = tempHobbies ;
+                                                      creativityData  = tempCreativity ;
+
+                                                      interestData?.clear();
+                                                      interestData?.addAll(hobbiesData ?? []);
+                                                      setState(() {
+                                                        interestData?.addAll(creativityData ?? []);
+                                                      });
+                                                      Interest interest = Interest(
+                                                          hobbies: hobbiesData,
+                                                          creativity: creativityData);
+                                                      userScreenCubit.updateInterest(interest);
+                                                      NavigationUtil.pop(context);
+                                                    },),
+                                                    const SizedBox(
+                                                      height: 50,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const TextComponent(StringConstants.editMyInterest,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: ColorConstants.lightGray,
+                                        )),
+                                    IconComponent(iconData:Icons.arrow_forward_ios ,iconColor:ColorConstants.lightGray,iconSize:16 ,)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBoxConstants.sizedBoxTenH(),
                         Container(
@@ -239,15 +385,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               color: themeCubit.darkBackgroundColor,
                               borderRadius: BorderRadius.circular(16)),
                           child: Wrap(
-                              children: interestTagList
-                                  .map((tag) => Row(
+                              children: (interestData ?? []).map((tag) => Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Container(
                                               margin: const EdgeInsets.all(5),
                                               child: TagComponent(
-                                                iconData:
-                                                    tag['iconData'].toString(),
+                                                iconData: tag.icon,//tag['iconData'].toString(),
                                                 customTextColor:
                                                     themeCubit.textColor,
                                                 backgroundColor: ColorConstants
@@ -255,7 +399,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                     .withOpacity(0.3),
                                                 iconColor:
                                                     themeCubit.primaryColor,
-                                                customIconText: tag['name'],
+                                                customIconText: tag.value,//tag['name'],
                                                 circleHeight: 35,
                                                 iconSize: 20,
                                               ),
@@ -277,6 +421,163 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         );
       },
+    );
+  }
+
+  // hobbies(StateSetter stateSetter) {
+  hobbies(Function(bool, InterestData) onTap, List<InterestData> originalHobbies) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextComponent(
+          StringConstants.hobbiesAndInterests,
+          style: FontStylesConstants.style14(color: themeCubit.textColor),
+        ),
+        SizedBoxConstants.sizedBoxTenH(),
+        Wrap(
+          children: [
+            ...?hobbiesDataList
+                ?.map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: TagComponent(
+                  iconData: tag.icon,
+                  customTextColor: originalHobbies
+                      .any((item) => item.value == tag.value)
+                      ? ColorConstants.black
+                      : themeCubit.textColor,
+                  backgroundColor: originalHobbies
+                      .any((item) => item.value == tag.value)
+                      ? themeCubit.primaryColor
+                      : ColorConstants.lightGray.withOpacity(0.3),
+                  iconColor: originalHobbies.any((item) =>
+                  item.value ==
+                      tag.value) //selectedInterestedTags.contains(tag['name'])
+                      ? themeCubit.backgroundColor
+                      : themeCubit.primaryColor,
+                  customIconText: tag.value,
+                  circleHeight: 35,
+                  iconSize: 20,
+                  onTap: () {
+                      // bool isTagSelected = (hobbiesData ?? [])
+                      //     .any((item) => item.value == tag.value);
+
+                      // if (isTagSelected) {
+                      //   (hobbiesData ?? []).removeWhere(
+                      //           (item) => item.value == tag.value);
+                      // } else if ((hobbiesData ?? []).length < 4) {
+                      //   var tagSelectedValue = InterestData(
+                      //     icon: tag.icon,
+                      //     value: tag.value,
+                      //   );
+                      //   (hobbiesData ?? []).add(tagSelectedValue);
+                      //
+                      // }
+
+                      ///////
+                    // print("hobbiesData?.firstWhere ${hobbiesData?.firstWhere((element) => element.value ==  tag.value)}");
+                    //   final x = hobbiesData?.firstWhere((element) => element.value ==  tag.value);
+                    print('${originalHobbies.map((e) => e.value)}');
+                    var tagSelectedValue = InterestData(
+                          icon: tag.icon,
+                          value: tag.value,
+                        );
+                      print("Value of tagSelectedValue ${tagSelectedValue.toJson()}");
+                      bool isTagSelected = originalHobbies
+                          .any((item) => item.value == tag.value);
+                      // hobbiesData.remove(x);
+                    print("isTagSelected $isTagSelected");
+                      onTap(isTagSelected, tagSelectedValue);
+
+
+                  },
+                ),
+              ),
+              SizedBoxConstants.sizedBoxTenW()
+            ]))
+                .toList(),
+          ],
+        )
+      ],
+    );
+  }
+
+  creativity(Function(bool, InterestData) onTap, List<InterestData> originalCreativity) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextComponent(StringConstants.creativity,
+            style: FontStylesConstants.style14(color: themeCubit.textColor)),
+        SizedBoxConstants.sizedBoxTenH(),
+        Wrap(
+          children: [
+            ...?creativityDataList
+                ?.map((tag) => Row(mainAxisSize: MainAxisSize.min, children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: TagComponent(
+                  iconData: tag.icon,
+                  customTextColor: originalCreativity
+                      .any((item) => item.value == tag.value)
+                      ? ColorConstants.black
+                      : themeCubit.textColor,
+                  backgroundColor: originalCreativity
+                      .any((item) => item.value == tag.value)
+                      ? themeCubit.primaryColor
+                      : ColorConstants.lightGray.withOpacity(0.3),
+                  iconColor: originalCreativity
+                      .any((item) => item.value == tag.value)
+                      ? themeCubit.backgroundColor
+                      : themeCubit.primaryColor,
+                  customIconText: tag.value,
+                  circleHeight: 35,
+                  iconSize: 20,
+                  onTap: () {
+                    // LoggerUtil.logs(tagSelectedValue);
+                    // LoggerUtil.logs('bsbbs ${selectedCreativityTagList.map((e) => e.value)}');
+                    // stateSetter(() {
+                    //   // bool isTagSelected = selectedCreativityTagList
+                    //   //     .any((item) => item['name'] == tag['name']);
+                    //   bool isTagSelected = (creativityData ?? [])
+                    //       .any((item) => item.value == tag.value);
+                    //   if (isTagSelected) {
+                    //     (creativityData ?? []).removeWhere(
+                    //             (item) => item.value == tag.value);
+                    //   } else if ((creativityData ?? []).length < 4) {
+                    //     var tagSelectedValue = InterestData(
+                    //       icon: tag.icon,
+                    //       value: tag.value,
+                    //     );
+                    //     (creativityData ?? []).add(tagSelectedValue);
+                    //   }
+                    // });
+                    var tagSelectedValue = InterestData(
+                      icon: tag.icon,
+                      value: tag.value,
+                    );
+                    print("Value of tagSelectedValue ${tagSelectedValue.toJson()}");
+                    bool isTagSelected = originalCreativity
+                        .any((item) => item.value == tag.value);
+                    // hobbiesData.remove(x);
+                    print("isTagSelected $isTagSelected");
+                    onTap(isTagSelected, tagSelectedValue);
+                    LoggerUtil.logs(
+                        " bsbbs ${(creativityData ?? []).map((e) => e.value)}");
+
+
+                  },
+
+
+                ),
+              ),
+              SizedBoxConstants.sizedBoxTenW()
+            ]))
+                .toList(),
+          ],
+        )
+      ],
     );
   }
 }
@@ -375,6 +676,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
         _yearTextController.text = selectedDate.year.toString();
         _monthTextController.text = selectedDate.month.toString();
       });
+      userScreenCubit.updateDob(selectedDate.toString());
     }
   }
 
@@ -422,6 +724,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                   textColor: themeCubit.textColor,
                   titlePaddingFromLeft: 15,
                   onChanged: (value) {
+                    userScreenCubit.updateUserFirstName(_firstNameController.text);
                     // handleTextFieldsOnChange();
                   },
                   validator: (firstName) {
@@ -438,6 +741,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                   hintText: "",
                   textColor: themeCubit.textColor,
                   onChanged: (value) {
+                    userScreenCubit.updateUserLastName(_lastNameController.text);
                     // handleTextFieldsOnChange();
                   },
                   validator: (lastName) {
@@ -451,6 +755,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                   _emailcontroller,
                   title: StringConstants.email,
                   filled: true,
+                  enabled: false,
                   hintText: "",
                   textColor: themeCubit.textColor,
                   titlePaddingFromLeft: 15,
@@ -473,6 +778,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                     isSignupScreen: false,
                     onChange: (CountryCode) {
                       _countryCodeController.text = '+${CountryCode.dialCode}';
+
                     },
                   ),
                   maxLength: AppConstants.phoneNumberMaxLength,
@@ -483,6 +789,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                       phone!.trim(),
                       fieldName: StringConstants.phoneNumber),
                   onChanged: (phone) {
+                    userScreenCubit.updatePhoneNumber(_countryCodeController.text+_phoneNumberController.text);
                     // handlePhoneOnChange();
                     // setState(() {
                     // _phoneNumberValid = _formKey.currentState!.validate();
@@ -560,6 +867,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                                                 // }); //"Diet":"vegan"
                                                 _genderController.text =
                                                     selectedGender;
+                                                userScreenCubit.updateGender(_genderController.text);
                                                 setState(() {});
                                                 NavigationUtil.pop(context);
                                               }
@@ -714,4 +1022,6 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
       ),
     );
   }
+
+
 }

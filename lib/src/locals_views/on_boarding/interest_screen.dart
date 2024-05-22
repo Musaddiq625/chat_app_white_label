@@ -150,8 +150,7 @@ class _InterestScreenState extends State<InterestScreen> {
         } else if (state is OnBoardingInterestSuccess) {
           onBoardingCubit.initializeInterestData(state.interestData);
           hobbiesData = onBoardingCubit.interestWrapper.data?.first.hobbies;
-          creativityData =
-              onBoardingCubit.interestWrapper.data?.first.creativity;
+          creativityData = onBoardingCubit.interestWrapper.data?.first.creativity;
         } else if (state is OnBoardingInterestFailureState) {
           // LoadingDialog.hideLoadingDialog(context);
           LoggerUtil.logs("Error ${state.error}");

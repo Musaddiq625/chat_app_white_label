@@ -75,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(const Duration(milliseconds: 6000), () async {
       if (userData != null) {
-        if (userData.isProfileComplete == true) {
+        if (userData.isProfileCompleted == true) {
           NavigationUtil.popAllAndPush(context, RouteConstants.homeScreen);
         } else {
           NavigationUtil.popAllAndPush(context, RouteConstants.profileScreen,

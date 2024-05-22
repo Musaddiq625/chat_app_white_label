@@ -1,18 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/event_card.dart';
 import 'package:chat_app_white_label/src/components/group_card.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +31,7 @@ import '../../components/icon_component.dart';
 import '../../components/profile_image_component.dart';
 import '../../components/text_component.dart';
 import '../../constants/asset_constants.dart';
+import '../../models/user_model.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -34,6 +42,7 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late UserScreenCubit userScreenCubit = BlocProvider.of<UserScreenCubit>(context);
   File? selectedImage;
   String? imageUrl;
   bool isEdit = false;
@@ -134,9 +143,36 @@ class _UserProfileState extends State<UserProfile> {
   ];
 
   double radius = 20;
-
+  UserModel? userModel;
+  @override
+  void initState() {
+     WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+          // userScreenCubit.fetchUserData("66472edbbb880ed91c93213d");
+          final serializedUserModel =await  getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
+          userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+          userName = "${userModel?.firstName} ${userModel?.lastName}";
+          LoggerUtil.logs("sharedPreferencesUtil userModel Value ${userModel?.toJson()}");
+        });
+    super.initState();
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<UserScreenCubit, UserScreenState>(
+  listener: (context, state) {
+    if (state is UserScreenLoadingState) {
+    } else if (state is UserScreenSuccessState) {
+      userScreenCubit.initializeUserData(state.userModelList!);
+      // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
+      LoggerUtil.logs(
+          "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
+    }
+    else if (state is UserScreenFailureState) {
+      ToastComponent.showToast(state.toString(), context: context);
+    }
+  },
+  builder: (context, state) {
     return UIScaffold(
         appBar: topBar(),
         removeSafeAreaPadding: true,
@@ -144,6 +180,8 @@ class _UserProfileState extends State<UserProfile> {
         // bgImage:
         //     "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
         widget: main());
+  },
+);
   }
 
   Widget main() {

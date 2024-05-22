@@ -40,6 +40,10 @@ class AppSettingCubit extends Cubit<AppSettingState> {
     await sharedPreferencesUtil.setString(SharedPreferenceConstants.apiAuthToken, token);
   }
 
+  setUserModel(UserModel? userModel)async{
+    await sharedPreferencesUtil.setUserModel(SharedPreferenceConstants.userModel, userModel);
+  }
+
   List<CameraDescription> cameras = [];
   CameraDescription? firstCamera;
   void initCamera() async {

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +16,15 @@ class SharedPreferencesUtil {
     _sharedPreferences = await getInstance();
     await _sharedPreferences!.setString(key ?? '', value ?? '');
   }
+
+  Future<void> setUserModel(String? key, UserModel? userModel) async {
+    LoggerUtil.logs('setUserModel $key : $userModel');
+    _sharedPreferences = await getInstance();
+    String? serializedUserModel = userModel!= null? jsonEncode(userModel.toJson()) : null;
+    await _sharedPreferences!.setString(key ?? '', serializedUserModel!);
+  }
+
+
 
   ///get string value in prefs
   Future<String?> getString(String? key) async {

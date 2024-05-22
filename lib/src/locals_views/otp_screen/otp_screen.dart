@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:chat_app_white_label/globals.dart';
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
@@ -21,11 +23,14 @@ import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/string_utils.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../constants/shared_preference_constants.dart';
 
 class OtpScreen extends StatefulWidget {
   final OtpArg otpArg;
@@ -41,7 +46,7 @@ class _OtpScreenState extends State<OtpScreen> {
   bool _isOtpValid = false;
   Timer? _timer;
   int _counter = 30;
-
+  SharedPreferencesUtil sharedPreferencesUtil = getIt<SharedPreferencesUtil>();
   // late UserModel userModel ;
   late OTPCubit otpCubit = BlocProvider.of<OTPCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
@@ -49,6 +54,7 @@ class _OtpScreenState extends State<OtpScreen> {
   late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
+
       TextEditingController(text: '+92');
   bool isFieldsValidate = false;
   final _formKey = GlobalKey<FormState>();
@@ -66,6 +72,11 @@ class _OtpScreenState extends State<OtpScreen> {
         AppConstants.userId =state.userModel?.id;
         LoggerUtil.logs("state.userModel?.id.toString() ${state.userModel?.id.toString()}");
         appCubit.setToken(state.userModel?.token);
+        appCubit.setUserModel(state.userModel);
+
+        final serializedUserModel = await getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
+        UserModel userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+        LoggerUtil.logs("sharedPreferencesUtil userModel Value ${userModel.toJson()}");
         DioClientNetwork.initializeDio(removeToken: false);
         LoadingDialog.hideLoadingDialog(context);
         if(state.userModel?.isProfileCompleted == true){

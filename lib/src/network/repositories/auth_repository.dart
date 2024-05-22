@@ -40,8 +40,14 @@ class AuthRepository {
         }
       },
     });
+    final x = UserModelWrapper.fromListJson(response);
+    return x;
+  }
 
 
+  static Future<UserModelWrapper> updateUserData(String id,UserModel userModel) async {
+    final response = await getIt<DioClientNetwork>()
+        .putRequest("${HttpConstants.users}/", userModel.toJson());
     final x = UserModelWrapper.fromJson(response);
     return x;
   }

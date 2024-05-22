@@ -41,6 +41,7 @@ class AboutYouScreen extends StatefulWidget {
 class _AboutYouScreenState extends State<AboutYouScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
+  late UserScreenCubit userScreenCubit = BlocProvider.of<UserScreenCubit>(context);
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController linkedInController = TextEditingController();
   final TextEditingController instaController = TextEditingController();
@@ -180,8 +181,6 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
     '10\'0 (305 cm)',
   ];
 
-  late UserScreenCubit userScreenCubit =
-  BlocProvider.of<UserScreenCubit>(context);
 
   var parsedDataOutPut;
 
@@ -371,6 +370,11 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                     maxLines: 15,
                     minLines: 4,
                     textColor: themeCubit.textColor,
+                    onChanged: (_){
+                      if(widget.comingFromEditProfile){
+                        userScreenCubit.updateBio(_bioController.text);
+                      }
+                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -478,6 +482,15 @@ SizedBoxConstants.sizedBoxSixtyH(),
                         onUpdate: (newValue) {
                           setState(() {
                             linkedInController.text = newValue;
+                            SocialLink socialLink = SocialLink(
+                              linkedin: linkedInController.text,
+                              instagram: instaController.text,
+                              facebook: facebookController.text,
+                            );
+                            if(widget.comingFromEditProfile){
+                              userScreenCubit.updateSocialLinks(socialLink);
+                            }
+
                           });
                         },
                       );
@@ -521,6 +534,14 @@ SizedBoxConstants.sizedBoxSixtyH(),
                       setState(() {
                         instaController.text = newValue;
                       });
+                      SocialLink socialLink = SocialLink(
+                        linkedin: linkedInController.text,
+                        instagram: instaController.text,
+                        facebook: facebookController.text,
+                      );
+                      if(widget.comingFromEditProfile){
+                        userScreenCubit.updateSocialLinks(socialLink);
+                      }
                     },
                   ),
                 );
@@ -561,6 +582,14 @@ SizedBoxConstants.sizedBoxSixtyH(),
                       setState(() {
                         facebookController.text = newValue;
                       });
+                      SocialLink socialLink = SocialLink(
+                        linkedin: linkedInController.text,
+                        instagram: instaController.text,
+                        facebook: facebookController.text,
+                      );
+                      if(widget.comingFromEditProfile){
+                        userScreenCubit.updateSocialLinks(socialLink);
+                      }
                     },
                   ),
                 );
@@ -890,6 +919,20 @@ SizedBoxConstants.sizedBoxSixtyH(),
                                     {key: selectedValue}); //"Diet":"vegan"
                                 setState(() {});
                                 NavigationUtil.pop(context);
+                              }
+
+                              if(widget.comingFromEditProfile){
+                                MoreAbout moreAbout = MoreAbout(
+                                  diet: _tempmoreAboutValue[StringConstants.diet],
+                                  workout: _tempmoreAboutValue[StringConstants.workout],
+                                  height: _tempmoreAboutValue[StringConstants.height],
+                                  // weight: _tempmoreAboutValue[StringConstants.weight],
+                                  smoking: _tempmoreAboutValue[StringConstants.smoking],
+                                  drinking: _tempmoreAboutValue[StringConstants.drinking],
+                                  pets: _tempmoreAboutValue[StringConstants.pets],
+                                );
+                                userScreenCubit.updateMoreAboutYou(moreAbout);
+
                               }
 
                               // _tempmoreAboutValue

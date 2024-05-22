@@ -227,7 +227,7 @@ class FirebaseUtils {
     user?.firstName = name;
     user?.image = imageUrl;
     user?.aboutMe = about;
-    user?.isProfileComplete = true;
+    user?.isProfileCompleted = true;
     LoggerUtil.logs('Update User');
   }
 

@@ -8,13 +8,15 @@ import 'package:chat_app_white_label/src/models/user_model.dart';
 
 class UserModelWrapper {
   UserModelWrapper({
-      this.code, 
-      this.message, 
-      this.description, 
-      this.data,
-      this.meta,});
+    this.code,
+    this.message,
+    this.description,
+    this.data,
+    this.data2,
+    this.meta,
+  });
 
-  UserModelWrapper.fromJson(dynamic json) {
+  UserModelWrapper.fromListJson(dynamic json) {
     code = json['code'];
     message = json['message'];
     description = json['description'];
@@ -27,22 +29,39 @@ class UserModelWrapper {
     // data = json['data'] != null ? UserModel.fromJson(json['data']) : null;
     meta = json['meta'];
   }
+  UserModelWrapper.fromJson(dynamic json) {
+    code = json['code'];
+    message = json['message'];
+    description = json['description'];
+    data2 = json['data'] != null ? UserModel.fromJson(json['data']) : null;
+    // data = json['data'] != null ? UserModel.fromJson(json['data']) : null;
+    meta = json['meta'];
+  }
+
   num? code;
   String? message;
   String? description;
   List<UserModel>? data;
+  UserModel? data2;
   dynamic meta;
-UserModelWrapper copyWith({  num? code,
-  String? message,
-  String? description,
-  List<UserModel>? data,
-  dynamic meta,
-}) => UserModelWrapper(  code: code ?? this.code,
-  message: message ?? this.message,
-  description: description ?? this.description,
-  data: data ?? this.data,
-  meta: meta ?? this.meta,
-);
+
+  UserModelWrapper copyWith({
+    num? code,
+    String? message,
+    String? description,
+    List<UserModel>? data,
+    UserModel? data2,
+    dynamic meta,
+  }) =>
+      UserModelWrapper(
+        code: code ?? this.code,
+        message: message ?? this.message,
+        description: description ?? this.description,
+        data: data ?? this.data,
+        data2: data2 ?? this.data2,
+        meta: meta ?? this.meta,
+      );
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['code'] = code;
@@ -54,8 +73,10 @@ UserModelWrapper copyWith({  num? code,
         data?.add(UserModel.fromJson(v));
       });
     }
+    if (data2 != null) {
+      map['data'] = data2?.toJson();
+    }
     map['meta'] = meta;
     return map;
   }
-
 }

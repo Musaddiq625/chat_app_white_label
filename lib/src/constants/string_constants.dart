@@ -321,6 +321,7 @@ class StringConstants {
   static const String applyFilters = "Apply Filters";
   static const String addPeopleToGroup = "Add People to Group";
   static const String editCover = "Edit Cover";
+  static const String editMyInterest = "Edit Interests";
   static const String editProfile = "Edit Profile";
   static const String characters = "characters";
   static const String phoneTextFieldHint = "1234123456";
