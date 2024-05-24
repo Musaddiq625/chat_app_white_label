@@ -63,8 +63,15 @@ class OTPCubit extends Cubit<OTPState> {
     try {
       var resp = await AuthRepository.verifyOtp(identifier,otp);
       // LoggerUtil.logs("userDetailModel ${userDetailModel?.toJson()}");
-      emit(OTPSuccessUserState(resp.data));
-      LoggerUtil.logs(resp);
+      if(resp.code == 200){
+        emit(OTPSuccessUserState(resp.data));
+        LoggerUtil.logs(resp);
+      }
+      else{
+        emit(OTPFailureState(resp.message ?? ""));
+        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+      }
+
     } catch (error) {
       emit(OTPFailureState(error.toString()));
       LoggerUtil.logs("General Error: $error");

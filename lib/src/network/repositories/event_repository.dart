@@ -29,30 +29,30 @@ class EventRepository {
     return EventResponseWrapper.fromJson(response);
   }
 
-  static Future<EventResponseWrapper> fetchEventByKeys(String pageValue) async {
-    // await DioClientNetwork.initializeDio(removeToken: false);
-    // LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
-    final response =
-        await getIt<DioClientNetwork>().postRequest(HttpConstants.event, {
-      "keys": [
-        "_id",
-        "title",
-        "userId",
-        "isMyEvent",
-        "venue",
-        "images",
-        "isFavourite",
-        "eventFavouriteBy",
-        "event_request",
-        "eventParticipants",
-        "eventTotalParticipants"
-      ]
-    }, queryParameters: {
-      'pages': pageValue,
-    });
-    final x = EventResponseWrapper.keysFromJson(response);
-    return x;
-  }
+    static Future<EventResponseWrapper> fetchEventByKeys(String pageValue) async {
+      // await DioClientNetwork.initializeDio(removeToken: false);
+      // LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
+      final response =
+          await getIt<DioClientNetwork>().postRequest(HttpConstants.event, {
+        "keys": [
+          "_id",
+          "title",
+          "userId",
+          "isMyEvent",
+          "venue",
+          "images",
+          "isFavourite",
+          "eventFavouriteBy",
+          "event_request",
+          "eventParticipants",
+          "eventTotalParticipants"
+        ]
+      }, queryParameters: {
+        'pages': pageValue,
+      });
+      final x = EventResponseWrapper.keysFromJson(response);
+      return x;
+    }
 
   static Future<ViewEventResponseWrapper> fetchEventById(String id) async {
     final response =
@@ -64,6 +64,29 @@ class EventRepository {
     final x = ViewEventResponseWrapper.fromJson(response);
     return x;
   }
+
+  static Future<EventResponseWrapper> evenReport(String id) async {
+    final response =
+    await getIt<DioClientNetwork>().postRequest(HttpConstants.eventReport, {
+      "event_id": id,
+      "type_of_content": "test",
+      "reason": "test",
+      "notes": ""
+    });
+    final x = EventResponseWrapper.fromJson(response);
+    return x;
+  }
+
+  static Future<EventResponseWrapper> evenDisLike(String id) async {
+    final response =
+    await getIt<DioClientNetwork>().postRequest(HttpConstants.eventDisLike, {
+      "event_id": id,
+    });
+    final x = EventResponseWrapper.fromJson(response);
+    return x;
+  }
+
+
 
   static Future<ViewEventResponseWrapper> viewOwnEventById(String id) async {
     final response =
@@ -90,10 +113,11 @@ class EventRepository {
       String requestStatus,
       Query queryReply) async {
     final response = await getIt<DioClientNetwork>()
-        .putRequest("${HttpConstants.event}/$eventId", {
-      "event_request": [
-        {"id": eventRequestId, "query": queryReply.toJson()}
-      ]
+        .postRequest(HttpConstants.eventRequest, {
+      "id": eventId,
+      "request_id": eventRequestId,
+      "action": requestStatus,
+      "query": queryReply.toJson()
     });
     final x = EventResponseWrapper.fromJson(response);
     return x;

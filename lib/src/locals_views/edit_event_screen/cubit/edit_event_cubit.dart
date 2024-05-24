@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../network/repositories/event_repository.dart';
 
-part 'event_state.dart';
+part 'edit_event_state.dart';
 
 class EditEventCubit extends Cubit<EditEventState> {
   EditEventCubit() : super(EventInitial());

@@ -7,6 +7,7 @@ import 'package:chat_app_white_label/src/components/info_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
@@ -31,8 +32,9 @@ class ShareBottomSheet {
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Container(
-          constraints: const BoxConstraints(maxHeight: 600),
+          constraints:  BoxConstraints(maxHeight: AppConstants.responsiveHeight(context,percentage: 70)),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -136,14 +138,17 @@ class ShareBottomSheet {
               const Divider(
                 thickness: 0.1,
               ),
+              if(contacts.isNotEmpty)
               Padding(
                 padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
                 child: TextComponent(StringConstants.yourConnections,
                     style: FontStylesConstants.style18(
                         color: themeCubit.primaryColor)),
               ),
+              if(contacts.isNotEmpty)
               Expanded(
                 child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: contacts.length,
                   itemBuilder: (ctx, index) {
@@ -171,6 +176,7 @@ class ShareBottomSheet {
                   },
                 ),
               ),
+              if(contacts.isNotEmpty)
               SizedBoxConstants.sizedBoxTenH()
             ],
           ),

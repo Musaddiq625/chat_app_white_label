@@ -124,14 +124,18 @@ class EventModel {
         venues?.add(Venue.fromJson(v));
       });
     }
-    // eventParticipants = json['eventParticipants'] != null
-    //     ? json['eventParticipants'].cast<String>()
-    //     : [];
+
     isFavourite = json['isFavourite'];
     if (json['eventParticipants'] != null) {
       eventParticipants = [];
       json['eventParticipants'].forEach((v) {
         eventParticipants?.add(EventParticipants.fromJson(v));
+      });
+    }
+    if (json['event_request'] != null) {
+      eventRequest = [];
+      json['event_request'].forEach((v) {
+        eventRequest?.add(EventRequest.fromJson(v));
       });
     }
     eventFavouriteBy = json['eventFavouriteBy'] != null
@@ -329,6 +333,8 @@ class EventRequest {
     requestStatus = json['request_status'];
     if (json['event_questions'] != null) {
       eventQuestions = [];
+      print('====== ${json['id']}');
+      print('====== ${json['event_questions']}');
       json['event_questions'].forEach((v) {
         eventQuestions?.add(EventQuestions.fromJson(v));
       });
@@ -482,7 +488,7 @@ class EventQuestions {
   });
 
   EventQuestions.fromJson(dynamic json) {
-    questionId = json['questionId'];
+    questionId = json['questionId'].toString();
     answer = json['answer'];
   }
 

@@ -17,6 +17,7 @@ import 'package:chat_app_white_label/src/constants/shared_preference_constants.d
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
@@ -45,7 +46,7 @@ class _UserProfileState extends State<UserProfile> {
   late UserScreenCubit userScreenCubit = BlocProvider.of<UserScreenCubit>(context);
   File? selectedImage;
   String? imageUrl;
-  bool isEdit = false;
+  bool isEdit = true;
   bool eventActive = true;
   int _selectedIndex = 0;
   String userName = "Emily Rose";
@@ -59,73 +60,73 @@ class _UserProfileState extends State<UserProfile> {
   ];
 
   final List<String> images = [
-    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
-    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
-    "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
-    "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
-    "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
-    "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
+    // "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+    // "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+    // "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
+    // "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
+    // "https://i.pinimg.com/236x/85/59/09/855909df65727e5c7ba5e11a8c45849a.jpg",
+    // "https://wallpapers.com/images/hd/instagram-profile-pictures-87zu6awgibysq1ub.jpg",
   ];
 
   List<Map<String, dynamic>> eventDetailList = [
-    {
-      'name': "Meet the cheese",
-      'price': "150",
-      'sold': "4",
-      'remaining': "96",
-      'earned': "600",
-      'active': true
-    },
-    {
-      'name': "Hello to the future",
-      'price': "150",
-      'sold': "4",
-      'remaining': "96",
-      'earned': "600",
-      'active': true
-    },
-    {
-      'name': "Groves",
-      'price': "150",
-      'sold': "4",
-      'remaining': "96",
-      'earned': "600",
-      'active': true
-    },
-    {
-      'name': "Tale Town",
-      'price': "150",
-      'sold': "4",
-      'remaining': "96",
-      'earned': "600",
-      'active': true
-    },
+    // {
+    //   'name': "Meet the cheese",
+    //   'price': "150",
+    //   'sold': "4",
+    //   'remaining': "96",
+    //   'earned': "600",
+    //   'active': true
+    // },
+    // {
+    //   'name': "Hello to the future",
+    //   'price': "150",
+    //   'sold': "4",
+    //   'remaining': "96",
+    //   'earned': "600",
+    //   'active': true
+    // },
+    // {
+    //   'name': "Groves",
+    //   'price': "150",
+    //   'sold': "4",
+    //   'remaining': "96",
+    //   'earned': "600",
+    //   'active': true
+    // },
+    // {
+    //   'name': "Tale Town",
+    //   'price': "150",
+    //   'sold': "4",
+    //   'remaining': "96",
+    //   'earned': "600",
+    //   'active': true
+    // },
   ];
   List<Map<String, dynamic>> eventList = [
-    {
-      'joined': "+1456",
-      'eventName': "Property networking event",
-      'dateTime': "17Feb. 11AM - 2PM",
-      'viewTicket': true
-    },
-    {
-      'joined': "+1226",
-      'eventName': "Drum Code London",
-      'dateTime': "17Feb. 11AM - 2PM",
-      'viewTicket': false
-    },
-    {
-      'joined': "+1134",
-      'eventName': "Property test event",
-      'dateTime': "17Feb. 11AM - 2PM",
-      'viewTicket': true
-    },
-    {
-      'joined': "+1146",
-      'eventName': "Networking event",
-      'dateTime': "17Feb. 11AM - 2PM",
-      'viewTicket': false
-    },
+    // {
+    //   'joined': "+1456",
+    //   'eventName': "Property networking event",
+    //   'dateTime': "17Feb. 11AM - 2PM",
+    //   'viewTicket': true
+    // },
+    // {
+    //   'joined': "+1226",
+    //   'eventName': "Drum Code London",
+    //   'dateTime': "17Feb. 11AM - 2PM",
+    //   'viewTicket': false
+    // },
+    // {
+    //   'joined': "+1134",
+    //   'eventName': "Property test event",
+    //   'dateTime': "17Feb. 11AM - 2PM",
+    //   'viewTicket': true
+    // },
+    // {
+    //   'joined': "+1146",
+    //   'eventName': "Networking event",
+    //   'dateTime': "17Feb. 11AM - 2PM",
+    //   'viewTicket': false
+    // },
   ];
 
   final List<ImageProvider> imagesUserInEvent = [
@@ -150,7 +151,13 @@ class _UserProfileState extends State<UserProfile> {
           // userScreenCubit.fetchUserData("66472edbbb880ed91c93213d");
           final serializedUserModel =await  getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
           userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
-          userName = "${userModel?.firstName} ${userModel?.lastName}";
+
+          setState(() {
+            userName = "${userModel?.firstName} ${userModel?.lastName}";
+            // imageUrl =  userModel?.userPhotos?.first ?? "";
+          });
+          print("userName $userName");
+          print("imageUrl $imageUrl");
           LoggerUtil.logs("sharedPreferencesUtil userModel Value ${userModel?.toJson()}");
         });
     super.initState();
@@ -167,6 +174,11 @@ class _UserProfileState extends State<UserProfile> {
       // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
       LoggerUtil.logs(
           "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
+    }
+    else if (state is UpdateUserScreenSuccessState) {
+      userModel = state.userModel;
+        userName = "${userModel?.firstName} ${userModel?.lastName}";
+        // imageUrl =  userModel?.userPhotos?.first ?? "";
     }
     else if (state is UserScreenFailureState) {
       ToastComponent.showToast(state.toString(), context: context);
@@ -190,11 +202,18 @@ class _UserProfileState extends State<UserProfile> {
         children: [
           // topBar(),
           profile(),
+
+          if(eventDetailList.isNotEmpty)
           DividerCosntants.divider1,
+          if(eventDetailList.isNotEmpty)
           yourEvents(),
+          if(eventList.isNotEmpty)
           DividerCosntants.divider1,
+          if(eventList.isNotEmpty)
           eventsGoingTo(),
+          if(eventList.isNotEmpty)
           DividerCosntants.divider1,
+          if(eventList.isNotEmpty)
           groups(),
         ],
       ),
@@ -292,19 +311,21 @@ class _UserProfileState extends State<UserProfile> {
                   bottom: 5,
                   child: GestureDetector(
                     onTap: () async {
-                      if (selectedImage == null) {
-                        final XFile? image = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
-                        if (image != null) {
-                          setState(() {
-                            selectedImage = File(image.path);
-                          });
-                        }
-                      } else {
-                        setState(() {
-                          selectedImage = null;
-                        });
-                      }
+                      NavigationUtil.push(
+                          context, RouteConstants.editProfileScreen);
+                      // if (selectedImage == null) {
+                      //   final XFile? image = await ImagePicker()
+                      //       .pickImage(source: ImageSource.gallery);
+                      //   if (image != null) {
+                      //     setState(() {
+                      //       selectedImage = File(image.path);
+                      //     });
+                      //   }
+                      // } else {
+                      //   setState(() {
+                      //     selectedImage = null;
+                      //   });
+                      // }
                     },
                     child: IconComponent(
                       iconData: selectedImage == null
@@ -354,7 +375,7 @@ class _UserProfileState extends State<UserProfile> {
                   "",
                   listOfText: [
                     StringConstants.connections,
-                    " 387",
+                    " ${images.length}",
                   ],
                   listOfTextStyle: [
                     FontStylesConstants.style20(
@@ -365,6 +386,7 @@ class _UserProfileState extends State<UserProfile> {
                     )
                   ],
                 ),
+                if(images.isNotEmpty)
                 GestureDetector(
                   onTap: () {
                     NavigationUtil.push(context, RouteConstants.allConnectionScreen);
@@ -394,6 +416,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
           SizedBoxConstants.sizedBoxTwentyH(),
+          if(images.isNotEmpty)
           SizedBox(
             height: 50,
             child: ListView.builder(

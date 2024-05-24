@@ -66,11 +66,11 @@ class EventSummary extends StatelessWidget {
                     style: FontStylesConstants.style16(
                         fontWeight: FontWeight.bold),
                   ),
-                if (price != null)
-                  TextComponent(
-                    price!,
-                    style: FontStylesConstants.style16(),
-                  ),
+                // if (price != null)
+                //   TextComponent(
+                //     price!,
+                //     style: FontStylesConstants.style16(),
+                //   ),
               ],
             ),
           ),
@@ -148,7 +148,7 @@ class EventSummary extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 3.0),
                         child: TextComponent(
-                          "SAR 600",
+                          price?? "0",//"SAR 600",
                           style: FontStylesConstants.style22(
                               color: ColorConstants.primaryColor),
                         ),

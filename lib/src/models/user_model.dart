@@ -31,7 +31,7 @@ class UserModel {
     this.firstName,
     this.lastName,
     this.email,
-    this.password,
+    // this.password,
     this.dateOfBirth,
     this.gender,
     this.image,
@@ -59,7 +59,7 @@ class UserModel {
     firstName = json['firstName'];
     lastName = json['lastName'];
     email = json['email'];
-    password = json['password'];
+    // password = json['password'];
     dateOfBirth = json['dateOfBirth'];
     gender = json['gender'];
     image = json['image'];
@@ -86,7 +86,7 @@ class UserModel {
   String? firstName;
   String? lastName;
   String? email;
-  String? password;
+  // String? password;
   String? dateOfBirth;
   String? gender;
   String? image;
@@ -112,7 +112,7 @@ class UserModel {
     String? firstName,
     String? lastName,
     String? email,
-    String? password,
+    // String? password,
     String? dateOfBirth,
     String? gender,
     String? image,
@@ -138,7 +138,7 @@ class UserModel {
     firstName: firstName ?? this.firstName,
     lastName: lastName ?? this.lastName,
     email: email ?? this.email,
-    password: password ?? this.password,
+    // password: password ?? this.password,
     dateOfBirth: dateOfBirth ?? this.dateOfBirth,
     gender: gender ?? this.gender,
     image: image ?? this.image,
@@ -167,7 +167,7 @@ class UserModel {
     map['firstName'] = firstName;
     map['lastName'] = lastName;
     map['email'] = email;
-    map['password'] = password;
+    // map['password'] = password;
     map['dateOfBirth'] = dateOfBirth;
     map['gender'] = gender;
     map['image'] = image;

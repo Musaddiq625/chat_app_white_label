@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
+import 'package:chat_app_white_label/src/models/get_filters_data_model.dart';
 import 'package:chat_app_white_label/src/models/ticket_model.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/network/repositories/filters_repository.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/wrappers/event_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/ticket_model_wrapper.dart';
@@ -20,6 +22,7 @@ class EventCubit extends Cubit<EventState> {
   EventRequest eventRequestModel = EventRequest();
   List<EventModel> eventModelList = [];
   EventResponseWrapper eventResponseWrapper = EventResponseWrapper();
+  FiltersListModel filtersListModel = FiltersListModel();
 
   // List<EventModel> eventModelList = EventModel();
   Venue venue = Venue();
@@ -35,6 +38,9 @@ class EventCubit extends Cubit<EventState> {
 
   void initializeEventWrapperData(EventResponseWrapper event) =>
       eventResponseWrapper = event;
+
+  void initializeFiltersListModel(FiltersListModel filtersList) =>
+      filtersListModel = filtersList;
 
   Future<void> createEventData(EventModel eventData) async {
     emit(EventLoadingState());
@@ -59,19 +65,52 @@ class EventCubit extends Cubit<EventState> {
 
   Future<void> fetchEventDataByKeys(String pageValue) async {
     emit(EventFetchLoadingState());
+    // try {
+    var resp = await EventRepository.fetchEventByKeys(pageValue);
+    LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+    emit(EventFetchSuccessState(resp, resp.data2));
+    // } catch (e) {
+    //   emit(EventFetchFailureState(e.toString()));
+    // }
+  }
+
+  Future<void> getFilterCategories() async {
+    emit(GetFiltersDataLoadingState());
     try {
-      var resp = await EventRepository.fetchEventByKeys(pageValue);
+      var resp = await FilterRepository.getFilters();
       LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
-      emit(EventFetchSuccessState(resp, resp.data2));
+      emit(GetFiltersDataSuccessState(resp.filterListModel));
     } catch (e) {
-      emit(EventFetchFailureState(e.toString()));
+      emit(GetFiltersDataFailureState(e.toString()));
     }
   }
 
-  Future<void> sendEventFavById(String eventId,bool fav) async {
+  Future<void> eventReport(String id) async {
+    emit(EventReportLoadingState());
+    // try {
+    var resp = await EventRepository.evenReport(id);
+    LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+    emit(EventReportSuccessState(resp.data));
+    // } catch (e) {
+    //   emit(EventFetchFailureState(e.toString()));
+    // }
+  }
+
+  Future<void> eventDisLike(String id) async {
+    emit(EventDisLikeLoadingState());
+    // try {
+    var resp = await EventRepository.evenDisLike(id);
+    LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+    emit(EventDisLikeSuccessState(resp.data));
+    // } catch (e) {
+    //   emit(EventFetchFailureState(e.toString()));
+    // }
+  }
+
+  Future<void> sendEventFavById(String eventId, bool fav) async {
     emit(EventFavRequestLoadingState());
     try {
-      var resp = await EventRepository.sendEventFavById(eventId,fav);
+      var resp = await EventRepository.sendEventFavById(eventId, fav);
       LoggerUtil.logs(" Event data by favourite${resp.toJson()}");
       emit(EventFavSuccessState(resp.data));
     } catch (e) {
@@ -79,13 +118,24 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
+  Future<void> sendEventFilters(String? startDate,String? endDate,String? dateFilter,List<String>categories, bool? isFree) async {
+    emit(EventFiltersLoadingState());
+    try {
+      var resp = await FilterRepository.sendFilters(startDate, endDate,dateFilter,categories,isFree);
+      LoggerUtil.logs(" Event data by favourite${resp.toJson()}");
+      emit(EventFiltersSuccessState(resp, resp.data2));
+    } catch (e) {
+      emit(EventFiltersFailureState(e.toString()));
+    }
+  }
+
   Future<void> fetchEventDataById(String id) async {
     emit(EventFetchByIdLoadingState());
-   // try {
-      var resp = await EventRepository.fetchEventById(id);
-      LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
-      emit(EventFetchByIdSuccessState(resp.data?.first));
-  //  } catch (e) {
+    // try {
+    var resp = await EventRepository.fetchEventById(id);
+    LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+    emit(EventFetchByIdSuccessState(resp.data?.first));
+    //  } catch (e) {
     //  emit(EventFetchByIdFailureState(e.toString()));
     //}
   }
@@ -94,15 +144,14 @@ class EventCubit extends Cubit<EventState> {
       String eventId, EventRequest eventRequest) async {
     emit(SendEventRequestLoadingState());
     try {
-      var resp = await EventRepository.sendEventJoinRequest(
-          eventId, eventRequest);
+      var resp =
+          await EventRepository.sendEventJoinRequest(eventId, eventRequest);
       LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
       emit(SendEventRequestSuccessState(resp.data));
     } catch (e) {
       emit(SendEventRequestFailureState(e.toString()));
     }
   }
-
 
   Future<void> buyTicketRequest(TicketModel ticketModel) async {
     emit(BuyTicketRequestLoadingState());
@@ -166,9 +215,11 @@ class EventCubit extends Cubit<EventState> {
   }
 
   addEventRequestQuery(String queryQuest) {
-    query = query.copyWith(question: queryQuest,answer: "");
+    query = query.copyWith(question: queryQuest, answer: "");
   }
+
   addEventRequestAnswers(List<EventQuestions> eventQuestions) {
-    eventRequestModel =eventRequestModel.copyWith(eventQuestions: eventQuestions);
+    eventRequestModel =
+        eventRequestModel.copyWith(eventQuestions: eventQuestions);
   }
 }

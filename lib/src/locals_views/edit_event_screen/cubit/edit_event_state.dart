@@ -1,4 +1,4 @@
-part of 'event_cubit.dart';
+part of 'edit_event_cubit.dart';
 
 @immutable
 abstract class EditEventState {}

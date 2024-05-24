@@ -10,5 +10,9 @@ class HttpConstants {
   static const String moreAbout = '/more_abouts';
   static const String interests = '/interests';
   static const String event = '/event';
+  static const String categories = '/categories';
+  static const String eventReport = '/event/report';
+  static const String eventDisLike = '/event/dislike';
+  static const String eventRequest = '/event/requestUpdate';
   static const String getTicket = '/get_tickets';
 }

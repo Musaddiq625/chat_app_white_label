@@ -2,7 +2,7 @@ import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
-import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/edit_event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/cubit/signup_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';

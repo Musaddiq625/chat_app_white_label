@@ -17,8 +17,9 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
-import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/edit_event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -110,6 +111,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
   final TextEditingController eventNameController = TextEditingController();
   late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
   late EditEventCubit editEventCubit = BlocProvider.of<EditEventCubit>(context);
+  late ViewYourEventScreenCubit viewYourEventScreenCubit = BlocProvider.of<ViewYourEventScreenCubit>(context);
   late OnboardingCubit onBoardingCubit =
       BlocProvider.of<OnboardingCubit>(context);
 
@@ -205,12 +207,16 @@ class _EditEventScreenState extends State<EditEventScreen> {
         "Build onBoardingCubit UserId-- ${onBoardingCubit.userModel.id}");
     return BlocConsumer<EditEventCubit, EditEventState>(
       listener: (context, state) {
-        if (state is EventLoadingState) {
+        if (state is EditEventLoadingState) {
           LoadingDialog.showLoadingDialog(context);
-        } else if (state is CreateEventSuccessState) {
+        } else if (state is EditEventSuccessState) {
           LoadingDialog.hideLoadingDialog(context);
-          _createBottomSheet();
-        } else if (state is CreateEventFailureState) {
+          // viewYourEventScreenCubit.initializeEventData(state.eventModel!);
+          setState(() {
+            viewYourEventScreenCubit.eventModel = state.eventModel!;
+          });
+          NavigationUtil.pop(context);
+        } else if (state is EditEventFailureState) {
           LoadingDialog.hideLoadingDialog(context);
           ToastComponent.showToast(state.toString(), context: context);
         }

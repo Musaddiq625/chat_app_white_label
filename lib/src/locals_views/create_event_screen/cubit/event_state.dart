@@ -8,12 +8,19 @@ class EventInitial extends EventState {}
 class EventLoadingState extends EventState {}
 
 class EventFetchLoadingState extends EventState {}
+class GetFiltersDataLoadingState extends EventState {}
 
 class EventFetchByIdLoadingState extends EventState {}
 
 class SendEventRequestLoadingState extends EventState {}
 
+class EventReportLoadingState extends EventState {}
+
+class EventDisLikeLoadingState extends EventState {}
+class EventFiltersLoadingState extends EventState {}
+
 class BuyTicketRequestLoadingState extends EventState {}
+
 class EventFavRequestLoadingState extends EventState {}
 
 class CreateEventSuccessState extends EventState {
@@ -21,10 +28,33 @@ class CreateEventSuccessState extends EventState {
 
   CreateEventSuccessState(this.eventModel);
 }
+class EventFiltersSuccessState extends EventState {
+  final EventResponseWrapper? eventModelWrapper;
+  final List<EventModel>? eventModel;
+  EventFiltersSuccessState(this.eventModelWrapper, this.eventModel);
+}
+
 class EventFavSuccessState extends EventState {
   final EventModel? eventModel;
 
   EventFavSuccessState(this.eventModel);
+}
+class GetFiltersDataSuccessState extends EventState {
+  final FiltersListModel? getFiltersDataModel;
+
+  GetFiltersDataSuccessState(this.getFiltersDataModel);
+}
+
+class EventReportSuccessState extends EventState {
+  final EventModel? eventModel;
+
+  EventReportSuccessState(this.eventModel);
+}
+
+class EventDisLikeSuccessState extends EventState {
+  final EventModel? eventModel;
+
+  EventDisLikeSuccessState(this.eventModel);
 }
 
 class EventFetchByIdSuccessState extends EventState {
@@ -81,8 +111,32 @@ class BuyTicketRequestFailureState extends EventState {
 
   BuyTicketRequestFailureState(this.error);
 }
+
 class EventFavRequestFailureState extends EventState {
   final String error;
 
   EventFavRequestFailureState(this.error);
+}
+
+class EventReportRequestFailureState extends EventState {
+  final String error;
+
+  EventReportRequestFailureState(this.error);
+}
+class EventFiltersFailureState extends EventState {
+  final String error;
+
+  EventFiltersFailureState(this.error);
+}
+
+class EventDisLikeRequestFailureState extends EventState {
+  final String error;
+
+  EventDisLikeRequestFailureState(this.error);
+}
+
+class GetFiltersDataFailureState extends EventState {
+  final String error;
+
+  GetFiltersDataFailureState (this.error);
 }

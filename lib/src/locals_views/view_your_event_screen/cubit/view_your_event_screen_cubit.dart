@@ -42,6 +42,9 @@ class ViewYourEventScreenCubit extends Cubit<ViewYourEventScreenState> {
     }
   }
 
+
+
+
   addQuery(Query queryReply) {
     eventRequest = eventRequest.copyWith(query: queryReply);
   }

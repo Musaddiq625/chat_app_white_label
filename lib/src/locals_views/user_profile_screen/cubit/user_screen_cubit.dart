@@ -24,13 +24,21 @@ class UserScreenCubit extends Cubit<UserScreenState> {
 
   Future<void> fetchUserData(String id) async {
     emit(UserScreenLoadingState());
-    // try {
+    try {
       var resp = await AuthRepository.fetchUserData(id);
-      LoggerUtil.logs("Fetch User data by Id${resp.toJson()}");
-      emit(UserScreenSuccessState(resp.data));
-    // } catch (e) {
-    //   emit(UserScreenFailureState(e.toString()));
-    // }
+
+      if(resp.code == 200){
+        LoggerUtil.logs("Fetch User data by Id${resp.toJson()}");
+        emit(UserScreenSuccessState(resp.data));
+      }
+      else{
+        emit(UserScreenFailureState(resp.message ?? ""));
+        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+      }
+
+    } catch (e) {
+      emit(UserScreenFailureState(e.toString()));
+    }
   }
 
   Future<void> updateUserData(String id, UserModel userModel) async {

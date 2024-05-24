@@ -16,7 +16,7 @@ class AboutEventComponent extends StatelessWidget {
   final String icon;
   final bool divider;
   final List<String>? selectedImages;
-  final List<EventParticipants>? eventParticipants;
+  final List<EventRequest>? eventParticipants;
   final Function()? onShareTap;
   final Function()? onProfileTap;
   final bool showPersonIcon;
