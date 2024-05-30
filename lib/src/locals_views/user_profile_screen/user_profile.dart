@@ -16,15 +16,15 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/event_screen/all_event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
-import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/wrappers/events_going_to_response_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../components/event_summary_component.dart';
 import '../../components/filter_component.dart';
@@ -33,6 +33,7 @@ import '../../components/profile_image_component.dart';
 import '../../components/text_component.dart';
 import '../../constants/asset_constants.dart';
 import '../../models/user_model.dart';
+import '../event_screen/event_screen.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -43,9 +44,11 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
-  late UserScreenCubit userScreenCubit = BlocProvider.of<UserScreenCubit>(context);
+  late UserScreenCubit userScreenCubit =
+      BlocProvider.of<UserScreenCubit>(context);
   File? selectedImage;
   String? imageUrl;
+  int? totalEventCountGoingTo;
   bool isEdit = true;
   bool eventActive = true;
   int _selectedIndex = 0;
@@ -102,6 +105,8 @@ class _UserProfileState extends State<UserProfile> {
     //   'active': true
     // },
   ];
+
+  List<EventRequest>? acceptedRequests;
   List<Map<String, dynamic>> eventList = [
     // {
     //   'joined': "+1456",
@@ -129,6 +134,8 @@ class _UserProfileState extends State<UserProfile> {
     // },
   ];
 
+  List<String?>? imagesUserInEvents;
+
   final List<ImageProvider> imagesUserInEvent = [
     const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
@@ -145,55 +152,161 @@ class _UserProfileState extends State<UserProfile> {
 
   double radius = 20;
   UserModel? userModel;
+  Map<String, List<UpcomingEvents>>? eventFilters;
+
   @override
   void initState() {
-     WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
-          // userScreenCubit.fetchUserData("66472edbbb880ed91c93213d");
-          final serializedUserModel =await  getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
-          userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
-
-          setState(() {
-            userName = "${userModel?.firstName} ${userModel?.lastName}";
-            // imageUrl =  userModel?.userPhotos?.first ?? "";
-          });
-          print("userName $userName");
-          print("imageUrl $imageUrl");
-          LoggerUtil.logs("sharedPreferencesUtil userModel Value ${userModel?.toJson()}");
-        });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // userScreenCubit.fetchUserData("66472edbbb880ed91c93213d");
+      userScreenCubit.fetchEventYouGoingToData();
+      userScreenCubit.fetchGroupsData();
+      userScreenCubit.fetchMyEventsData();
+      final serializedUserModel = await getIt<SharedPreferencesUtil>()
+          .getString(SharedPreferenceConstants.userModel);
+      userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+      print("usermodel ${userModel?.toJson()}");
+      setState(() {
+        userName = "${userModel?.firstName} ${userModel?.lastName}";
+        // imageUrl =  userModel?.userPhotos?.first ?? "";
+      });
+      print("userName $userName");
+      print("imageUrl $imageUrl");
+      LoggerUtil.logs(
+          "sharedPreferencesUtil userModel Value ${userModel?.toJson()}");
+    });
     super.initState();
   }
-  
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserScreenCubit, UserScreenState>(
-  listener: (context, state) {
-    if (state is UserScreenLoadingState) {
-    } else if (state is UserScreenSuccessState) {
-      userScreenCubit.initializeUserData(state.userModelList!);
-      // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
-      LoggerUtil.logs(
-          "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
-    }
-    else if (state is UpdateUserScreenSuccessState) {
-      userModel = state.userModel;
-        userName = "${userModel?.firstName} ${userModel?.lastName}";
-        // imageUrl =  userModel?.userPhotos?.first ?? "";
-    }
-    else if (state is UserScreenFailureState) {
-      ToastComponent.showToast(state.toString(), context: context);
-    }
-  },
-  builder: (context, state) {
-    return UIScaffold(
-        appBar: topBar(),
-        removeSafeAreaPadding: true,
-        bgColor: ColorConstants.black,
-        // bgImage:
-        //     "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-        widget: main());
-  },
-);
+      listener: (context, state) {
+        if (state is UserScreenLoadingState) {
+        } else if (state is UserScreenSuccessState) {
+          userScreenCubit.initializeUserData(state.userModelList!);
+          // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
+          LoggerUtil.logs(
+              "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
+        } else if (state is FetchEventsGoingToSuccessState) {
+          userScreenCubit.initializeEventsGoingToResponseWrapperData(
+              state.eventsGoingToResponseWrapper);
+          // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
+          LoggerUtil.logs(
+              "Event Going To Success ${userScreenCubit.eventsGoingToResponseWrapper.toJson()}");
+          totalEventCountGoingTo = (userScreenCubit.eventsGoingToResponseWrapper
+                  .data?.totalEventsCount?.upcomingEvents ??
+              0) as int?;
+          eventFilters = {
+            "Upcoming": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.upcomingEvents ??
+                []),
+            "Paid": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.paidEvents ??
+                []),
+            "Past": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.pastEvents ??
+                []),
+            "Free": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.freeEvents ??
+                []),
+            "Pending": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.pendingEvents ??
+                [])
+          };
+          for (var i = 0; i < (eventFilters ?? {}).keys.length; i++) {
+            var key = eventFilters?.keys.elementAt(i);
+            if (eventFilters?[key]?.isNotEmpty ?? false) {
+              _selectedIndex = i;
+              break; // Exit the loop once we've found the first non-empty category
+            }
+          }
+          // _selectedIndex = 0;
+          print("event filters ${eventFilters}");
+          print("_selectedIndex ${_selectedIndex}");
+          print(
+              "event filters _selectedIndex initial ${eventFilters?.values.elementAt(_selectedIndex)}");
+          setState(() {});
+        } else if (state is FetchGroupsToSuccessState) {
+          userScreenCubit.initializeEventsGoingToResponseWrapperData(
+              state.eventsGoingToResponseWrapper);
+          // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
+          LoggerUtil.logs(
+              "Event Going To Success ${userScreenCubit.eventsGoingToResponseWrapper.toJson()}");
+          totalEventCountGoingTo = (userScreenCubit.eventsGoingToResponseWrapper
+                  .data?.totalEventsCount?.upcomingEvents ??
+              0) as int?;
+          eventFilters = {
+            "Upcoming": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.upcomingEvents ??
+                []),
+            "Paid": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.paidEvents ??
+                []),
+            "Past": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.pastEvents ??
+                []),
+            "Free": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.freeEvents ??
+                []),
+            "Pending": (userScreenCubit
+                    .eventsGoingToResponseWrapper.data?.pendingEvents ??
+                [])
+          };
+          for (var i = 0; i < (eventFilters ?? {}).keys.length; i++) {
+            var key = eventFilters?.keys.elementAt(i);
+            if (eventFilters?[key]?.isNotEmpty ?? false) {
+              _selectedIndex = i;
+              break; // Exit the loop once we've found the first non-empty category
+            }
+          }
+          // _selectedIndex = 0;
+          print("event filters ${eventFilters}");
+          print("_selectedIndex ${_selectedIndex}");
+          print(
+              "event filters _selectedIndex initial ${eventFilters?.values.elementAt(_selectedIndex)}");
+          setState(() {});
+        } else if (state is UpdateUserScreenSuccessState) {
+          userModel = state.userModel;
+          userName = "${userModel?.firstName} ${userModel?.lastName}";
+
+          imagesUserInEvents = acceptedRequests?.map((e) => e.image).where((image) => image!= null).toList(); // Filter out null values.toList();
+
+          // acceptedRequests = userScreenCubit.eventModel.eventRequest
+          //     ?.where(
+          //         (eventRequest) => eventRequest.requestStatus == "Accepted")
+          //     .toList();
+          // pendingRequests = viewYourEventCubit.eventModel.eventRequest
+          //     ?.where((eventRequest) => eventRequest.requestStatus == "Pending")
+          //     .toList();
+
+          // imageUrl =  userModel?.userPhotos?.first ?? "";
+        } else if (state is FetchMyEventsDataSuccessState) {
+          print("Event Data Success ${state.eventResponseWrapper?.toJson()}");
+          userScreenCubit.eventModelList.addAll(state.eventModel ?? []);
+          userScreenCubit
+              .initializeEventWrapperData(state.eventResponseWrapper!);
+          print("Event Data Success ${userScreenCubit.eventModelList.length}");
+          // imageUrl =  userModel?.userPhotos?.first ?? "";
+        } else if (state is UserScreenFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        } else if (state is FetchEventsGoingToFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        } else if (state is FetchGroupsToFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        } else if (state is FetchMyEventsDataFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+      },
+      builder: (context, state) {
+        return UIScaffold(
+            appBar: topBar(),
+            removeSafeAreaPadding: true,
+            bgColor: ColorConstants.black,
+            // bgImage:
+            //     "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+            widget: main());
+      },
+    );
   }
 
   Widget main() {
@@ -203,18 +316,15 @@ class _UserProfileState extends State<UserProfile> {
           // topBar(),
           profile(),
 
-          if(eventDetailList.isNotEmpty)
+          if (eventDetailList.isNotEmpty) DividerCosntants.divider1,
+          // if (eventDetailList.isNotEmpty)
+            yourEvents(),
+          // if(eventList.isNotEmpty)
           DividerCosntants.divider1,
-          if(eventDetailList.isNotEmpty)
-          yourEvents(),
-          if(eventList.isNotEmpty)
-          DividerCosntants.divider1,
-          if(eventList.isNotEmpty)
+          // if(eventList.isNotEmpty)
           eventsGoingTo(),
-          if(eventList.isNotEmpty)
-          DividerCosntants.divider1,
-          if(eventList.isNotEmpty)
-          groups(),
+          if (eventList.isNotEmpty) DividerCosntants.divider1,
+          if (eventList.isNotEmpty) groups(),
         ],
       ),
     );
@@ -295,7 +405,8 @@ class _UserProfileState extends State<UserProfile> {
             children: [
               GestureDetector(
                 onTap: () => NavigationUtil.push(
-                    context, RouteConstants.editProfileScreen),
+                    context, RouteConstants.editProfileScreen,
+                    args: userModel),
                 child: CircleAvatar(
                   radius: 65,
                   backgroundImage: (selectedImage != null
@@ -312,7 +423,8 @@ class _UserProfileState extends State<UserProfile> {
                   child: GestureDetector(
                     onTap: () async {
                       NavigationUtil.push(
-                          context, RouteConstants.editProfileScreen);
+                          context, RouteConstants.editProfileScreen,
+                          args: userModel);
                       // if (selectedImage == null) {
                       //   final XFile? image = await ImagePicker()
                       //       .pickImage(source: ImageSource.gallery);
@@ -386,63 +498,66 @@ class _UserProfileState extends State<UserProfile> {
                     )
                   ],
                 ),
-                if(images.isNotEmpty)
-                GestureDetector(
-                  onTap: () {
-                    NavigationUtil.push(context, RouteConstants.allConnectionScreen);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextComponent(
-                        "See all",
-                        style: FontStylesConstants.style15(
-                            color: ColorConstants.lightGray.withOpacity(0.8)),
-                      ),
-                      SizedBoxConstants.sizedBoxTenW(),
-                      IconComponent(
-                        iconData: Icons.arrow_forward_ios,
-                        backgroundColor: ColorConstants.transparent,
-                        borderColor: ColorConstants.transparent,
-                        iconSize: 18,
-                        borderSize: 0,
-                        circleSize: 18,
-                        iconColor: ColorConstants.lightGray,
-                      )
-                    ],
+                if (images.isNotEmpty)
+                  GestureDetector(
+                    onTap: () {
+                      NavigationUtil.push(
+                          context, RouteConstants.allConnectionScreen);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextComponent(
+                          "See all",
+                          style: FontStylesConstants.style15(
+                              color: ColorConstants.lightGray.withOpacity(0.8)),
+                        ),
+                        SizedBoxConstants.sizedBoxTenW(),
+                        IconComponent(
+                          iconData: Icons.arrow_forward_ios,
+                          backgroundColor: ColorConstants.transparent,
+                          borderColor: ColorConstants.transparent,
+                          iconSize: 18,
+                          borderSize: 0,
+                          circleSize: 18,
+                          iconColor: ColorConstants.lightGray,
+                        )
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),
           SizedBoxConstants.sizedBoxTwentyH(),
-          if(images.isNotEmpty)
-          SizedBox(
-            height: 50,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                // padding: EdgeInsets.symmetric(horizontal: 10),
-                physics: const BouncingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: images.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    child: GestureDetector(
-                      child: ProfileImageComponent(
-                        url: images[index].toString(),
-                        size: 50,
+          if (images.isNotEmpty)
+            SizedBox(
+              height: 50,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  // padding: EdgeInsets.symmetric(horizontal: 10),
+                  physics: const BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: images.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      child: GestureDetector(
+                        child: ProfileImageComponent(
+                          url: images[index].toString(),
+                          size: 50,
+                        ),
                       ),
-                    ),
-                  );
-                }),
-          ),
+                    );
+                  }),
+            ),
         ],
       ),
     );
   }
 
   Widget yourEvents() {
+
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
@@ -473,7 +588,7 @@ class _UserProfileState extends State<UserProfile> {
                   "",
                   listOfText: [
                     StringConstants.yourEvents,
-                    " 387",
+                    " ${(userScreenCubit.eventModelList.length )?? 0}",
                   ],
                   listOfTextStyle: [
                     FontStylesConstants.style20(
@@ -518,7 +633,8 @@ class _UserProfileState extends State<UserProfile> {
             physics: const BouncingScrollPhysics(),
             child: Row(
               children: [
-                ...eventDetailList.map(
+                // ...eventDetailList.map(
+                ...userScreenCubit.eventModelList.map(
                   (tag) => Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: GestureDetector(
@@ -527,12 +643,21 @@ class _UserProfileState extends State<UserProfile> {
                               context, RouteConstants.viewYourEventScreen);
                         },
                         child: EventSummary(
-                          eventTitle: "Meet & Mingle in Riyadh Season",
-                          price: "SAR 150",
-                          ticketsSold: 4,
-                          remainingTickets: 96,
-                          eventActive: true,
-                          imagesUserInEvent: images,
+                          eventId:tag.id?? "" ,
+                          eventTitle: tag.title ?? "",//"Meet & Mingle in Riyadh Season",
+                          price:tag.pricing?.price ?? "",// "SAR 150",
+                          ticketsSold: int.parse(tag.transectionData?.ticketSold ??"0"),
+                            totalEarned:tag.transectionData?.totalEarned ?? "",
+                            remainingTickets: 0,//(((tag.venues?? []).first.capacity?? 0)-(tag.transectionData?.ticketSold?? 0)),
+                            eventActive:tag.isVisibility,
+                            currenStats: true,
+                            capacity: tag.venues?.first.capacity ?? "",
+                            imagesUserInEvent: imagesUserInEvents
+                          // capacity: "Unlimited",
+                          // remainingTickets: 96,
+                          // eventActive: true,
+                          // totalEarned: "",
+                          // imagesUserInEvent: images,
                           // imagesUserInEvent: [
                           //   // Your list of ImageProvider objects
                           // ],
@@ -755,20 +880,24 @@ class _UserProfileState extends State<UserProfile> {
                   "",
                   listOfText: [
                     StringConstants.eventsYouGoingTo,
-                    " 387",
+                    // " ${totalEventCountGoingTo}",
                   ],
                   listOfTextStyle: [
                     FontStylesConstants.style20(
                       color: themeCubit.primaryColor,
                     ),
-                    FontStylesConstants.style20(
-                      color: ColorConstants.lightGray.withOpacity(0.8),
-                    )
+                    // FontStylesConstants.style20(
+                    //   color: ColorConstants.lightGray.withOpacity(0.8),
+                    // )
                   ],
                 ),
                 GestureDetector(
                   onTap: () {
-                    NavigationUtil.push(context, RouteConstants.allEventScreen);
+                    NavigationUtil.push(context, RouteConstants.allEventScreen,
+                        args: AllEventsArg(
+                            userScreenCubit.eventsGoingToResponseWrapper.data
+                                ?.totalEventsCount,
+                            eventFilters));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -796,35 +925,106 @@ class _UserProfileState extends State<UserProfile> {
           ),
           SizedBoxConstants.sizedBoxTwentyH(),
           FilterComponent(
-            options: [
-              FilterComponentArg(title: 'All'),
-              FilterComponentArg(title: "Unread"),
-              FilterComponentArg(title: "DMS", count: 111),
-              FilterComponentArg(title: "DMS", count: 23),
-              FilterComponentArg(title: "Event", count: 104)
-            ],
-            groupValue:
-                _selectedIndex, // Your state variable for selected index
-            onValueChanged: (int value) =>
-                setState(() => _selectedIndex = value),
-          ),
+              options: [
+                (((userScreenCubit.eventsGoingToResponseWrapper.data
+                                ?.totalEventsCount?.upcomingEvents ??
+                            0) as int) >
+                        0)
+                    ? FilterComponentArg(
+                        title: "Upcoming",
+                        count: ((userScreenCubit.eventsGoingToResponseWrapper
+                                .data?.totalEventsCount?.upcomingEvents ??
+                            0) as int))
+                    : FilterComponentArg(),
+                (((userScreenCubit.eventsGoingToResponseWrapper.data
+                                ?.totalEventsCount?.paidEvents ??
+                            0) as int) >
+                        0)
+                    ? FilterComponentArg(
+                        title: "Paid",
+                        count: ((userScreenCubit.eventsGoingToResponseWrapper
+                                .data?.totalEventsCount?.paidEvents ??
+                            0) as int))
+                    : FilterComponentArg(),
+                (((userScreenCubit.eventsGoingToResponseWrapper.data
+                                ?.totalEventsCount?.pastEvents ??
+                            0) as int) >
+                        0)
+                    ? FilterComponentArg(
+                        title: "Past",
+                        count: ((userScreenCubit.eventsGoingToResponseWrapper
+                                .data?.totalEventsCount?.pastEvents ??
+                            0) as int))
+                    : FilterComponentArg(),
+                (((userScreenCubit.eventsGoingToResponseWrapper.data
+                                ?.totalEventsCount?.freeEvents ??
+                            0) as int) >
+                        0)
+                    ? FilterComponentArg(
+                        title: "Free",
+                        count: ((userScreenCubit.eventsGoingToResponseWrapper
+                                .data?.totalEventsCount?.freeEvents ??
+                            0) as int))
+                    : FilterComponentArg(),
+                (((userScreenCubit.eventsGoingToResponseWrapper.data
+                                ?.totalEventsCount?.pendingEvents ??
+                            0) as int) >
+                        0)
+                    ? FilterComponentArg(
+                        title: "Pending",
+                        count: ((userScreenCubit.eventsGoingToResponseWrapper
+                                .data?.totalEventsCount?.pendingEvents ??
+                            0) as int))
+                    : FilterComponentArg()
+              ],
+              groupValue:
+                  _selectedIndex, // Your state variable for selected index
+              onValueChanged: (int value) => {
+                    setState(
+                      () => _selectedIndex = value,
+                    ),
+                    print(
+                        "event filters ${eventFilters?.values.elementAt(_selectedIndex)}"),
+                    print("filters selectedIndex ${_selectedIndex}"),
+                  }),
           SizedBoxConstants.sizedBoxTwentyH(),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             // This makes the list scrollable horizontally
             child: Row(
               children: [
-                ...eventList
-                    .map((tag) => EventCard(
-                          imageUrl: img,
-                          images: images2,
-                          radius2: 20,
-                          viewTicket: tag['viewTicket'] ?? false,
+                ...?eventFilters?.values
+                    .elementAt(_selectedIndex)
+                    .map((tag) => GestureDetector(
+                          onTap: () {
+                            NavigationUtil.push(
+                                context, RouteConstants.eventScreen,
+                                args: EventScreenArg(tag.id ?? "", ""));
+                          },
+                          child: EventCard(
+                            totalCount: (tag.acceptedCount ?? 0) as int,
+                            imageUrl: (tag.images ?? []).firstWhere(
+                                (element) => (element ?? "").isNotEmpty,
+                                orElse: () => ""),
+                            images: (tag.eventRequest ?? [])
+                                .take(3) // Take only the first three elements
+                                .map((e) =>
+                                    e.image ??
+                                    "") // Transform each element to its image property, or "" if null
+                                .toList(),
+                            title: tag.title ?? "",
+                            startTime: (tag.venue ?? []).first.startDatetime,
+                            endTime: (tag.venue ?? []).first.endDatetime,
+                            // startTime: (tag.venue ?? []).firstWhere((element) => element.startDatetime!= null && element.startDatetime.toString().isNotEmpty, orElse: () => "" ),
+                            radius2: 20,
+                            viewTicket: !(tag.isFree ?? false),
+                          ),
                         ))
                     .toList(),
               ],
             ),
-          )
+          ),
+          SizedBoxConstants.sizedBoxSixtyH(),
         ],
       ),
     );

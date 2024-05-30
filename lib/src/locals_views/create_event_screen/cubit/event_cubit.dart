@@ -29,6 +29,12 @@ class EventCubit extends Cubit<EventState> {
   Query query = Query();
   Pricing? pricing;
 
+  String? selectedDateFilter;
+  List<String>? selectedCategories;
+  bool? isFreeValue ;
+  bool? isFilteredApply ;
+  String? isFree;
+
   void initializeUserData(UserModel user) => userModel = user;
 
   void initializeEventData(EventModel event) => eventModel = event;
@@ -55,6 +61,7 @@ class EventCubit extends Cubit<EventState> {
               : false || pricing?.price == null
                   ? true
                   : false);
+      eventModel = eventModel.copyWith(type: "event");
       var resp = await EventRepository.createEvent(eventModel);
       emit(CreateEventSuccessState(resp.data));
       LoggerUtil.logs(resp.toJson());
@@ -71,6 +78,17 @@ class EventCubit extends Cubit<EventState> {
     emit(EventFetchSuccessState(resp, resp.data2));
     // } catch (e) {
     //   emit(EventFetchFailureState(e.toString()));
+    // }
+  }
+
+  Future<void> sendEventFilters(String pageValue,String? startDate,String? endDate,String? dateFilter,List<String>categories, bool? isFree) async {
+    emit(EventFiltersLoadingState());
+    // try {
+    var resp = await FilterRepository.sendFilters(pageValue,startDate, endDate,dateFilter,categories,isFree);
+    LoggerUtil.logs(" Event data by favourite${resp.toJson()}");
+    emit(EventFiltersSuccessState(resp, resp.data2));
+    // } catch (e) {
+    //   emit(EventFiltersFailureState(e.toString()));
     // }
   }
 
@@ -118,16 +136,7 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
-  Future<void> sendEventFilters(String? startDate,String? endDate,String? dateFilter,List<String>categories, bool? isFree) async {
-    emit(EventFiltersLoadingState());
-    try {
-      var resp = await FilterRepository.sendFilters(startDate, endDate,dateFilter,categories,isFree);
-      LoggerUtil.logs(" Event data by favourite${resp.toJson()}");
-      emit(EventFiltersSuccessState(resp, resp.data2));
-    } catch (e) {
-      emit(EventFiltersFailureState(e.toString()));
-    }
-  }
+
 
   Future<void> fetchEventDataById(String id) async {
     emit(EventFetchByIdLoadingState());
@@ -163,6 +172,8 @@ class EventCubit extends Cubit<EventState> {
       emit(BuyTicketRequestFailureState(e.toString()));
     }
   }
+
+
 
   addTitle(String title) {
     eventModel = eventModel.copyWith(title: title);

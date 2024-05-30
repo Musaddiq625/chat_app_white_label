@@ -95,7 +95,7 @@ class UserModel {
   String? fcmToken;
   String? phoneNumber;
   List<String>? chats;
-  List<String>? userPhotos;
+  List<String?>? userPhotos;
   MoreAbout? moreAbout;
   SocialLink? socialLink;
   Interest? interest;
@@ -121,7 +121,7 @@ class UserModel {
     String? fcmToken,
     String? phoneNumber,
     List<String>? chats,
-    List<String>? userPhotos,
+    List<String?>? userPhotos,
     MoreAbout? moreAbout,
     SocialLink? socialLink,
     Interest? interest,

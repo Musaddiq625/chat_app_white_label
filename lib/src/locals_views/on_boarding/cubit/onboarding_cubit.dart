@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:aws_s3_upload/aws_s3_upload.dart';
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/repositories/onboarding_repository.dart';
@@ -54,8 +57,61 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
     userModel = userModel.copyWith(interest: interest);
   }
 
+  // Future<void> uploadUserPhoto(List<String> profileImages) async {
+  //   for(int i=0 ;i<profileImages.length; i++){
+  //     await  AwsS3.uploadFile(
+  //         accessKey: "OOFqyH9v2YBpon7C3m0pZSH0ruNxqGEVMeyRy0g5",
+  //         secretKey: "DQEJGSA2VP1KBQZ551NI",
+  //         file: File(profileImages[i]),
+  //         bucket: "locals",
+  //         region: "se-sto-1",
+  //         domain: "linodeobjects.com", // optional - Default: amazonaws.com
+  //         metadata: {"test": "test"} // optional
+  //     );
+  //   }
+  //
+  //   userModel = userModel.copyWith(userPhotos: profileImages);
+  // }
+
   Future<void> uploadUserPhoto(List<String> profileImages) async {
-    userModel = userModel.copyWith(userPhotos: profileImages);
+    emit(UploadImageLoadingState());
+
+    try {
+      // Map each imagePath to a Future that completes with the URL of the uploaded image
+      List<Future<String?>> uploadFutures = profileImages.map((imagePath) async {
+        final file = File(imagePath);
+        if (!file.existsSync()) {
+          throw Exception('File does not exist: $imagePath');
+        }
+
+        // Await the upload and capture the result (URL)
+        String? uploadedImageUrl = await AwsS3.uploadFile(
+            accessKey: "DQEJGSA2VP1KBQZ551NI",
+            secretKey: "OOFqyH9v2YBpon7C3m0pZSH0ruNxqGEVMeyRy0g5",
+            file: file,
+            bucket: "locals",
+            region: "se-sto-1",
+            destDir: "profile",
+            domain: "linodeobjects.com",
+            metadata: {"test": "test"}
+        );
+
+        // Return the URL of the uploaded image
+        return uploadedImageUrl;
+      }).toList();
+
+      // Wait for all uploads to complete and collect the URLs
+
+      List<String?> uploadedUrls = await Future.wait(uploadFutures);
+      print("uploadedUrls $uploadedUrls" );
+      // Update userModel with the URLs of the uploaded images
+      userModel = userModel.copyWith(userPhotos: uploadedUrls);
+      emit(UploadImageSuccess(uploadedUrls));
+
+    } catch (e) {
+      emit(UploadImageFailureState(e.toString()));
+      print('Failed to upload all photos: $e');
+    }
   }
 
   userDetailDobToGenderStep(
@@ -84,7 +140,7 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
     }
   }
 
-  Future<void> updateUserPhoto(List<String> profileImages) async {
+  Future<void> updateUserPhoto(List<String?> profileImages) async {
     emit(OnBoardingUserNameImageLoadingState());
     try {
       // userModel = userModel.copyWith(image: profileImages.first);
@@ -110,7 +166,7 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
   }
 
   Future<void> getInterestData() async {
-    // emit(OnBoardingUserLoadingState());
+    emit(OnBoardingInterestLoadingState());
     try {
       var resp = await OnBoardingRepository.getInterestData();
       emit(OnBoardingInterestSuccess(resp));

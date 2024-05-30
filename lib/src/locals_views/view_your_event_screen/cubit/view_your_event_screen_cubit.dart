@@ -31,6 +31,17 @@ class ViewYourEventScreenCubit extends Cubit<ViewYourEventScreenState> {
     }
   }
 
+  Future<void> eventVisibilityById(String id,bool isVisibility) async {
+    emit(EventVisibilityLoadingState());
+    try {
+      var resp = await EventRepository.eventVisibilityById(id,isVisibility);
+      LoggerUtil.logs("Fetch Event data by keys${resp.toJsonSingleData()}");
+      emit(EventVisibilitySuccessState(resp.data2));
+    } catch (e) {
+      emit(EventVisibilityFailureState(e.toString()));
+    }
+  }
+
   Future<void> replyQueryById(String eventId,String id,String requestStatus,Query query) async {
     emit(SendEventRequestQueryAndStatusLoadingState());
     try {
@@ -41,6 +52,7 @@ class ViewYourEventScreenCubit extends Cubit<ViewYourEventScreenState> {
       emit(SendEventRequestQueryAndStatusFailureState(e.toString()));
     }
   }
+
 
 
 

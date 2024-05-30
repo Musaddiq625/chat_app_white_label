@@ -52,7 +52,7 @@ import '../on_boarding/cubit/onboarding_cubit.dart';
 
 class EventScreen extends StatefulWidget {
   String? eventId;
-EventScreenArg? eventScreenArg;
+  EventScreenArg? eventScreenArg;
   String? userId;
   String? userName;
   String? userImage;
@@ -79,7 +79,7 @@ final TextEditingController _controller = TextEditingController();
 
 class _EventScreenState extends State<EventScreen> {
   List<EventRequest>? acceptedRequests;
-EventRequest? yourEventRequest;
+  EventRequest? yourEventRequest;
   bool alreadyJoin = false;
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
@@ -101,12 +101,13 @@ EventRequest? yourEventRequest;
     // Add more image providers as needed
   ];
   double radius = 30;
-String? userId;
+  String? userId;
   int _count = 0;
   int _price = 0;
   int _totalAmount = 0;
   late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
   UserModel? userModel;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -117,18 +118,24 @@ String? userId;
       //     (eventCubit.eventModel.pricing?.price ?? "").isNotEmpty) {
       //   _price = int.parse(eventCubit.eventModel.pricing?.price ?? "");
       // }
-      final serializedUserModel =await  getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
+      final serializedUserModel = await getIt<SharedPreferencesUtil>()
+          .getString(SharedPreferenceConstants.userModel);
       userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
       print("userId ${userModel?.id}");
       setState(() {
         userId = "${userModel?.id}";
       });
 
-      if (eventCubit.eventModel.eventRequest!= null) {
-        alreadyJoin = (eventCubit.eventModel.eventRequest ?? []).any((eventRequest) => eventRequest.userId == userId);
-        print("userId ${userId} object ${eventCubit.eventModel.eventRequest!.any((eventRequest) => eventRequest.userId == userId)}");
-        yourEventRequest = eventCubit.eventModel.eventRequest?.where((eventRequest) => eventRequest.userId == userId ).toList().first;
-        print("yourEventRequest$yourEventRequest");
+      if (eventCubit.eventModel.eventRequest != null) {
+        alreadyJoin = (eventCubit.eventModel.eventRequest ?? [])
+            .any((eventRequest) => eventRequest.userId == userId);
+        print(
+            "userId ${userId} object ${eventCubit.eventModel.eventRequest!.any((eventRequest) => eventRequest.userId == userId)}");
+        yourEventRequest = eventCubit.eventModel.eventRequest
+            ?.where((eventRequest) => eventRequest.userId == userId)
+            .toList()
+            .first;
+        print(" 0 yourEventRequest${yourEventRequest?.toJson()}");
       }
       print("alreadyJoin ${alreadyJoin}");
 
@@ -137,38 +144,40 @@ String? userId;
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<EventCubit, EventState>(
       listener: (context, state) {
         if (state is EventFetchByIdLoadingState) {
-        }
-        else if (state is EventFetchByIdSuccessState) {
+        } else if (state is EventFetchByIdSuccessState) {
           eventCubit.initializeEventData(state.eventModel!);
-          print("eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
-          acceptedRequests = eventCubit.eventModel.eventRequest?.where((eventRequest) => eventRequest.requestStatus == "Accepted").toList();
-          print("yourEventRequest$yourEventRequest");
+          print(
+              "eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
+          acceptedRequests = eventCubit.eventModel.eventRequest
+              ?.where(
+                  (eventRequest) => eventRequest.requestStatus == "Accepted")
+              .toList();
+          print("1 yourEventRequest${yourEventRequest}");
           if (eventCubit.eventModel.pricing?.price != "0" &&
               (eventCubit.eventModel.pricing?.price ?? "").isNotEmpty) {
-            String priceWithoutDollarSign = (eventCubit.eventModel.pricing?.price?? "").replaceAllMapped(
-              RegExp(r'^[€£\$SAR]?([0-9,.]+)'), // Correctly passing RegExp as the first argument
-                  (match) => match.group(1)?.toString()?? '', // Correctly passing a function as the second argument
+            String priceWithoutDollarSign =
+                (eventCubit.eventModel.pricing?.price ?? "").replaceAllMapped(
+              RegExp(r'^[€£\$SAR]?([0-9,.]+)'),
+              // Correctly passing RegExp as the first argument
+              (match) =>
+                  match.group(1)?.toString() ??
+                  '', // Correctly passing a function as the second argument
             );
 
             if (priceWithoutDollarSign.isNotEmpty) {
-
               _price = int.parse(priceWithoutDollarSign);
               print("price $_price");
             }
           }
-        }
-        else if (state is EventFetchByIdFailureState) {
+        } else if (state is EventFetchByIdFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
         } else if (state is BuyTicketRequestLoadingState) {
-        }
-        else if (state is BuyTicketRequestSuccessState) {
+        } else if (state is BuyTicketRequestSuccessState) {
           Navigator.pop(context);
           NavigationUtil.push(
             context,
@@ -182,17 +191,16 @@ String? userId;
           );
           // eventCubit.initializeEventData(state.eventModel!);
           // print("eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
-        }
-        else if (state is BuyTicketRequestFailureState) {
+        } else if (state is SendEventRequestSuccessState) {
+          _navigateToBack();
+        } else if (state is BuyTicketRequestFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
-        }
-        else if (state is EventFavSuccessState) {
+        } else if (state is EventFavSuccessState) {
           eventCubit.initializeEventData(state.eventModel!);
           print(
               "eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
-        }
-        else if(state is EventFavRequestFailureState){
-          eventCubit.eventModel.eventFavouriteBy?.length --;
+        } else if (state is EventFavRequestFailureState) {
+          eventCubit.eventModel.eventFavouriteBy?.length--;
         }
       },
       builder: (context, state) {
@@ -205,67 +213,82 @@ String? userId;
               child: Column(
                 children: [
                   _eventWidget(),
-                  (eventCubit.eventModel.eventTotalParticipants != null && eventCubit.eventModel.eventTotalParticipants != "0")
+                  // (eventCubit.eventModel.eventTotalParticipants != null &&
+                  //         eventCubit.eventModel.eventTotalParticipants != "0")
+                  //     ?
+
+                  eventCubit.eventModel.title != null
                       ? _members()
-                      : Container(
-                          color: ColorConstants.black,
-                          height: 500,
-                        )
+                      : _shimmerMembers(),
+
+                  SizedBoxConstants.sizedBoxHundredH(),
+                  // : Container(
+                  //     color: ColorConstants.black,
+                  //     height: 500,
+                  //   )
                 ],
               ),
             ),
           ),
-          floatingActionButton:           ((eventCubit.eventModel.id ?? "").isNotEmpty)?Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child:
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                 (eventCubit.eventModel.pricing?.price != "0" &&
-                    (eventCubit.eventModel.pricing?.price ?? "").isNotEmpty)?
-                SizedBox(
-                  width: AppConstants.responsiveWidth(context, percentage: 30),
-                  child: ButtonWithIconComponent(
-                    btnText: '${StringConstants.getTicket}',
-                    showIcon: false,
-                    onPressed: () {
-                      print("getTicket price ${(eventCubit.eventModel.pricing?.price )}");
-                      _getTicketBottomSheet();
-                    },
-                  ),
-                ):Container(alignment: Alignment.bottomLeft,),
-                if(yourEventRequest==null)
-                Container(
-                  alignment: Alignment.bottomRight,
-                  width: AppConstants.responsiveWidth(context, percentage: 30),
-                  child: ButtonWithIconComponent(
-                    btnText: '  ${StringConstants.join}',
-                    icon: Icons.add_circle,
+          floatingActionButton: ((eventCubit.eventModel.id ?? "").isNotEmpty)
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      (eventCubit.eventModel.pricing?.price != "0" &&
+                              (eventCubit.eventModel.pricing?.price ?? "")
+                                  .isNotEmpty)
+                          ? SizedBox(
+                              width: AppConstants.responsiveWidth(context,
+                                  percentage: 30),
+                              child: ButtonWithIconComponent(
+                                btnText: '${StringConstants.getTicket}',
+                                showIcon: false,
+                                onPressed: () {
+                                  print(
+                                      "getTicket price ${(eventCubit.eventModel.pricing?.price)}");
+                                  _getTicketBottomSheet();
+                                },
+                              ),
+                            )
+                          : Container(
+                              alignment: Alignment.bottomLeft,
+                            ),
+                      if (yourEventRequest == null)
+                        Container(
+                          alignment: Alignment.bottomRight,
+                          width: AppConstants.responsiveWidth(context,
+                              percentage: 30),
+                          child: ButtonWithIconComponent(
+                            btnText: '  ${StringConstants.join}',
+                            icon: Icons.add_circle,
 
-                    bgcolor: themeCubit.primaryColor,
-                    // btnTextColor: themeCubit.textColor,
-                    onPressed: () {
-                      JoinBottomSheet.showJoinBottomSheet(
-                          context,
-                          _controller,
-                          eventCubit.eventModel.id ?? "",
-                          eventCubit.eventModel.userId,
-                          eventCubit.eventModel.userName,
-                          eventCubit.eventModel.userImages,
-                          eventCubit.eventModel.title ?? "",
-                          (eventCubit.eventModel.isFree ?? true)
-                              ? "Free to join"
-                              : "",
-                          "ABC",
-                          "",
-                          questions: eventCubit.eventModel.question);
-                      // _showJoinBottomSheet();
-                    },
+                            bgcolor: themeCubit.primaryColor,
+                            // btnTextColor: themeCubit.textColor,
+                            onPressed: () {
+                              JoinBottomSheet.showJoinBottomSheet(
+                                  context,
+                                  _controller,
+                                  eventCubit.eventModel.id ?? "",
+                                  eventCubit.eventModel.userId,
+                                  eventCubit.eventModel.userName,
+                                  eventCubit.eventModel.userImages,
+                                  eventCubit.eventModel.title ?? "",
+                                  (eventCubit.eventModel.isFree ?? true)
+                                      ? "Free to join"
+                                      : "Ticket Required",
+                                  "ABC",
+                                  "",
+                                  questions: eventCubit.eventModel.question);
+                              // _showJoinBottomSheet();
+                            },
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ):Container(),
+                )
+              : Container(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         );
@@ -310,13 +333,14 @@ String? userId;
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
-                        child:     Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           // Align children vertically
                           children: [
-                            if((acceptedRequests ??[]).isNotEmpty)
+                            if ((acceptedRequests ?? []).isNotEmpty)
                               SizedBox(
-                                width: radius * 3, //radius * images.length.toDouble(),
+                                width: radius * 3,
+                                //radius * images.length.toDouble(),
                                 // Calculate the total width of images
                                 height: radius,
                                 // Set the height to match the image size
@@ -324,39 +348,50 @@ String? userId;
                                   children: [
                                     // ?? images.length
                                     for (int i = 0;
-                                    i <
-                                        (  acceptedRequests!.isNotEmpty // eventCubit.eventModelList[index].eventParticipants!.isNotEmpty   //
-                                            ?  acceptedRequests!.length//eventCubit.eventModelList[index].eventParticipants!.length  //acceptedRequests!.length//
-                                            : images.length);
-                                    i++)
+                                        i <
+                                            (acceptedRequests!
+                                                    .isNotEmpty // eventCubit.eventModelList[index].eventParticipants!.isNotEmpty   //
+                                                ? acceptedRequests!
+                                                    .length //eventCubit.eventModelList[index].eventParticipants!.length  //acceptedRequests!.length//
+                                                : images.length);
+                                        i++)
                                       Positioned(
                                         left: i * radius / 1.5,
                                         // Adjust the left offset
                                         child: ClipOval(
                                             child: ImageComponent(
-                                              imgUrl:acceptedRequests?[i].image ?? "",
-                                              // eventCubit.eventModelList[index].eventParticipants!.isNotEmpty
-                                              //     ? eventCubit.eventModelList[index].eventParticipants![i].image!
-                                              //     : images[i],
-                                              width: radius,
-                                              height: radius,
-                                              imgProviderCallback:
-                                                  (ImageProvider<Object> imgProvider) {},
-                                            )
-                                          // Image(
-                                          //   image: images[i],
-                                          //   width: radius,
-                                          //   height: radius,
-                                          //   fit: BoxFit.cover,
-                                          // ),
-                                        ),
+                                          imgUrl:
+                                              acceptedRequests?[i].image ?? "",
+                                          // eventCubit.eventModelList[index].eventParticipants!.isNotEmpty
+                                          //     ? eventCubit.eventModelList[index].eventParticipants![i].image!
+                                          //     : images[i],
+                                          width: radius,
+                                          height: radius,
+                                          imgProviderCallback:
+                                              (ImageProvider<Object>
+                                                  imgProvider) {},
+                                        )
+                                            // Image(
+                                            //   image: images[i],
+                                            //   width: radius,
+                                            //   height: radius,
+                                            //   fit: BoxFit.cover,
+                                            // ),
+                                            ),
                                       ),
                                   ],
                                 ),
                               ),
-                            if((eventCubit.eventModel.eventTotalParticipants ?? "") != "0" && (eventCubit.eventModel.eventTotalParticipants ?? "").isNotEmpty && eventCubit.eventModel.eventTotalParticipants != null )
+                            if ((eventCubit.eventModel.eventTotalParticipants ??
+                                        "") !=
+                                    "0" &&
+                                (eventCubit.eventModel.eventTotalParticipants ??
+                                        "")
+                                    .isNotEmpty &&
+                                eventCubit.eventModel.eventTotalParticipants !=
+                                    null)
                               TextComponent(
-                                "+${(eventCubit.eventModel.eventTotalParticipants ?? 0 )} ${StringConstants.joined}",
+                                "+${(eventCubit.eventModel.eventTotalParticipants ?? 0)} ${StringConstants.joined}",
                                 style: FontStylesConstants.style14(
                                     color: ColorConstants.white),
                               ),
@@ -433,24 +468,35 @@ String? userId;
                     iconData: Icons.favorite,
                     backgroundColor:
                         ColorConstants.darkBackgrounddColor.withOpacity(0.9),
-                    iconColor: eventCubit.eventModel.isFavourite == false || eventCubit.eventModel.isFavourite == null?Colors.white: ColorConstants.red,
+                    iconColor: eventCubit.eventModel.isFavourite == false ||
+                            eventCubit.eventModel.isFavourite == null
+                        ? Colors.white
+                        : ColorConstants.red,
                     customIconText:
                         "${eventCubit.eventModel.eventFavouriteBy?.length ?? 0}",
                     circleSize: 70,
                     circleHeight: 36,
                     iconSize: 20,
-                    onTap: (){
-                      if(eventCubit.eventModel.isFavourite == false || eventCubit.eventModel.isFavourite == null){
-                        eventCubit.eventModel.eventFavouriteBy?.length ++;
-                        eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0" )] = eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0")].copyWith(isFavourite: true);
-                        eventCubit.eventModel = eventCubit.eventModel.copyWith(isFavourite: true);
-                        eventCubit.sendEventFavById(eventCubit.eventModel.id ?? "",true);
-                      }
-                      else{
-                        eventCubit.eventModel.eventFavouriteBy?.length --;
-                        eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0" )] = eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0")].copyWith(isFavourite: false);
-                        eventCubit.eventModel = eventCubit.eventModel.copyWith(isFavourite: false);
-                        eventCubit.sendEventFavById(eventCubit.eventModel.id ?? "",false);
+                    onTap: () {
+                      if (eventCubit.eventModel.isFavourite == false ||
+                          eventCubit.eventModel.isFavourite == null) {
+                        eventCubit.eventModel.eventFavouriteBy?.length++;
+                        eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0")] =
+                            eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0")].copyWith(isFavourite: true);
+                        eventCubit.eventModel =
+                            eventCubit.eventModel.copyWith(isFavourite: true);
+                        eventCubit.sendEventFavById(eventCubit.eventModel.id ?? "", true);
+                      } else {
+                        eventCubit.eventModel.eventFavouriteBy?.length--;
+                        eventCubit.eventModelList[int.parse(
+                                widget.eventScreenArg?.indexValue ?? "0")] =
+                            eventCubit.eventModelList[int.parse(
+                                    widget.eventScreenArg?.indexValue ?? "0")]
+                                .copyWith(isFavourite: false);
+                        eventCubit.eventModel =
+                            eventCubit.eventModel.copyWith(isFavourite: false);
+                        eventCubit.sendEventFavById(
+                            eventCubit.eventModel.id ?? "", false);
                       }
                     },
                   ),
@@ -674,9 +720,11 @@ String? userId;
                             TextComponent(StringConstants.abouttheEvent,
                                 style: FontStylesConstants.style18(
                                     color: themeCubit.primaryColor)),
+                            if((eventCubit.eventModel.description ?? "").isNotEmpty)
                             SizedBox(
                               height: 10,
                             ),
+                            if((eventCubit.eventModel.description ?? "").isNotEmpty)
                             GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -726,14 +774,27 @@ String? userId;
                         child: Column(
                           children: [
                             AboutEventComponent(
-                              name:
-                                  "${eventCubit.eventModel.eventTotalParticipants} ${StringConstants.participants}",
-                              detail:(acceptedRequests?.take(1).map((e) => e.name).join(', ')??"").isNotEmpty?
-                                  "${acceptedRequests?.take(1).map((e) => e.name).join(', ')} and more":"",
+                              name: (eventCubit.eventModel
+                                                  .eventTotalParticipants ??
+                                              "")
+                                          .isNotEmpty &&
+                                      (eventCubit.eventModel
+                                                  .eventTotalParticipants ??
+                                              "") !=
+                                          "null"
+                                  ? "${eventCubit.eventModel.eventTotalParticipants} ${StringConstants.participants}"
+                                  : "0 ${StringConstants.participants}",
+                              detail: (acceptedRequests
+                                              ?.take(1)
+                                              .map((e) => e.name)
+                                              .join(', ') ??
+                                          "")
+                                      .isNotEmpty
+                                  ? "${acceptedRequests?.take(1).map((e) => e.name).join(', ')} and more"
+                                  : "No Participants",
                               //"Elena, Ilsa and more",
                               icon: AssetConstants.happy,
-                              eventParticipants:
-                                  acceptedRequests,
+                              eventParticipants: acceptedRequests,
                               showPersonIcon: true,
                               selectedImages: images,
                             ),
@@ -744,47 +805,59 @@ String? userId;
                                           .isNotEmpty
                                   ? "${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(eventCubit.eventModel.venues!.first.startDatetime!))} - ${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(eventCubit.eventModel.venues?.first.endDatetime ?? ""))}"
                                   : StringConstants.dateWillbeDecidelater,
-                              divider:  (((eventCubit.eventModel.venues ?? []).first.location ?? "").isNotEmpty)?true:false,
                               //StringConstants.dateWillbeDecidelater,
                               icon: AssetConstants.calendar,
                             ),
-                           if (((eventCubit.eventModel.venues ?? []).first.location ?? "").isNotEmpty)
+                            if (((eventCubit.eventModel.venues ?? [])
+                                        .first
+                                        .location ??
+                                    "")
+                                .isNotEmpty)
+                              AboutEventComponent(
+                                name: eventCubit.eventModel.venues != null &&
+                                        (eventCubit.eventModel.venues ?? [])
+                                            .isNotEmpty
+                                    ? ((eventCubit.eventModel.venues ?? [])
+                                            .first
+                                            .location ??
+                                        "")
+                                    : "",
+                                detail:
+                                    StringConstants.exactLocationAfterJoining,
+                                icon: AssetConstants.marker,
+                                // divider: (eventCubit.eventModel.pricing?.price !=
+                                //             "0" &&
+                                //         (eventCubit.eventModel.pricing?.price ??
+                                //                 "")
+                                //             .isNotEmpty)
+                                //     ? true
+                                //     : false,
+                              ),
+                            //(ticketRequired == true)
                             AboutEventComponent(
-                              name: eventCubit.eventModel.venues != null &&
-                                      (eventCubit.eventModel.venues ?? [])
-                                          .isNotEmpty
-                                  ? ((eventCubit.eventModel.venues ?? [])
-                                          .first
-                                          .location ??
-                                      "")
-                                  : "",
-                              detail: StringConstants.exactLocationAfterJoining,
-                              icon: AssetConstants.marker,
+                              name: (eventCubit.eventModel.pricing?.price !=
+                                          "0" &&
+                                      (eventCubit.eventModel.pricing?.price ??
+                                              "")
+                                          .isNotEmpty)
+                                  ? (eventCubit.eventModel.pricing?.price ?? "")
+                                  : StringConstants.freeToJoin,
+                              detail: (eventCubit.eventModel.pricing?.price !=
+                                          "0" &&
+                                      (eventCubit.eventModel.pricing?.price ??
+                                              "")
+                                          .isNotEmpty)
+                                  ? StringConstants.ticketrequired
+                                  : StringConstants.noCharityRequired,
+                              icon: AssetConstants.tag,
                               divider: (eventCubit.eventModel.pricing?.price !=
                                           "0" &&
                                       (eventCubit.eventModel.pricing?.price ??
                                               "")
                                           .isNotEmpty)
-                                  ? true
-                                  : false,
+                                  ? false
+                                  : true,
                             ),
-                            if (eventCubit.eventModel.pricing?.price != "0" &&
-                                (eventCubit.eventModel.pricing?.price ?? "")
-                                    .isNotEmpty) //(ticketRequired == true)
-                              AboutEventComponent(
-                                name: (eventCubit.eventModel.pricing?.price ??
-                                    ""),
-                                detail: StringConstants.ticketrequired,
-                                icon: AssetConstants.ticket,
-                                divider: (eventCubit
-                                                .eventModel.pricing?.price !=
-                                            "0" &&
-                                        (eventCubit.eventModel.pricing?.price ??
-                                                "")
-                                            .isNotEmpty)
-                                    ? true
-                                    : false,
-                              ),
                             if (eventCubit.eventModel.pricing?.price != "0" &&
                                 (eventCubit.eventModel.pricing?.price ?? "")
                                     .isEmpty)
@@ -800,6 +873,58 @@ String? userId;
                       ),
                     ]),
               ));
+  }
+
+  Widget _shimmerMembers() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        color: themeCubit.darkBackgroundColor,
+        elevation: 0,
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          shrinkWrap: true,
+          // mainAxisSize: MainAxisSize.min,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Shimmer.fromColors(
+              baseColor: ColorConstants.lightGray, //Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              enabled: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, left: 18),
+                    child: Container(
+                      height: 15,
+                      width: 150,
+                      color: ColorConstants.white,
+                    ),
+                  ),
+                  SizedBoxConstants.sizedBoxThirtyH(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 18,right: 18),
+                          child: Container(
+                            height: 15,
+                            width: 20,
+                            color: ColorConstants.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBoxConstants.sizedBoxSixtyH(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _members() {
@@ -835,53 +960,56 @@ String? userId;
                   ),
                 )),
             SizedBoxConstants.sizedBoxThirtyH(),
-            if(yourEventRequest?.requestStatus != "Accepted" && yourEventRequest!=null)
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                      margin: EdgeInsets.only(left: 5),
-                      // width:
-                      // AppConstants.responsiveWidth(context, percentage: 75),
-                      child: ContactCard(
-                        name: (yourEventRequest?.name ?? ""),
-                        url: (yourEventRequest?.image ?? ""),
-                        title: (yourEventRequest?.aboutMe ?? ""),
-                        showShareIcon: false,
-                        showDivider: false,
-                        imageSize: 40,
-                      )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:16),
-                  child: TextComponent(yourEventRequest?.requestStatus ?? "",
-                      style: FontStylesConstants.style12(
-                          color: ColorConstants.lightGray)),
-                ),
-              ],
-            ),
-            if(yourEventRequest?.requestStatus != "Accepted" && yourEventRequest!=null)
-            DividerCosntants.divider1,
+            if (yourEventRequest?.requestStatus != "Accepted" &&
+                yourEventRequest != null)
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                        margin: EdgeInsets.only(left: 5),
+                        // width:
+                        // AppConstants.responsiveWidth(context, percentage: 75),
+                        child: ContactCard(
+                          name: (yourEventRequest?.name ?? ""),
+                          url: (yourEventRequest?.image ?? ""),
+                          title: (yourEventRequest?.aboutMe ?? ""),
+                          showShareIcon: false,
+                          showDivider: false,
+                          imageSize: 40,
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TextComponent(yourEventRequest?.requestStatus ?? "",
+                        style: FontStylesConstants.style12(
+                            color: ColorConstants.lightGray)),
+                  ),
+                ],
+              ),
+            if (yourEventRequest?.requestStatus != "Accepted" &&
+                yourEventRequest != null)
+              DividerCosntants.divider1,
             ListView.separated(
               separatorBuilder: (context, index) => const DividerComponent(),
               physics: BouncingScrollPhysics(),
               shrinkWrap: true,
-              itemCount:(acceptedRequests??[]).length,// (eventCubit.eventModel.eventParticipants ?? []).length,
+              itemCount: (acceptedRequests ?? []).length,
+              // (eventCubit.eventModel.eventParticipants ?? []).length,
               //contacts.length,
               itemBuilder: (context, index) => ListTileComponent(
-                leadingText:
-                acceptedRequests?[index].name,// eventCubit.eventModel.eventParticipants?[index].name,
+                leadingText: acceptedRequests?[index].name,
+                // eventCubit.eventModel.eventParticipants?[index].name,
                 // StringConstants.linkedIn,
                 removeBorderFromTile: true,
                 customPadding: const EdgeInsets.only(left: 20, right: 16),
-                leadingsubText:
-                acceptedRequests?[index].aboutMe,//eventCubit.eventModel.eventParticipants?[index].aboutMe,
+                leadingsubText: acceptedRequests?[index].aboutMe,
+                //eventCubit.eventModel.eventParticipants?[index].aboutMe,
                 //contacts[index].title,
                 // 'Graphic Designer',
                 // trailingIcon: Icons.add_circle,
                 trailingIconSize: 30,
-                leadingIcon:
-                acceptedRequests?[index].image,//eventCubit.eventModel.eventParticipants?[index].image,
+                leadingIcon: acceptedRequests?[index].image ?? "",
+                //eventCubit.eventModel.eventParticipants?[index].image,
                 //'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                 leadingIconHeight: 20,
                 leadingIconWidth: 20,
@@ -905,7 +1033,7 @@ String? userId;
             //     url: contacts[index].url,
             //     // contact: contacts[index],
             //     showShareIcon: false)),
-            SizedBoxConstants.sizedBoxSixtyH(),
+            SizedBoxConstants.sizedBoxForthyH(),
           ],
         ),
       ),
@@ -2010,7 +2138,8 @@ String? userId;
         _count--;
         _totalAmount -= _price; // Subtract the fixed amount
       });
-    } else if (_count < 99) { // Ensure _count does not go below 0
+    } else if (_count < 99) {
+      // Ensure _count does not go below 0
       stateSetter(() {
         _count++;
         _totalAmount += _price; // Add the fixed amount
@@ -2019,13 +2148,15 @@ String? userId;
   }
 
   void onAddPressed(StateSetter stateSetter) {
-    if (_count < 99) { // Prevent exceeding the maximum limit
+    if (_count < 99) {
+      // Prevent exceeding the maximum limit
       stateSetter(() {
         _count++;
         _totalAmount += _price; // Add the fixed amount
       });
     }
   }
+
   Widget showMore() {
     return PopupMenuButton(
       offset: const Offset(0, -100),
@@ -2083,9 +2214,11 @@ String? userId;
       // onSelected: onMenuItemSelected,
       onSelected: (value) {
         if (value == 'block') {
-          _showBlockBottomSheet();
+          // _showBlockBottomSheet();
         } else if (value == 'report') {
-          _showReportBottomSheet();
+          eventCubit.eventReport(eventCubit.eventModel.id ?? "");
+          NavigationUtil.pop(context);
+          // _showReportBottomSheet();
         }
         // Add more conditions as needed
       },
@@ -2131,10 +2264,8 @@ class EventScreenArg {
   final String eventId;
   final String indexValue;
 
-
   EventScreenArg(
-      this.eventId,
-      this.indexValue,
-
-      );
+    this.eventId,
+    this.indexValue,
+  );
 }

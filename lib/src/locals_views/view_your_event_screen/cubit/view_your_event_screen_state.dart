@@ -7,6 +7,8 @@ class ViewYourEventScreenInitial extends ViewYourEventScreenState {}
 
 class ViewYourEventScreenLoadingState extends ViewYourEventScreenState {}
 
+class EventVisibilityLoadingState extends ViewYourEventScreenState {}
+
 class SendEventRequestQueryAndStatusLoadingState
     extends ViewYourEventScreenState {}
 
@@ -23,10 +25,22 @@ class SendEventRequestQueryAndStatusSuccessState
   SendEventRequestQueryAndStatusSuccessState(this.eventModel);
 }
 
+class EventVisibilitySuccessState extends ViewYourEventScreenState {
+  final EventModel? eventModel;
+
+  EventVisibilitySuccessState(this.eventModel);
+}
+
 class ViewYourEventScreenFailureState extends ViewYourEventScreenState {
   final String error;
 
   ViewYourEventScreenFailureState(this.error);
+}
+
+class EventVisibilityFailureState extends ViewYourEventScreenState {
+  final String error;
+
+  EventVisibilityFailureState(this.error);
 }
 
 class SendEventRequestQueryAndStatusFailureState

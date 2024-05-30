@@ -14,6 +14,8 @@ import 'package:chat_app_white_label/src/components/search_text_field_component.
 import 'package:chat_app_white_label/src/components/success_share_bottom_sheet.dart';
 import 'package:chat_app_white_label/src/components/switch_permission_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/text_field_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
@@ -23,8 +25,10 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/cubit/group_cubit.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
 import 'package:chat_app_white_label/src/models/event_data_model.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -43,9 +47,12 @@ class CreateGroupScreens extends StatefulWidget {
 
 class _CreateGroupScreensState extends State<CreateGroupScreens> {
   EventDataModel? _eventDataModel;
+  late FocusNode myFocusNode;
   final TextEditingController _controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
   TextEditingController searchControllerConnections = TextEditingController();
+  final TextEditingController groupNameController = TextEditingController();
+  final TextEditingController _controllerDescription = TextEditingController();
   bool requireGuest = true;
   bool askQuestion = false;
   bool editQuestion = false;
@@ -55,6 +62,8 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
   String _selectedQuestionPublic = 'Public';
   String groupName = 'xyz Group';
   int? selectedIndexPrice;
+  bool editGroupName = false;
+
   int? _draggingIndex;
   final List<String> values = ['Public', 'Private'];
   String? selectedVisibilityValue = "Public";
@@ -62,14 +71,22 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
   String? selectedImagePath;
 
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
-    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
-    ContactModel('Json Ebert', 'Tester', "","03323333333"),
-    ContactModel('Mack', 'Intern', "","03312233445"),
-    ContactModel('Julia', 'Developer', "","88552233644"),
-    ContactModel('Rose', 'Human Resource', "","55366114532"),
-    ContactModel('Frank', 'xyz', "","25651412344"),
-    ContactModel('Taylor', 'Test', "","5511772266"),
+    // ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
+    // ContactModel('Albert Ebert', 'Manager', "","45612378123"),
+    // ContactModel('Json Ebert', 'Tester', "","03323333333"),
+    // ContactModel('Mack', 'Intern', "","03312233445"),
+    // ContactModel('Julia', 'Developer', "","88552233644"),
+    // ContactModel('Rose', 'Human Resource', "","55366114532"),
+    // ContactModel('Frank', 'xyz', "","25651412344"),
+    // ContactModel('Taylor', 'Test', "","5511772266"),
+    // ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
+    // ContactModel('Albert Ebert', 'Manager', "","45612378123"),
+    // ContactModel('Json Ebert', 'Tester', "","03323333333"),
+    // ContactModel('Mack', 'Intern', "","03312233445"),
+    // ContactModel('Julia', 'Developer', "","88552233644"),
+    // ContactModel('Rose', 'Human Resource', "","55366114532"),
+    // ContactModel('Frank', 'xyz', "","25651412344"),
+    // ContactModel('Taylor', 'Test', "","5511772266"),
   ];
 
   Map<int, String> selectedQuestionPublic={};
@@ -79,23 +96,57 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
       []; // Initialize with one question
   final TextEditingController _controllerQuestions = TextEditingController();
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // Initialize controllers for each question
+  //   _questionControllers =
+  //       List.generate(questions.length, (index) => TextEditingController());
+  // }
+  late GroupCubit groupCubit = BlocProvider.of<GroupCubit>(context);
   @override
   void initState() {
     super.initState();
-    // Initialize controllers for each question
+    groupCubit.eventModel = EventModel();
+    // print(
+    //     "widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
+    // selectedImagePath = widget.eventModel?.images?.first;
+    // selectedImagePath = widget.eventModel?.images?.first;
+    LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     _questionControllers =
         List.generate(questions.length, (index) => TextEditingController());
+    myFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    // Dispose of the controllers when the widget is disposed
     _questionControllers.forEach((controller) => controller.dispose());
-    super.dispose();
-  }
+    myFocusNode.dispose();
+      super.dispose();
+    }
+
+  // @override
+  // void dispose() {
+  //   // Dispose of the controllers when the widget is disposed
+  //   _questionControllers.forEach((controller) => controller.dispose());
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<GroupCubit, GroupState>(
+  listener: (context, state) {
+    if (state is GroupLoadingState) {
+      LoadingDialog.showLoadingDialog(context);
+    } else if (state is CreateGroupSuccessState) {
+      LoadingDialog.hideLoadingDialog(context);
+      _createEventBottomSheet();
+    } else if (state is CreateGroupFailureState) {
+      LoadingDialog.hideLoadingDialog(context);
+      ToastComponent.showToast(state.toString(), context: context);
+    }
+  },
+  builder: (context, state) {
     return UIScaffold(
         bgColor: themeCubit.backgroundColor,
         appBar: AppBarComponent(
@@ -104,6 +155,8 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
           isBackBtnCircular: false,
         ),
         widget: _createGroup());
+  },
+);
   }
 
   toggleTaped() {
@@ -186,7 +239,12 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                                     setState(() {
                                       selectedImagePath = image
                                           .path; // Update the state with the selected image path
+                                      // groupCubit.addImage(selectedImagePath);
+                                      // groupCubit.addImage("https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
                                     });
+                                    var uploadImage = await AppConstants.uploadImage(selectedImagePath?? "","group");
+                                    print("uploadingImage $uploadImage");
+                                    await groupCubit.addImage(uploadImage);
                                   }
                                 },
                                 child: Row(
@@ -211,12 +269,83 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                                   ],
                                 ),
                               ),
-                              TextComponent(
-                                groupName,
-                                style: TextStyle(
-                                    fontSize: 38,
-                                    fontFamily: FontConstants.fontProtestStrike,
-                                    color: ColorConstants.white),
+                              Container(
+                                width: AppConstants.responsiveWidth(context,
+                                    percentage: 100),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    // editEventName ?
+                                    Container(
+                                      // color: ColorConstants.blue,
+                                      child: SizedBox(
+                                        width: AppConstants.responsiveWidth(
+                                            context,
+                                            percentage: 55),
+                                        child: AbsorbPointer(
+                                          absorbing: editGroupName,
+                                          child: TextFieldComponent(
+                                            groupNameController,
+                                            keyboardType: TextInputType.name,
+                                            focusNode: myFocusNode,
+                                            hintTextColor: ColorConstants.white,
+                                            hintText: "Create Group",
+                                            maxLines: 2,
+                                            onChanged: (_) {
+                                              groupName =
+                                                  groupNameController.text;
+                                              groupCubit.addTitle(
+                                                  groupNameController.text);
+                                            },
+                                            onFieldSubmitted: (_) {
+                                              setState(() {
+                                                editGroupName = true;
+                                                groupName =
+                                                    groupNameController.text;
+                                                print("groupName ${groupName}");
+                                                groupCubit.eventModel
+                                                    .copyWith(title: groupName);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    //:
+                                    // Container(
+                                    //   width: AppConstants.responsiveWidth(context,percentage: 55),
+                                    //   child: TextComponent(
+                                    //     eventName ?? intialEventName,
+                                    //     maxLines: 3,
+                                    //     style: TextStyle(
+                                    //         fontSize: 38,
+                                    //         fontFamily: FontConstants.fontProtestStrike,
+                                    //         color: ColorConstants.white),
+                                    //   ),
+                                    // ),
+                                    Container(
+                                      // color: ColorConstants.red,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            myFocusNode.requestFocus();
+                                            editGroupName = false;
+                                            print("setState ${editGroupName}");
+                                          });
+                                        },
+                                        child: IconComponent(
+                                          iconData: Icons.edit,
+                                          borderColor: ColorConstants.transparent,
+                                          circleSize: 40,
+                                          backgroundColor:
+                                          ColorConstants.transparent,
+                                          iconColor: ColorConstants.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -225,31 +354,31 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                     ],
                   ),
                   SizedBoxConstants.sizedBoxTwentyH(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: TextComponent(
-                      StringConstants.groupDetail,
-                      style: TextStyle(
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 20,
-                          color: themeCubit.primaryColor),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 13,
-                  ),
-                  ListTileComponent(
-                    leadingIcon: AssetConstants.marker,
-                    leadingText: StringConstants.location,
-                    leadingIconWidth: 25,
-                    leadingIconHeight: 25,
-                    trailingText: "Manchester",
-                    subTextColor: themeCubit.textColor,
-                    onTap: _selectLocation,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 8.0),
+                  //   child: TextComponent(
+                  //     StringConstants.groupDetail,
+                  //     style: TextStyle(
+                  //         fontFamily: FontConstants.fontProtestStrike,
+                  //         fontSize: 20,
+                  //         color: themeCubit.primaryColor),
+                  //   ),
+                  // ),
+                  // const SizedBox(
+                  //   height: 13,
+                  // ),
+                  // ListTileComponent(
+                  //   leadingIcon: AssetConstants.marker,
+                  //   leadingText: StringConstants.location,
+                  //   leadingIconWidth: 25,
+                  //   leadingIconHeight: 25,
+                  //   trailingText: "Manchester",
+                  //   subTextColor: themeCubit.textColor,
+                  //   onTap: _selectLocation,
+                  // ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
                   SizedBoxConstants.sizedBoxTwentyH(),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
@@ -263,13 +392,17 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   ),
                   SizedBoxConstants.sizedBoxTenH(),
                   TextField(
-                    controller: _controllerQuestions,
+                    controller: _controllerDescription,
                     maxLines: 4,
+                    onChanged: (_) {
+                      groupCubit.addDescription(_controllerDescription.value.text);
+                    },
                     style: TextStyle(color: themeCubit.textColor),
                     decoration: InputDecoration(
                       hintText: StringConstants.typeYourDescription,
                       filled: true,
                       fillColor: themeCubit.darkBackgroundColor,
+
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0),
                           borderSide: const BorderSide(
@@ -325,6 +458,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                     onSwitchChanged: (bool value) {
                       setState(() {
                         requireGuest = value;
+                        groupCubit.addRequiredGuestApproval(requireGuest);
                       });
                     },
                   ),
@@ -335,7 +469,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                     name: StringConstants.askQuestionWhenPeopleJoin,
                     detail: StringConstants.askQuestionWhenPeopleJoinBody,
                     switchValue: _questionControllers.isNotEmpty &&
-                            _questionControllers.first.text.isNotEmpty
+                        _questionControllers.first.text.isNotEmpty
                         ? true
                         : false,
                     editQuestionsTap: () {
@@ -348,29 +482,16 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                             selectedQuestionRequired,
                             selectedQuestionPublic,
                                 (List<Question> questionsList) {
-
-                              // List<Question> questionsList = eventCubit.eventModel.question?? [];
-                              // for(int i = 0; i < _questionControllers.length; i++){
-                              //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
-                              //   Question newQuestion = Question(
-                              //     questionId: "auto", // Assuming you have a mechanism to generate unique IDs
-                              //     question: _questionControllers[i].value.text, // Pass the entire list of controllers
-                              //     isPublic: selectedQuestionPublic[i]=="Public"?true:false ,
-                              //     isRequired: selectedQuestionRequired[i]=="Required"?true:false ,
-                              //   );
-                              //   questionsList.add(newQuestion);
-                              // }
-                              // eventCubit.eventModel.copyWith(question: questionsList);
-                              // // NavigationUtil.pop(context);
-                              //
-                              // LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
-                            }
-
-                        );
+                                  groupCubit.addQuestions(questionsList);
+                              LoggerUtil.logs(
+                                  "groupCubit.eventModel.questions ${groupCubit.eventModel.question}");
+                              LoggerUtil.logs(
+                                  "groupCubit.eventModel.tojson ${groupCubit.eventModel.toJson()}");
+                            });
                       }
                     },
                     editQuestions: _questionControllers.isNotEmpty &&
-                            _questionControllers.first.text.isNotEmpty
+                        _questionControllers.first.text.isNotEmpty
                         ? true
                         : false,
                     onSwitchChanged: (bool value) {
@@ -381,31 +502,18 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                       if (askQuestion == true) {
                         QuestionComponent.selectQuestion(
                             context,
-
                             _questionControllers,
                             questions,
                             selectedQuestionRequired,
                             selectedQuestionPublic,
-                               (List<Question> questionsList) {
-                              //
-                              // List<Question> questionsList = eventCubit.eventModel.question?? [];
-                              // for(int i = 0; i < _questionControllers.length; i++){
-                              //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
-                              //   Question newQuestion = Question(
-                              //     questionId: "auto", // Assuming you have a mechanism to generate unique IDs
-                              //     question: _questionControllers[i].value.text, // Pass the entire list of controllers
-                              //     isPublic: selectedQuestionPublic[i]=="Public"?true:false ,
-                              //     isRequired: selectedQuestionRequired[i]=="Required"?true:false ,
-                              //   );
-                              //   questionsList.add(newQuestion);
-                              // }
-                              // eventCubit.eventModel.copyWith(question: questionsList);
-                              // // NavigationUtil.pop(context);
-                              //
-                              // LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
-                           }
+                                (List<Question> questionsList) {
+                                  groupCubit.addQuestions(questionsList);
 
-                        );
+                              LoggerUtil.logs(
+                                  "groupCubit.eventModel.questions ${groupCubit.eventModel.question}");
+                              LoggerUtil.logs(
+                                  "groupCubit.eventModel.tojson ${groupCubit.eventModel.toJson()}");
+                            });
 
                         // _selectQuestion();
                       } else if (askQuestion == false) {
@@ -422,13 +530,29 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                   Container(
                     margin: EdgeInsets.only(left: 8, right: 8, top: 8),
                     child: ButtonComponent(
-                      bgcolor: themeCubit.primaryColor,
+                      bgcolor:
+                          groupName.isNotEmpty &&
+                          selectedImagePath != null
+                          ? themeCubit.primaryColor
+                          : themeCubit.darkBackgroundColor,
                       buttonText: StringConstants.createGroup,
-                      textColor: themeCubit.backgroundColor,
+                      textColor:
+                      groupName.isNotEmpty &&
+                          selectedImagePath != null
+                          ? themeCubit.backgroundColor
+                        : ColorConstants.grey1,
                       onPressed: () {
                         // EventUtils.createEvent(_eventDataModel!);
                         // _createBottomSheet();
-                        _createEventBottomSheet();
+
+                        if (
+                            groupName.isNotEmpty &&
+                            selectedImagePath != null ) {
+                          groupCubit.createGroupData(groupCubit.eventModel);
+                        }
+
+
+
                         // NavigationUtil.push(
                         //     context, RouteConstants.localsEventScreen);
                       },
@@ -442,6 +566,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
       ),
     );
   }
+
 
   _createEventBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
@@ -1313,10 +1438,14 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
           onValueSelected: (String? newValue) {
             setState(() {
               selectedVisibilityValue = newValue;
+              groupCubit.addVisibility(
+                  selectedVisibilityValue == "Public" ? true : false);
             });
           },
         ));
   }
+
+
 
   _selectLocation() {
     BottomSheetComponent.showBottomSheet(context,
@@ -1410,4 +1539,6 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
           ));
     }));
   }
+
 }
+

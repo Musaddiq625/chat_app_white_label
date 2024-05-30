@@ -17,7 +17,7 @@ class FilterRepository{
     return GetFiltersDataModel.fromJson(response);
   }
 
-  static Future<EventResponseWrapper> sendFilters(String? startDate,String? endDate,String? dateFilter,List<String>categories, bool? isFree) async {
+  static Future<EventResponseWrapper> sendFilters(String pageValue,String? startDate,String? endDate,String? dateFilter,List<String>categories, bool? isFree) async {
     final response = await getIt<DioClientNetwork>()
         .postRequest(HttpConstants.event,{
       "startDate": startDate,
@@ -25,8 +25,10 @@ class FilterRepository{
       "date_filter": dateFilter,
       "categories": categories,
       "isFree": isFree
+    },queryParameters: {
+      'pages': pageValue,
     });
-    final x = EventResponseWrapper.fromJson(response);
+    final x = EventResponseWrapper.filterEventFromJson(response);
     return x;
   }
 

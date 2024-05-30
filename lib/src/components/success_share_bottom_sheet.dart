@@ -3,6 +3,7 @@ import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/search_text_field_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
@@ -10,7 +11,6 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
-import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +20,7 @@ import '../models/contact.dart';
 
 class SuccessShareBottomSheet extends StatefulWidget {
   final String successTitle;
+
   // final List<Map<String, dynamic>> contacts;
   final List<ContactModel> contacts;
 
@@ -48,11 +49,13 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
   List<ContactModel> filteredContacts = [];
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   TextEditingController searchControllerConnections = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     filteredContacts = widget.contacts; // Initialize with all contacts
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,15 +64,18 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
             topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
         color: themeCubit.darkBackgroundColor,
       ),
-      constraints: const BoxConstraints(maxHeight: 700),
+      constraints: BoxConstraints(
+          maxHeight: AppConstants.responsiveHeight(context, percentage: 80)),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               InkWell(
-                onTap: () => NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen),
+                onTap: () => NavigationUtil.popAllAndPush(
+                    context, RouteConstants.mainScreen),
                 child: Padding(
                   padding: const EdgeInsets.only(right: 40.0, top: 15),
                   child: IconComponent(
@@ -199,64 +205,74 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
           const SizedBox(
             height: 5,
           ),
-          const Divider(
-            thickness: 0.1,
-          ),
+          if (filteredContacts.isNotEmpty)
+            const Divider(
+              thickness: 0.1,
+            ),
           const SizedBox(
             height: 5,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 18.0, top: 10, bottom: 5),
-            child: TextComponent(
-              StringConstants.yourConnections,
-              style: TextStyle(
-                  color: themeCubit.primaryColor,
-                  fontFamily: FontConstants.fontProtestStrike,
-                  fontSize: 18),
+          if (filteredContacts.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(left: 18.0, top: 10, bottom: 5),
+              child: TextComponent(
+                StringConstants.yourConnections,
+                style: TextStyle(
+                    color: themeCubit.primaryColor,
+                    fontFamily: FontConstants.fontProtestStrike,
+                    fontSize: 18),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: 18.0, top: 10, bottom: 16, right: 18),
-            child: SearchTextField(
-              filledColor: ColorConstants.backgroundColor.withOpacity(0.3),
-              title: "Search",
-              hintText: "Search name, postcode..",
-              onSearch: (text) {
-                setState(() {
-                  filteredContacts = widget.contacts
-                      .where((contact) =>
-                  contact.name.toLowerCase().contains(text.toLowerCase()) ||
-                      contact.title.toLowerCase().contains(text.toLowerCase())||
-                      contact.number.toLowerCase().contains(text.toLowerCase())
-                  )
-                      .toList();
-                });
-              },
-              textEditingController: searchControllerConnections,
+          if (filteredContacts.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 18.0, top: 10, bottom: 16, right: 18),
+              child: SearchTextField(
+                filledColor: ColorConstants.backgroundColor.withOpacity(0.3),
+                title: "Search",
+                hintText: "Search name, postcode..",
+                onSearch: (text) {
+                  setState(() {
+                    filteredContacts = widget.contacts
+                        .where((contact) =>
+                            contact.name
+                                .toLowerCase()
+                                .contains(text.toLowerCase()) ||
+                            contact.title
+                                .toLowerCase()
+                                .contains(text.toLowerCase()) ||
+                            contact.number
+                                .toLowerCase()
+                                .contains(text.toLowerCase()))
+                        .toList();
+                  });
+                },
+                textEditingController: searchControllerConnections,
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              // physics: BouncingScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: filteredContacts.length,
-              itemBuilder: (ctx, index) {
-                final contact = filteredContacts[index];
-                return ContactCard(
-                  imageSize: 45,
-                  name: contact.name,
-                  title: contact.title,
-                  url: contact.url,
-                  // contact: contacts[index],
-                  onShareTap: () {
-                    Navigator.pop(context);
-                    widget.onContactShareTap;
-                  },
-                );
-              },
+          if (filteredContacts.isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                // physics: BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: filteredContacts.length,
+                itemBuilder: (ctx, index) {
+                  final contact = filteredContacts[index];
+                  return ContactCard(
+                    imageSize: 45,
+                    name: contact.name,
+                    title: contact.title,
+                    url: contact.url,
+                    // contact: contacts[index],
+                    onShareTap: () {
+                      Navigator.pop(context);
+                      widget.onContactShareTap;
+                    },
+                  );
+                },
+              ),
             ),
-          ),
+          SizedBoxConstants.sizedBoxThirtyH(),
         ],
       ),
     );

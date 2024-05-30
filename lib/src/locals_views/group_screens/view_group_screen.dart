@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chat_app_white_label/src/components/about_event_component.dart';
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
@@ -11,9 +13,9 @@ import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/joinBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/search_text_field_component.dart';
-import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
@@ -21,17 +23,25 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/cubit/group_cubit.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
+import 'package:chat_app_white_label/src/models/event_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ViewGroupScreen extends StatefulWidget {
-  const ViewGroupScreen({super.key});
+  String? groupId;
+
+  ViewGroupScreen({super.key, this.groupId});
 
   @override
   State<ViewGroupScreen> createState() => _ViewGroupScreenState();
@@ -47,7 +57,9 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
   bool _showFullText = false;
   bool groupMember = false;
-
+  bool joinGroup = false;
+  String? totalAcceptedMembers;
+  EventRequest? yourEventRequest;
   final List<ImageProvider> images = [
     const CachedNetworkImageProvider(
         "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png"),
@@ -65,136 +77,228 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
     "Hello Question 3",
   ];
 
-
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
-    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
-    ContactModel('Json Ebert', 'Tester', "","03323333333"),
-    ContactModel('Mack', 'Intern', "","03312233445"),
-    ContactModel('Julia', 'Developer', "","88552233644"),
-    ContactModel('Rose', 'Human Resource', "","55366114532"),
-    ContactModel('Frank', 'xyz', "","25651412344"),
-    ContactModel('Taylor', 'Test', "","5511772266"),
+    ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
+    ContactModel('Json Ebert', 'Tester', "", "03323333333"),
+    ContactModel('Mack', 'Intern', "", "03312233445"),
+    ContactModel('Julia', 'Developer', "", "88552233644"),
+    ContactModel('Rose', 'Human Resource', "", "55366114532"),
+    ContactModel('Frank', 'xyz', "", "25651412344"),
+    ContactModel('Taylor', 'Test', "", "5511772266"),
   ];
 
   TextEditingController searchControllerConnections = TextEditingController();
 
+  late final groupCubit = BlocProvider.of<GroupCubit>(context);
+  List<EventRequest>? acceptedRequests;
+  String? userId;
+  UserModel? userModel;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final serializedUserModel = await getIt<SharedPreferencesUtil>()
+          .getString(SharedPreferenceConstants.userModel);
+      userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+
+      setState(() {
+        userId = "${userModel?.id}";
+      });
+      groupCubit.eventModel = EventModel();
+      await groupCubit.viewGroupById(widget.groupId ?? "");
+      yourEventRequest = groupCubit.eventModel.eventRequest
+          ?.where((eventRequest) => eventRequest.userId == userId)
+          .toList()
+          .first;
+
+      print(" 0 userId ${userModel?.id}");
+      print(" 0 yourEventRequestyourEventRequest${yourEventRequest?.toJson()}");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-      // appBar: AppBarComponent(""),
-      removeSafeAreaPadding: false,
-      bgColor: ColorConstants.backgroundColor,
-      widget: SingleChildScrollView(
-        // physics: BouncingScrollPhysics(),
-        child: Container(
-          color: themeCubit.backgroundColor,
-          child: Column(
-            children: [_eventWidget(), _members()],
-          ),
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        child: (!groupMember)
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ButtonWithIconComponent(
-                    iconColor: ColorConstants.white,
-                    btnText: '  ${StringConstants.decline}',
-                    btnTextColor: ColorConstants.white,
-                    icon: Icons.cancel,
-                    widthSpace: 30,
-                    bgcolor: ColorConstants.blackLight,
-                    // btnTextColor: themeCubit.textColor,
-                    onPressed: () {
-                      // _showJoinBottomSheet();
-                    },
-                  ),
-                  ButtonWithIconComponent(
-                    btnText: '  ${StringConstants.accept}',
-                    icon: Icons.check_circle,
-                    bgcolor: themeCubit.primaryColor,
-                    widthSpace: 30,
-                    // btnTextColor: themeCubit.textColor,
-                    onPressed: () {
-                      JoinBottomSheet.showJoinBottomSheet(
-                          context,
-                          _messageController,
-                          "",
-                          "",
-                          "",
-                          "",
-                          "Property networking event",
-                          "Group",
-                          "ABC",
-                          "",
-                          // questions: questions
-                      );
-                      // _showJoinBottomSheet();
-                    },
-                  ),
-                ],
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconComponent(
-                      iconData: Icons.favorite,
-                      backgroundColor: ColorConstants.blackLight,
-                      circleSize: 40,
-                      iconSize: 25,
-                      onTap: () {
-                        // _shareEventBottomSheet();
-                      }),
-                  SizedBoxConstants.sizedBoxTenW(),
-                  IconComponent(
-                    // iconData: Icons.menu,
-                    svgData: AssetConstants.share,
-                    backgroundColor: ColorConstants.blackLight,
-                    circleSize: 40,
-                    iconSize: 20,
-                    // onTap: _showMoreBottomSheet,
-                  ),
-                  SizedBoxConstants.sizedBoxTenW(),
-                  IconComponent(
-                    // iconData: Icons.menu,
-                    svgData: AssetConstants.more,
-                    backgroundColor: ColorConstants.blackLight,
-                    circleSize: 40,
-                    iconSize: 6,
-                    // onTap: _showMoreBottomSheet,
-                  ),
-                  Spacer(),
-                  if (groupMember)
-                    ButtonWithIconComponent(
-                      btnText: '  ${StringConstants.chat}',
-                      svgData: AssetConstants.message,
-                      bgcolor: themeCubit.primaryColor,
-                      widthSpace: 30,
-                      // btnTextColor: themeCubit.textColor,
-                      onPressed: () {
-                        // _showJoinBottomSheet();
-                      },
-                    ),
-                ],
+    return BlocConsumer<GroupCubit, GroupState>(
+      listener: (context, state) {
+        if (state is ViewGroupLoadingState) {
+          LoadingDialog.showLoadingDialog(context);
+        } else if (state is ViewGroupSuccessState) {
+          LoadingDialog.hideLoadingDialog(context);
+          groupCubit.initializeEventData(state.eventModel!);
+          totalAcceptedMembers = groupCubit.eventModel.eventRequest
+              ?.where(
+                  (eventRequest) => eventRequest.requestStatus == "Accepted")
+              .length
+              .toString();
+          yourEventRequest = groupCubit.eventModel.eventRequest
+              ?.where((eventRequest) => eventRequest.userId == userId)
+              .firstWhere(
+                (eventRequest) => eventRequest.userId == userId,
+            orElse: () => EventRequest(), // Fallback to null if no match is found
+          );
+          acceptedRequests = groupCubit.eventModel.eventRequest
+              ?.where(
+                  (eventRequest) => eventRequest.requestStatus == "Accepted")
+              .toList();
+        } else if (state is ViewGroupFailureState) {
+          LoadingDialog.hideLoadingDialog(context);
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+      },
+      builder: (context, state) {
+        return UIScaffold(
+          removeSafeAreaPadding: false,
+          bgColor: ColorConstants.backgroundColor,
+          widget: SingleChildScrollView(
+            // physics: BouncingScrollPhysics(),
+            child: Container(
+              color: themeCubit.backgroundColor,
+              child: Column(
+                children: [_eventWidget()],
               ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            ),
+          ),
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: (!joinGroup)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(),
+                      ((yourEventRequest?.id ?? "").isEmpty)?
+                      ButtonWithIconComponent(
+                        btnText: '  ${StringConstants.join}',
+                        icon: Icons.check_circle,
+                        bgcolor: themeCubit.primaryColor,
+                        widthSpace: 30,
+                        // btnTextColor: themeCubit.textColor,
+                        onPressed: () {
+                          JoinBottomSheet.showJoinBottomSheet(
+                              context,
+                              _messageController,
+                              groupCubit.eventModel.id ?? "",
+                              groupCubit.eventModel.userId,
+                              groupCubit.eventModel.userName,
+                              groupCubit.eventModel.userImages,
+                              groupCubit.eventModel.title ?? "",
+                              "Group",
+                              "ABC",
+                              "",
+                              questions: groupCubit.eventModel.question);
+                          // _showJoinBottomSheet();
+                        },
+                      ):  SizedBox(),
+                    ],
+                  )
+                : (!groupMember)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ButtonWithIconComponent(
+                            iconColor: ColorConstants.white,
+                            btnText: '  ${StringConstants.decline}',
+                            btnTextColor: ColorConstants.white,
+                            icon: Icons.cancel,
+                            widthSpace: 30,
+                            bgcolor: ColorConstants.blackLight,
+                            // btnTextColor: themeCubit.textColor,
+                            onPressed: () {
+                              // _showJoinBottomSheet();
+                            },
+                          ),
+                          ButtonWithIconComponent(
+                            btnText: '  ${StringConstants.accept}',
+                            icon: Icons.check_circle,
+                            bgcolor: themeCubit.primaryColor,
+                            widthSpace: 30,
+                            // btnTextColor: themeCubit.textColor,
+                            onPressed: () {
+                              JoinBottomSheet.showJoinBottomSheet(
+                                  context,
+                                  _messageController,
+                                  groupCubit.eventModel.id ?? "",
+                                  groupCubit.eventModel.userId,
+                                  groupCubit.eventModel.userName,
+                                  groupCubit.eventModel.userImages,
+                                  groupCubit.eventModel.title ?? "",
+                                  "Group",
+                                  "ABC",
+                                  "",
+                                  questions: groupCubit.eventModel.question);
+                              // _showJoinBottomSheet();
+                            },
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconComponent(
+                              iconData: Icons.favorite,
+                              backgroundColor: ColorConstants.blackLight,
+                              circleSize: 40,
+                              iconSize: 25,
+                              onTap: () {
+                                // _shareEventBottomSheet();
+                              }),
+                          SizedBoxConstants.sizedBoxTenW(),
+                          IconComponent(
+                            // iconData: Icons.menu,
+                            svgData: AssetConstants.share,
+                            backgroundColor: ColorConstants.blackLight,
+                            circleSize: 40,
+                            iconSize: 20,
+                            // onTap: _showMoreBottomSheet,
+                          ),
+                          SizedBoxConstants.sizedBoxTenW(),
+                          IconComponent(
+                            // iconData: Icons.menu,
+                            svgData: AssetConstants.more,
+                            backgroundColor: ColorConstants.blackLight,
+                            circleSize: 40,
+                            iconSize: 6,
+                            // onTap: _showMoreBottomSheet,
+                          ),
+                          Spacer(),
+                          if (groupMember)
+                            ButtonWithIconComponent(
+                              btnText: '  ${StringConstants.chat}',
+                              svgData: AssetConstants.message,
+                              bgcolor: themeCubit.primaryColor,
+                              widthSpace: 30,
+                              // btnTextColor: themeCubit.textColor,
+                              onPressed: () {
+                                // _showJoinBottomSheet();
+                              },
+                            ),
+                        ],
+                      ),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        );
+      },
     );
   }
 
   Widget _eventWidget() {
     return Stack(children: [
-      Image.network(
-        "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-        fit: BoxFit.fill,
-        width: double.infinity,
-        height: 500,
-      ),
+      (groupCubit.eventModel.images?.first != null)
+          ? Image.network(
+              groupCubit.eventModel.images?.first ?? "",
+              // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+              fit: BoxFit.fill,
+              width: double.infinity,
+              height: 500,
+            )
+          : Container(
+              color: ColorConstants.black,
+              height: 500,
+            ),
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -216,39 +320,46 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
             //   ),
             // ),
 
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ProfileImageComponent(
-                    url: "",
-                    size: 40,
-                  ),
-                  SizedBoxConstants.sizedBoxEightW(),
-                  TextComponent(
-                    "${StringConstants.invitedBy + invitedBy}",
-                    style: FontStylesConstants.style16(),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: TextComponent(groupName,
-                  maxLines: 6,
-                  style:
-                      FontStylesConstants.style38(color: ColorConstants.white)),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 10),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     children: [
+            //       ProfileImageComponent(
+            //         url: "",
+            //         size: 40,
+            //       ),
+            //       SizedBoxConstants.sizedBoxEightW(),
+            //       TextComponent(
+            //         "${StringConstants.invitedBy + invitedBy}",
+            //         style: FontStylesConstants.style16(),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            (groupCubit.eventModel.title != null)
+                ? Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: TextComponent(
+                        groupCubit.eventModel.title ?? "", //groupName,
+                        maxLines: 6,
+                        style: FontStylesConstants.style38(
+                            color: ColorConstants.white)),
+                  )
+                : SizedBox(),
             SizedBoxConstants.sizedBoxTenH(),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Row(
                 children: [
                   IconComponent(
-                    iconData: Icons.lock,
+                    iconData: (groupCubit.eventModel.isPublic ?? true)
+                        ? Icons.lock_open_outlined
+                        : Icons.lock,
                     backgroundColor: ColorConstants.transparent,
-                    customIconText: StringConstants.private,
+                    customIconText: (groupCubit.eventModel.isPublic ?? true)
+                        ? StringConstants.public
+                        : StringConstants.private,
                     circleSize: 60,
                     circleHeight: 35,
                     iconSize: 20,
@@ -267,8 +378,10 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: ContactCard(
-                  name: "Jesse",
-                  url: "",
+                  name: groupCubit.eventModel.userName ?? "",
+                  //"Jesse",
+                  url: groupCubit.eventModel.userImages ?? "",
+                  //"",
                   title: "Group Creator",
                   showShareIcon: false,
                   showDivider: false,
@@ -298,7 +411,29 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                     onPressed: () {}),
               ),
             if (groupMember) SizedBoxConstants.sizedBoxTenH(),
-            // _members(),
+
+            if ((int.parse(
+                        groupCubit.eventModel.eventTotalParticipants ?? "0") >
+                    0) ||
+                (yourEventRequest?.id ?? "").isNotEmpty)
+              _members(),
+            SizedBoxConstants.sizedBoxHundredH(),
+            SizedBoxConstants.sizedBoxHundredH(),
+            if ((int.parse(
+                        groupCubit.eventModel.eventTotalParticipants ?? "0") <=
+                    0) ||
+                (yourEventRequest?.id ?? "").isEmpty)
+              SizedBoxConstants.sizedBoxHundredH(),
+            if ((int.parse(
+                        groupCubit.eventModel.eventTotalParticipants ?? "0") <=
+                    0) ||
+                (yourEventRequest?.id ?? "").isEmpty)
+              SizedBoxConstants.sizedBoxHundredH(),
+            // Container(
+            //   height: 600,
+            //   color: ColorConstants.black,
+            // )
+            // :_shimmerMembers(),
           ],
         ),
       ),
@@ -313,99 +448,237 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
         ),
         color: themeCubit.darkBackgroundColor,
         elevation: 0,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextComponent(StringConstants.aboutTheGroup,
-                    style: FontStylesConstants.style18(
-                        color: themeCubit.primaryColor)),
-                SizedBox(
-                  height: 10,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _showFullText = !_showFullText;
-                    });
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: _showFullText
-                              ? _fullText
-                              : (_fullText.length > 150
-                                      ? _fullText.substring(0, 150)
-                                      : _fullText) ??
-                                  "No description available",
-                          style: TextStyle(color: themeCubit.textColor),
-                        ),
-                        if (_fullText.length > 150)
-                          TextSpan(
-                            text: _showFullText
-                                ? ' ${StringConstants.showLess}'
-                                : ' ...${StringConstants.readMore}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: themeCubit.textColor),
-                          ),
-                      ],
-                    ),
+        child: Container(
+          width: AppConstants.responsiveWidth(context),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextComponent(StringConstants.aboutTheGroup,
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor)),
+                  SizedBox(
+                    height: 10,
                   ),
-                ),
-              ],
+                  if (groupCubit.eventModel.description != null &&
+                      (groupCubit.eventModel.description ?? "").isNotEmpty)
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _showFullText = !_showFullText;
+                        });
+                      },
+                      child: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: _showFullText
+                                  ? groupCubit.eventModel.description
+                                  : ((groupCubit.eventModel.description ?? "")
+                                                  .length >
+                                              150
+                                          ? (groupCubit
+                                                      .eventModel.description ??
+                                                  "")
+                                              .substring(0, 150)
+                                          : groupCubit
+                                              .eventModel.description) ??
+                                      "No description available",
+                              style: TextStyle(color: themeCubit.textColor),
+                            ),
+                            if ((groupCubit.eventModel.description ?? "")
+                                    .length >
+                                150)
+                              TextSpan(
+                                text: _showFullText
+                                    ? ' ${StringConstants.showLess}'
+                                    : ' ...${StringConstants.readMore}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: themeCubit.textColor),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-          SizedBoxConstants.sizedBoxTenH(),
-          DividerCosntants.divider1,
-          // SizedBoxConstants.sizedBoxTenH(),
-          Container(
-            // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
-            child: Column(
-              children: [
-                // AboutEventComponent(
-                //   name: "1456 ${StringConstants.participants}",
-                //   detail: "Elena, Ilsa and more",
-                //   icon: AssetConstants.happy,
-                //   showPersonIcon: true,
-                //   selectedImages: images,
-                // ),
-                // AboutEventComponent(
-                //   name: StringConstants.flexibleDate,
-                //   detail: StringConstants.dateWillbeDecidelater,
-                //   icon: AssetConstants.calendar,
-                // ),
-                AboutEventComponent(
-                  divider: false,
-                  name: "Manchester",
-                  detail: StringConstants.exactLocationAfterJoining,
-                  icon: AssetConstants.marker,
-                ),
-                // if (ticketRequired == true)
-                // AboutEventComponent(
-                //   name: "SR 150",
-                //   detail: StringConstants.ticketrequired,
-                //   icon: AssetConstants.ticket,
-                // ),
-                // AboutEventComponent(
-                //   divider: false,
-                //   name: StringConstants.capacityOf,
-                //   detail: StringConstants.limitedGuests,
-                //   icon: AssetConstants.tag,
-                // ),
-                SizedBoxConstants.sizedBoxTenH()
-              ],
-            ),
-          ),
-        ]));
+            SizedBoxConstants.sizedBoxTwentyH(),
+            // DividerCosntants.divider1,
+            // SizedBoxConstants.sizedBoxTenH(),
+            // Container(
+            //   // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
+            //   child: Column(
+            //     children: [
+            //       // AboutEventComponent(
+            //       //   name: "1456 ${StringConstants.participants}",
+            //       //   detail: "Elena, Ilsa and more",
+            //       //   icon: AssetConstants.happy,
+            //       //   showPersonIcon: true,
+            //       //   selectedImages: images,
+            //       // ),
+            //       // AboutEventComponent(
+            //       //   name: StringConstants.flexibleDate,
+            //       //   detail: StringConstants.dateWillbeDecidelater,
+            //       //   icon: AssetConstants.calendar,
+            //       // ),
+            //       //////location////////
+            //       // AboutEventComponent(
+            //       //   divider: false,
+            //       //   name: "Manchester",
+            //       //   detail: StringConstants.exactLocationAfterJoining,
+            //       //   icon: AssetConstants.marker,
+            //       // ),
+            //       // if (ticketRequired == true)
+            //       // AboutEventComponent(
+            //       //   name: "SR 150",
+            //       //   detail: StringConstants.ticketrequired,
+            //       //   icon: AssetConstants.ticket,
+            //       // ),
+            //       // AboutEventComponent(
+            //       //   divider: false,
+            //       //   name: StringConstants.capacityOf,
+            //       //   detail: StringConstants.limitedGuests,
+            //       //   icon: AssetConstants.tag,
+            //       // ),
+            //       SizedBoxConstants.sizedBoxTenH()
+            //     ],
+            //   ),
+            // ),
+          ]),
+        ));
   }
 
   Widget _members() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child:
+            // ((int.parse(groupCubit.eventModel.eventTotalParticipants ?? "0") > 0) || (yourEventRequest?.id ?? "").isNotEmpty)?
+            Card(
+          color: themeCubit.darkBackgroundColor,
+          elevation: 0,
+          child: ListView(
+            physics: BouncingScrollPhysics(),
+            shrinkWrap: true,
+            // mainAxisSize: MainAxisSize.min,
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 18),
+                  child: RichText(
+                    textAlign: TextAlign.start,
+                    text: TextSpan(
+                      style: TextStyle(
+                          fontFamily: FontConstants.fontProtestStrike,
+                          fontSize: 18,
+                          color: themeCubit.primaryColor),
+                      children: <TextSpan>[
+                        const TextSpan(text: "${StringConstants.members}  "),
+                        TextSpan(
+                          text: totalAcceptedMembers ?? "0",
+                          //contacts.length.toString(),
+                          style: TextStyle(
+                              color: ColorConstants.lightGray.withOpacity(0.5)),
+                        ),
+                      ],
+                    ),
+                  )),
+              SizedBoxConstants.sizedBoxThirtyH(),
+              if (yourEventRequest?.requestStatus != "Accepted" &&
+                  yourEventRequest != null)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                          margin: EdgeInsets.only(left: 5),
+                          // width:
+                          // AppConstants.responsiveWidth(context, percentage: 75),
+                          child: ContactCard(
+                            name: (yourEventRequest?.name ?? ""),
+                            url: (yourEventRequest?.image ?? ""),
+                            title: (yourEventRequest?.aboutMe ?? ""),
+                            showShareIcon: false,
+                            showDivider: false,
+                            imageSize: 40,
+                          )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TextComponent(
+                          yourEventRequest?.requestStatus ?? "",
+                          style: FontStylesConstants.style12(
+                              color: ColorConstants.lightGray)),
+                    ),
+                  ],
+                ),
+              SizedBoxConstants.sizedBoxTwentyH(),
+              if (yourEventRequest?.requestStatus != "Accepted" && yourEventRequest != null &&(acceptedRequests ?? []).length > 0  )
+                 DividerCosntants.divider1,
+              // Row(
+              //   children: [
+              //     Container(
+              //         width:
+              //         AppConstants.responsiveWidth(context, percentage: 66),
+              //         child: const ContactCard(
+              //           name: "Jesse",
+              //           url: "",
+              //           title: "Graphic Designer",
+              //           showShareIcon: false,
+              //           showDivider: false,
+              //           imageSize: 45,
+              //         )),
+              //     TagComponent(
+              //       width: AppConstants.responsiveWidth(context, percentage: 22),
+              //       customTextColor: themeCubit.backgroundColor,
+              //       backgroundColor: ColorConstants.primaryColor,
+              //       iconColor: themeCubit.primaryColor,
+              //       customIconText: StringConstants.creator,
+              //     ),
+              //     // Container(
+              //     //
+              //     //   padding: const EdgeInsets.only(
+              //     //       left: 16, right: 16, top: 3, bottom: 3),
+              //     //   decoration: BoxDecoration(
+              //     //     color: ColorConstants.primaryColor,
+              //     //     borderRadius: BorderRadius.all(Radius.circular(20)),
+              //     //     // color: themeCubit.darkBackgroundColor,
+              //     //   ),
+              //     //   child: TextComponent(StringConstants.creator,
+              //     //       textAlign: TextAlign.right),
+              //     // ),
+              //   ],
+              // ),
+              // DividerCosntants.divider1,
+              ...List.generate(
+                  (acceptedRequests ?? []).length,
+                  (index) => ContactCard(
+                      imageSize: 45,
+                      name: acceptedRequests?[index].name ?? "",
+                      title: acceptedRequests?[index].aboutMe ?? "",
+                      url: acceptedRequests?[index].image ?? "",
+                      // contact: contacts[index],
+                      showShareIcon: false)),
+
+              if( (acceptedRequests ?? []).length > 0)
+              SizedBoxConstants.sizedBoxHundredH(),
+
+            ],
+          ),
+        )
+        //     :Container(
+        // color: ColorConstants.black,
+        // width: 400),
+
+        );
+  }
+
+  Widget _shimmerMembers() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Card(
         color: themeCubit.darkBackgroundColor,
         elevation: 0,
@@ -427,7 +700,8 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                     children: <TextSpan>[
                       const TextSpan(text: "${StringConstants.members}  "),
                       TextSpan(
-                        text: contacts.length.toString(),
+                        text: totalAcceptedMembers ?? "0",
+                        //contacts.length.toString(),
                         style: TextStyle(
                             color: ColorConstants.lightGray.withOpacity(0.5)),
                       ),
@@ -435,51 +709,51 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                   ),
                 )),
             SizedBoxConstants.sizedBoxThirtyH(),
-            Row(
-              children: [
-                Container(
-                    width:
-                        AppConstants.responsiveWidth(context, percentage: 66),
-                    child: const ContactCard(
-                      name: "Jesse",
-                      url: "",
-                      title: "Graphic Designer",
-                      showShareIcon: false,
-                      showDivider: false,
-                      imageSize: 45,
-                    )),
-                TagComponent(
-                  width: AppConstants.responsiveWidth(context, percentage: 22),
-                  customTextColor: themeCubit.backgroundColor,
-                  backgroundColor: ColorConstants.primaryColor,
-                  iconColor: themeCubit.primaryColor,
-                  customIconText: StringConstants.creator,
-                ),
-                // Container(
-                //
-                //   padding: const EdgeInsets.only(
-                //       left: 16, right: 16, top: 3, bottom: 3),
-                //   decoration: BoxDecoration(
-                //     color: ColorConstants.primaryColor,
-                //     borderRadius: BorderRadius.all(Radius.circular(20)),
-                //     // color: themeCubit.darkBackgroundColor,
-                //   ),
-                //   child: TextComponent(StringConstants.creator,
-                //       textAlign: TextAlign.right),
-                // ),
-              ],
-            ),
-            DividerCosntants.divider1,
+            // Row(
+            //   children: [
+            //     Container(
+            //         width:
+            //         AppConstants.responsiveWidth(context, percentage: 66),
+            //         child: const ContactCard(
+            //           name: "Jesse",
+            //           url: "",
+            //           title: "Graphic Designer",
+            //           showShareIcon: false,
+            //           showDivider: false,
+            //           imageSize: 45,
+            //         )),
+            //     TagComponent(
+            //       width: AppConstants.responsiveWidth(context, percentage: 22),
+            //       customTextColor: themeCubit.backgroundColor,
+            //       backgroundColor: ColorConstants.primaryColor,
+            //       iconColor: themeCubit.primaryColor,
+            //       customIconText: StringConstants.creator,
+            //     ),
+            //     // Container(
+            //     //
+            //     //   padding: const EdgeInsets.only(
+            //     //       left: 16, right: 16, top: 3, bottom: 3),
+            //     //   decoration: BoxDecoration(
+            //     //     color: ColorConstants.primaryColor,
+            //     //     borderRadius: BorderRadius.all(Radius.circular(20)),
+            //     //     // color: themeCubit.darkBackgroundColor,
+            //     //   ),
+            //     //   child: TextComponent(StringConstants.creator,
+            //     //       textAlign: TextAlign.right),
+            //     // ),
+            //   ],
+            // ),
+            // DividerCosntants.divider1,
             ...List.generate(
-                contacts.length,
+                (acceptedRequests ?? []).length,
                 (index) => ContactCard(
                     imageSize: 45,
-                    name: contacts[index].name,
-                    title: contacts[index].title,
-                    url: contacts[index].url,
+                    name: acceptedRequests?[index].name ?? "",
+                    title: acceptedRequests?[index].aboutMe ?? "",
+                    url: acceptedRequests?[index].image ?? "",
                     // contact: contacts[index],
                     showShareIcon: false)),
-            SizedBoxConstants.sizedBoxSixtyH(),
+            SizedBoxConstants.sizedBoxHundredH(),
           ],
         ),
       ),
@@ -690,8 +964,9 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
           SizedBoxConstants.sizedBoxTenH(),
           Column(
             children: [
-              CreatorQuestionsAnswer(questions: [],
-                  // questions: questions
+              CreatorQuestionsAnswer(
+                questions: [],
+                // questions: questions
               ),
             ],
           ),
@@ -904,5 +1179,11 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
             ],
           ),
         ));
+  }
+
+  _navigateToBack() async {
+    Future.delayed(const Duration(milliseconds: 1800), () async {
+      NavigationUtil.pop(context);
+    });
   }
 }

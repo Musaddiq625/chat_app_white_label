@@ -123,66 +123,66 @@ class _EditEventScreenState extends State<EditEventScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       editEventCubit.eventModel = EventModel();
       editEventCubit.eventModel = EventModel();
-      editEventCubit.eventModel =
-          EventModel.fromJson(widget.eventModel?.toJson() ?? {});
+      editEventCubit.eventModel = EventModel.fromJson(widget.eventModel?.toJson() ?? {});
       editEventCubit.initializeEventData(editEventCubit.eventModel);
+      setState(() {
+        selectedImagePath = widget.eventModel?.images?.first;
+        eventNameController.value =
+            TextEditingValue(text: editEventCubit.eventModel.title ?? '');
+        eventName = editEventCubit.eventModel.title ?? '';
+        _controllerDescription.value =
+            TextEditingValue(text: editEventCubit.eventModel.description ?? '');
+        startDate = editEventCubit.eventModel.venues?.first.startDatetime;
+        endDate = editEventCubit.eventModel.venues?.first.endDatetime;
+        endDate = editEventCubit.eventModel.venues?.first.endDatetime;
+        capacityValue = editEventCubit.eventModel.venues?.first.capacity ?? "";
+        selectedVisibilityValue =
+        (editEventCubit.eventModel.isPublic ?? true) ? "Public" : "Private";
+        requireGuest = editEventCubit.eventModel.isApprovalRequired ?? true;
+        if (editEventCubit.eventModel.pricing?.price != "0" &&
+            editEventCubit.eventModel.pricing?.price != null) {
+          selectedPriceValue = editEventCubit.eventModel.pricing?.price ?? "0";
+        } else {
+          selectedPriceValue = "Free";
+        }
+
+        LoggerUtil.logs(
+            "editEventCubit.eventModel.question? ${editEventCubit.eventModel.question?.map((e) => e.question)}");
+        for (int i = 0;
+        i < ((editEventCubit.eventModel.question?.length) ?? 0);
+        i++) {
+          if(questions.length <= i) {
+            questions.add("Question ${i+1}");
+          }
+          // Dynamically add controllers to the list if they don't exist yet
+          if (_questionControllers.length <= i) {
+            _questionControllers.add(TextEditingController());
+          }
+          LoggerUtil.logs(
+              "questionControllers ${(editEventCubit.eventModel.question?[i].question)}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+          _questionControllers[i].text =
+              editEventCubit.eventModel.question?[i].question ?? "";
+
+          if (editEventCubit.eventModel.question?[i].isRequired == true) {
+            selectedQuestionRequired[i] = "Required";
+          } else {
+            selectedQuestionRequired[i] = "Optional";
+          }
+
+          if (editEventCubit.eventModel.question?[i].isPublic == true) {
+            selectedQuestionPublic[i] = "Public";
+          } else {
+            selectedQuestionPublic[i] = "Private";
+          }
+          questionId[i] = editEventCubit.eventModel.question?[i].questionId ?? "";
+        }
+      });
     });
     print("widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
     print(
         "eventCubit.eventModel.pricing?.price ${eventCubit.eventModel.pricing?.price}");
 
-    setState(() {
-      selectedImagePath = widget.eventModel?.images?.first;
-      eventNameController.value =
-          TextEditingValue(text: editEventCubit.eventModel.title ?? '');
-      eventName = editEventCubit.eventModel.title ?? '';
-      _controllerDescription.value =
-          TextEditingValue(text: editEventCubit.eventModel.description ?? '');
-      startDate = editEventCubit.eventModel.venues?.first.startDatetime ?? "";
-      endDate = editEventCubit.eventModel.venues?.first.endDatetime ?? "";
-      endDate = editEventCubit.eventModel.venues?.first.endDatetime ?? "";
-      capacityValue = editEventCubit.eventModel.venues?.first.capacity ?? "";
-      selectedVisibilityValue =
-          (editEventCubit.eventModel.isPublic ?? true) ? "Public" : "Private";
-      requireGuest = editEventCubit.eventModel.isApprovalRequired ?? true;
-      if (editEventCubit.eventModel.pricing?.price != "0" &&
-          editEventCubit.eventModel.pricing?.price != null) {
-        selectedPriceValue = editEventCubit.eventModel.pricing?.price ?? "0";
-      } else {
-        selectedPriceValue = "Free";
-      }
 
-      LoggerUtil.logs(
-          "editEventCubit.eventModel.question? ${editEventCubit.eventModel.question?.map((e) => e.question)}");
-      for (int i = 0;
-          i < ((editEventCubit.eventModel.question?.length) ?? 0);
-          i++) {
-        if(questions.length <= i) {
-          questions.add("Question ${i+1}");
-        }
-        // Dynamically add controllers to the list if they don't exist yet
-        if (_questionControllers.length <= i) {
-          _questionControllers.add(TextEditingController());
-        }
-        LoggerUtil.logs(
-            "questionControllers ${(editEventCubit.eventModel.question?[i].question)}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
-        _questionControllers[i].text =
-            editEventCubit.eventModel.question?[i].question ?? "";
-
-        if (editEventCubit.eventModel.question?[i].isRequired == true) {
-          selectedQuestionRequired[i] = "Required";
-        } else {
-          selectedQuestionRequired[i] = "Optional";
-        }
-
-        if (editEventCubit.eventModel.question?[i].isPublic == true) {
-          selectedQuestionPublic[i] = "Public";
-        } else {
-          selectedQuestionPublic[i] = "Private";
-        }
-        questionId[i] = editEventCubit.eventModel.question?[i].questionId ?? "";
-      }
-    });
 
     LoggerUtil.logs("QuestionController values ${_questionControllers.map((e) => e.text)} ");
     LoggerUtil.logs("required values ${selectedQuestionRequired.values} ");
@@ -191,6 +191,9 @@ class _EditEventScreenState extends State<EditEventScreen> {
 
     LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     myFocusNode = FocusNode();
+
+    setState(() {
+    });
   }
 
   @override
@@ -321,9 +324,12 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                     selectedImagePath = image
                                         .path; // Update the state with the selected image path
                                     // eventCubit.addImage(selectedImagePath);
-                                    editEventCubit.addImage(
-                                        "https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
+                                    // editEventCubit.addImage(
+                                    //     "https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
                                   });
+                                  var uploadImage = await AppConstants.uploadImage(selectedImagePath?? "","event");
+                                  print("uploadingImage $uploadImage");
+                                  await editEventCubit.addImage(uploadImage);
                                 }
                               },
                               child: Row(
@@ -512,10 +518,11 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
+                                          DateTime  selectedStartDate = DateFormat("yyyy-MM-dd").parse(startDate.toString());
                                           showDatePicker(
                                             context: context,
                                             initialDate: DateTime.now(),
-                                            firstDate: DateTime(2000),
+                                            firstDate: selectedStartDate, //DateTime(2000),
                                             lastDate: DateTime(2101),
                                           ).then((selectedDate) {
                                             // After selecting the date, display the time picker.
@@ -689,19 +696,27 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           if (startDate != null) {
+                                            DateTime  selectedStartDate = DateFormat("yyyy-MM-dd").parse(startDate.toString());
+                                            DateTime  selectedEndDate = DateFormat("yyyy-MM-dd").parse(endDate.toString());
                                             showDatePicker(
                                               context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime(2000),
+                                              initialDate: selectedEndDate,//DateTime.now(),
+                                              firstDate: selectedStartDate,//DateTime(2000),
                                               lastDate: DateTime(2101),
                                             ).then((selectedDate) {
                                               // After selecting the date, display the time picker.
                                               if (selectedDate != null) {
                                                 print(
                                                     "selectedDate $selectedDate start Date $startDate");
-                                                if (selectedDate.isBefore(
-                                                    DateTime.parse(
-                                                        startDate!))) {
+                                                DateTime  startDateFormat = DateFormat("yyyy-MM-dd").parse(startDate!);
+                                                DateTime  startDateFullFormat = DateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(startDate!);
+                                                DateTime  selectedOnlyDate = DateFormat("yyyy-MM-dd").parse(selectedDate.toString());
+                                                // if(selectedOnlyDate.)
+
+                                                if (selectedOnlyDate.isBefore(startDateFormat
+                                                  // DateTime.parse(
+                                                  //     startDate!)
+                                                )) {
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
                                                     SnackBar(
@@ -709,24 +724,25 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                                           "End date cannot be select before start date."),
                                                     ),
                                                   );
-                                                } else if (selectedDate
-                                                        .isAfter(
-                                                            DateTime.parse(
-                                                                startDate!)) ||
+                                                }
+                                                else if (selectedDate
+                                                    .isAfter(
+                                                    DateTime.parse(
+                                                        startDate!)) ||
                                                     selectedDate
                                                         .isAtSameMomentAs(
-                                                            DateTime.parse(
-                                                                startDate!))) {
+                                                        DateTime.parse(
+                                                            startDate!))) {
                                                   showTimePicker(
                                                     context: context,
                                                     initialTime:
-                                                        TimeOfDay.now(),
+                                                    TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     // Handle the selected date and time here.
                                                     if (selectedTime != null) {
                                                       DateTime
-                                                          selectedDateTime =
-                                                          DateTime(
+                                                      selectedDateTime =
+                                                      DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
                                                         selectedDate.day,
@@ -735,24 +751,14 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                                       );
 
                                                       String formattedDateTime =
-                                                          DateFormat(
-                                                                  'd MMM \'at\' hh a')
-                                                              .format(
-                                                                  selectedDateTime);
+                                                      DateFormat(
+                                                          'd MMM \'at\' hh a')
+                                                          .format(
+                                                          selectedDateTime);
 
-                                                      if (endDate == null) {
-                                                        setState(() {
-                                                          endDate =
-                                                              selectedDateTime
-                                                                  .toString();
-                                                          // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
-                                                        });
-                                                      } else if (selectedDateTime
-                                                          .isBefore(
-                                                              DateTime.parse(
-                                                                  startDate!))) {
+                                                      if (selectedDateTime.isBefore(DateTime.parse(startDate!)) && selectedDateTime.difference(startDateFullFormat).inHours < 1 && selectedDateTime.difference(startDateFullFormat).inMinutes < 60){
                                                         ScaffoldMessenger.of(
-                                                                context)
+                                                            context)
                                                             .showSnackBar(
                                                           SnackBar(
                                                             content: TextComponent(
@@ -761,15 +767,27 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                                         );
                                                       } else if (selectedDateTime
                                                           .isAfter(
-                                                              DateTime.parse(
-                                                                  startDate!))) {
+                                                          DateTime.parse(
+                                                              startDate!))) {
+                                                        print("0 seleted end date ${selectedDateTime} startdate ${startDate}");
+
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      } else {
+                                                      }
+                                                      // else if (endDate == null) {
+                                                      //   setState(() {
+                                                      //     endDate =
+                                                      //         selectedDateTime
+                                                      //             .toString();
+                                                      //     // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                      //   });
+                                                      // }
+                                                      else {
+                                                        print("1 seleted end date ${selectedDateTime} startdate ${startDate}");
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
@@ -779,16 +797,17 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                                       }
                                                     }
                                                   });
-                                                } else {
+                                                }
+                                                else {
                                                   showTimePicker(
                                                     context: context,
                                                     initialTime:
-                                                        TimeOfDay.now(),
+                                                    TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     if (selectedTime != null) {
                                                       DateTime
-                                                          selectedDateTime =
-                                                          DateTime(
+                                                      selectedDateTime =
+                                                      DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
                                                         selectedDate.day,
@@ -797,41 +816,57 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                                       );
 
                                                       String formattedDateTime =
-                                                          DateFormat(
-                                                                  'd MMM \'at\' hh a')
-                                                              .format(
-                                                                  selectedDateTime);
+                                                      DateFormat(
+                                                          'd MMM \'at\' hh a')
+                                                          .format(
+                                                          selectedDateTime);
+                                                      print("--- selected end date ${selectedDateTime} startdate ${startDate}");
 
-                                                      if (endDate == null) {
-                                                        setState(() {
-                                                          endDate =
-                                                              selectedDateTime
-                                                                  .toString();
-                                                          // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
-                                                        });
-                                                      } else if (selectedDateTime
-                                                          .isBefore(
-                                                              DateTime.parse(
-                                                                  startDate!))) {
+                                                      // if (endDate == null) {
+                                                      //   print("22 seleted end date ${selectedDateTime} startdate ${startDate}");
+                                                      //   setState(() {
+                                                      //     endDate =
+                                                      //         selectedDateTime
+                                                      //             .toString();
+                                                      //     // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
+                                                      //   });
+                                                      // }
+                                                      // else
+                                                      if (selectedDateTime.isBefore(DateTime.parse(startDate!)))
+                                                      {
                                                         ScaffoldMessenger.of(
-                                                                context)
+                                                            context)
                                                             .showSnackBar(
                                                           SnackBar(
                                                             content: TextComponent(
                                                                 "End date-time cannot be select before start date-time."),
                                                           ),
                                                         );
-                                                      } else if (selectedDateTime
+                                                      }
+                                                      else if( selectedDateTime == startDateFullFormat || selectedDateTime.difference(startDateFullFormat).inMinutes < 60 ){
+                                                        ScaffoldMessenger.of(
+                                                            context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: TextComponent(
+                                                                "Event should be minimum 1 hour"),
+                                                          ),
+                                                        );
+                                                      }
+                                                      else if (selectedDateTime
                                                           .isAfter(
-                                                              DateTime.parse(
-                                                                  startDate!))) {
+                                                          DateTime.parse(
+                                                              startDate!))) {
+                                                        // print(" 00 seleted end date ${selectedDateTime} startdate ${startDate}");
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      } else {
+                                                      }
+                                                      else {
+                                                        print(" 11 seleted end date ${selectedDateTime} startdate ${startDate}");
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime

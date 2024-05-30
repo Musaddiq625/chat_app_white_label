@@ -7,11 +7,32 @@ class UserScreenInitial extends UserScreenState {}
 
 class UserScreenLoadingState extends UserScreenState {}
 class UpdateUserScreenLoadingState extends UserScreenState {}
+class FetchEventsGoingToLoadingState extends UserScreenState {}
+class FetchGroupsToLoadingState extends UserScreenState {}
+class FetchMyEventsDataLoadingState extends UserScreenState {}
 
 class UserScreenSuccessState extends UserScreenState {
   final List<UserModel>? userModelList;
 
   UserScreenSuccessState(this.userModelList);
+}
+
+class FetchEventsGoingToSuccessState extends UserScreenState {
+  final EventsGoingToResponseWrapper eventsGoingToResponseWrapper;
+
+  FetchEventsGoingToSuccessState(this.eventsGoingToResponseWrapper);
+}
+class FetchMyEventsDataSuccessState extends UserScreenState {
+  final EventResponseWrapper? eventResponseWrapper;
+  final List<EventModel>? eventModel;
+
+  FetchMyEventsDataSuccessState(this.eventResponseWrapper,this.eventModel);
+}
+
+class FetchGroupsToSuccessState extends UserScreenState {
+  final EventsGoingToResponseWrapper eventsGoingToResponseWrapper;
+
+  FetchGroupsToSuccessState(this.eventsGoingToResponseWrapper);
 }
 
 class UpdateUserScreenSuccessState extends UserScreenState {
@@ -37,6 +58,23 @@ class UserScreenFailureState extends UserScreenState {
 
   UserScreenFailureState(this.error);
 }
+class FetchEventsGoingToFailureState extends UserScreenState {
+  final String error;
+
+  FetchEventsGoingToFailureState(this.error);
+}
+
+class FetchGroupsToFailureState extends UserScreenState {
+  final String error;
+
+  FetchGroupsToFailureState(this.error);
+}
+class FetchMyEventsDataFailureState extends UserScreenState {
+  final String error;
+
+  FetchMyEventsDataFailureState(this.error);
+}
+
 
 class InterestFailureState extends UserScreenState {
   final String error;

@@ -38,11 +38,16 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBarComponent(
           "",
-          action: TextComponent(StringConstants.skip,
-              style: TextStyle(
-                fontSize: 14,
-                color: themeCubit.textColor,
-              )),
+          action: GestureDetector(
+            onTap: (){
+              NavigationUtil.push(context, RouteConstants.genderScreen);
+            },
+            child: TextComponent(StringConstants.skip,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: themeCubit.textColor,
+                )),
+          ),
         ),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
@@ -97,7 +102,13 @@ class _WhatDoYouDoScreenState extends State<WhatDoYouDoScreen> {
                 userDetailModel?.aboutMe = _aboutMeController.text;
 
                 if( isFieldsValidate) {
-                  onBoardingCubit.setAboutMeValues(_aboutMeController.value.text);
+                  if(_aboutMeController.value.text.isNotEmpty){
+                    onBoardingCubit.setAboutMeValues(_aboutMeController.value.text);
+                  }
+                  else{
+                    onBoardingCubit.setAboutMeValues("");
+                  }
+
                   setState(() {
                     // onBoardingUserStepTwoState.dob =_aboutMeController.value.text;
                   });

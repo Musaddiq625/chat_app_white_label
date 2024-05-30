@@ -18,7 +18,7 @@ class ViewEventResponseWrapper {
   String? message;
   int? code;
   bool? status;
-  // EventModel? data;
+  EventModel? data2;
   List<EventModel>? data;
   Meta? meta;
 
@@ -27,6 +27,7 @@ class ViewEventResponseWrapper {
     this.code,
     this.status,
     this.data,
+    this.data2,
     this.meta,
   });
 
@@ -40,6 +41,15 @@ class ViewEventResponseWrapper {
         data?.add(EventModel.fromJson(v));
       });
     }
+    meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
+  }
+
+
+  ViewEventResponseWrapper.fromJsonSingleData(dynamic json) {
+    message = json['message'];
+    code = json['code'];
+    status = json['status'];
+    data2 = json['data'] != null ? EventModel.fromJson(json['data']) : null;
     meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
   }
 
@@ -57,6 +67,20 @@ class ViewEventResponseWrapper {
   //   }
   //   meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
   // }
+
+  Map<String, dynamic> toJsonSingleData() {
+    final map = <String, dynamic>{};
+    map['message'] = message;
+    map['code'] = code;
+    map['status'] = status;
+    if (data2 != null) {
+      map['data'] = data2?.toJson();
+    }
+    if (meta != null) {
+      map['meta'] = meta?.toJson();
+    }
+    return map;
+  }
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

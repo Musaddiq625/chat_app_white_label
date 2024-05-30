@@ -18,6 +18,14 @@ class EventRepository {
     );
     return EventResponseWrapper.fromJson(response);
   }
+  static Future<EventResponseWrapper> createGroup(EventModel eventModel) async {
+    LoggerUtil.logs("eventModel.createEventToJson ${eventModel.toJson()}");
+    final response = await getIt<DioClientNetwork>().putRequest(
+      "${HttpConstants.event}/",
+      eventModel.createGroupToJson(),
+    );
+    return EventResponseWrapper.fromJson(response);
+  }
 
   static Future<EventResponseWrapper> updateEvent(EventModel eventModel) async {
     LoggerUtil.logs(
@@ -37,10 +45,12 @@ class EventRepository {
         "keys": [
           "_id",
           "title",
+          "type",
           "userId",
           "isMyEvent",
           "venue",
           "images",
+          "isVisibility",
           "isFavourite",
           "eventFavouriteBy",
           "event_request",
@@ -62,6 +72,16 @@ class EventRepository {
       }
     });
     final x = ViewEventResponseWrapper.fromJson(response);
+    return x;
+  }
+
+  static Future<ViewEventResponseWrapper> eventVisibilityById(String id,bool isVisibility) async {
+    final response =
+        await getIt<DioClientNetwork>().postRequest(HttpConstants.eventVisibility, {
+          "event_id": id,
+          "isVisibility": isVisibility
+    });
+    final x = ViewEventResponseWrapper.fromJsonSingleData(response);
     return x;
   }
 

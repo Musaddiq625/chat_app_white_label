@@ -1,10 +1,16 @@
+import 'dart:convert';
+
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:chat_app_white_label/src/wrappers/interest_response_wrapper.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +36,7 @@ class InterestScreen extends StatefulWidget {
 class _InterestScreenState extends State<InterestScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
+  late final appCubit = BlocProvider.of<AppSettingCubit>(context);
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _secondNameController = TextEditingController();
 
@@ -137,17 +144,26 @@ class _InterestScreenState extends State<InterestScreen> {
     //   );
     // }).toList();
     return BlocConsumer<OnboardingCubit, OnBoardingState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is OnBoardingUserAboutYouToInterestLoadingState) {
-          // LoadingDialog.showLoadingDialog(context);
+          LoadingDialog.showLoadingDialog(context);
         } else if (state is OnBoardingAboutYouToInterestSuccessState) {
-          // LoadingDialog.hideLoadingDialog(context);
-          onBoardingCubit.initializeUserData(state.userModel!);
+          LoadingDialog.hideLoadingDialog(context);
+          // onBoardingCubit.initializeUserData(state.userModel!);
+          appCubit.setUserModel(state.userModel);
+
+          final serializedUserModel =await getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
+          UserModel userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+          LoggerUtil.logs("sharedPreferencesUtil userModel Value ${userModel.toJson()}");
           // NavigationUtil.push(context, RouteConstants.doneScreen);
         } else if (state is OnBoardingAboutYouToInterestFailureState) {
           // LoadingDialog.hideLoadingDialog(context);
           LoggerUtil.logs("Error ${state.error}");
+        }else if (state is OnBoardingInterestLoadingState) {
+          print("Loading interest");
+          LoadingDialog.showLoadingDialog(context);
         } else if (state is OnBoardingInterestSuccess) {
+          LoadingDialog.hideLoadingDialog(context);
           onBoardingCubit.initializeInterestData(state.interestData);
           hobbiesData = onBoardingCubit.interestWrapper.data?.first.hobbies;
           creativityData = onBoardingCubit.interestWrapper.data?.first.creativity;
@@ -252,8 +268,10 @@ class _InterestScreenState extends State<InterestScreen> {
               maxLines: 5,
             ),
             SizedBoxConstants.sizedBoxTwentyH(),
+            if((hobbiesData??[]).isNotEmpty)
             hobbies(),
             SizedBoxConstants.sizedBoxTwentyH(),
+            if((creativityData??[]).isNotEmpty)
             creativity(),
             // SizedBoxConstants.sizedBoxTwentyH(),
             // hobbies(),

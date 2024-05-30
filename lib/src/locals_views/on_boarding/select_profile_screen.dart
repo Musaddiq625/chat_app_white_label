@@ -21,7 +21,7 @@ import '../../components/toast_component.dart';
 import '../../constants/font_styles.dart';
 
 class SelectProfileImageScreen extends StatefulWidget {
-  final List<String> selectedImages;
+  final List<String?> selectedImages;
 
   const SelectProfileImageScreen({super.key, required this.selectedImages});
 
@@ -136,7 +136,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
                           borderRadius:
                               const BorderRadius.all(Radius.circular(130.0)),
                           child: ImageComponent(
-                            imgUrl: file,
+                            imgUrl: file ?? "",
                             // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
                             width: 250,
                             height: 700,

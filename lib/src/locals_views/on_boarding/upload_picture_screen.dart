@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:aws_s3_upload/aws_s3_upload.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/choose_image_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
@@ -39,11 +39,13 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   String? imageUrl;
   List<String> selectedImages = [];
   UserDetailModel? userDetailModel;
+
   // List tempEmptyImageData = [];
 
   @override
   void initState() {
     super.initState();
+    print("adding images");
     selectedImages.addAll(List.filled(6 - selectedImages.length, ""));
   }
 
@@ -69,6 +71,19 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   enterName() {
     return BlocConsumer<OnboardingCubit, OnBoardingState>(
         listener: (context, state) {
+          if(state is UploadImageLoadingState){
+            LoadingDialog.showLoadingDialog(context);
+          }
+          else if(state is UploadImageSuccess){
+            LoadingDialog.hideLoadingDialog(context);
+            NavigationUtil.push(
+                context, RouteConstants.selectProfileScreen,
+                args: state.uplodedImages);
+          }
+          else if(state is UploadImageFailureState){
+                LoadingDialog.hideLoadingDialog(context);
+          }
+
       // if (state is OnBoardingLoadingState) {
       //   // LoadingDialog.showLoadingDialog(context);
       // } else if (state is OnBoardingUserNameImageSuccessState) {
@@ -113,6 +128,13 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
+                    if(selectedImages.length <6){
+                      selectedImages
+                          .addAll(List.filled(6 - selectedImages.length, ""));
+                    }
+
+                    print(
+                        "selected Image ${selectedImages}  lenght ${selectedImages.length}");
                     return Container(
                       height: 250,
                       width:
@@ -149,21 +171,29 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 textColor: ColorConstants.white,
                 buttonText: StringConstants.addPhotoFromGallery,
                 onPressed: () async {
-                  if (selectedImage == null) {
-                    final XFile? image = await ImagePicker()
-                        .pickImage(source: ImageSource.gallery);
-                    if (image != null) {
-                      // setState(() {
-                      //   selectedImages.add(File(image.path));
-                      // });
-                      insertImage(image);
-                      // selectedImages = tempEmptyImageData;
-
-                      // selectedImages.removeLast();
-                    }
-                  } else {
-                    selectedImage = null;
+                  if(selectedImages.where((e) => e.isNotEmpty).toList().length < 6){
+                  if(selectedImages.length <6){
+                    selectedImages
+                        .addAll(List.filled(6 - selectedImages.length, ""));
                   }
+                  // if (selectedImages.length < 6) {
+                    if (selectedImage == null) {
+                      final XFile? image = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (image != null) {
+                        // setState(() {
+                        //   selectedImages.add(File(image.path));
+                        // });
+                        insertImage(image);
+                        // selectedImages = tempEmptyImageData;
+
+                        // selectedImages.removeLast();
+                      }
+                    } else {
+                      selectedImage = null;
+                    }
+                  }
+
                   setState(() {});
                 }),
           ),
@@ -185,24 +215,33 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                         : const Color.fromRGBO(0, 0, 0, 1),
                 buttonText: StringConstants.takeASelfie,
                 onPressed: () async {
-                  List<File> files = [];
-                  final XFile? cameraImage = await ImagePicker().pickImage(
-                      source: ImageSource.camera,
-                      preferredCameraDevice: CameraDevice.front);
-                  if (cameraImage != null) {
-                    // files.add(File(cameraImage.path));
-                    // setState(() {
-                    //   selectedImages.add(File(cameraImage.path));
-                    // });
+                  if(selectedImages.where((e) => e.isNotEmpty).toList().length < 6){
 
-                    insertImage(cameraImage);
 
-                    // selectedImages.insert(0, cameraImage.path);
-                    // selectedImages = tempEmptyImageData;
+                  if(selectedImages.length <6){
+                    selectedImages
+                        .addAll(List.filled(6 - selectedImages.length, ""));
+                  }
+                  // if (selectedImages.length < 6) {
+                    List<File> files = [];
+                    final XFile? cameraImage = await ImagePicker().pickImage(
+                        source: ImageSource.camera,
+                        preferredCameraDevice: CameraDevice.front);
+                    if (cameraImage != null) {
+                      // files.add(File(cameraImage.path));
+                      // setState(() {
+                      //   selectedImages.add(File(cameraImage.path));
+                      // });
 
-                    // selectedImages.removeLast();
+                      insertImage(cameraImage);
 
-                    setState(() {});
+                      // selectedImages.insert(0, cameraImage.path);
+                      // selectedImages = tempEmptyImageData;
+
+                      // selectedImages.removeLast();
+
+                      setState(() {});
+                    }
                   }
                 }),
           ),
@@ -220,11 +259,24 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                 textColor: ColorConstants.black,
                 buttonText: StringConstants.continues,
                 onPressed: () async {
-                  removeEmptyImages();
+
+                  // removeEmptyImages();
+                  List<String> passImages = selectedImages;
+                  passImages.removeWhere((element) => element.isEmpty);
+                  // AwsS3.uploadFile(
+                  //     accessKey: "OOFqyH9v2YBpon7C3m0pZSH0ruNxqGEVMeyRy0g5",
+                  //     secretKey: "DQEJGSA2VP1KBQZ551NI",
+                  //     file: File("path_to_file"),
+                  //     bucket: "locals",
+                  //     region: "se-sto-1",
+                  //     domain: "linodeobjects.com", // optional - Default: amazonaws.com
+                  //     metadata: {"test": "test"} // optional
+                  // );
                   onBoardingCubit.uploadUserPhoto((selectedImages));
                   LoggerUtil.logs("uploadUserPhotos $selectedImages}");
-                  NavigationUtil.push(context, RouteConstants.selectProfileScreen,
-                      args: selectedImages);
+                  // NavigationUtil.push(
+                  //     context, RouteConstants.selectProfileScreen,
+                  //     args: passImages);
                 },
               ),
             ),
@@ -246,24 +298,34 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
 
     bool isListEmpty = selectedImages.every((element) => element.isNotEmpty);
     if (index == null && isListEmpty) {
+      print("5 replacing image $index");
       selectedImages.insert(0, image.path);
     }
     // if (index != null) {
-    if (isListEmpty) {
-      selectedImages.insert(0, image.path);
-
-      // selectedImages.firstWhere((element) => element == "");
-    } else if (selectedImages.any((element) => element == '')) {
+    // if (isListEmpty) {
+    //   print("List of image ${isListEmpty}");
+    //   print("4 replacing image $index");
+    //   // selectedImages.insert(0, image.path);
+    //
+    //   // selectedImages.firstWhere((element) => element == "");
+    // }
+    // else
+      if (selectedImages.any((element) => element == '')) {
+      print("0 replacing image $index");
       if (index != null) {
+        print("1 replacing image $index");
         selectedImages[index] = image.path;
       } else {
+        print("2 replacing image $index");
         if (selectedImages[selectedImages.indexOf("")] == "") {
+          print("3 replacing image $index");
           selectedImages[selectedImages.indexOf("")] = image.path;
         }
       }
     } else if (index != null) {
+      print("replacing image $index");
       selectedImages[index] = image.path;
     }
   }
-  // }
+// }
 }

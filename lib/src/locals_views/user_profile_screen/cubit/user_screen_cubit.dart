@@ -5,8 +5,12 @@ import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/repositories/auth_repository.dart';
 import 'package:chat_app_white_label/src/network/repositories/onboarding_repository.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/wrappers/event_response_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/events_going_to_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/interest_response_wrapper.dart';
 import 'package:flutter/foundation.dart';
+
+import '../../../models/event_model.dart';
 
 part 'user_screen_state.dart';
 
@@ -15,31 +19,92 @@ class UserScreenCubit extends Cubit<UserScreenState> {
 
   UserModel userModel = UserModel();
   List<UserModel> userModelList = [];
+  List<EventModel> eventModelList = [];
+  EventResponseWrapper eventResponseWrapper = EventResponseWrapper();
   InterestResponseWrapper interestWrapper = InterestResponseWrapper();
+  EventsGoingToResponseWrapper eventsGoingToResponseWrapper =EventsGoingToResponseWrapper();
+  MoreAbout moreAbout = MoreAbout();
 
   void initializeUserData(List<UserModel> user) => userModelList = user;
 
   void initializeInterestData(InterestResponseWrapper interest) =>
       interestWrapper = interest;
 
+
+  void initializeEventWrapperData(EventResponseWrapper event) =>
+      eventResponseWrapper = event;
+
+  void initializeEventsGoingToResponseWrapperData(EventsGoingToResponseWrapper eventsGoingToResponse) =>
+      eventsGoingToResponseWrapper = eventsGoingToResponse;
+
   Future<void> fetchUserData(String id) async {
     emit(UserScreenLoadingState());
     try {
       var resp = await AuthRepository.fetchUserData(id);
 
-      if(resp.code == 200){
+      if (resp.code == 200) {
         LoggerUtil.logs("Fetch User data by Id${resp.toJson()}");
         emit(UserScreenSuccessState(resp.data));
-      }
-      else{
+      } else {
         emit(UserScreenFailureState(resp.message ?? ""));
         LoggerUtil.logs("General Error: ${resp.message ?? ""}");
       }
-
     } catch (e) {
       emit(UserScreenFailureState(e.toString()));
     }
   }
+
+  Future<void> fetchEventYouGoingToData() async {
+    emit(FetchEventsGoingToLoadingState());
+    try {
+      var resp = await AuthRepository.fetchEventYouGoingToData();
+
+      if (resp.code == 200) {
+        LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
+        emit(FetchEventsGoingToSuccessState(resp));
+      } else {
+        emit(FetchEventsGoingToFailureState(resp.message ?? ""));
+        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+      }
+    } catch (e) {
+      emit(FetchEventsGoingToFailureState(e.toString()));
+    }
+  }
+
+  Future<void> fetchGroupsData() async {
+    emit(FetchGroupsToLoadingState());
+    try {
+      var resp = await AuthRepository.fetchEventYouGoingToData();
+
+      if (resp.code == 200) {
+        LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
+        emit(FetchGroupsToSuccessState(resp));
+      } else {
+        emit(FetchGroupsToFailureState(resp.message ?? ""));
+        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+      }
+    } catch (e) {
+      emit(FetchGroupsToFailureState(e.toString()));
+    }
+  }
+  Future<void> fetchMyEventsData() async {
+    emit(FetchMyEventsDataLoadingState());
+    // try {
+      var resp = await AuthRepository.fetchMyEventsData();
+
+      if (resp.code == 200) {
+        LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
+        emit(FetchMyEventsDataSuccessState(resp,resp.data2));
+      }
+      // else {
+      //   emit(FetchMyEventsDataFailureState(resp.message ?? ""));
+      //   LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+      // }
+   /* } catch (e) {
+      emit(FetchMyEventsDataFailureState(e.toString()));
+    }*/
+  }
+
 
   Future<void> updateUserData(String id, UserModel userModel) async {
     emit(UpdateUserScreenLoadingState());

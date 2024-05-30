@@ -6,6 +6,8 @@ abstract class OnBoardingState {}
 class OnBoardingInitial extends OnBoardingState {}
 
 class OnBoardingLoadingState extends OnBoardingState {}
+class OnBoardingInterestLoadingState extends OnBoardingState {}
+class UploadImageLoadingState extends OnBoardingState {}
 
 
 class OnBoardingMoreAboutLoadingState extends OnBoardingState {}
@@ -14,7 +16,11 @@ class OnBoardingUserNameImageLoadingState extends OnBoardingState {}
 class OnBoardingUserDobToGenderLoadingState extends OnBoardingState {}
 class OnBoardingUserAboutYouToInterestLoadingState extends OnBoardingState {}
 
+class UploadImageSuccess extends OnBoardingState{
+  final List<String?>? uplodedImages;
 
+  UploadImageSuccess(this.uplodedImages);
+}
 
 class OnBoardingMoreAboutSuccess extends OnBoardingState{
   final MoreAboutWrapper moreAbout;
@@ -80,8 +86,11 @@ class OnBoardingMoreAboutFailureState extends OnBoardingState {
   final String error;
   OnBoardingMoreAboutFailureState(this.error);
 }
-
 class OnBoardingInterestFailureState extends OnBoardingState {
   final String error;
   OnBoardingInterestFailureState(this.error);
+}
+class UploadImageFailureState extends OnBoardingState {
+  final String error;
+  UploadImageFailureState(this.error);
 }

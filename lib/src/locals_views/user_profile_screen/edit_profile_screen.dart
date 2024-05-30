@@ -41,7 +41,8 @@ import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 import '../../components/toast_component.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
+  UserModel? userModel;
+   EditProfileScreen({super.key,this.userModel});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -97,24 +98,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     // Add more tag data items as required
   ];
 
-  UserModel? userModel;
+  // UserModel? userModel;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      final serializedUserModel =await  getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
-      userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
-      LoggerUtil.logs("User Data Values ${userModel?.toJson()}");
-      if(userModel != null){
-        userScreenCubit.initializeUserData([userModel!]);
-        tempImageData.addAll(userScreenCubit.userModelList.first.userPhotos ?? []);
+      // final serializedUserModel =await  getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
+      // widget.userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+      LoggerUtil.logs("User Data Values ${widget.userModel?.toJson()}");
+      tempImageData.clear();
+      tempEmptyImageData.clear();
+      if(widget.userModel?.id != null){
+        userScreenCubit.initializeUserData([widget.userModel!]);
+        // tempImageData.addAll(userScreenCubit.userModelList.first.userPhotos ?? []);
+        tempImageData.addAll(userScreenCubit.userModelList.first.userPhotos!
+            .where((photo) => photo!= null)
+            .cast<String>());
         tempEmptyImageData.addAll(List.filled(6 - (userScreenCubit.userModelList.first.userPhotos ?? []).length, ""));
         hobbiesData = userScreenCubit.userModelList.first.interest?.hobbies;
         creativityData = userScreenCubit.userModelList.first.interest?.creativity;
         interestData?.addAll(hobbiesData ?? []);
         interestData?.addAll(creativityData ?? []);
       }
+      setState(() {
+      });
 
       // userScreenCubit.fetchUserData("66472edbbb880ed91c93213d");
 
@@ -133,23 +141,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print("(userScreenCubit.userModelList.first.userPhotos ?? []).length ${(userScreenCubit.userModelList.first.userPhotos ?? []).length}");
     return BlocConsumer<UserScreenCubit, UserScreenState>(
       listener: (context, state) {
         print('-----  $state');
-        if (state is UserScreenLoadingState) {
-        } else if (state is UserScreenSuccessState) {
-          // userScreenCubit.initializeUserData(state.userModelList!);
-          tempImageData.addAll(userScreenCubit.userModelList.first.userPhotos ?? []);
-          tempEmptyImageData.addAll(List.filled(6 - (userScreenCubit.userModelList.first.userPhotos ?? []).length, ""));
-          hobbiesData = userScreenCubit.userModelList.first.interest?.hobbies;
-          creativityData = userScreenCubit.userModelList.first.interest?.creativity;
-          interestData?.addAll(hobbiesData ?? []);
-          interestData?.addAll(creativityData ?? []);
-          // creativityData = userScreenCubit.interestWrapper.data?.first.creativity;
-          LoggerUtil.logs(
-              "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
-        }
-        else if(state is UpdateUserScreenLoadingState){
+        // if (state is UserScreenLoadingState) {
+        // }
+        // else if (state is UserScreenSuccessState) {
+        //   // userScreenCubit.initializeUserData(state.userModelList!);
+        //   tempImageData.addAll(userScreenCubit.userModelList.first.userPhotos ?? []);
+        //   tempEmptyImageData.addAll(List.filled(6 - (userScreenCubit.userModelList.first.userPhotos ?? []).length, ""));
+        //   hobbiesData = userScreenCubit.userModelList.first.interest?.hobbies;
+        //   creativityData = userScreenCubit.userModelList.first.interest?.creativity;
+        //   interestData?.addAll(hobbiesData ?? []);
+        //   interestData?.addAll(creativityData ?? []);
+        //   // creativityData = userScreenCubit.interestWrapper.data?.first.creativity;
+        //
+        //   LoggerUtil.logs(
+        //       "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
+        // }
+        // else
+          if(state is UpdateUserScreenLoadingState){
           LoadingDialog.showProgressLoadingDialog(context);
         }
         else if (state is UpdateUserScreenSuccessState) {
@@ -182,8 +194,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               },
               child: GestureDetector(
                 onTap: (){
+                  appCubit.setUserModel(userScreenCubit.userModel);
                   LoggerUtil.logs("Updated userScreenCubit.userModel ${userScreenCubit.userModelList.first.toJson()}");
-                  userScreenCubit.updateUserData(userModel?.id ?? "", userScreenCubit.userModelList.first);  //66472edbbb880ed91c93213d
+                  userScreenCubit.updateMoreAboutYou(userScreenCubit.moreAbout);
+                  userScreenCubit.updateUserData(widget.userModel?.id ?? "", userScreenCubit.userModelList.first);  //66472edbbb880ed91c93213d
+                  userScreenCubit.moreAbout= MoreAbout();
                 },
                 child: TextComponent(StringConstants.saveChanges,
                     style: TextStyle(
@@ -213,11 +228,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           image: image,
                           // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
                           key: ValueKey('value ${Random().nextInt(1000)}'),
-                          onImagePick: (pickedImage) {
+                          onImagePick: (pickedImage)async {
                             NavigationUtil.pop(context);
-
+                            var uploadImage = await AppConstants.uploadImage(pickedImage.path.toString(),"profile");
                             tempEmptyImageData.removeLast();
-                            tempImageData.add(pickedImage.path);
+                            // tempImageData.add(pickedImage.path);
+                            tempImageData.add(uploadImage??"");
                             userScreenCubit.uploadUserPhoto(tempImageData);
                             setState(() {});
                           },
@@ -411,6 +427,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         SizedBoxConstants.sizedBoxTenH(),
+                        if((interestData ?? []).isNotEmpty)
                         Container(
                           width: AppConstants.responsiveWidth(context),
                           padding: const EdgeInsets.all(16),
@@ -650,7 +667,8 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
   final TextEditingController _countryCodeController =
       TextEditingController(text: '+92');
 
-  // DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime.now();
+  String? dateString;
 
 
   final Map<String, dynamic> genderList = {
@@ -682,7 +700,24 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
     // _yearTextController.text =selectedDateAfter.year.toString();
     // _monthTextController.text =selectedDateAfter.month.toString();
     // _dayTextController.text =selectedDateAfter.day.toString();
-    // selectedDate = DateTime.parse(widget.userModel?.dateOfBirth ?? "");
+    dateString = widget.userModel?.dateOfBirth ?? "";
+    if(dateString != null && (dateString??"").isNotEmpty ) {
+      try {
+        // Attempt to parse the date string with the first format
+        selectedDate = DateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(dateString!);
+        _yearTextController.text =selectedDate.year.toString();
+        _monthTextController.text =selectedDate.month.toString();
+        _dayTextController.text =selectedDate.day.toString();
+        // If successful, selectedDate now holds the parsed DateTime
+      } catch (_) {
+        // If the first format fails, try the second format
+        selectedDate = DateFormat("dd MM yyyy").parse(dateString!);
+        _yearTextController.text =selectedDate.year.toString();
+        _monthTextController.text =selectedDate.month.toString();
+        _dayTextController.text =selectedDate.day.toString();
+        // If successful, selectedDate now holds the parsed DateTime
+      }
+    }
     setState(() {});
     });
   }
@@ -699,23 +734,26 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    DateTime now = DateTime.now(); // Get the current date and time
+    int currentYear = now.year - 16;
+    DateTime lastDate = DateTime(currentYear, 12,31);
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        initialEntryMode: DatePickerEntryMode.calendarOnly,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    // if (picked != null && picked != selectedDate) {
-    //   setState(() {
-    //     selectedDate = picked;
-    //     _dayTextController.text = selectedDate.day.toString();
-    //     _yearTextController.text = selectedDate.year.toString();
-    //     _monthTextController.text = selectedDate.month.toString();
-    //     print("picked $picked");
-    //     // selectedDate = DateTime.parse(picked);
-    //   });
-    //   userScreenCubit.updateDob(selectedDate.toString());
-    // }
+        initialDate: selectedDate,
+        // initialEntryMode: DatePickerEntryMode.calendarOnly,
+        firstDate: DateTime(1950),
+        lastDate:lastDate
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        _dayTextController.text = selectedDate.day.toString();
+        _yearTextController.text = selectedDate.year.toString();
+        _monthTextController.text = selectedDate.month.toString();
+        print("picked $picked");
+      });
+      userScreenCubit.updateDob(selectedDate.toString());
+    }
   }
 
   @override
@@ -949,92 +987,92 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                 SizedBoxConstants.sizedBoxTenH(),
                 Wrap(
                   children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.only(bottom: 8, left: 15),
-                    //   child: TextComponent(StringConstants.dateofBirth,
-                    //       style:
-                    //           FontStylesConstants.style14(color: Colors.white)),
-                    // ),
-                    // GestureDetector(
-                    //   behavior: HitTestBehavior.opaque,
-                    //   onTap: () async {
-                    //     AppConstants.closeKeyboard();
-                    //     _selectDate(context);
-                    //
-                    //     // CalendarDatePicker(
-                    //     //     initialDate: DateTime.now(),
-                    //     //     firstDate: DateTime.now(),
-                    //     //     lastDate: DateTime.now(),
-                    //     //     onDateChanged: (date) {
-                    //     //       print('DATE: ${date}');
-                    //     //     });
-                    //   },
-                    //   child: Row(children: [
-                    //     Expanded(
-                    //       child: TextFieldComponent(
-                    //         _dayTextController,
-                    //         filled: true,
-                    //         suffixIcon: IconComponent(
-                    //           iconData: Icons.keyboard_arrow_down,
-                    //           iconColor: ColorConstants.grey,
-                    //         ),
-                    //         hintText: "",
-                    //         titlePaddingFromLeft: 15,
-                    //         enabled: false,
-                    //         // title: _dayTextController.text,
-                    //         textColor: themeCubit.textColor,
-                    //         onChanged: (value) {
-                    //           // handleTextFieldsOnChange();
-                    //         },
-                    //         validator: (day) {
-                    //           return ValidationService.validateEmptyField(day!);
-                    //         },
-                    //       ),
-                    //     ),
-                    //     SizedBoxConstants.sizedBoxTwentyW(),
-                    //     Expanded(
-                    //       child: TextFieldComponent(
-                    //         _monthTextController,
-                    //         suffixIcon: IconComponent(
-                    //           iconData: Icons.keyboard_arrow_down,
-                    //           iconColor: ColorConstants.grey,
-                    //         ),
-                    //         filled: true,
-                    //         hintText: "",
-                    //         enabled: false,
-                    //         titlePaddingFromLeft: 15,
-                    //         textColor: themeCubit.textColor,
-                    //         onChanged: (value) {
-                    //           // handleTextFieldsOnChange();
-                    //         },
-                    //         validator: (day) {
-                    //           return ValidationService.validateEmptyField(day!);
-                    //         },
-                    //       ),
-                    //     ),
-                    //     SizedBoxConstants.sizedBoxTwentyW(),
-                    //     Expanded(
-                    //       child: TextFieldComponent(
-                    //         _yearTextController,
-                    //         filled: true,
-                    //         enabled: false,
-                    //         hintText: "",
-                    //         titlePaddingFromLeft: 15,
-                    //         suffixIcon: IconComponent(
-                    //           iconData: Icons.keyboard_arrow_down,
-                    //           iconColor: ColorConstants.grey,
-                    //         ),
-                    //         textColor: themeCubit.textColor,
-                    //         onChanged: (value) {
-                    //           // handleTextFieldsOnChange();
-                    //         },
-                    //         validator: (day) {
-                    //           return ValidationService.validateEmptyField(day!);
-                    //         },
-                    //       ),
-                    //     ),
-                    //   ]),
-                    // ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8, left: 15),
+                      child: TextComponent(StringConstants.dateofBirth,
+                          style:
+                              FontStylesConstants.style14(color: Colors.white)),
+                    ),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () async {
+                        AppConstants.closeKeyboard();
+                        _selectDate(context);
+
+                        // CalendarDatePicker(
+                        //     initialDate: DateTime.now(),
+                        //     firstDate: DateTime.now(),
+                        //     lastDate: DateTime.now(),
+                        //     onDateChanged: (date) {
+                        //       print('DATE: ${date}');
+                        //     });
+                      },
+                      child: Row(children: [
+                        Expanded(
+                          child: TextFieldComponent(
+                            _dayTextController,
+                            filled: true,
+                            suffixIcon: IconComponent(
+                              iconData: Icons.keyboard_arrow_down,
+                              iconColor: ColorConstants.grey,
+                            ),
+                            hintText: "",
+                            titlePaddingFromLeft: 15,
+                            enabled: false,
+                            // title: _dayTextController.text,
+                            textColor: themeCubit.textColor,
+                            onChanged: (value) {
+                              // handleTextFieldsOnChange();
+                            },
+                            validator: (day) {
+                              return ValidationService.validateEmptyField(day!);
+                            },
+                          ),
+                        ),
+                        SizedBoxConstants.sizedBoxTwentyW(),
+                        Expanded(
+                          child: TextFieldComponent(
+                            _monthTextController,
+                            suffixIcon: IconComponent(
+                              iconData: Icons.keyboard_arrow_down,
+                              iconColor: ColorConstants.grey,
+                            ),
+                            filled: true,
+                            hintText: "",
+                            enabled: false,
+                            titlePaddingFromLeft: 15,
+                            textColor: themeCubit.textColor,
+                            onChanged: (value) {
+                              // handleTextFieldsOnChange();
+                            },
+                            validator: (day) {
+                              return ValidationService.validateEmptyField(day!);
+                            },
+                          ),
+                        ),
+                        SizedBoxConstants.sizedBoxTwentyW(),
+                        Expanded(
+                          child: TextFieldComponent(
+                            _yearTextController,
+                            filled: true,
+                            enabled: false,
+                            hintText: "",
+                            titlePaddingFromLeft: 15,
+                            suffixIcon: IconComponent(
+                              iconData: Icons.keyboard_arrow_down,
+                              iconColor: ColorConstants.grey,
+                            ),
+                            textColor: themeCubit.textColor,
+                            onChanged: (value) {
+                              // handleTextFieldsOnChange();
+                            },
+                            validator: (day) {
+                              return ValidationService.validateEmptyField(day!);
+                            },
+                          ),
+                        ),
+                      ]),
+                    ),
                   ],
                 )
 

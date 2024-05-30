@@ -32,7 +32,9 @@ class ShareBottomSheet {
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
         body: Container(
-          constraints:  BoxConstraints(maxHeight: AppConstants.responsiveHeight(context,percentage: 70)),
+          constraints: BoxConstraints(
+              maxHeight:
+                  AppConstants.responsiveHeight(context, percentage: 70)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,46 +140,45 @@ class ShareBottomSheet {
               const Divider(
                 thickness: 0.1,
               ),
-              if(contacts.isNotEmpty)
-              Padding(
-                padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
-                child: TextComponent(StringConstants.yourConnections,
-                    style: FontStylesConstants.style18(
-                        color: themeCubit.primaryColor)),
-              ),
-              if(contacts.isNotEmpty)
-              Expanded(
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: contacts.length,
-                  itemBuilder: (ctx, index) {
-                    bool isLast = index == contacts!.length - 1;
-                    return ContactCard(
-                      imageSize: 50,
-                      showDivider: (!isLast),
-                      name: contacts[index].name,
-                      title: contacts[index].title,
-                      url: contacts[index].url,
-                      // contact: contacts[index],
-                      onShareTap: () {
-                        Navigator.pop(context);
-                        shareWithConnectionBottomSheet(
-                            StringConstants.fireWorks,
-                            contacts[index].name,
-                            context,
-                            type);
-                      },
-                      onProfileTap: () {
-                        NavigationUtil.push(
-                            context, RouteConstants.profileScreenLocal);
-                      },
-                    );
-                  },
+              if (contacts.isNotEmpty)
+                Padding(
+                  padding: EdgeInsets.only(left: 18.0, top: 10, bottom: 16),
+                  child: TextComponent(StringConstants.yourConnections,
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor)),
                 ),
-              ),
-              if(contacts.isNotEmpty)
-              SizedBoxConstants.sizedBoxTenH()
+              if (contacts.isNotEmpty)
+                Expanded(
+                  child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: contacts.length,
+                    itemBuilder: (ctx, index) {
+                      bool isLast = index == contacts!.length - 1;
+                      return ContactCard(
+                        imageSize: 50,
+                        showDivider: (!isLast),
+                        name: contacts[index].name,
+                        title: contacts[index].title,
+                        url: contacts[index].url,
+                        // contact: contacts[index],
+                        onShareTap: () {
+                          Navigator.pop(context);
+                          shareWithConnectionBottomSheet(
+                              StringConstants.fireWorks,
+                              contacts[index].name,
+                              context,
+                              type);
+                        },
+                        onProfileTap: () {
+                          NavigationUtil.push(
+                              context, RouteConstants.profileScreenLocal);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              if (contacts.isNotEmpty) SizedBoxConstants.sizedBoxTenH()
             ],
           ),
         ));

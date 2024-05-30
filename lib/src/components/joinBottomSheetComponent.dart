@@ -1,3 +1,5 @@
+
+
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/creatorQuestionAnswers.dart';
@@ -16,6 +18,7 @@ import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +58,10 @@ class JoinBottomSheet {
         body: BlocConsumer<EventCubit, EventState>(
           listener: (context, state) {
             if (state is SendEventRequestLoadingState) {
+              LoadingDialog.showLoadingDialog(context);
             } else if (state is SendEventRequestSuccessState) {
+              LoadingDialog.hideLoadingDialog(context);
+              messageController.clear();
               // eventCubit.eventRequestModel = EventRequestModel();
               Navigator.pop(context);
               BottomSheetComponent.showBottomSheet(
@@ -68,11 +74,10 @@ class JoinBottomSheet {
                   // svg: true,
                 ),
               ).then((_) {
-                Future.delayed(const Duration(milliseconds: 1800), () async {
-                  Navigator.of(context).pop();
-                });
+               // navigateToBack();
               });
             } else if (state is SendEventRequestFailureState) {
+              LoadingDialog.hideLoadingDialog(context);
               ToastComponent.showToast(state.toString(), context: context);
             }
           },
@@ -139,8 +144,8 @@ class JoinBottomSheet {
                       ],
                     ),
                   ),
-                  if (questions != null) DividerCosntants.divider1,
-                  if (questions != null)
+                  if (questions != null && questions.isNotEmpty) DividerCosntants.divider1,
+                  if (questions != null && questions.isNotEmpty)
                     questionsFromCreatorComponent(questions),
                   DividerCosntants.divider1,
                   messageComponent(
@@ -217,7 +222,7 @@ class JoinBottomSheet {
                       buttonText: StringConstants.join,
                       textColor: themeCubit.backgroundColor,
                       onPressed: () {
-                        messageController.clear();
+
                         eventCubit.eventRequestModel =
                             eventCubit.eventRequestModel.copyWith(
                                 id: FirebaseUtils.getDateTimeNowAsId(),

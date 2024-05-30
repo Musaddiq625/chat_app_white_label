@@ -7,6 +7,7 @@ import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart'
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -28,6 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      print("Fcm token ${fcmToken}");
       await flutterLocalNotificationsPlugin.cancelAll();
       final NotificationAppLaunchDetails? notificationAppLaunchDetails =
           await flutterLocalNotificationsPlugin

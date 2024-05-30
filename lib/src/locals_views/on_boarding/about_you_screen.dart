@@ -187,7 +187,12 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
   @override
   void initState() {
     onBoardingCubit.getMoreAboutData();
-    _bioController.text = widget.userModel?.bio ?? "";
+    if( widget.userModel?.bio == "null" || widget.userModel?.bio == null ){
+      _bioController.text = "";
+    }
+    else{
+      _bioController.text = widget.userModel?.bio ?? "";
+    }
     linkedInController.text = widget.userModel?.socialLink?.linkedin ?? "";
     facebookController.text = widget.userModel?.socialLink?.facebook ?? "";
     instaController.text = widget.userModel?.socialLink?.instagram ?? "";
@@ -198,9 +203,9 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
     _tempmoreAboutValue[StringConstants.smoking] = widget.userModel?.moreAbout?.smoking;
     _tempmoreAboutValue[StringConstants.drinking] = widget.userModel?.moreAbout?.drinking;
     _tempmoreAboutValue[StringConstants.pets] = widget.userModel?.moreAbout?.pets;
-    print("_bioController Values ${_bioController.text} - ${userScreenCubit.userModelList.first.bio} - ${widget.userModel?.bio} ");
+    // print("_bioController Values ${_bioController.text} - ${userScreenCubit.userModelList.first.bio} - ${widget.userModel?.bio} ");
     // onBoardingCubit.initializeMoreAboutData();
-    print("MoreAboutData Values ${onBoardingCubit.moreAboutWrapper.toJson()}");
+    // print("MoreAboutData Values ${onBoardingCubit.moreAboutWrapper.toJson()}");
     super.initState();
   }
 
@@ -922,7 +927,7 @@ SizedBoxConstants.sizedBoxSixtyH(),
                               }
 
                               if(widget.comingFromEditProfile){
-                                MoreAbout moreAbout = MoreAbout(
+                                userScreenCubit.moreAbout =MoreAbout(
                                   diet: _tempmoreAboutValue[StringConstants.diet],
                                   workout: _tempmoreAboutValue[StringConstants.workout],
                                   height: _tempmoreAboutValue[StringConstants.height],
@@ -931,7 +936,7 @@ SizedBoxConstants.sizedBoxSixtyH(),
                                   drinking: _tempmoreAboutValue[StringConstants.drinking],
                                   pets: _tempmoreAboutValue[StringConstants.pets],
                                 );
-                                userScreenCubit.updateMoreAboutYou(moreAbout);
+                                // userScreenCubit.updateMoreAboutYou(moreAbout);
 
                               }
 

@@ -39,7 +39,7 @@ class _FilterComponentState extends State<FilterComponent> {
                     : themeCubit.textColor;
                 return GestureDetector(
                   onTap: () => widget.onValueChanged(index),
-                  child: Container(
+                  child:(widget.options[index].title ?? "").isNotEmpty? Container(
                     margin: const EdgeInsets.symmetric(horizontal: 3),
                     decoration: BoxDecoration(
                       color: backgroundColor,
@@ -48,16 +48,17 @@ class _FilterComponentState extends State<FilterComponent> {
                     child: Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
-                            widget.options[index].title,
+                            widget.options[index].title ?? "",
                             style: TextStyle(color: textColor),
                           ),
                         ),
                         if ((widget.options[index].count ?? 0) > 0)
                           Container(
                             height: 30,
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            margin: const EdgeInsets.only(right: 5),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
@@ -81,7 +82,7 @@ class _FilterComponentState extends State<FilterComponent> {
                           )
                       ],
                     ),
-                  ),
+                  ):Container(),
                 );
               }),
         )
@@ -91,7 +92,7 @@ class _FilterComponentState extends State<FilterComponent> {
 }
 
 class FilterComponentArg {
-  String title;
+  String? title;
   int? count;
-  FilterComponentArg({required this.title, this.count});
+  FilterComponentArg({this.title, this.count});
 }

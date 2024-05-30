@@ -38,11 +38,41 @@ class EventResponseWrapper {
     meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
   }
 
+  EventResponseWrapper.listFromJson(dynamic json) {
+
+    message = json['message'];
+    code = json['code'];
+    status = json['status'];
+    // data2 = json['data'] != null ? EventModel.keysFromJson(json['data']) : null;
+    if (json['data'] != null) {
+      data2 = [];
+      json['data'].forEach((v) {
+        data2?.add(EventModel.fromJson(v));
+      });
+    }
+    meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
+  }
+
+
+
   EventResponseWrapper.updateEventfromJson(dynamic json) {
     message = json['message'];
     code = json['code'];
     status = json['status'];
     data = json['data'] != null ? EventModel.updateEventfromJson(json['data']) : null;
+    meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
+  }
+
+  EventResponseWrapper.filterEventFromJson(dynamic json) {
+    message = json['message'];
+    code = json['code'];
+    status = json['status'];
+    if (json['data'] != null) {
+      data2 = [];
+      json['data'].forEach((v) {
+        data2?.add(EventModel.fromJson(v));
+      });
+    }
     meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
   }
 

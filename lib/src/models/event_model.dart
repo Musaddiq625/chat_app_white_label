@@ -22,6 +22,7 @@ class EventModel {
     this.userImages,
     this.userAboutMe,
     this.title,
+    this.type,
     this.description,
     this.images,
     this.venues,
@@ -38,6 +39,7 @@ class EventModel {
     this.isApprovalRequired,
     this.isQuestionPublic,
     this.isMyEvent,
+    this.isVisibility,
   });
 
   EventModel.fromJson(dynamic json) {
@@ -47,6 +49,7 @@ class EventModel {
     userImages = json['userImages'];
     userAboutMe = json['userAboutMe'];
     title = json['title'];
+    type=json['type'];
     description = json['description'];
     images = json['images'] != null ? json['images'].cast<String>() : [];
     if (json['venue'] != null) {
@@ -86,6 +89,7 @@ class EventModel {
     isApprovalRequired = json['isApprovalRequired'];
     isQuestionPublic = json['isQuestionPublic'];
     isMyEvent = json['isMyEvent'];
+    isVisibility = json['isVisibility'];
   }
   EventModel.updateEventfromJson(dynamic json) {
     id = json['_id'];
@@ -109,6 +113,7 @@ class EventModel {
     isFree = json['isFree'];
     isPublic = json['isPublic'];
     isFavourite = json['isFavourite'];
+    isVisibility = json['isVisibility'];
     isApprovalRequired = json['isApprovalRequired'];
     isQuestionPublic = json['isQuestionPublic'];
   }
@@ -116,6 +121,7 @@ class EventModel {
   EventModel.keysFromJson(dynamic json) {
     id = json['_id'];
     title = json['title'];
+    type = json['type'];
     images = json['images'] != null ? json['images'].cast<String>() : [];
     isMyEvent = json['isMyEvent'];
     if (json['venue'] != null) {
@@ -151,6 +157,7 @@ class EventModel {
   String? userImages;
   String? userAboutMe;
   String? title;
+  String? type;
   String? description;
   String? eventTotalParticipants;
   List<String>? images;
@@ -167,6 +174,7 @@ class EventModel {
   bool? isApprovalRequired;
   bool? isQuestionPublic;
   bool? isMyEvent;
+  bool? isVisibility;
 
   EventModel copyWith({
     String? id,
@@ -175,6 +183,7 @@ class EventModel {
     String? userImages,
     String? userAboutMe,
     String? title,
+    String? type,
     String? description,
     String? eventTotalParticipants,
     List<String>? images,
@@ -191,6 +200,7 @@ class EventModel {
     bool? isApprovalRequired,
     bool? isQuestionPublic,
     bool? isMyEvent,
+    bool? isVisibility,
   }) =>
       EventModel(
         id: id ?? this.id,
@@ -199,6 +209,7 @@ class EventModel {
         userImages: userImages ?? this.userImages,
         userAboutMe: userAboutMe ?? this.userAboutMe,
         title: title ?? this.title,
+        type: type ?? this.type,
         description: description ?? this.description,
         eventTotalParticipants: eventTotalParticipants ?? this.eventTotalParticipants,
         images: images ?? this.images,
@@ -215,6 +226,7 @@ class EventModel {
         isApprovalRequired: isApprovalRequired ?? this.isApprovalRequired,
         isQuestionPublic: isQuestionPublic ?? this.isQuestionPublic,
         isMyEvent: isMyEvent ?? this.isMyEvent,
+        isVisibility: isVisibility ?? this.isVisibility,
       );
 
   Map<String, dynamic> toJson() {
@@ -225,6 +237,7 @@ class EventModel {
     map['userImages'] = userImages;
     map['userAboutMe'] = userAboutMe;
     map['title'] = title;
+    map['type'] = type;
     map['description'] = description;
     map['eventTotalParticipants'] = eventTotalParticipants;
     map['images'] = images;
@@ -253,12 +266,14 @@ class EventModel {
     map['isApprovalRequired'] = isApprovalRequired;
     map['isQuestionPublic'] = isQuestionPublic;
     map['isMyEvent'] = isMyEvent;
+    map['isVisibility'] = isVisibility;
     return map;
   }
 
   Map<String, dynamic> createEventToJson() {
     final map = <String, dynamic>{};
     map['title'] = title;
+    map['type'] = type;
     map['description'] = description;
     map['images'] = images;
     if (venues != null) {
@@ -283,6 +298,31 @@ class EventModel {
     map['isQuestionPublic'] = isQuestionPublic ?? false;
     return map;
   }
+
+  Map<String, dynamic> createGroupToJson() {
+    final map = <String, dynamic>{};
+    map['title'] = title;
+    map['type'] = type;
+    map['description'] = description;
+    map['images'] = images;
+    if (question != null) {
+      map['questions'] = question?.map((v) => v.toJson()).toList();
+    }
+    map['eventFavouriteBy'] = eventFavouriteBy ?? [];
+    if (eventRequest != null) {
+      map['event_request'] = eventRequest?.map((v) => v.toJson()).toList();
+    }
+    if (eventParticipants != null) {
+      map['eventParticipants'] = eventParticipants?.map((v) => v.toJson()).toList();
+    }
+    map['isFree'] = isFree;
+    map['isPublic'] = isPublic;
+    map['isApprovalRequired'] = isApprovalRequired;
+    map['isQuestionPublic'] = isQuestionPublic ?? false;
+    return map;
+  }
+
+
   Map<String, dynamic> updateEventToJson() {
     final map = <String, dynamic>{};
     map['_id'] = id;

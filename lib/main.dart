@@ -3,6 +3,8 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/edit_event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/edit_group_screen/cubit/edit_group_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/cubit/group_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/cubit/signup_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
@@ -10,6 +12,7 @@ import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboardi
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/cubit/view_your_event_screen_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/view_your_group_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/network/dio_client_network.dart';
 import 'package:chat_app_white_label/src/routes/generated_route.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
@@ -108,6 +111,15 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => UserScreenCubit(),
         ),
+        BlocProvider(
+          create: (context) => GroupCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ViewYourGroupScreenCubit(),
+        ),
+        BlocProvider(
+          create: (context) => EditGroupCubit(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
@@ -115,7 +127,7 @@ class MyApp extends StatelessWidget {
             navigatorKey: navigatorKey,
             title: 'Locals App',
             theme: ThemeData(
-              fontFamily: FontConstants.fontNunitoSans,
+              fontFamily: FontConstants.inter,
               useMaterial3: true,
             ),
           initialRoute:(token != null && token!.isNotEmpty) ? RouteConstants.mainScreen:RouteConstants.splashScreenLocal,

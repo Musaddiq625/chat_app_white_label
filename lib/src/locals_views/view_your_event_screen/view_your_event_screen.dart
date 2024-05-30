@@ -115,6 +115,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
 //     },
 //   ];
   List<EventRequest>? acceptedRequests;
+  List<String?>? imagesUserInEvent;
   List<EventRequest>? pendingRequests;
   late final List<Map<String, dynamic>>? memberResponseDetail;
 
@@ -220,6 +221,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
               ?.where(
                   (eventRequest) => eventRequest.requestStatus == "Accepted")
               .toList();
+      imagesUserInEvent = acceptedRequests?.map((e) => e.image).where((image) => image!= null).toList(); // Filter out null values.toList();
           pendingRequests = viewYourEventCubit.eventModel.eventRequest
               ?.where((eventRequest) => eventRequest.requestStatus == "Pending")
               .toList();
@@ -271,7 +273,8 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                     children: [
                       _eventWidget(),
                       ((totalRequestedMembers ?? "").isNotEmpty &&
-                              totalRequestedMembers != null  && totalRequestedMembers != "0")
+                              totalRequestedMembers != null &&
+                              totalRequestedMembers != "0")
                           ? _requestedMembers()
                           : Container(),
                       ((totalAcceptedMembers ?? "").isNotEmpty &&
@@ -293,9 +296,19 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
   }
 
   Widget _eventWidget() {
-    var capacityInt = int.tryParse(viewYourEventCubit.eventModel.venues?.first.capacity?? "0")?? 0;
-    var ticketSoldInt = int.tryParse(viewYourEventCubit.eventModel.transectionData?.ticketSold?? "0")?? 0;
+    var capacityInt;
+    if(viewYourEventCubit.eventModel.venues?.first.capacity == "Unlimited"){
+      capacityInt= 1000;
+    }
+    else{
+      capacityInt = int.tryParse(
+          viewYourEventCubit.eventModel.venues?.first.capacity ?? "0") ??
+          0;
+    }
 
+    var ticketSoldInt = int.tryParse(
+            viewYourEventCubit.eventModel.transectionData?.ticketSold ?? "0") ??
+        0;
 
 // Calculate the difference
     var remainingTickets = capacityInt - ticketSoldInt;
@@ -432,12 +445,16 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                 ? Container()
                 : EventSummary(
                     eventTitle: "Current Stats",
-                    price:viewYourEventCubit.eventModel.pricing?.price ?? "",
-                    ticketsSold: int.parse(viewYourEventCubit.eventModel.transectionData?.ticketSold ?? ""),
-              remainingTickets: remainingTickets,
-                    eventActive: true,
+                    eventId: viewYourEventCubit.eventModel.id ?? "",
+                    price: viewYourEventCubit.eventModel.pricing?.price ?? "",
+                    capacity: viewYourEventCubit.eventModel.venues?.first.capacity ?? "",
+                    ticketsSold: int.parse(viewYourEventCubit
+                            .eventModel.transectionData?.ticketSold ??"0"),
+                    totalEarned:viewYourEventCubit.eventModel.transectionData?.totalEarned ?? "",
+                    remainingTickets: remainingTickets,
+                    eventActive:viewYourEventCubit.eventModel.isVisibility,
                     currenStats: true,
-                    imagesUserInEvent: images,
+                    imagesUserInEvent: imagesUserInEvent
                     // imagesUserInEvent: [
                     //   // Your list of ImageProvider objects
                     // ],
@@ -614,7 +631,6 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
         color: themeCubit.darkBackgroundColor,
         elevation: 0,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
           Padding(
             padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
             child: Column(
@@ -626,47 +642,49 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                 SizedBox(
                   height: 10,
                 ),
-                if(viewYourEventCubit.eventModel.description != null  && (viewYourEventCubit.eventModel.description ?? "").isNotEmpty)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _showFullText = !_showFullText;
-                    });
-                  },
-                  child: RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: _showFullText
-                              ? viewYourEventCubit.eventModel.description
-                              : ((viewYourEventCubit.eventModel.description ??
-                                                  "")
-                                              .length >
-                                          150
-                                      ? (viewYourEventCubit
-                                                  .eventModel.description ??
-                                              "")
-                                          .substring(0, 150)
-                                      : viewYourEventCubit
-                                          .eventModel.description) ??
-                                  "No description available",
-                          style: TextStyle(color: themeCubit.textColor),
-                        ),
-                        if ((viewYourEventCubit.eventModel.description ?? "")
-                                .length >
-                            150)
+                if (viewYourEventCubit.eventModel.description != null &&
+                    (viewYourEventCubit.eventModel.description ?? "")
+                        .isNotEmpty)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showFullText = !_showFullText;
+                      });
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
                           TextSpan(
                             text: _showFullText
-                                ? ' ${StringConstants.showLess}'
-                                : ' ...${StringConstants.readMore}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: themeCubit.textColor),
+                                ? viewYourEventCubit.eventModel.description
+                                : ((viewYourEventCubit.eventModel.description ??
+                                                    "")
+                                                .length >
+                                            150
+                                        ? (viewYourEventCubit
+                                                    .eventModel.description ??
+                                                "")
+                                            .substring(0, 150)
+                                        : viewYourEventCubit
+                                            .eventModel.description) ??
+                                    "No description available",
+                            style: TextStyle(color: themeCubit.textColor),
                           ),
-                      ],
+                          if ((viewYourEventCubit.eventModel.description ?? "")
+                                  .length >
+                              150)
+                            TextSpan(
+                              text: _showFullText
+                                  ? ' ${StringConstants.showLess}'
+                                  : ' ...${StringConstants.readMore}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: themeCubit.textColor),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -678,8 +696,14 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                 AboutEventComponent(
                   name:
                       "${viewYourEventCubit.eventModel.eventTotalParticipants} ${StringConstants.participants}",
-                  detail:(acceptedRequests?.take(1).map((e) => e.name).join(', ')??"").isNotEmpty?
-                  "${acceptedRequests?.take(1).map((e) => e.name).join(', ')} and more":"",
+                  detail: (acceptedRequests
+                                  ?.take(1)
+                                  .map((e) => e.name)
+                                  .join(', ') ??
+                              "")
+                          .isNotEmpty
+                      ? "${acceptedRequests?.take(1).map((e) => e.name).join(', ')} and more"
+                      : "No Participants",
                   icon: AssetConstants.happy,
                   showPersonIcon: true,
                   eventParticipants: acceptedRequests,
@@ -694,19 +718,23 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                       : StringConstants.dateWillbeDecidelater,
                   icon: AssetConstants.calendar,
                 ),
-                if (((viewYourEventCubit.eventModel.venues ?? []).first.location ?? "").isNotEmpty)
-                AboutEventComponent(
-                  name: viewYourEventCubit.eventModel.venues != null &&
-                          (viewYourEventCubit.eventModel.venues ?? [])
-                              .isNotEmpty
-                      ? ((viewYourEventCubit.eventModel.venues ?? [])
-                              .first
-                              .location ??
-                          "")
-                      : "",
-                  detail: StringConstants.exactLocationAfterJoining,
-                  icon: AssetConstants.marker,
-                ),
+                if (((viewYourEventCubit.eventModel.venues ?? [])
+                            .first
+                            .location ??
+                        "")
+                    .isNotEmpty)
+                  AboutEventComponent(
+                    name: viewYourEventCubit.eventModel.venues != null &&
+                            (viewYourEventCubit.eventModel.venues ?? [])
+                                .isNotEmpty
+                        ? ((viewYourEventCubit.eventModel.venues ?? [])
+                                .first
+                                .location ??
+                            "")
+                        : "",
+                    detail: StringConstants.exactLocationAfterJoining,
+                    icon: AssetConstants.marker,
+                  ),
                 if (viewYourEventCubit.eventModel.isFree == false)
                   AboutEventComponent(
                     name: viewYourEventCubit.eventModel.pricing?.price ?? "",
@@ -786,8 +814,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                 ),
               ],
             ),
-            if((acceptedRequests??[]).isNotEmpty)
-            DividerCosntants.divider1,
+            if ((acceptedRequests ?? []).isNotEmpty) DividerCosntants.divider1,
             // ...memberResponseDetail!.asMap().entries.map((entry) {
             ...?acceptedRequests?.asMap().entries.map((entry) {
               int index = entry.key;
@@ -993,12 +1020,12 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                                             _queryController.clear();
                                             viewYourEventCubit.replyQueryById(
                                                 viewYourEventCubit
-                                                    .eventModel.id ??
+                                                        .eventModel.id ??
                                                     "",
                                                 details.id ?? "",
                                                 "Accepted",
                                                 viewYourEventCubit
-                                                    .eventRequest.query ??
+                                                        .eventRequest.query ??
                                                     Query());
                                             NavigationUtil.pop(context);
                                           }),

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../main.dart';
@@ -32,7 +33,8 @@ class SignUpCubit extends Cubit<SignUpState> {
 
     try {
       var resp = await AuthRepository.login(identifier);
-
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      print("Fcm token ${fcmToken}");
       if(resp.code == 200){
         emit(SignUpSignUpState());
         LoggerUtil.logs(resp);

@@ -59,13 +59,16 @@ class StringConstants {
   static const String didntReciveCode = "Didn't receive the code? Resend in 00 : ";
   static const String createEvent = "Create Event";
   static const String updateEvent = "Update Event";
+  static const String updateGroup = "Update Group";
   static const String editEvent = "Edit Event";
   static const String createGroup = "Create Group";
   static const String categories = "Categories";
   static const String private = "Private";
+  static const String public = "Public";
   static const String makeAGroup = "Make a group";
   static const String account = "Account";
   static const String viewEvent = "View Event";
+  static const String viewGroup = "View Group";
   static const String getStarted = "Get Started";
   static const String continueWithEmail = "Continue with Email";
   static const String continueWithGoogle = "Continue with Google";
@@ -319,6 +322,7 @@ class StringConstants {
   static const String renameGroup = 'Rename Group';
   static const String addPeople = "Add People";
   static const String applyFilters = "Apply Filters";
+  static const String clear = "Clear";
   static const String addPeopleToGroup = "Add People to Group";
   static const String editCover = "Edit Cover";
   static const String editMyInterest = "Edit Interests";

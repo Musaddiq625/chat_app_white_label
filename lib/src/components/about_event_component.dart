@@ -95,7 +95,7 @@ class AboutEventComponent extends StatelessWidget {
                               child: ClipOval(
                                   child: ImageComponent(
                                 imgUrl: (eventParticipants ?? []).isNotEmpty
-                                    ? (eventParticipants ?? [])[i].image!
+                                    ? (eventParticipants ?? [])[i].image ?? ""
                                     : "",
                                 width: radius,
                                 height: radius,

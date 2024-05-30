@@ -21,7 +21,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class FilterScreen extends StatefulWidget {
-  const FilterScreen({super.key});
+
+  FilterScreen({super.key });
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();
@@ -107,8 +108,13 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   void initState() {
     print("state.getFiltersDataModel?.categoryData ${eventCubit.filtersListModel.categoryData?.map((e) => e.title)}");
-    categoryData = eventCubit.filtersListModel.categoryData! ;
-    dateFilterData= eventCubit.filtersListModel.dateFilterData!;
+    categoryData = eventCubit.filtersListModel.categoryData ?? [] ;
+    dateFilterData= eventCubit.filtersListModel.dateFilterData ?? [];
+    selectedDateFilter = eventCubit.selectedDateFilter;
+    selectedCategories = eventCubit.selectedCategories ?? [];
+    isFree = eventCubit.isFree ;
+    isFreeValue= eventCubit.isFreeValue;
+
 
 
     super.initState();
@@ -128,6 +134,12 @@ class _FilterScreenState extends State<FilterScreen> {
             dateFilterData = state.getFiltersDataModel!.dateFilterData! ;
           }
         }
+        // else if(state is EventFiltersSuccessState){
+        //   print("Filter Updated 0");
+        //   eventCubit.eventModelList.clear();
+        //   eventCubit.eventModelList.addAll(state.eventModel ?? []);
+        //   eventCubit.initializeEventWrapperData(state.eventModelWrapper!);
+        // }
       },
       builder: (context, state) {
         return Container(
@@ -346,9 +358,11 @@ class _FilterScreenState extends State<FilterScreen> {
 
                                   if(selectedDateFilter != e.slug){
                                     selectedDateFilter = e.slug;
+                                    eventCubit.selectedDateFilter = selectedDateFilter;
                                   }
                                   else{
                                     selectedDateFilter = "";
+                                    eventCubit.selectedDateFilter = selectedDateFilter;
                                   }
 
                                   availableDates[e.title ?? ""] = true; // Assuming e.title uniquely identifies each date filter
@@ -411,7 +425,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       Wrap(
                         direction: Axis.horizontal,
                         children: categoryData.map((e) {
-                          bool isSelected = selectedCategories.contains(e.slug)?? false;
+                          bool isSelected = selectedCategories?.contains(e.slug)?? false;
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: TagComponent(
@@ -426,13 +440,15 @@ class _FilterScreenState extends State<FilterScreen> {
                                 setState(() {
                                   if (isSelected) {
                                     print("selected removed");
-                                    selectedCategories.remove(e.slug);
+                                    selectedCategories?.remove(e.slug);
+                                    eventCubit.selectedCategories = selectedCategories;
                                   } else {
                                     print("selected");
-                                    selectedCategories.add(e.slug?? "");
+                                    selectedCategories?.add(e.slug?? "");
+                                    eventCubit.selectedCategories = selectedCategories;
                                   }
                                 });
-                                print("Selected Categories: ${selectedCategories.join(", ")?? "None"}");
+                                print("Selected Categories: ${selectedCategories?.join(", ")?? "None"}");
                               },
                             ),
                           );
@@ -475,17 +491,23 @@ class _FilterScreenState extends State<FilterScreen> {
                                     isFree = e;
                                     if(isFree == "Free"){
                                       isFreeValue= true;
+                                      eventCubit.isFree = isFree;
+                                      eventCubit.isFreeValue = isFreeValue;
                                     }
                                     else{
                                       isFreeValue= false;
+                                      eventCubit.isFree = isFree;
+                                      eventCubit.isFreeValue = isFreeValue;
                                     }
 
                                   } else {
                                     isFreeValue=null;
                                     isFree = null; // Clear selection
+                                    eventCubit.isFree = isFree;
+                                    eventCubit.isFreeValue = isFreeValue;
                                   }
 
-                                  print("isFree $isFree   isFreeValue $isFreeValue");
+                                  print("isFree $isFree   isFreeValue ");
                                 });
                               },
                             ),
@@ -504,17 +526,47 @@ class _FilterScreenState extends State<FilterScreen> {
         Container(
             padding: const EdgeInsets.all(32).copyWith(bottom: 120),
             // alignment: Alignment.bottomCenter,
-            child: ButtonComponent(
-                bgcolor: ColorConstants.white,
-                textColor: themeCubit.backgroundColor,
-                isBold: true,
-                onPressed: () {
-                  eventCubit.sendEventFilters(null,null,selectedDateFilter,selectedCategories,isFreeValue);
-                  NavigationUtil.pop(context);
-                  // ToastComponent.showToast(StringConstants.filtersApplied,
-                  //     context: context);
-                },
-                buttonText: StringConstants.applyFilters)),
+            child: Row(
+              children: [
+                Expanded(
+                  flex:2,
+                  child: ButtonComponent(
+                      bgcolor: ColorConstants.white,
+                      textColor: themeCubit.backgroundColor,
+                      isBold: true,
+                      onPressed: () {
+                        eventCubit.sendEventFilters("1",null,null,selectedDateFilter,selectedCategories ?? [],isFreeValue);
+                        NavigationUtil.pop(context);
+                        // ToastComponent.showToast(StringConstants.filtersApplied,
+                        //     context: context);
+                      },
+                      buttonText: StringConstants.applyFilters),
+                ),
+                SizedBoxConstants.sizedBoxFourW(),
+                Expanded(
+                  child: ButtonComponent(
+                      bgcolor: ColorConstants.primaryColor,
+                      textColor: themeCubit.backgroundColor,
+                      isBold: true,
+                      onPressed: () {
+                        eventCubit.isFilteredApply = false;
+                        eventCubit.selectedDateFilter = null;
+                        eventCubit.selectedCategories = [];
+                        eventCubit.isFree = null;
+                        eventCubit.isFreeValue = null;
+
+                        eventCubit.fetchEventDataByKeys("1");
+                        NavigationUtil.pop(context);
+                        // ToastComponent.showToast(StringConstants.filtersApplied,
+                        //     context: context);
+                      },
+                      buttonText: StringConstants.clear),
+                )
+              ],
+            ),
+        
+        
+        ),
       ],
     );
   }

@@ -87,7 +87,7 @@ class _UserListComponentState extends State<UserListComponent> {
                         StringConstants.startDirectChat,
                         style: TextStyle(
                             fontSize: 15,
-                            fontFamily: FontConstants.fontNunitoSans,
+                            fontFamily: FontConstants.inter,
                             color: themeCubit.textColor),
                       ),
                     SizedBoxConstants.sizedBoxTenH(),
