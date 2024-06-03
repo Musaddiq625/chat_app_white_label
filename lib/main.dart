@@ -8,6 +8,7 @@ import 'package:chat_app_white_label/src/locals_views/group_screens/cubit/group_
 import 'package:chat_app_white_label/src/locals_views/home_screen/home_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/cubit/signup_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/notification_screen/cubit/notification_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/otp_screen/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
@@ -119,6 +120,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => EditGroupCubit(),
+        ),
+        BlocProvider(
+          create: (context) => NotificationScreenCubit(),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(

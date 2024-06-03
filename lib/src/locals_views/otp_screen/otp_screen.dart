@@ -70,7 +70,8 @@ class _OtpScreenState extends State<OtpScreen> {
         LoggerUtil.logs("state.userModel?.toJson  ${state.userModel?.toJson()}");
         onBoardingCubit.initializeUserData(state.userModel!);
         AppConstants.userId =state.userModel?.id;
-        LoggerUtil.logs("state.userModel?.id.toString() ${state.userModel?.id.toString()}");
+        LoggerUtil.logs("state.userModel?.id.toString() friends ${state.userModel?.friends.toString()}");
+        LoggerUtil.logs("state.userModel?.id.toString() friendConnection ${state.userModel?.friendConnection.toString()}");
         appCubit.setToken(state.userModel?.token);
         appCubit.setUserModel(state.userModel);
 

@@ -12,7 +12,9 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/repositories/auth_repository.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -32,6 +34,26 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late final appCubit = BlocProvider.of<AppSettingCubit>(context);
+
+  String _deviceID = '';
+
+  Future<void> _getDeviceID() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+    print("androidInfo ${androidInfo}");
+    setState(() {
+      _deviceID = androidInfo.id; // Use androidInfo.androidId for Android ID
+      appCubit.setDeviceId(_deviceID);
+
+      print("device Id ${_deviceID}");
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    _getDeviceID();
+  }
 
   @override
   Widget build(BuildContext context) {

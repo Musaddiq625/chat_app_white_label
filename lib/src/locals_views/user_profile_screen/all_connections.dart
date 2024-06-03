@@ -5,18 +5,19 @@ import 'package:chat_app_white_label/src/components/common_bottom_sheet_componen
 import 'package:chat_app_white_label/src/components/divider.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/list_tile_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/wrappers/friend_list_response_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../components/bottom_sheet_component.dart';
-import '../../components/button_component.dart';
-import '../../components/contacts_card_component.dart';
 import '../../components/search_text_field_component.dart';
 import '../../components/text_component.dart';
 import '../../components/ui_scaffold.dart';
@@ -34,19 +35,24 @@ class AllConnections extends StatefulWidget {
 
 class _AllConnectionsState extends State<AllConnections> {
   final GlobalKey<PopupMenuButtonState<int>> _key = GlobalKey();
-  List<ContactModel> filteredContacts = [];
+  // List<ContactModel> filteredContacts = [];
+  List<FriendListData> filteredContacts = [];
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
-    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
-    ContactModel('Json Ebert', 'Tester', "","03323333333"),
-    ContactModel('Mack', 'Intern', "","03312233445"),
-    ContactModel('Julia', 'Developer', "","88552233644"),
-    ContactModel('Rose', 'Human Resource', "","55366114532"),
-    ContactModel('Frank', 'xyz', "","25651412344"),
-    ContactModel('Taylor', 'Test', "","5511772266"),
+    ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
+    ContactModel('Json Ebert', 'Tester', "", "03323333333"),
+    ContactModel('Mack', 'Intern', "", "03312233445"),
+    ContactModel('Julia', 'Developer', "", "88552233644"),
+    ContactModel('Rose', 'Human Resource', "", "55366114532"),
+    ContactModel('Frank', 'xyz', "", "25651412344"),
+    ContactModel('Taylor', 'Test', "", "5511772266"),
   ];
   TextEditingController searchController = TextEditingController();
+  late UserScreenCubit userScreenCubit =
+      BlocProvider.of<UserScreenCubit>(context);
+
+  String? totalCount;
 
   void _showPopupMenu() {
     _key.currentState?.showButtonMenu();
@@ -55,25 +61,43 @@ class _AllConnectionsState extends State<AllConnections> {
   @override
   void initState() {
     super.initState();
-    filteredContacts = contacts; // Initialize with all contacts
+    userScreenCubit.fetchMyFriendListData();
+
+    // filteredContacts = contacts; // Initialize with all contacts
   }
 
   @override
   Widget build(BuildContext context) {
-    return UIScaffold(
-        appBar: AppBarComponent(
-          StringConstants.connections,
-          titleText2: '31',
-          centerTitle: false,
-          isBackBtnCircular: false,
-        ),
-        //  appBar(),
-        appBarHeight: 500,
-        removeSafeAreaPadding: false,
-        bgColor: ColorConstants.black,
-        // bgImage:
-        //     "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-        widget: main());
+    return BlocConsumer<UserScreenCubit, UserScreenState>(
+      listener: (context, state) {
+        if (state is FetchMyFriendListDataLoadingState) {
+        } else if (state is FetchMyFriendListSuccessState) {
+          userScreenCubit.initializeFriendListResponseWrapperData(
+              state.friendListResponseWrapper);
+          filteredContacts.addAll((userScreenCubit.friendListResponseWrapper.data ?? []));
+          totalCount = (userScreenCubit.friendListResponseWrapper.data?.length?? 0).toString();
+        } else if (state is FetchMyFriendListFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        return UIScaffold(
+            appBar: AppBarComponent(
+              StringConstants.connections,
+              titleText2: totalCount ?? "0",
+              centerTitle: false,
+              isBackBtnCircular: false,
+            ),
+            //  appBar(),
+            appBarHeight: 500,
+            removeSafeAreaPadding: false,
+            bgColor: ColorConstants.black,
+            // bgImage:
+            //     "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+            widget: main());
+      },
+    );
   }
 
   Widget main() {
@@ -90,13 +114,12 @@ class _AllConnectionsState extends State<AllConnections> {
               hintText: "Search name, postcode..",
               onSearch: (text) {
                 setState(() {
-                  filteredContacts = contacts
+                  filteredContacts = (userScreenCubit.friendListResponseWrapper.data ?? [])
                       .where((contact) =>
-                  contact.name.toLowerCase().contains(text.toLowerCase()) ||
-                      contact.title.toLowerCase().contains(text.toLowerCase())||
-                      contact.number.toLowerCase().contains(text.toLowerCase())
-                  )
-                      .toList();
+                  (contact.firstName ?? "").toLowerCase().contains(text.toLowerCase()) ||
+                      (contact.lastName ?? "").toLowerCase().contains(text.toLowerCase()) ||
+                      (contact.aboutMe ?? "").toLowerCase().contains(text.toLowerCase())
+                  ).toList();
                 });
               },
               textEditingController: searchController,
@@ -114,15 +137,15 @@ class _AllConnectionsState extends State<AllConnections> {
               itemBuilder: (ctx, index) {
                 final contact = filteredContacts[index];
                 return ListTileComponent(
-                    leadingText:
-                        contact.name, // contacts[index].name // StringConstants.linkedIn,
+                    leadingText:"${contact.firstName} ${contact.lastName}",
+                    // contacts[index].name // StringConstants.linkedIn,
                     removeBorderFromTile: true,
                     customPadding: const EdgeInsets.only(left: 20, right: 16),
-                    leadingsubText:
-                    contact.title,//contacts[index].title, // 'Graphic Designer',
+                    leadingsubText: contact.aboutMe,
+                    //contacts[index].title, // 'Graphic Designer',
                     // trailingIcon: Icons.add_circle,
                     trailingIconSize: 30,
-                    leadingIcon:contact.url,
+                    leadingIcon: contact.image,
                     // contacts[index]
                     //     .url, //  'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                     leadingIconHeight: 40,

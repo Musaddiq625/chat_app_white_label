@@ -609,30 +609,36 @@ class TransactionData {
   TransactionData({
     this.totalEarned,
     this.ticketSold,
+    this.remainingTicket,
   });
 
   TransactionData.fromJson(dynamic json) {
     totalEarned = json['totalEarned'].toString();
     ticketSold = json['ticketSold'].toString();
+    remainingTicket = json['remainingTicket'].toString();
 
   }
 
   String? totalEarned;
   String? ticketSold;
+  String? remainingTicket;
 
   TransactionData copyWith({
     String? totalEarned,
     String? ticketSold,
+    String? remainingTicket,
   }) =>
       TransactionData(
         totalEarned: totalEarned ?? this.totalEarned,
         ticketSold: ticketSold ?? this.ticketSold,
+        remainingTicket: remainingTicket ?? this.remainingTicket,
       );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['totalEarned'] = totalEarned.toString();
     map['ticketSold'] = ticketSold.toString();
+    map['remainingTicket'] = remainingTicket.toString();
 
     return map;
   }

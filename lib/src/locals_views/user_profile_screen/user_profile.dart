@@ -17,11 +17,13 @@ import 'package:chat_app_white_label/src/constants/shared_preference_constants.d
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/all_event_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/all_group_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/wrappers/all_groups_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/events_going_to_response_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,9 +51,11 @@ class _UserProfileState extends State<UserProfile> {
   File? selectedImage;
   String? imageUrl;
   int? totalEventCountGoingTo;
+  int? totalGroupCount;
   bool isEdit = true;
   bool eventActive = true;
   int _selectedIndex = 0;
+  int _selectedIndexGroup = 0;
   String userName = "Emily Rose";
   String img =
       "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg";
@@ -107,6 +111,7 @@ class _UserProfileState extends State<UserProfile> {
   ];
 
   List<EventRequest>? acceptedRequests;
+  List<EventRequests>? acceptedRequestsGroups;
   List<Map<String, dynamic>> eventList = [
     // {
     //   'joined': "+1456",
@@ -153,6 +158,7 @@ class _UserProfileState extends State<UserProfile> {
   double radius = 20;
   UserModel? userModel;
   Map<String, List<UpcomingEvents>>? eventFilters;
+  Map<String, List<MyGroups>>? groupFilters;
 
   @override
   void initState() {
@@ -167,7 +173,7 @@ class _UserProfileState extends State<UserProfile> {
       print("usermodel ${userModel?.toJson()}");
       setState(() {
         userName = "${userModel?.firstName} ${userModel?.lastName}";
-        // imageUrl =  userModel?.userPhotos?.first ?? "";
+        imageUrl = userModel?.userPhotos?.first ?? "";
       });
       print("userName $userName");
       print("imageUrl $imageUrl");
@@ -182,20 +188,37 @@ class _UserProfileState extends State<UserProfile> {
     return BlocConsumer<UserScreenCubit, UserScreenState>(
       listener: (context, state) {
         if (state is UserScreenLoadingState) {
-        } else if (state is UserScreenSuccessState) {
+        }
+        else if (state is UserScreenSuccessState) {
           userScreenCubit.initializeUserData(state.userModelList!);
           // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
           LoggerUtil.logs(
               "User Data Success ${userScreenCubit.userModelList.first.toJson()}");
-        } else if (state is FetchEventsGoingToSuccessState) {
+        }
+        else if (state is FetchEventsGoingToSuccessState) {
           userScreenCubit.initializeEventsGoingToResponseWrapperData(
               state.eventsGoingToResponseWrapper);
           // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
           LoggerUtil.logs(
               "Event Going To Success ${userScreenCubit.eventsGoingToResponseWrapper.toJson()}");
-          totalEventCountGoingTo = (userScreenCubit.eventsGoingToResponseWrapper
-                  .data?.totalEventsCount?.upcomingEvents ??
-              0) as int?;
+          totalEventCountGoingTo = ((userScreenCubit
+                      .eventsGoingToResponseWrapper
+                      .data
+                      ?.totalEventsCount
+                      ?.upcomingEvents ??
+                  0) as int) +
+              ((userScreenCubit.eventsGoingToResponseWrapper.data
+                      ?.totalEventsCount?.paidEvents ??
+                  0) as int) +
+              ((userScreenCubit.eventsGoingToResponseWrapper.data
+                      ?.totalEventsCount?.pastEvents ??
+                  0) as int) +
+              ((userScreenCubit.eventsGoingToResponseWrapper.data
+                      ?.totalEventsCount?.freeEvents ??
+                  0) as int) +
+              ((userScreenCubit.eventsGoingToResponseWrapper.data
+                      ?.totalEventsCount?.pendingEvents ??
+                  0) as int);
           eventFilters = {
             "Upcoming": (userScreenCubit
                     .eventsGoingToResponseWrapper.data?.upcomingEvents ??
@@ -226,50 +249,47 @@ class _UserProfileState extends State<UserProfile> {
           print(
               "event filters _selectedIndex initial ${eventFilters?.values.elementAt(_selectedIndex)}");
           setState(() {});
-        } else if (state is FetchGroupsToSuccessState) {
-          userScreenCubit.initializeEventsGoingToResponseWrapperData(
-              state.eventsGoingToResponseWrapper);
+        }
+        else if (state is FetchGroupsToSuccessState) {
+          userScreenCubit
+              .initializeAllGroupsResponseWrapperData(state.allGroupsWrapper);
           // userName = "${userScreenCubit.userModelList.first.firstName ?? ""} ${userScreenCubit.userModelList.first.lastName ?? ""}";
           LoggerUtil.logs(
-              "Event Going To Success ${userScreenCubit.eventsGoingToResponseWrapper.toJson()}");
-          totalEventCountGoingTo = (userScreenCubit.eventsGoingToResponseWrapper
-                  .data?.totalEventsCount?.upcomingEvents ??
-              0) as int?;
-          eventFilters = {
-            "Upcoming": (userScreenCubit
-                    .eventsGoingToResponseWrapper.data?.upcomingEvents ??
-                []),
-            "Paid": (userScreenCubit
-                    .eventsGoingToResponseWrapper.data?.paidEvents ??
-                []),
-            "Past": (userScreenCubit
-                    .eventsGoingToResponseWrapper.data?.pastEvents ??
-                []),
-            "Free": (userScreenCubit
-                    .eventsGoingToResponseWrapper.data?.freeEvents ??
-                []),
-            "Pending": (userScreenCubit
-                    .eventsGoingToResponseWrapper.data?.pendingEvents ??
-                [])
+              "Group To Success ${userScreenCubit.allGroupsWrapper.toJson()}");
+          totalGroupCount = ((userScreenCubit
+                      .allGroupsWrapper.data?.totalEventsCount?.allGroups ??
+                  0) as int) +
+              ((userScreenCubit
+                      .allGroupsWrapper.data?.totalEventsCount?.myGroups ??
+                  0) as int);
+          groupFilters = {
+            "allGroups":
+                (userScreenCubit.allGroupsWrapper.data?.allGroups ?? []),
+            "myGroups": (userScreenCubit.allGroupsWrapper.data?.myGroups ?? [])
           };
-          for (var i = 0; i < (eventFilters ?? {}).keys.length; i++) {
-            var key = eventFilters?.keys.elementAt(i);
-            if (eventFilters?[key]?.isNotEmpty ?? false) {
-              _selectedIndex = i;
+          for (var i = 0; i < (groupFilters ?? {}).keys.length; i++) {
+            var key = groupFilters?.keys.elementAt(i);
+            if (groupFilters?[key]?.isNotEmpty ?? false) {
+              _selectedIndexGroup = i;
               break; // Exit the loop once we've found the first non-empty category
             }
           }
           // _selectedIndex = 0;
-          print("event filters ${eventFilters}");
+          print("event filters ${groupFilters}");
           print("_selectedIndex ${_selectedIndex}");
           print(
-              "event filters _selectedIndex initial ${eventFilters?.values.elementAt(_selectedIndex)}");
+              "event filters _selectedIndex initial ${groupFilters?.values.elementAt(_selectedIndexGroup)}");
+
           setState(() {});
-        } else if (state is UpdateUserScreenSuccessState) {
+        }
+        else if (state is UpdateUserScreenSuccessState) {
           userModel = state.userModel;
           userName = "${userModel?.firstName} ${userModel?.lastName}";
 
-          imagesUserInEvents = acceptedRequests?.map((e) => e.image).where((image) => image!= null).toList(); // Filter out null values.toList();
+          imagesUserInEvents = acceptedRequests
+              ?.map((e) => e.image)
+              .where((image) => image != null)
+              .toList(); // Filter out null values.toList();
 
           // acceptedRequests = userScreenCubit.eventModel.eventRequest
           //     ?.where(
@@ -279,15 +299,18 @@ class _UserProfileState extends State<UserProfile> {
           //     ?.where((eventRequest) => eventRequest.requestStatus == "Pending")
           //     .toList();
 
-          // imageUrl =  userModel?.userPhotos?.first ?? "";
-        } else if (state is FetchMyEventsDataSuccessState) {
-          print("Event Data Success ${state.eventResponseWrapper?.toJson()}");
+          imageUrl = userModel?.userPhotos?.first ?? "";
+        }
+        else if (state is FetchMyEventsDataSuccessState) {
+          print(
+              "Event Data Success ${state.eventResponseWrapper?.data2?.map((e) => e.transectionData?.ticketSold)}");
           userScreenCubit.eventModelList.addAll(state.eventModel ?? []);
           userScreenCubit
               .initializeEventWrapperData(state.eventResponseWrapper!);
           print("Event Data Success ${userScreenCubit.eventModelList.length}");
           // imageUrl =  userModel?.userPhotos?.first ?? "";
-        } else if (state is UserScreenFailureState) {
+        }
+        else if (state is UserScreenFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
         } else if (state is FetchEventsGoingToFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
@@ -312,19 +335,26 @@ class _UserProfileState extends State<UserProfile> {
   Widget main() {
     return SingleChildScrollView(
       child: Column(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // topBar(),
           profile(),
+          connections(),
 
-          if (eventDetailList.isNotEmpty) DividerCosntants.divider1,
+          if (userScreenCubit.eventModelList.length > 0)
+            DividerCosntants.divider1,
           // if (eventDetailList.isNotEmpty)
-            yourEvents(),
+          if (userScreenCubit.eventModelList.length > 0) yourEvents(),
           // if(eventList.isNotEmpty)
-          DividerCosntants.divider1,
+          if ((totalEventCountGoingTo ?? 0) > 0) DividerCosntants.divider1,
           // if(eventList.isNotEmpty)
-          eventsGoingTo(),
-          if (eventList.isNotEmpty) DividerCosntants.divider1,
-          if (eventList.isNotEmpty) groups(),
+          if ((totalEventCountGoingTo ?? 0) > 0) eventsGoingTo(),
+          // if (eventList.isNotEmpty)
+          if ((totalGroupCount ?? 0) < 0) SizedBoxConstants.sizedBoxThirtyH(),
+          if ((totalGroupCount ?? 0) > 0) DividerCosntants.divider1,
+
+          // if (eventList.isNotEmpty)
+          if ((totalGroupCount ?? 0) > 0) groups(),
         ],
       ),
     );
@@ -400,6 +430,7 @@ class _UserProfileState extends State<UserProfile> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Stack(
             children: [
@@ -460,7 +491,18 @@ class _UserProfileState extends State<UserProfile> {
             userName,
             style: FontStylesConstants.style20(),
           ),
-          SizedBoxConstants.sizedBoxSixtyH(),
+          SizedBoxConstants.sizedBoxThirtyH(),
+        ],
+      ),
+    );
+  }
+
+  Widget connections() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Padding(
             padding: const EdgeInsets.only(left: 16),
             child: Row(
@@ -487,7 +529,7 @@ class _UserProfileState extends State<UserProfile> {
                   "",
                   listOfText: [
                     StringConstants.connections,
-                    " ${images.length}",
+                    (userModel?.friendConnection != "null" || (userModel?.friendConnection ?? "").isNotEmpty || userModel?.friendConnection != null)?"${userModel?.friendConnection ?? 0}":0.toString(),
                   ],
                   listOfTextStyle: [
                     FontStylesConstants.style20(
@@ -498,38 +540,39 @@ class _UserProfileState extends State<UserProfile> {
                     )
                   ],
                 ),
-                if (images.isNotEmpty)
-                  GestureDetector(
-                    onTap: () {
-                      NavigationUtil.push(
-                          context, RouteConstants.allConnectionScreen);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextComponent(
-                          "See all",
-                          style: FontStylesConstants.style15(
-                              color: ColorConstants.lightGray.withOpacity(0.8)),
-                        ),
-                        SizedBoxConstants.sizedBoxTenW(),
-                        IconComponent(
-                          iconData: Icons.arrow_forward_ios,
-                          backgroundColor: ColorConstants.transparent,
-                          borderColor: ColorConstants.transparent,
-                          iconSize: 18,
-                          borderSize: 0,
-                          circleSize: 18,
-                          iconColor: ColorConstants.lightGray,
-                        )
-                      ],
-                    ),
+                // if ((userModel?.friends ?? []).length > 0)
+                GestureDetector(
+                  onTap: () {
+                    NavigationUtil.push(
+                        context, RouteConstants.allConnectionScreen);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextComponent(
+                        "See all",
+                        style: FontStylesConstants.style15(
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
+                      ),
+                      SizedBoxConstants.sizedBoxTenW(),
+                      IconComponent(
+                        iconData: Icons.arrow_forward_ios,
+                        backgroundColor: ColorConstants.transparent,
+                        borderColor: ColorConstants.transparent,
+                        iconSize: 18,
+                        borderSize: 0,
+                        circleSize: 18,
+                        iconColor: ColorConstants.lightGray,
+                      )
+                    ],
                   ),
+                ),
               ],
             ),
           ),
-          SizedBoxConstants.sizedBoxTwentyH(),
-          if (images.isNotEmpty)
+          if ((userModel?.friends ?? []).length > 0)
+            SizedBoxConstants.sizedBoxTwentyH(),
+          if ((userModel?.friends ?? []).length > 0)
             SizedBox(
               height: 50,
               child: ListView.builder(
@@ -537,27 +580,29 @@ class _UserProfileState extends State<UserProfile> {
                   // padding: EdgeInsets.symmetric(horizontal: 10),
                   physics: const BouncingScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: images.length,
+                  itemCount: (userModel?.friends ?? []).length,
                   itemBuilder: (context, index) {
+                    var userImages = (userModel?.friends ?? [])[index];
+                    print("friends images ${userImages.image}");
                     return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       child: GestureDetector(
                         child: ProfileImageComponent(
-                          url: images[index].toString(),
+                          url: (userImages.image) ?? "",
                           size: 50,
                         ),
                       ),
                     );
                   }),
             ),
+          if ((userModel?.friends ?? []).length > 0)
+          SizedBoxConstants.sizedBoxTenH()
         ],
       ),
     );
   }
 
   Widget yourEvents() {
-
-
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
@@ -588,7 +633,7 @@ class _UserProfileState extends State<UserProfile> {
                   "",
                   listOfText: [
                     StringConstants.yourEvents,
-                    " ${(userScreenCubit.eventModelList.length )?? 0}",
+                    " ${(userScreenCubit.eventModelList.length) ?? 0}",
                   ],
                   listOfTextStyle: [
                     FontStylesConstants.style20(
@@ -602,7 +647,8 @@ class _UserProfileState extends State<UserProfile> {
               ),
               GestureDetector(
                 onTap: () {
-                  NavigationUtil.push(context, RouteConstants.allEventScreen);
+                  NavigationUtil.push(
+                      context, RouteConstants.allYourEventScreen);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -640,28 +686,45 @@ class _UserProfileState extends State<UserProfile> {
                       child: GestureDetector(
                         onTap: () {
                           NavigationUtil.push(
-                              context, RouteConstants.viewYourEventScreen);
+                              context, RouteConstants.viewYourEventScreen,
+                              args: tag.id);
                         },
                         child: EventSummary(
-                          eventId:tag.id?? "" ,
-                          eventTitle: tag.title ?? "",//"Meet & Mingle in Riyadh Season",
-                          price:tag.pricing?.price ?? "",// "SAR 150",
-                          ticketsSold: int.parse(tag.transectionData?.ticketSold ??"0"),
-                            totalEarned:tag.transectionData?.totalEarned ?? "",
-                            remainingTickets: 0,//(((tag.venues?? []).first.capacity?? 0)-(tag.transectionData?.ticketSold?? 0)),
-                            eventActive:tag.isVisibility,
-                            currenStats: true,
+                            eventId: tag.id ?? "",
+                            eventTitle: tag.title ?? "",
+                            //"Meet & Mingle in Riyadh Season",
+                            price: tag.pricing?.price ?? "",
+                            // "SAR 150",
+                            ticketsSold: int.parse(
+                                tag.transectionData?.ticketSold ?? "0"),
+                            totalEarned: tag.transectionData?.totalEarned ?? "",
+                            remainingTickets:
+                                (tag.transectionData?.remainingTicket != null &&
+                                        (tag.transectionData?.remainingTicket ??
+                                                "")
+                                            .isNotEmpty &&
+                                        tag.transectionData?.remainingTicket !=
+                                            "null" &&
+                                        tag.transectionData?.remainingTicket !=
+                                            "Unlimited")
+                                    ? int.parse(
+                                        tag.transectionData?.remainingTicket ??
+                                            "")
+                                    : 0,
+                            //(((tag.venues?? []).first.capacity?? 0)-(tag.transectionData?.ticketSold?? 0)),
+                            eventActive: tag.isVisibility,
+                            currenStats: false,
                             capacity: tag.venues?.first.capacity ?? "",
                             imagesUserInEvent: imagesUserInEvents
-                          // capacity: "Unlimited",
-                          // remainingTickets: 96,
-                          // eventActive: true,
-                          // totalEarned: "",
-                          // imagesUserInEvent: images,
-                          // imagesUserInEvent: [
-                          //   // Your list of ImageProvider objects
-                          // ],
-                        ),
+                            // capacity: "Unlimited",
+                            // remainingTickets: 96,
+                            // eventActive: true,
+                            // totalEarned: "",
+                            // imagesUserInEvent: images,
+                            // imagesUserInEvent: [
+                            //   // Your list of ImageProvider objects
+                            // ],
+                            ),
                       )),
                   // Container(
                   //   width: AppConstants.responsiveWidth(context,
@@ -853,6 +916,7 @@ class _UserProfileState extends State<UserProfile> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16),
@@ -1024,7 +1088,7 @@ class _UserProfileState extends State<UserProfile> {
               ],
             ),
           ),
-          SizedBoxConstants.sizedBoxSixtyH(),
+          SizedBoxConstants.sizedBoxTwentyH(),
         ],
       ),
     );
@@ -1034,6 +1098,7 @@ class _UserProfileState extends State<UserProfile> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16),
@@ -1061,7 +1126,7 @@ class _UserProfileState extends State<UserProfile> {
                   "",
                   listOfText: [
                     StringConstants.groups,
-                    " 387",
+                    " ",
                   ],
                   listOfTextStyle: [
                     FontStylesConstants.style20(
@@ -1074,7 +1139,11 @@ class _UserProfileState extends State<UserProfile> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    NavigationUtil.push(context, RouteConstants.allEventScreen);
+                    NavigationUtil.push(context, RouteConstants.allGroupScreen,
+                        args: AllGroupsArg(
+                            userScreenCubit
+                                .allGroupsWrapper.data?.totalEventsCount,
+                            groupFilters));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1102,30 +1171,66 @@ class _UserProfileState extends State<UserProfile> {
           ),
           SizedBoxConstants.sizedBoxTwentyH(),
           FilterComponent(
-            options: [
-              FilterComponentArg(title: 'All'),
-              FilterComponentArg(title: "Unread"),
-              FilterComponentArg(title: "DMS", count: 111),
-              FilterComponentArg(title: "DMS", count: 23),
-              FilterComponentArg(title: "Event", count: 104)
-            ],
-            groupValue:
-                _selectedIndex, // Your state variable for selected index
-            onValueChanged: (int value) =>
-                setState(() => _selectedIndex = value),
-          ),
+              options: [
+                (((userScreenCubit.allGroupsWrapper.data?.totalEventsCount
+                                ?.allGroups ??
+                            0) as int) >
+                        0)
+                    ? FilterComponentArg(
+                        title: "All Groups",
+                        count: ((userScreenCubit.allGroupsWrapper.data
+                                ?.totalEventsCount?.allGroups ??
+                            0) as int))
+                    : FilterComponentArg(),
+                (((userScreenCubit.allGroupsWrapper.data?.totalEventsCount
+                                ?.myGroups ??
+                            0) as int) >
+                        0)
+                    ? FilterComponentArg(
+                        title: "Created by you",
+                        count: ((userScreenCubit.allGroupsWrapper.data
+                                ?.totalEventsCount?.myGroups ??
+                            0) as int))
+                    : FilterComponentArg()
+              ],
+              groupValue:
+                  _selectedIndexGroup, // Your state variable for selected index
+              onValueChanged: (int value) => {
+                    setState(
+                      () => _selectedIndexGroup = value,
+                    ),
+                    print(
+                        "event filters ${groupFilters?.values.elementAt(_selectedIndexGroup)}"),
+                    print("filters selectedIndex ${_selectedIndexGroup}"),
+                  }),
           SizedBoxConstants.sizedBoxTwentyH(),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             // This makes the list scrollable horizontally
             child: Row(
               children: [
-                ...eventList
-                    .map((tag) => GroupCard(
-                          imageUrl: img,
-                          images: images2,
-                          name: tag['eventName'],
-                        ))
+                ...?groupFilters?.values
+                    .elementAt(_selectedIndexGroup)
+                    .map((tag) => GestureDetector(
+                        onTap: () {
+                          if (_selectedIndexGroup == 0) {
+                            NavigationUtil.push(
+                                context, RouteConstants.viewGroupScreen,
+                                args: tag.id ?? "");
+                          } else {
+                            NavigationUtil.push(
+                                context, RouteConstants.viewYourGroupScreen,
+                                args: tag.id ?? "");
+                          }
+                        },
+                        child: GroupCard(
+                          imageUrl: (tag.images ?? []).firstWhere(
+                              (element) => (element ?? "").isNotEmpty,
+                              orElse: () => ""),
+                          images: [],
+                          name: tag.title ?? "",
+                          membersCount: tag.members.toString(),
+                        )))
                     .toList(),
               ],
             ),
@@ -1137,7 +1242,10 @@ class _UserProfileState extends State<UserProfile> {
                 buttonText: StringConstants.createANewGroup,
                 bgcolor: ColorConstants.darkBackgrounddColor,
                 textColor: ColorConstants.white,
-                onPressed: () => {}),
+                onPressed: () => {
+                      NavigationUtil.push(
+                          context, RouteConstants.createGroupScreenLocals)
+                    }),
           ),
           Padding(
               padding:

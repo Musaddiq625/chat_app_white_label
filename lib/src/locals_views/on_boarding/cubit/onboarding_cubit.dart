@@ -170,7 +170,6 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
     try {
       var resp = await OnBoardingRepository.getInterestData();
       emit(OnBoardingInterestSuccess(resp));
-      // LoggerUtil.logs(resp.toJson());
     } catch (e) {
       emit(OnBoardingInterestFailureState(e.toString()));
     }

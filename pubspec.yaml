@@ -81,6 +81,7 @@ dependencies:
   aws_s3_upload:
     git:
       url: https://github.com/Musaddiq625/aws_s3_upload
+  device_info_plus: ^10.1.0
 #
 #dev_dependencies:
 #  flutter_test:

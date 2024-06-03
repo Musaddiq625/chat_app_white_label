@@ -130,8 +130,10 @@ class _InterestScreenState extends State<InterestScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    onBoardingCubit.getInterestData();
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     await onBoardingCubit.getInterestData();
+    });
     super.initState();
   }
 

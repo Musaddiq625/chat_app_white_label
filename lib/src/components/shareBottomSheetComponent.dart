@@ -75,6 +75,8 @@ class ShareBottomSheet {
                           .then((value) => ToastComponent.showToast(
                               StringConstants.copiedToClipboard,
                               context: context));
+
+                      NavigationUtil.pop(context);
                     },
                     child: IconComponent(
                       // iconData: Icons.link,

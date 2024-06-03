@@ -39,6 +39,9 @@ class AppSettingCubit extends Cubit<AppSettingState> {
   setToken(String? token)async{
     await sharedPreferencesUtil.setString(SharedPreferenceConstants.apiAuthToken, token);
   }
+  setDeviceId(String? deviceId)async{
+    await sharedPreferencesUtil.setString(SharedPreferenceConstants.deviceId, deviceId);
+  }
 
   setUserModel(UserModel? userModel)async{
     await sharedPreferencesUtil.setUserModel(SharedPreferenceConstants.userModel, userModel);

@@ -34,9 +34,9 @@ class GroupCard extends StatelessWidget {
         width: 186,
         height: 308,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Column(
@@ -46,7 +46,7 @@ class GroupCard extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 10),
                       child: TextComponent(
-                        "Property networking event",
+                        name,
                         style:
                             FontStylesConstants.style20(color: ColorConstants.white),
                         maxLines: 6,

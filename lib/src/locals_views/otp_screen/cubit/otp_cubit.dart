@@ -61,9 +61,12 @@ class OTPCubit extends Cubit<OTPState> {
     emit(OTPLoadingState());
 
     try {
-      var resp = await AuthRepository.verifyOtp(identifier,otp);
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    print("Fcm token ${fcmToken}");
+      var resp = await AuthRepository.verifyOtp(identifier,otp,fcmToken);
       // LoggerUtil.logs("userDetailModel ${userDetailModel?.toJson()}");
       if(resp.code == 200){
+        LoggerUtil.logs("test user data ${resp.data?.toJson()}");
         emit(OTPSuccessUserState(resp.data));
         LoggerUtil.logs(resp);
       }

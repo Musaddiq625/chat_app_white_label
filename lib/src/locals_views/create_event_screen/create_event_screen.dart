@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/drop_down_bottom_sheet.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
@@ -65,6 +67,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   int? _draggingIndex;
 
   String selectedPriceValue = "Free"; // Initialize with a default value
+  String selectedPriceValueContainer =
+      "Free"; // Initialize with a default value
   String capacityValue = "Unlimited"; // Initialize with a default value
   TextEditingController _inputPriceValuecontroller = TextEditingController();
   TextEditingController _inputCapacityValuecontroller = TextEditingController();
@@ -113,8 +117,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   void initState() {
     super.initState();
     eventCubit.eventModel = EventModel();
-    print(
-        "widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
+    print("widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
     selectedImagePath = widget.eventModel?.images?.first;
     LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     _questionControllers =
@@ -174,10 +177,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               selectedIndexPrice = containerIndex,
             }),
         setState(() {
-          selectedPriceValue =
+          _inputPriceValuecontroller.text = "";
+          selectedPriceValueContainer =
               ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex];
-          eventCubit.addPrice(
-              selectedPriceValue == "Free" ? "0" : selectedPriceValue);
+          // eventCubit.addPrice(
+          //     selectedPriceValue == "Free" ? "0" : selectedPriceValue);
         }),
       },
       child: Container(
@@ -247,10 +251,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         .path; // Update the state with the selected image path
                                     // eventCubit.addImage("https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
                                   });
-                                  var uploadImage = await AppConstants.uploadImage(selectedImagePath!,"event");
+                                  var uploadImage =
+                                      await AppConstants.uploadImage(
+                                          selectedImagePath!, "event");
                                   print("uploadingImage $uploadImage");
                                   await eventCubit.addImage(uploadImage);
-
                                 }
                               },
                               child: Row(
@@ -616,10 +621,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           if (startDate != null) {
-                                            DateTime  selectedStartDate = DateFormat("yyyy-MM-dd").parse(startDate.toString());
+                                            DateTime selectedStartDate =
+                                                DateFormat("yyyy-MM-dd").parse(
+                                                    startDate.toString());
                                             showDatePicker(
                                               context: context,
-                                              initialDate: DateTime.now(),
+                                              initialDate: selectedStartDate,
                                               firstDate: selectedStartDate,
                                               lastDate: DateTime(2101),
                                             ).then((selectedDate) {
@@ -627,15 +634,24 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                               if (selectedDate != null) {
                                                 print(
                                                     "selectedDate $selectedDate start Date $startDate");
-                                              DateTime  startDateFormat = DateFormat("yyyy-MM-dd").parse(startDate!);
-                                              DateTime  startDateFullFormat = DateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(startDate!);
-                                              DateTime  selectedOnlyDate = DateFormat("yyyy-MM-dd").parse(selectedDate.toString());
-                                              // if(selectedOnlyDate.)
+                                                DateTime startDateFormat =
+                                                    DateFormat("yyyy-MM-dd")
+                                                        .parse(startDate!);
+                                                DateTime startDateFullFormat =
+                                                    DateFormat(
+                                                            "yyyy-MM-dd HH:mm:ss.SSS")
+                                                        .parse(startDate!);
+                                                DateTime selectedOnlyDate =
+                                                    DateFormat("yyyy-MM-dd")
+                                                        .parse(selectedDate
+                                                            .toString());
+                                                // if(selectedOnlyDate.)
 
-                                                if (selectedOnlyDate.isBefore(startDateFormat
-                                                    // DateTime.parse(
-                                                    //     startDate!)
-                                                )) {
+                                                if (selectedOnlyDate
+                                                    .isBefore(startDateFormat
+                                                        // DateTime.parse(
+                                                        //     startDate!)
+                                                        )) {
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
                                                     SnackBar(
@@ -643,11 +659,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                           "End date cannot be select before start date."),
                                                     ),
                                                   );
-                                                }
-                                                else if (selectedDate
-                                                        .isAfter(
-                                                            DateTime.parse(
-                                                                startDate!)) ||
+                                                } else if (selectedDate.isAfter(
+                                                        DateTime.parse(
+                                                            startDate!)) ||
                                                     selectedDate
                                                         .isAtSameMomentAs(
                                                             DateTime.parse(
@@ -675,7 +689,19 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                               .format(
                                                                   selectedDateTime);
 
-                                                      if (selectedDateTime.isBefore(DateTime.parse(startDate!)) && selectedDateTime.difference(startDateFullFormat).inHours < 1 && selectedDateTime.difference(startDateFullFormat).inMinutes < 60){
+                                                      if (selectedDateTime.isBefore(
+                                                              DateTime.parse(
+                                                                  startDate!)) &&
+                                                          selectedDateTime
+                                                                  .difference(
+                                                                      startDateFullFormat)
+                                                                  .inHours <
+                                                              1 &&
+                                                          selectedDateTime
+                                                                  .difference(
+                                                                      startDateFullFormat)
+                                                                  .inMinutes <
+                                                              60) {
                                                         ScaffoldMessenger.of(
                                                                 context)
                                                             .showSnackBar(
@@ -688,7 +714,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                           .isAfter(
                                                               DateTime.parse(
                                                                   startDate!))) {
-                                                        print("0 seleted end date ${selectedDateTime} startdate ${startDate}");
+                                                        print(
+                                                            "0 seleted end date ${selectedDateTime} startdate ${startDate}");
 
                                                         setState(() {
                                                           endDate =
@@ -706,7 +733,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       //   });
                                                       // }
                                                       else {
-                                                        print("1 seleted end date ${selectedDateTime} startdate ${startDate}");
+                                                        print(
+                                                            "1 seleted end date ${selectedDateTime} startdate ${startDate}");
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
@@ -716,8 +744,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       }
                                                     }
                                                   });
-                                                }
-                                                else {
+                                                } else {
                                                   showTimePicker(
                                                     context: context,
                                                     initialTime:
@@ -739,7 +766,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                   'd MMM \'at\' hh a')
                                                               .format(
                                                                   selectedDateTime);
-                                                      print("--- selected end date ${selectedDateTime} startdate ${startDate}");
+                                                      print(
+                                                          "--- selected end date ${selectedDateTime} startdate ${startDate}");
 
                                                       // if (endDate == null) {
                                                       //   print("22 seleted end date ${selectedDateTime} startdate ${startDate}");
@@ -751,8 +779,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       //   });
                                                       // }
                                                       // else
-                                                        if (selectedDateTime.isBefore(DateTime.parse(startDate!)))
-                                                        {
+                                                      if (selectedDateTime
+                                                          .isBefore(
+                                                              DateTime.parse(
+                                                                  startDate!))) {
                                                         ScaffoldMessenger.of(
                                                                 context)
                                                             .showSnackBar(
@@ -761,18 +791,22 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 "End date-time cannot be select before start date-time."),
                                                           ),
                                                         );
-                                                      }
-                                                        else if( selectedDateTime == startDateFullFormat || selectedDateTime.difference(startDateFullFormat).inMinutes < 60 ){
-                                                          ScaffoldMessenger.of(
-                                                              context)
-                                                              .showSnackBar(
-                                                            SnackBar(
-                                                              content: TextComponent(
-                                                                  "Event should be minimum 1 hour"),
-                                                            ),
-                                                          );
-                                                        }
-                                                      else if (selectedDateTime
+                                                      } else if (selectedDateTime ==
+                                                              startDateFullFormat ||
+                                                          selectedDateTime
+                                                                  .difference(
+                                                                      startDateFullFormat)
+                                                                  .inMinutes <
+                                                              60) {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                            content: TextComponent(
+                                                                "Event should be minimum 1 hour"),
+                                                          ),
+                                                        );
+                                                      } else if (selectedDateTime
                                                           .isAfter(
                                                               DateTime.parse(
                                                                   startDate!))) {
@@ -783,9 +817,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                   .toString();
                                                           // DateFormat('d MMM \'at\' hh a').format(selectedDateTime);
                                                         });
-                                                      }
-                                                      else {
-                                                        print(" 11 seleted end date ${selectedDateTime} startdate ${startDate}");
+                                                      } else {
+                                                        print(
+                                                            " 11 seleted end date ${selectedDateTime} startdate ${startDate}");
                                                         setState(() {
                                                           endDate =
                                                               selectedDateTime
@@ -849,7 +883,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.marker,
                   leadingText: StringConstants.location,
-                  trailingText: "Manchester",
+                  trailingText: "",
                   onTap: _selectLocation,
                   subTextColor: themeCubit.textColor,
                   trailingIcon: Icons.arrow_forward_ios,
@@ -993,7 +1027,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         // }
 
                         // NavigationUtil.pop(context);
-                        eventCubit.addQuestions(questionsList);
+
+                            print("_questionControllers  ${_questionControllers} ${questions} ${selectedQuestionRequired} ${selectedQuestionPublic}");
+                            // _questionControllers.removeWhere((element) => element.value.text == "" );
+
+                            List<Question> filteredQuestions = questionsList.where((element) => element.question?.trim()!= null && element.question?.trim()!= "").toList();
+                        eventCubit.addQuestions(filteredQuestions);
                         LoggerUtil.logs(
                             "eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
                         LoggerUtil.logs(
@@ -1018,7 +1057,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           selectedQuestionRequired,
                           selectedQuestionPublic,
                           (List<Question> questionsList) {
-                        eventCubit.addQuestions(questionsList);
+                            //
+                            // _questionControllers.removeWhere((element) => element.value == "" );
+                            
+                        // eventCubit.addQuestions(questionsList);
                         // List<Question> questionsList = eventCubit.eventModel.question?? [];
                         // for(int i = 0; i < _questionControllers.length; i++){
                         //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
@@ -1032,6 +1074,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         // }
                         // eventCubit.eventModel.copyWith(question: questionsList);
                         // NavigationUtil.pop(context);
+
+                            List<Question> filteredQuestions = questionsList.where((element) => element.question?.trim()!= null && element.question?.trim()!= "").toList();
+                            eventCubit.addQuestions(filteredQuestions);
 
                         LoggerUtil.logs(
                             "eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
@@ -1303,7 +1348,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                               fontSize: 18),
                         ),
                         InkWell(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () => {
+                            _inputPriceValuecontroller.text = "",
+                            selectedPriceValueContainer = "",
+                            selectedIndexPrice = null,
+                            Navigator.pop(context),
+                          },
                           child: IconComponent(
                             iconData: Icons.close,
                             borderColor: Colors.transparent,
@@ -1344,13 +1394,17 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       ),
                       controller: _inputPriceValuecontroller,
                       onChanged: (value) {
-                        setState(() {
-                          selectedPriceValue =
-                              "${"£" + _inputPriceValuecontroller.text}";
-                          eventCubit.addPrice(
-                              _inputPriceValuecontroller.value.text.isNotEmpty
-                                  ? selectedPriceValue
-                                  : "0");
+                        print("onChange 0");
+                        setState2(() {
+                          print("onChange 1");
+                          selectedPriceValueContainer = "";
+                          selectedIndexPrice = null;
+                          // selectedPriceValue =
+                          //     "${"£" + _inputPriceValuecontroller.text}";
+                          // eventCubit.addPrice(
+                          //     _inputPriceValuecontroller.value.text.isNotEmpty
+                          //         ? selectedPriceValue
+                          //         : "0");
                         });
                       },
                       keyboardType: TextInputType.number,
@@ -1394,6 +1448,25 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         onPressed: () {
                           print(
                               "_inputPriceValuecontroller.text ${_inputPriceValuecontroller.text}, selectedvalue ${selectedPriceValue}");
+
+                          setState(() {
+                            selectedPriceValue = selectedPriceValueContainer;
+                            eventCubit.addPrice(selectedPriceValue == "Free"
+                                ? "0"
+                                : selectedPriceValue);
+
+                            if (_inputPriceValuecontroller
+                                .value.text.isNotEmpty)
+                              selectedPriceValue =
+                                  "${"£" + _inputPriceValuecontroller.text}";
+                            if (_inputPriceValuecontroller
+                                .value.text.isNotEmpty)
+                              eventCubit.addPrice(_inputPriceValuecontroller
+                                      .value.text.isNotEmpty
+                                  ? selectedPriceValue
+                                  : "0");
+                          });
+
                           NavigationUtil.pop(context);
                           // _yesShareItBottomSheet();
                           // NavigationUtil.push(

@@ -283,6 +283,8 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
     );
   }
 
+
+
   Widget _eventWidget() {
     return Stack(children: [
       (groupCubit.eventModel.images?.first != null)
@@ -307,66 +309,42 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
               iconBgColor: ColorConstants.iconBg,
             ),
             SizedBoxConstants.sizedBoxEightyH(),
-            // Padding(
-            //   padding: const EdgeInsets.only(top: 15, left: 10, bottom: 80),
-            //   child: IconComponent(
-            //     iconData: Icons.arrow_back_ios_new_outlined,
-            //     borderColor: Colors.transparent,
-            //     backgroundColor: ColorConstants.iconBg,
-            //     iconColor: ColorConstants.white,
-            //     iconSize: 20,
-            //     circleSize: 40,
-            //     onTap: () => Navigator.pop(context),
-            //   ),
-            // ),
-
-            // Padding(
-            //   padding: const EdgeInsets.only(left: 10),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.start,
-            //     children: [
-            //       ProfileImageComponent(
-            //         url: "",
-            //         size: 40,
-            //       ),
-            //       SizedBoxConstants.sizedBoxEightW(),
-            //       TextComponent(
-            //         "${StringConstants.invitedBy + invitedBy}",
-            //         style: FontStylesConstants.style16(),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            (groupCubit.eventModel.title != null)
-                ? Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: TextComponent(
-                        groupCubit.eventModel.title ?? "", //groupName,
-                        maxLines: 6,
-                        style: FontStylesConstants.style38(
-                            color: ColorConstants.white)),
-                  )
-                : SizedBox(),
-            SizedBoxConstants.sizedBoxTenH(),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Row(
-                children: [
-                  IconComponent(
-                    iconData: (groupCubit.eventModel.isPublic ?? true)
-                        ? Icons.lock_open_outlined
-                        : Icons.lock,
-                    backgroundColor: ColorConstants.transparent,
-                    customIconText: (groupCubit.eventModel.isPublic ?? true)
-                        ? StringConstants.public
-                        : StringConstants.private,
-                    circleSize: 60,
-                    circleHeight: 35,
-                    iconSize: 20,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                (groupCubit.eventModel.title != null)
+                    ? Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: TextComponent(
+                      groupCubit.eventModel.title ?? "", //groupName,
+                      maxLines: 6,
+                      style: FontStylesConstants.style38(
+                          color: ColorConstants.white)),
+                )
+                    : SizedBox(),
+                SizedBoxConstants.sizedBoxTenH(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    children: [
+                      IconComponent(
+                        iconData: (groupCubit.eventModel.isPublic ?? true)
+                            ? Icons.lock_open_outlined
+                            : Icons.lock,
+                        backgroundColor: ColorConstants.transparent,
+                        customIconText: (groupCubit.eventModel.isPublic ?? true)
+                            ? StringConstants.public
+                            : StringConstants.private,
+                        circleSize: 60,
+                        circleHeight: 35,
+                        iconSize: 20,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+
             SizedBoxConstants.sizedBoxTenH(),
             Container(
               width: AppConstants.responsiveWidth(context, percentage: 100),

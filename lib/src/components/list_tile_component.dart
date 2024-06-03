@@ -189,9 +189,11 @@ class ListTileComponent extends StatelessWidget {
                           if (leadingsubText != null)
                             TextComponent(
                               leadingsubText!,
+                              maxLines: 2,
                               style: TextStyle(
                                   fontSize: 15,
-                                  color: themeCubit.textSecondaryColor),
+                                  color: themeCubit.textSecondaryColor,)
+                              ,
                             ),
                         ],
                       ),

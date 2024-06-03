@@ -16,6 +16,8 @@ class DioClientNetwork {
     _dio = Dio();
     final token = await getIt<SharedPreferencesUtil>()
         .getString(SharedPreferenceConstants.apiAuthToken);
+    final device_id = await getIt<SharedPreferencesUtil>()
+        .getString(SharedPreferenceConstants.deviceId);
 
     _dio.options = BaseOptions(
       baseUrl: HttpConstants.base,
@@ -23,6 +25,7 @@ class DioClientNetwork {
     if (token != null) {
       LoggerUtil.logs("token value $token");
       // _dio.options.headers['Authorization'] = 'Bearer $token';
+      _dio.options.headers["device_id"]= device_id;
       _dio.options.headers['x-access-token'] = token;
     }
     else{

@@ -7,6 +7,7 @@ class StringConstants {
 
   static const String locals = "Locals";
   static const String today = "Today";
+  static const String earlierThisWeekNotifications = "Earlier This Week";
   static const String joined = "Joined";
   static const String invitedBy = "You were invited by ";
   static const String phoneNumber = "Phone Number";
@@ -121,9 +122,9 @@ class StringConstants {
   static const String smoke = "Smoke";
   static const String drinking = "drinking";
   static const String drink = "Drink";
-  static const String moreAboutYou = "More about you";
+  static const String moreAboutYou = "More about Me";
   static const String personalInfo = "Personal info";
-  static const String dragAndHold = "drag and hold to reorder";
+  static const String dragAndHold = "Drag and hold to reorder";
   static const String bioHint =
       "Tell the world what you like, why you're here or anything about yourself ";
   static const String showLessLikeThis = "Show less like this";
@@ -287,6 +288,8 @@ class StringConstants {
   static const String withDraw = "Withdraw";
   static const String earningDetails = "Earning Details";
   static const String eventsYouGoingTo = "Events you'e going to";
+  static const String allGroups = "All Groups";
+  static const String myEvents = "My Events";
   static const String clubs = "Clubs";
   static const String somethingToKnow = "Something to know";
   static const String requestSent = "Request Sent!";

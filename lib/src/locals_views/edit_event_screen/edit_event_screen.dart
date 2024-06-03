@@ -930,7 +930,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                   leadingIconHeight: 25,
                   leadingIcon: AssetConstants.marker,
                   leadingText: StringConstants.location,
-                  trailingText: "Manchester",
+                  trailingText: "",
                   onTap: _selectLocation,
                   subTextColor: themeCubit.textColor,
                   trailingIcon: Icons.arrow_forward_ios,

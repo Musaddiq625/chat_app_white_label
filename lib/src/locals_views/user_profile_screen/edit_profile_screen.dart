@@ -272,7 +272,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   children: tempImageData
                       .map(
                         (image) => ChooseImageComponent(
-                          isCurrentProfilePic: image == tempImageData.first,
+                          isCurrentProfilePic: image == tempImageData[0],
 
                           image: image,
                           // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
@@ -844,34 +844,34 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                 ),
                 SizedBoxConstants.sizedBoxTenH(),
 
-                TextFieldComponent(
-                  _phoneNumberController,
-                  filled: true,
-                  title: StringConstants.phoneNumber,
-                  titlePaddingFromLeft: 15,
-
-                  prefixWidget: CountryCodePickerComponent(
-                    isSignupScreen: false,
-                    onChange: (CountryCode) {
-                      _countryCodeController.text = '+${CountryCode.dialCode}';
-
-                    },
-                  ),
-                  maxLength: AppConstants.phoneNumberMaxLength,
-                  keyboardType: TextInputType.phone,
-                  // autoFocus: true,
-                  hintText: StringConstants.phoneTextFieldHint,
-                  validator: (phone) => ValidationService.validatePhone(
-                      phone!.trim(),
-                      fieldName: StringConstants.phoneNumber),
-                  onChanged: (phone) {
-                    userScreenCubit.updatePhoneNumber(_countryCodeController.text+_phoneNumberController.text);
-                    // handlePhoneOnChange();
-                    // setState(() {
-                    // _phoneNumberValid = _formKey.currentState!.validate();
-                    // });
-                  },
-                ),
+                // TextFieldComponent(
+                //   _phoneNumberController,
+                //   filled: true,
+                //   title: StringConstants.phoneNumber,
+                //   titlePaddingFromLeft: 15,
+                //
+                //   prefixWidget: CountryCodePickerComponent(
+                //     isSignupScreen: false,
+                //     onChange: (CountryCode) {
+                //       _countryCodeController.text = '+${CountryCode.dialCode}';
+                //
+                //     },
+                //   ),
+                //   maxLength: AppConstants.phoneNumberMaxLength,
+                //   keyboardType: TextInputType.phone,
+                //   // autoFocus: true,
+                //   hintText: StringConstants.phoneTextFieldHint,
+                //   validator: (phone) => ValidationService.validatePhone(
+                //       phone!.trim(),
+                //       fieldName: StringConstants.phoneNumber),
+                //   onChanged: (phone) {
+                //     userScreenCubit.updatePhoneNumber(_countryCodeController.text+_phoneNumberController.text);
+                //     // handlePhoneOnChange();
+                //     // setState(() {
+                //     // _phoneNumberValid = _formKey.currentState!.validate();
+                //     // });
+                //   },
+                // ),
                 SizedBoxConstants.sizedBoxTenH(),
                 GestureDetector(
                   onTap: () {

@@ -5,8 +5,10 @@ import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/repositories/auth_repository.dart';
 import 'package:chat_app_white_label/src/network/repositories/onboarding_repository.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/wrappers/all_groups_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/event_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/events_going_to_response_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/friend_list_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/interest_response_wrapper.dart';
 import 'package:flutter/foundation.dart';
 
@@ -22,20 +24,32 @@ class UserScreenCubit extends Cubit<UserScreenState> {
   List<EventModel> eventModelList = [];
   EventResponseWrapper eventResponseWrapper = EventResponseWrapper();
   InterestResponseWrapper interestWrapper = InterestResponseWrapper();
-  EventsGoingToResponseWrapper eventsGoingToResponseWrapper =EventsGoingToResponseWrapper();
+  FriendListResponseWrapper friendListResponseWrapper =
+      FriendListResponseWrapper();
+  EventsGoingToResponseWrapper eventsGoingToResponseWrapper =
+      EventsGoingToResponseWrapper();
+  AllGroupsWrapper allGroupsWrapper = AllGroupsWrapper();
   MoreAbout moreAbout = MoreAbout();
 
   void initializeUserData(List<UserModel> user) => userModelList = user;
 
+  void initializeFriendListResponseWrapperData(
+          FriendListResponseWrapper friendListResponse) =>
+      friendListResponseWrapper = friendListResponse;
+
   void initializeInterestData(InterestResponseWrapper interest) =>
       interestWrapper = interest;
-
 
   void initializeEventWrapperData(EventResponseWrapper event) =>
       eventResponseWrapper = event;
 
-  void initializeEventsGoingToResponseWrapperData(EventsGoingToResponseWrapper eventsGoingToResponse) =>
+  void initializeEventsGoingToResponseWrapperData(
+          EventsGoingToResponseWrapper eventsGoingToResponse) =>
       eventsGoingToResponseWrapper = eventsGoingToResponse;
+
+  void initializeAllGroupsResponseWrapperData(
+          AllGroupsWrapper allGroupsWrapperResponse) =>
+      allGroupsWrapper = allGroupsWrapperResponse;
 
   Future<void> fetchUserData(String id) async {
     emit(UserScreenLoadingState());
@@ -74,7 +88,7 @@ class UserScreenCubit extends Cubit<UserScreenState> {
   Future<void> fetchGroupsData() async {
     emit(FetchGroupsToLoadingState());
     try {
-      var resp = await AuthRepository.fetchEventYouGoingToData();
+      var resp = await AuthRepository.fetchGroupsData();
 
       if (resp.code == 200) {
         LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
@@ -87,24 +101,40 @@ class UserScreenCubit extends Cubit<UserScreenState> {
       emit(FetchGroupsToFailureState(e.toString()));
     }
   }
+
   Future<void> fetchMyEventsData() async {
     emit(FetchMyEventsDataLoadingState());
-    // try {
+    try {
       var resp = await AuthRepository.fetchMyEventsData();
 
       if (resp.code == 200) {
         LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
-        emit(FetchMyEventsDataSuccessState(resp,resp.data2));
+        emit(FetchMyEventsDataSuccessState(resp, resp.data2));
+      } else {
+        emit(FetchMyEventsDataFailureState(resp.message ?? ""));
+        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
       }
-      // else {
-      //   emit(FetchMyEventsDataFailureState(resp.message ?? ""));
-      //   LoggerUtil.logs("General Error: ${resp.message ?? ""}");
-      // }
-   /* } catch (e) {
+    } catch (e) {
       emit(FetchMyEventsDataFailureState(e.toString()));
-    }*/
+    }
   }
 
+  Future<void> fetchMyFriendListData() async {
+    emit(FetchMyFriendListDataLoadingState());
+    try {
+      var resp = await AuthRepository.fetchMyFriendListData();
+
+      if (resp.code == 200) {
+        LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
+        emit(FetchMyFriendListSuccessState(resp));
+      } else {
+        emit(FetchMyFriendListFailureState(resp.message ?? ""));
+        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+      }
+    } catch (e) {
+      emit(FetchMyFriendListFailureState(e.toString()));
+    }
+  }
 
   Future<void> updateUserData(String id, UserModel userModel) async {
     emit(UpdateUserScreenLoadingState());

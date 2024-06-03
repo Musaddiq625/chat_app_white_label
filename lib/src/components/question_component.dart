@@ -20,14 +20,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../locals_views/create_event_screen/cubit/event_cubit.dart';
 import '../utils/firebase_utils.dart';
 
-
 class QuestionComponent {
-  static void selectQuestion(BuildContext context,List<TextEditingController> questionControllers,List<String> questions, Map<int, String> selectedQuestionRequired ,  Map<int, String> selectedQuestionPublic,  Function(List<Question>) onDone,{Map<int, String>? questionId }) {
+  static void selectQuestion(
+      BuildContext context,
+      List<TextEditingController> questionControllers,
+      List<String> questions,
+      Map<int, String> selectedQuestionRequired,
+      Map<int, String> selectedQuestionPublic,
+      Function(List<Question>) onDone,
+      {Map<int, String>? questionId}) {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
     late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
     // Map<int, String> selectedQuestionRequired = {};
     // Map<int, String> selectedQuestionPublic = {};
-    List<Question> questionsList = eventCubit.eventModel.question?? [];
+    List<Question> questionsList = eventCubit.eventModel.question ?? [];
 
     Widget question(StateSetter setStateBottomSheet) {
       late final themeCubit = BlocProvider.of<ThemeCubit>(context);
@@ -36,8 +42,8 @@ class QuestionComponent {
       return ReorderableListView(
         primary: false,
         shrinkWrap: true,
-        buildDefaultDragHandles:
-            questions.length > 1, // disable drag&drop if there's only one item
+        buildDefaultDragHandles: questions.length > 1,
+        // disable drag&drop if there's only one item
 
         physics: const NeverScrollableScrollPhysics(),
         proxyDecorator: (Widget child, int index, Animation<double> animation) {
@@ -390,7 +396,33 @@ class QuestionComponent {
                           fontSize: 18),
                     ),
                     InkWell(
-                      onTap: () => Navigator.pop(context),
+                      onTap: () => {
+                        for (int i = 0; i < questionControllers.length; i++)
+                          {
+                            if (questionControllers[i].value.text.isEmpty)
+                              {
+                                print(
+                                    "questions length $i ${questionControllers[i].text}   ${questions.length}"),
+                                setState2(() {
+                                  questionControllers[i].clear();
+                                  selectedQuestionPublic[i] = "";
+                                  selectedQuestionRequired[i] = "";
+                                  questions[i] = "";
+                                  questions
+                                      .removeWhere((element) => element == "");
+                                  questionControllers.removeWhere(
+                                      (element) => element.text == "");
+                                  selectedQuestionPublic.removeWhere(
+                                      (key, value) => value.isEmpty);
+                                  selectedQuestionRequired.removeWhere(
+                                      (key, value) => value.isEmpty);
+                                  questions
+                                      .removeWhere((element) => element == "");
+                                }),
+                              }
+                          },
+                        Navigator.pop(context)
+                      },
                       child: IconComponent(
                         iconData: Icons.close,
                         borderColor: Colors.transparent,
@@ -434,23 +466,58 @@ class QuestionComponent {
                       textColor: ColorConstants.black,
                       buttonText: StringConstants.done,
 
-                      onPressed: (){
-                          List<Question> questionsList = eventCubit.eventModel.question?? [];
-                          questionsList.clear();
-                          for(int i = 0; i < questionControllers.length; i++){
-                            LoggerUtil.logs("questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
-                            Question newQuestion = Question(
-                              questionId: questionId?[i] ?? FirebaseUtils.getDateTimeNowAsId(), // Assuming you have a mechanism to generate unique IDs
-                              question: questionControllers[i].value.text, // Pass the entire list of controllers
-                              isPublic: selectedQuestionPublic[questionControllers[i]]=="Public"?true:false ,
-                              isRequired: selectedQuestionRequired[questionControllers[i]]=="Required"?true:false ,
-                              sequence: i+1,
-                            );
-                            questionsList.add(newQuestion);
+                      onPressed: () {
+                        List<Question> questionsList =
+                            eventCubit.eventModel.question ?? [];
+                        questionsList.clear();
+                        for (int i = 0; i < questionControllers.length; i++) {
+                          print(
+                              "questions length $i ${questionControllers[i].text}");
+                          if (questionControllers[i].value.text.isEmpty) {
+                            print(
+                                "questions length $i ${questionControllers[i].text}   ${questions.length}");
+                            setState2(() {
+                              questionControllers[i].clear();
+                              selectedQuestionPublic[i] = "";
+                              selectedQuestionRequired[i] = "";
+                              questions[i] = "";
+                              questions.removeWhere((element) => element == "");
+                              questionControllers
+                                  .removeWhere((element) => element.text == "");
+                              selectedQuestionPublic
+                                  .removeWhere((key, value) => value.isEmpty);
+                              selectedQuestionRequired
+                                  .removeWhere((key, value) => value.isEmpty);
+                              questions.removeWhere((element) => element == "");
+                            });
                           }
+                          LoggerUtil.logs(
+                              "questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                          Question newQuestion = Question(
+                            questionId: questionId?[i] ??
+                                FirebaseUtils.getDateTimeNowAsId(),
+                            // Assuming you have a mechanism to generate unique IDs
+                            question: questionControllers[i].value.text,
+                            // Pass the entire list of controllers
+                            isPublic: selectedQuestionPublic[
+                                        questionControllers[i]] ==
+                                    "Public"
+                                ? true
+                                : false,
+                            isRequired: selectedQuestionRequired[
+                                        questionControllers[i]] ==
+                                    "Required"
+                                ? true
+                                : false,
+                            sequence: i + 1,
+                          );
+                          questionsList.add(newQuestion);
+                        }
+                        questionsList
+                            .removeWhere((element) => element.question == "");
                         onDone(questionsList);
-                          NavigationUtil.pop(context);
-                        },
+                        NavigationUtil.pop(context);
+                      },
                       // onPressed: () {
                       //
                       //   List<Question> questionsList = eventCubit.eventModel.question?? [];

@@ -33,6 +33,7 @@ class UserModel {
     this.email,
     // this.password,
     this.dateOfBirth,
+    this.friendConnection,
     this.gender,
     this.image,
     this.aboutMe,
@@ -52,7 +53,10 @@ class UserModel {
     this.token,
     this.blockedFriendIds,
     this.favouriteEvent,
-    this.authToken,});
+    this.authToken,
+    this.friends,
+    this.bankDetails,
+  });
 
   UserModel.fromJson(dynamic json) {
     id = json['_id'];
@@ -61,6 +65,7 @@ class UserModel {
     email = json['email'];
     // password = json['password'];
     dateOfBirth = json['dateOfBirth'];
+    friendConnection = json['friendConnection'].toString();
     gender = json['gender'];
     image = json['image'];
     aboutMe = json['aboutMe'];
@@ -81,6 +86,13 @@ class UserModel {
     blockedFriendIds = json['blockedFriendIds'] != null ? json['blockedFriendIds'].cast<num>() : [];
     favouriteEvent = json['favouriteEvent'] != null ? json['favouriteEvent'].cast<String>() : [];
     authToken = json['authToken'] != null ? json['authToken'].cast<String>() : [];
+    if (json['friends'] != null) {
+      friends = [];
+      json['friends'].forEach((v) {
+        friends?.add(Friends.fromJson(v));
+      });
+    }
+    bankDetails = json['bankDetails'] != null ? BankDetails.fromJson(json['bankDetails']) : null;
   }
   String? id;
   String? firstName;
@@ -88,6 +100,7 @@ class UserModel {
   String? email;
   // String? password;
   String? dateOfBirth;
+  String? friendConnection;
   String? gender;
   String? image;
   String? aboutMe;
@@ -108,12 +121,15 @@ class UserModel {
   List<num>? blockedFriendIds;
   List<String>? favouriteEvent;
   List<String>? authToken;
+  List<Friends>? friends;
+  BankDetails? bankDetails;
   UserModel copyWith({  String? id,
     String? firstName,
     String? lastName,
     String? email,
     // String? password,
     String? dateOfBirth,
+    String? friendConnection,
     String? gender,
     String? image,
     String? aboutMe,
@@ -134,12 +150,15 @@ class UserModel {
     List<num>? blockedFriendIds,
     List<String>? favouriteEvent,
     List<String>? authToken,
+    List<Friends>? friends,
+    BankDetails? bankDetails,
   }) => UserModel(  id: id ?? this.id,
     firstName: firstName ?? this.firstName,
     lastName: lastName ?? this.lastName,
     email: email ?? this.email,
     // password: password ?? this.password,
     dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+    friendConnection: friendConnection ?? this.friendConnection,
     gender: gender ?? this.gender,
     image: image ?? this.image,
     aboutMe: aboutMe ?? this.aboutMe,
@@ -160,6 +179,8 @@ class UserModel {
     blockedFriendIds: blockedFriendIds ?? this.blockedFriendIds,
     favouriteEvent: favouriteEvent ?? this.favouriteEvent,
     authToken: authToken ?? this.authToken,
+    friends: friends ?? this.friends,
+    bankDetails: bankDetails ?? this.bankDetails,
   );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -169,6 +190,50 @@ class UserModel {
     map['email'] = email;
     // map['password'] = password;
     map['dateOfBirth'] = dateOfBirth;
+    map['friendConnection'] = friendConnection;
+    map['gender'] = gender;
+    map['image'] = image;
+    map['aboutMe'] = aboutMe;
+    map['bio'] = bio;
+    map['fcmToken'] = fcmToken;
+    map['phoneNumber'] = phoneNumber;
+    map['chats'] = chats;
+    map['userPhotos'] = userPhotos;
+    if (moreAbout != null) {
+      map['moreAbout'] = moreAbout?.toJson();
+    }
+    if (socialLink != null) {
+      map['socialLink'] = socialLink?.toJson();
+    }
+    if (interest != null) {
+      map['interest'] = interest?.toJson();
+    }
+    map['isOnline'] = isOnline;
+    map['lastActive'] = lastActive;
+    map['pushToken'] = pushToken;
+    map['status'] = status;
+    map['isProfileCompleted'] = isProfileCompleted;
+    map['token'] = token;
+    map['blockedFriendIds'] = blockedFriendIds;
+    map['favouriteEvent'] = favouriteEvent;
+    map['authToken'] = authToken;
+    if (friends != null) {
+      map['friends'] = friends?.map((v) => v.toJson()).toList();
+    }
+    if (bankDetails != null) {
+      map['bankDetails'] = bankDetails?.toJson();
+    }
+    return map;
+  }
+  Map<String, dynamic> toUpdateJson() {
+    final map = <String, dynamic>{};
+    map['_id'] = id;
+    map['firstName'] = firstName;
+    map['lastName'] = lastName;
+    map['email'] = email;
+    // map['password'] = password;
+    map['dateOfBirth'] = dateOfBirth;
+
     map['gender'] = gender;
     map['image'] = image;
     map['aboutMe'] = aboutMe;
@@ -199,6 +264,91 @@ class UserModel {
   }
 
 }
+
+
+/// account_no : 123456789
+/// account_title : "BasitABK"
+/// bank_code : "1234"
+
+class BankDetails {
+  BankDetails({
+    this.accountNo,
+    this.accountTitle,
+    this.bankCode,});
+
+  BankDetails.fromJson(dynamic json) {
+    accountNo = json['account_no'];
+    accountTitle = json['account_title'];
+    bankCode = json['bank_code'];
+  }
+  num? accountNo;
+  String? accountTitle;
+  String? bankCode;
+  BankDetails copyWith({  num? accountNo,
+    String? accountTitle,
+    String? bankCode,
+  }) => BankDetails(  accountNo: accountNo ?? this.accountNo,
+    accountTitle: accountTitle ?? this.accountTitle,
+    bankCode: bankCode ?? this.bankCode,
+  );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['account_no'] = accountNo;
+    map['account_title'] = accountTitle;
+    map['bank_code'] = bankCode;
+    return map;
+  }
+
+}
+
+/// userID : "661d18512214b560a0f7e3eb"
+/// username : "abdul basit 2 khan"
+/// useraboutMe : "testing"
+/// image : "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
+
+class Friends {
+  Friends({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.aboutMe,
+    this.image,});
+
+  Friends.fromJson(dynamic json) {
+    id = json['id'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
+    aboutMe = json['aboutMe'];
+    image = json['image'];
+  }
+  String? id;
+  String? firstName;
+  String? lastName;
+  String? aboutMe;
+  String? image;
+  Friends copyWith({
+    String? id,
+    String? username,
+    String? useraboutMe,
+    String? image,
+  }) => Friends(  id: id ?? this.id,
+    firstName: firstName ?? this.firstName,
+    lastName: lastName ?? this.lastName,
+    aboutMe: aboutMe ?? this.aboutMe,
+    image: image ?? this.image,
+  );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['firstName'] = firstName;
+    map['lastName'] = lastName;
+    map['aboutMe'] = aboutMe;
+    map['image'] = image;
+    return map;
+  }
+
+}
+
 
 /// diet : "Vegetarian"
 /// workout : "Gym"

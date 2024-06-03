@@ -133,8 +133,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                           .addAll(List.filled(6 - selectedImages.length, ""));
                     }
 
-                    print(
-                        "selected Image ${selectedImages}  lenght ${selectedImages.length}");
+                    // print("selected Image ${selectedImages}  lenght ${selectedImages.length}");
                     return Container(
                       height: 250,
                       width:

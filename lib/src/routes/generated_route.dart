@@ -28,6 +28,8 @@ import 'package:chat_app_white_label/src/locals_views/settings_screens/privacy_p
 import 'package:chat_app_white_label/src/locals_views/settings_screens/settings_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/settings_screens/terms_of_use_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/all_connections.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/all_group_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/all_your_events_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/edit_profile_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/user_profile.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/view_your_event_screen.dart';
@@ -276,14 +278,27 @@ Route generateRoute(RouteSettings settings) {
         allEventsArg: arg,
       ));
 
+    case RouteConstants.allGroupScreen:
+      final arg = settings.arguments as AllGroupsArg;
+      return materialRoute( AllGroupScreen(
+        allGroupsArg: arg,
+      ));
+
+    case RouteConstants.allYourEventScreen:
+      // final arg = settings.arguments as AllEventsArg;
+      return materialRoute( AllYourEventScreen(
+        // allEventsArg: arg,
+      ));
+
+
     case RouteConstants.earningScreen:
       return materialRoute(const EarningScreen());
 
     case RouteConstants.mainScreen:
       return materialRoute(MainScreen());
 
-    case RouteConstants.viewYourEventScreen:
-      return materialRoute(ViewYourEventScreen());
+    // case RouteConstants.viewYourEventScreen:
+    //   return materialRoute(ViewYourEventScreen());
 
     case RouteConstants.selectProfileScreen:
       final arg = settings.arguments as List<String?>;

@@ -422,8 +422,8 @@ class _EventScreenState extends State<EventScreen> {
                                         DateTime.parse(
                                             (eventCubit.eventModel.venues ?? [])
                                                     .first
-                                                    .startDatetime ??
-                                                "")),
+                                                    .startDatetime!
+                                                )),
                                   // eventCubit.eventModel.venues?.first.startDatetime ?? "",
                                   "-",
                                   if (eventCubit.eventModel.venues != null &&
