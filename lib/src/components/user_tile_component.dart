@@ -34,29 +34,34 @@ class UserTileComponent extends StatelessWidget {
         minVerticalPadding: 0,
         horizontalTitleGap: 5,
         title: Text(
-          localName,
+          chatUser?.firstName ?? '',
+          // localName,
+
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style:  TextStyle(
             fontSize: 16,
+            color: Colors.grey.shade200,
           ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 2),
           child: Text(
-            chatUser?.firstName ?? '',
+            // chatUser?.firstName ?? '',
+            localName,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade800),
           ),
         ),
         trailing: showAdminIcon != null && (showAdminIcon ?? false)
             ? const Icon(Icons.admin_panel_settings,
-                size: 30, color: ColorConstants.greenMain)
+                size: 30, color: ColorConstants.primaryColor)
             : onRemoveTap != null
                 ? InkWell(
                     onTap: onRemoveTap,
                     child: const Icon(Icons.delete,
-                        color: ColorConstants.greenMain, size: 28),
+                        color: ColorConstants.primaryColor, size: 28),
                   )
-                : null);
+                :
+        null);
   }
 }

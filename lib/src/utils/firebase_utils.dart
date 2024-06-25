@@ -27,6 +27,7 @@ class FirebaseUtils {
   static String? get phoneNumber =>
       firebaseService.auth.currentUser?.phoneNumber?.replaceAll('+', '');
 
+
   static CollectionReference<Map<String, dynamic>> get usersCollection =>
       firebaseService.firestore.collection(FirebaseConstants.users);
 
@@ -73,7 +74,7 @@ class FirebaseUtils {
 
     NavigationUtil.popAllAndPush(context, RouteConstants.loginScreen);
   }
-
+  //
   static Future<void> createUser(String phoneNumber) async {
     final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
@@ -84,34 +85,44 @@ class FirebaseUtils {
     LoggerUtil.logs('Created User');
   }
 
-  static Future<void> updateUserStepOne(
-      UserDetailModel? userDetailModel) async {
-    final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
+  static Future<void> createFirebaseUser(String phoneNumber) async {
+    final replacedPhoneNumber = phoneNumber.replaceAll('+', '');
     await usersCollection.doc(replacedPhoneNumber).set({
-      'first_name': userDetailModel?.firstName,
-      'last_name': userDetailModel?.lastName,
-      'user_images': userDetailModel?.userPhotos,
-      'profile_image': userDetailModel?.profileImage,
-    }, SetOptions(merge: true));
-    LoggerUtil.logs('Updated User Step 1');
+      '_id': replacedPhoneNumber,
+      'phoneNumber': phoneNumber,
+      'is_profile_complete': false,
+    });
+    LoggerUtil.logs('Created User');
   }
 
-  static Future<void> updateUserStepTwo(
-      // String? dob,String? aboutMe,String? gender,String? bio,MoreAboutMeModel? moreAboutMe,SocialLinkModel? socialLinkModel,List<String>?  hobbies,List<String>? creativity
-      UserDetailModel? userDetailModel) async {
-    final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
-    await usersCollection.doc(replacedPhoneNumber).set({
-      'date_of_birth': userDetailModel?.dateOfBirth,
-      'about_me': userDetailModel?.aboutMe,
-      'gender': userDetailModel?.gender,
-      'bio': userDetailModel?.bio,
-      'social_links': userDetailModel?.socialLink?.toJson(),
-      'more_about_me': userDetailModel?.moreAbout?.toJson(),
-      'hobbies': userDetailModel?.hobbies,
-      'creativity': userDetailModel?.creativity,
-    }, SetOptions(merge: true));
-    LoggerUtil.logs('Updated User Step 2');
-  }
+  // static Future<void> updateUserStepOne(
+  //     UserDetailModel? userDetailModel) async {
+  //   final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
+  //   await usersCollection.doc(replacedPhoneNumber).set({
+  //     'first_name': userDetailModel?.firstName,
+  //     'last_name': userDetailModel?.lastName,
+  //     'user_images': userDetailModel?.userPhotos,
+  //     'profile_image': userDetailModel?.profileImage,
+  //   }, SetOptions(merge: true));
+  //   LoggerUtil.logs('Updated User Step 1');
+  // }
+  //
+  // static Future<void> updateUserStepTwo(
+  //     // String? dob,String? aboutMe,String? gender,String? bio,MoreAboutMeModel? moreAboutMe,SocialLinkModel? socialLinkModel,List<String>?  hobbies,List<String>? creativity
+  //     UserDetailModel? userDetailModel) async {
+  //   final replacedPhoneNumber = phoneNumber?.replaceAll('+', '');
+  //   await usersCollection.doc(replacedPhoneNumber).set({
+  //     'date_of_birth': userDetailModel?.dateOfBirth,
+  //     'about_me': userDetailModel?.aboutMe,
+  //     'gender': userDetailModel?.gender,
+  //     'bio': userDetailModel?.bio,
+  //     'social_links': userDetailModel?.socialLink?.toJson(),
+  //     'more_about_me': userDetailModel?.moreAbout?.toJson(),
+  //     'hobbies': userDetailModel?.hobbies,
+  //     'creativity': userDetailModel?.creativity,
+  //   }, SetOptions(merge: true));
+  //   LoggerUtil.logs('Updated User Step 2');
+  // }
 
   static Future<void> createCalls(String callId, String callerNumber,
       List<String> receiverNumber, String type) async {
@@ -213,13 +224,30 @@ class FirebaseUtils {
         .snapshots();
   }
 
+  // static Future<void> updateUser(
+  //     String name, String about, String? imageUrl, String phoneNumber) async {
+  //   await firebaseService.firestore
+  //       .collection(FirebaseConstants.users)
+  //       .doc(phoneNumber.replaceAll('+', ''))
+  //       .update({
+  //     'name': name,
+  //     'image': imageUrl,
+  //     'about': about,
+  //     'is_profile_complete': true,
+  //   });
+  //   user?.firstName = name;
+  //   user?.image = imageUrl;
+  //   user?.aboutMe = about;
+  //   user?.isProfileCompleted = true;
+  //   LoggerUtil.logs('Update User');
+  // }
   static Future<void> updateUser(
       String name, String about, String? imageUrl, String phoneNumber) async {
     await firebaseService.firestore
         .collection(FirebaseConstants.users)
         .doc(phoneNumber.replaceAll('+', ''))
         .update({
-      'name': name,
+      'firstName': name,
       'image': imageUrl,
       'about': about,
       'is_profile_complete': true,
@@ -249,6 +277,18 @@ class FirebaseUtils {
 
   static Future<UserModel?> getCurrentUser() async {
     final userData = await usersCollection.doc(phoneNumber).get();
+    if (userData.exists) {
+      user = UserModel.fromJson(userData.data()!);
+      FirebaseUtils.updateActiveStatus(true);
+    }
+    LoggerUtil.logs('getUser ${user?.toJson()}');
+
+    return user;
+  }
+
+  static Future<UserModel?> getCurrentFirebaseUser(String id) async {
+    print("getCurrentFirebaseUser id  ${id}");
+    final userData = await usersCollection.doc(id).get();
     if (userData.exists) {
       user = UserModel.fromJson(userData.data()!);
       FirebaseUtils.updateActiveStatus(true);

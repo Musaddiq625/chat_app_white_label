@@ -9,6 +9,7 @@ import 'package:chat_app_white_label/src/models/contact.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/wrappers/friend_list_response_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,7 +22,8 @@ class UserListComponent extends StatefulWidget {
   List? selectedContacts = [];
   final Function()? onBtnTap;
   final bool subtitle;
-  List<ContactModel> dummyContactList;
+  // List<ContactModel> dummyContactList;
+  List<FriendListData> dummyContactList;
 
   UserListComponent(
       {super.key,
@@ -37,7 +39,7 @@ class UserListComponent extends StatefulWidget {
 }
 
 class _UserListComponentState extends State<UserListComponent> {
-  List<ContactModel> filteredContacts = [];
+  List<FriendListData> filteredContacts = [];
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   TextEditingController searchController = TextEditingController();
   @override
@@ -98,13 +100,13 @@ class _UserListComponentState extends State<UserListComponent> {
                         setState(() {
                           filteredContacts = widget.dummyContactList
                               .where((contact) =>
-                                  contact.name
+                          (contact.firstName ?? "")
                                       .toLowerCase()
                                       .contains(text.toLowerCase()) ||
-                                  contact.title
+                              (contact.lastName ?? "")
                                       .toLowerCase()
                                       .contains(text.toLowerCase()) ||
-                                  contact.number
+                              ( contact.aboutMe ?? "")
                                       .toLowerCase()
                                       .contains(text.toLowerCase()))
                               .toList();
@@ -127,18 +129,27 @@ class _UserListComponentState extends State<UserListComponent> {
                       bool isLast = index == filteredContacts.length - 1;
                       return ContactTileComponent(
                         showDivider: (!isLast),
-                        title: contact.name,
+                        title: "${contact.firstName ?? ""} ${contact.lastName ?? ""}",
                         //widget.dummyContactList[index].name,
-                        subtitle: contact.title,
+                        subtitle: contact.aboutMe ??"",
+                        image: contact.image,
                         //widget.dummyContactList[index].title,
                         isSelected:
-                            (widget.selectedContacts ?? []).contains(index),
+                            // (widget.selectedContacts ?? []).contains(index),
+                            (widget.selectedContacts ?? []).contains(contact.phoneNumber ?? index),
                         onTap: () {
-                          if ((widget.selectedContacts ?? []).contains(index)) {
-                            (widget.selectedContacts ?? []).remove(index);
-                          } else {
-                            (widget.selectedContacts ?? []).add(index);
-                          }
+                          // Clear the existing selected contacts
+                          widget.selectedContacts?.clear();
+
+                          // Add the current contact's index to the selectedContacts list
+                          // widget.selectedContacts?.add(index);
+                          widget.selectedContacts?.add(contact.phoneNumber ?? index);
+
+                          // if ((widget.selectedContacts ?? []).contains(index)) {
+                          //   (widget.selectedContacts ?? []).remove(index);
+                          // } else {
+                          //   (widget.selectedContacts ?? []).add(index);
+                          // }
                           setState(() {});
                           LoggerUtil.logs(widget.selectedContacts ?? []);
                         },

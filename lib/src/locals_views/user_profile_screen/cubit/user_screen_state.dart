@@ -11,6 +11,13 @@ class FetchEventsGoingToLoadingState extends UserScreenState {}
 class FetchGroupsToLoadingState extends UserScreenState {}
 class FetchMyEventsDataLoadingState extends UserScreenState {}
 class FetchMyFriendListDataLoadingState extends UserScreenState {}
+class LogoutUserLoadingState extends UserScreenState {}
+
+class LogoutUserSuccessState extends UserScreenState {
+  final LogoutWrapper logoutWrapper;
+
+  LogoutUserSuccessState(this.logoutWrapper);
+}
 
 class UserScreenSuccessState extends UserScreenState {
   final List<UserModel>? userModelList;
@@ -91,4 +98,10 @@ class InterestFailureState extends UserScreenState {
   final String error;
 
   InterestFailureState(this.error);
+}
+
+class LogoutFailureState extends UserScreenState {
+  final String error;
+
+  LogoutFailureState(this.error);
 }

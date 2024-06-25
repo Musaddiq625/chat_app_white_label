@@ -13,8 +13,19 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/cubit/group_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/home_screen/cubit/home_screen_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
+import 'package:chat_app_white_label/src/models/event_model.dart';
+import 'package:chat_app_white_label/src/models/get_filters_data_model.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/wrappers/all_groups_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/event_response_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/events_going_to_response_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,6 +43,10 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late final appCubit = BlocProvider.of<AppSettingCubit>(context);
+  late final eventCubit = BlocProvider.of<EventCubit>(context);
+  late final groupCubit = BlocProvider.of<GroupCubit>(context);
+  late UserScreenCubit userScreenCubit =
+  BlocProvider.of<UserScreenCubit>(context);
   Uri gmailUrl =
       Uri.parse('mailto:test@example.org?subject=Greetings&body=Hello%20World');
   @override
@@ -212,10 +227,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   textColor: themeCubit.textColor,
                   buttonText: StringConstants.yesPlease,
                   onPressed: () {
-                    appCubit.setToken("");
+                    appCubit.setToken(null);
+                    appCubit.setUserId("");
+                    userScreenCubit.eventModelList.clear();
+                    userScreenCubit.userModelList.clear();
+                    userScreenCubit.allGroupsWrapper=AllGroupsWrapper();
+                    userScreenCubit.eventsGoingToResponseWrapper= EventsGoingToResponseWrapper();
+                    eventCubit.eventModelList.clear();
+                    eventCubit.eventModel= EventModel();
+                    eventCubit.userModel= UserModel();
+                    groupCubit.userModel= UserModel();
+                    groupCubit.eventModelList.clear();
+                    groupCubit.eventResponseWrapper = EventResponseWrapper();
+                    groupCubit.filtersListModel= FiltersListModel();
+                    FirebaseUtils.user = UserModel();
+                    appCubit.setUserModel(UserModel());
                     setState(() {
                       token = "";
                     });
+                    userScreenCubit.logoutUser();
 
                     // NavigationUtil.pop(context);
                     // _connectionRemovedBottomSheet();

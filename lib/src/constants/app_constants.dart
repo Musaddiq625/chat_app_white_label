@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 class AppConstants {
   static const String httpsSlash = 'https://';
 
+  static const String currency = "SAR";
+
   static String? userId;
 
   static int phoneNumberMaxLength = 10;
@@ -23,14 +25,14 @@ class AppConstants {
     }
     // Await the upload and capture the result (URL)
     return await AwsS3.uploadFile(
-      accessKey: "DQEJGSA2VP1KBQZ551NI",
-      secretKey: "OOFqyH9v2YBpon7C3m0pZSH0ruNxqGEVMeyRy0g5",
-      file: file,
-      bucket: "locals",
-      region: "se-sto-1",
-      domain: "linodeobjects.com",
-      destDir: destination,
-    );
+        accessKey: "DQEJGSA2VP1KBQZ551NI",
+        secretKey: "OOFqyH9v2YBpon7C3m0pZSH0ruNxqGEVMeyRy0g5",
+        file: file,
+        bucket: "locals",
+        region: "se-sto-1",
+        domain: "linodeobjects.com",
+        destDir: destination,
+        metadata: {"test": "test"});
   }
 
   static void openKeyboard(BuildContext context, FocusNode node) {

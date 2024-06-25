@@ -13,6 +13,7 @@ import 'package:chat_app_white_label/src/wrappers/interest_response_wrapper.dart
 import 'package:flutter/foundation.dart';
 
 import '../../../models/event_model.dart';
+import '../../../wrappers/logout_wrapper.dart';
 
 part 'user_screen_state.dart';
 
@@ -74,7 +75,7 @@ class UserScreenCubit extends Cubit<UserScreenState> {
       var resp = await AuthRepository.fetchEventYouGoingToData();
 
       if (resp.code == 200) {
-        LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
+        LoggerUtil.logs("Fetch EventsYouAreGoingToResponse Data${resp.toJson()}");
         emit(FetchEventsGoingToSuccessState(resp));
       } else {
         emit(FetchEventsGoingToFailureState(resp.message ?? ""));
@@ -84,6 +85,21 @@ class UserScreenCubit extends Cubit<UserScreenState> {
       emit(FetchEventsGoingToFailureState(e.toString()));
     }
   }
+  Future<void> logoutUser() async {
+    emit(LogoutUserLoadingState());
+    try {
+      var resp = await AuthRepository.userLogout();
+
+      if (resp.code == 200) {
+
+        emit(LogoutUserSuccessState(resp));
+      } else {
+        emit(LogoutFailureState(resp.message ?? ""));
+      }
+    } catch (e) {
+      emit(LogoutFailureState(e.toString()));
+    }
+  }
 
   Future<void> fetchGroupsData() async {
     emit(FetchGroupsToLoadingState());
@@ -91,7 +107,7 @@ class UserScreenCubit extends Cubit<UserScreenState> {
       var resp = await AuthRepository.fetchGroupsData();
 
       if (resp.code == 200) {
-        LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
+        LoggerUtil.logs("Fetch GroupsGoingToResponse Data${resp.toJson()}");
         emit(FetchGroupsToSuccessState(resp));
       } else {
         emit(FetchGroupsToFailureState(resp.message ?? ""));
@@ -103,20 +119,20 @@ class UserScreenCubit extends Cubit<UserScreenState> {
   }
 
   Future<void> fetchMyEventsData() async {
-    emit(FetchMyEventsDataLoadingState());
-    try {
+    // emit(FetchMyEventsDataLoadingState());
+    // try {
       var resp = await AuthRepository.fetchMyEventsData();
 
       if (resp.code == 200) {
-        LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
+        LoggerUtil.logs("Fetch EventsGoingToResponse-- Data${resp.toJson()}");
         emit(FetchMyEventsDataSuccessState(resp, resp.data2));
       } else {
         emit(FetchMyEventsDataFailureState(resp.message ?? ""));
         LoggerUtil.logs("General Error: ${resp.message ?? ""}");
       }
-    } catch (e) {
-      emit(FetchMyEventsDataFailureState(e.toString()));
-    }
+    // } catch (e) {
+    //   emit(FetchMyEventsDataFailureState(e.toString()));
+    // }
   }
 
   Future<void> fetchMyFriendListData() async {
@@ -125,7 +141,7 @@ class UserScreenCubit extends Cubit<UserScreenState> {
       var resp = await AuthRepository.fetchMyFriendListData();
 
       if (resp.code == 200) {
-        LoggerUtil.logs("Fetch EventsGoingToResponse Data${resp.toJson()}");
+        LoggerUtil.logs("Fetch fetchMyFriendListData Data${resp.toJson()}");
         emit(FetchMyFriendListSuccessState(resp));
       } else {
         emit(FetchMyFriendListFailureState(resp.message ?? ""));
@@ -135,6 +151,9 @@ class UserScreenCubit extends Cubit<UserScreenState> {
       emit(FetchMyFriendListFailureState(e.toString()));
     }
   }
+
+
+
 
   Future<void> updateUserData(String id, UserModel userModel) async {
     emit(UpdateUserScreenLoadingState());

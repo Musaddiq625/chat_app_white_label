@@ -7,6 +7,7 @@ class SignUpInitial extends SignUpState {}
 
 class SignUpLoadingState extends SignUpState {}
 
+
 class SignUpSignUpState extends SignUpState {
   // final String verificationId;
 
@@ -15,6 +16,8 @@ class SignUpSignUpState extends SignUpState {
 
 class SignUpSignInState extends SignUpState {}
 
+
+
 class SignUpCancleState extends SignUpState {}
 
 class SignUpFailureState extends SignUpState {
@@ -22,3 +25,4 @@ class SignUpFailureState extends SignUpState {
 
   SignUpFailureState(this.error);
 }
+

@@ -26,8 +26,10 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/group_screens/cubit/group_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
 import 'package:chat_app_white_label/src/models/event_data_model.dart';
+import 'package:chat_app_white_label/src/screens/create_group_chat/cubit/create_group_chat_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -46,6 +48,8 @@ class CreateGroupScreens extends StatefulWidget {
 }
 
 class _CreateGroupScreensState extends State<CreateGroupScreens> {
+  late UserScreenCubit userScreenCubit =
+  BlocProvider.of<UserScreenCubit>(context);
   EventDataModel? _eventDataModel;
   late FocusNode myFocusNode;
   final TextEditingController _controller = TextEditingController();
@@ -104,6 +108,9 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
   //       List.generate(questions.length, (index) => TextEditingController());
   // }
   late GroupCubit groupCubit = BlocProvider.of<GroupCubit>(context);
+  late final createGroupChatCubit = BlocProvider.of<CreateGroupChatCubit>(context);
+  // late CreateGroupChatCubit createGroupChatCubit = BlocProvider.of<CreateGroupChatCubit>(context);
+  // CreateGroupChatCubit? createGroupChatCubit;
   @override
   void initState() {
     super.initState();
@@ -112,6 +119,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
     //     "widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
     // selectedImagePath = widget.eventModel?.images?.first;
     // selectedImagePath = widget.eventModel?.images?.first;
+    // createGroupChatCubit = BlocProvider.of<CreateGroupChatCubit>(context);
     LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     _questionControllers =
         List.generate(questions.length, (index) => TextEditingController());
@@ -135,12 +143,18 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<GroupCubit, GroupState>(
-  listener: (context, state) {
+  listener: (context, state) async{
     if (state is GroupLoadingState) {
       LoadingDialog.showLoadingDialog(context);
     } else if (state is CreateGroupSuccessState) {
+      await createGroupChatCubit.createGroupChatLocals(
+          state.eventModel!.id!,
+          state.eventModel!.title!,
+          state.eventModel?.description ?? "",
+          [],
+          state.eventModel?.images?.first ?? "");
       LoadingDialog.hideLoadingDialog(context);
-      _createEventBottomSheet();
+      _createEventBottomSheet(state.eventModel!.id!);
     } else if (state is CreateGroupFailureState) {
       LoadingDialog.hideLoadingDialog(context);
       ToastComponent.showToast(state.toString(), context: context);
@@ -478,7 +492,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                         QuestionComponent.selectQuestion(
                             context,
                             _questionControllers,
-                            questions,
+                            // questions,
                             selectedQuestionRequired,
                             selectedQuestionPublic,
                                 (List<Question> questionsList) {
@@ -503,7 +517,7 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                         QuestionComponent.selectQuestion(
                             context,
                             _questionControllers,
-                            questions,
+                            // questions,
                             selectedQuestionRequired,
                             selectedQuestionPublic,
                                 (List<Question> questionsList) {
@@ -568,13 +582,19 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
   }
 
 
-  _createEventBottomSheet() {
+  _createEventBottomSheet(String groupId) {
     BottomSheetComponent.showBottomSheet(context,
+        isEnableDrag: false,
         takeFullHeightWhenPossible: false,
         isShowHeader: false,
-        body: SuccessShareBottomSheet(
-            contacts: contacts,
-            successTitle: StringConstants.groupCreatedSuccessfully));
+        body: PopScope(
+          canPop: false,
+          child: SuccessShareBottomSheet(
+            eventId: groupId,
+              type:"group_invite",
+              contacts: userScreenCubit.friendListResponseWrapper.data ?? [],
+              successTitle: StringConstants.groupCreatedSuccessfully),
+        ));
   }
 
   _goBackBottomSheet() {

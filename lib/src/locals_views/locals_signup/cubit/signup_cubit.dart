@@ -49,6 +49,30 @@ class SignUpCubit extends Cubit<SignUpState> {
     }
   }
 
+  Future<void> loginNumber(String identifier) async {
+    emit(SignUpLoadingState());
+
+    try {
+      var resp = await AuthRepository.login(identifier);
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      print("Fcm token ${fcmToken}");
+      if(resp.code == 200){
+        emit(SignUpSignUpState());
+        LoggerUtil.logs(resp);
+      }
+      else{
+        emit(SignUpFailureState(resp.message ?? ""));
+        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+      }
+    } catch (error) {
+      emit(SignUpFailureState(error.toString()));
+      LoggerUtil.logs("General Error: $error");
+    }
+  }
+
+
+
+
   Future<void> loginWithEmail(String email) async {
     try {
       print("Phone1 ");

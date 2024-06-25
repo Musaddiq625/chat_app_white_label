@@ -10,6 +10,7 @@ class MessageModel {
       this.thumbnail,
       this.fileName,
       this.readBy});
+
   String? fromId;
   String? toId;
   String? msg;
@@ -33,7 +34,9 @@ class MessageModel {
                     ? MessageType.video
                     : json['type'] == MessageType.document.name
                         ? MessageType.document
-                        : MessageType.text,
+                        : json['type'] == MessageType.info.name
+                            ? MessageType.info
+                            : MessageType.text,
         readAt: json['readAt'],
         sentAt: json['sentAt'],
         length: json['length'],
@@ -70,4 +73,4 @@ class MessageModel {
   }
 }
 
-enum MessageType { text, image, audio, video, document }
+enum MessageType { text, image, audio, video, document, info }

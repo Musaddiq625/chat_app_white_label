@@ -11,7 +11,6 @@ import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
@@ -19,16 +18,13 @@ import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/edit_event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
-import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_group_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 import '../../components/bottom_sheet_component.dart';
 import '../../components/button_component.dart';
@@ -113,7 +109,8 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
   final TextEditingController eventNameController = TextEditingController();
   late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
   late EditGroupCubit editGroupCubit = BlocProvider.of<EditGroupCubit>(context);
-  late ViewYourGroupScreenCubit viewYourGroupScreenCubit = BlocProvider.of<ViewYourGroupScreenCubit>(context);
+  late ViewYourGroupScreenCubit viewYourGroupScreenCubit =
+      BlocProvider.of<ViewYourGroupScreenCubit>(context);
   late OnboardingCubit onBoardingCubit =
       BlocProvider.of<OnboardingCubit>(context);
 
@@ -125,7 +122,8 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       editGroupCubit.eventModel = EventModel();
       editGroupCubit.eventModel = EventModel();
-      editGroupCubit.eventModel = EventModel.fromJson(widget.eventModel?.toJson() ?? {});
+      editGroupCubit.eventModel =
+          EventModel.fromJson(widget.eventModel?.toJson() ?? {});
       editGroupCubit.initializeEventData(editGroupCubit.eventModel);
       setState(() {
         selectedImagePath = widget.eventModel?.images?.first;
@@ -139,7 +137,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
         // endDate = editGroupCubit.eventModel.venues?.first.endDatetime;
         // capacityValue = editGroupCubit.eventModel.venues?.first.capacity ?? "";
         selectedVisibilityValue =
-        (editGroupCubit.eventModel.isPublic ?? true) ? "Public" : "Private";
+            (editGroupCubit.eventModel.isPublic ?? true) ? "Public" : "Private";
         requireGuest = editGroupCubit.eventModel.isApprovalRequired ?? true;
         // if (editGroupCubit.eventModel.pricing?.price != "0" &&
         //     editGroupCubit.eventModel.pricing?.price != null) {
@@ -150,42 +148,46 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
 
         LoggerUtil.logs(
             "editEventCubit.eventModel.question? ${editGroupCubit.eventModel.question?.map((e) => e.question)}");
-        if((editGroupCubit.eventModel.question ?? []).length > 0)
-        for (int i = 0; i < ((editGroupCubit.eventModel.question?.length) ?? 0); i++) {
-          if(questions.length <= i) {
-            questions.add("Question ${i+1}");
-          }
-          // Dynamically add controllers to the list if they don't exist yet
-          if (_questionControllers.length <= i) {
-            _questionControllers.add(TextEditingController());
-          }
-          LoggerUtil.logs("questionControllers ${(editGroupCubit.eventModel.question?[i].question)}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
-          _questionControllers[i].text =
-              editGroupCubit.eventModel.question?[i].question ?? "";
+        if ((editGroupCubit.eventModel.question ?? []).length > 0)
+          for (int i = 0;
+              i < ((editGroupCubit.eventModel.question?.length) ?? 0);
+              i++) {
+            if (questions.length <= i) {
+              questions.add("Question ${i + 1}");
+            }
+            // Dynamically add controllers to the list if they don't exist yet
+            if (_questionControllers.length <= i) {
+              _questionControllers.add(TextEditingController());
+            }
+            LoggerUtil.logs(
+                "questionControllers ${(editGroupCubit.eventModel.question?[i].question)}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+            _questionControllers[i].text =
+                editGroupCubit.eventModel.question?[i].question ?? "";
 
-          if (editGroupCubit.eventModel.question?[i].isRequired == true) {
-            selectedQuestionRequired[i] = "Required";
-          } else {
-            selectedQuestionRequired[i] = "Optional";
-          }
+            if (editGroupCubit.eventModel.question?[i].isRequired == true) {
+              selectedQuestionRequired[i] = "Required";
+            } else {
+              selectedQuestionRequired[i] = "Optional";
+            }
 
-          if (editGroupCubit.eventModel.question?[i].isPublic == true) {
-            selectedQuestionPublic[i] = "Public";
-          } else {
-            selectedQuestionPublic[i] = "Private";
+            if (editGroupCubit.eventModel.question?[i].isPublic == true) {
+              selectedQuestionPublic[i] = "Public";
+            } else {
+              selectedQuestionPublic[i] = "Private";
+            }
+            questionId[i] =
+                editGroupCubit.eventModel.question?[i].questionId ?? "";
           }
-          questionId[i] = editGroupCubit.eventModel.question?[i].questionId ?? "";
-        }
       });
     });
     print("widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
     print(
         "eventCubit.eventModel.pricing?.price ${eventCubit.eventModel.pricing?.price}");
 
-
-
-    LoggerUtil.logs("QuestionController values ${_questionControllers.map((e) => e.text)} ");
-    LoggerUtil.logs("QuestionController length ${_questionControllers.length} ");
+    LoggerUtil.logs(
+        "QuestionController values ${_questionControllers.map((e) => e.text)} ");
+    LoggerUtil.logs(
+        "QuestionController length ${_questionControllers.length} ");
     LoggerUtil.logs("Questions length ${questions.length} ");
     LoggerUtil.logs("required values ${selectedQuestionRequired.values} ");
     LoggerUtil.logs("public values ${selectedQuestionPublic.values} ");
@@ -194,8 +196,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
     LoggerUtil.logs("UserId-- ${AppConstants.userId}");
     myFocusNode = FocusNode();
 
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -214,14 +215,28 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
       listener: (context, state) {
         if (state is EditGroupLoadingState) {
           LoadingDialog.showLoadingDialog(context);
-        } else if (state is EditGroupSuccessState) {
+        }
+        else if (state is DeleteGroupLoadingState) {
+          LoadingDialog.showLoadingDialog(context);
+        }
+       else if (state is DeleteGroupSuccessState) {
+          LoadingDialog.hideLoadingDialog(context);
+         NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen);
+        }
+        else if (state is EditGroupSuccessState) {
           LoadingDialog.hideLoadingDialog(context);
           // viewYourEventScreenCubit.initializeEventData(state.eventModel!);
           setState(() {
             viewYourGroupScreenCubit.eventModel = state.eventModel!;
           });
           NavigationUtil.pop(context);
-        } else if (state is EditEventFailureState) {
+        }
+
+        else if (state is EditEventFailureState) {
+          LoadingDialog.hideLoadingDialog(context);
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+        else if (state is DeleteGroupFailureState) {
           LoadingDialog.hideLoadingDialog(context);
           ToastComponent.showToast(state.toString(), context: context);
         }
@@ -230,7 +245,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
         return UIScaffold(
             bgColor: themeCubit.backgroundColor,
             appBar: AppBarComponent(
-              StringConstants.editEvent,
+              StringConstants.editGroup,
               centerTitle: false,
               isBackBtnCircular: false,
             ),
@@ -329,7 +344,9 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                                     // editGroupCubit.addImage(
                                     //     "https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
                                   });
-                                  var uploadImage = await AppConstants.uploadImage(selectedImagePath?? "","group");
+                                  var uploadImage =
+                                      await AppConstants.uploadImage(
+                                          selectedImagePath ?? "", "group");
                                   print("uploadingImage $uploadImage");
                                   await editGroupCubit.addImage(uploadImage);
                                 }
@@ -1054,13 +1071,15 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                       ? true
                       : false,
                   editQuestionsTap: () {
-                    if (_questionControllers.isNotEmpty || askQuestion == true) {
+                    if (_questionControllers.isNotEmpty ||
+                        askQuestion == true) {
                       // _selectQuestion();
-                      print("_questionControllers.length ${_questionControllers.map((e) => e.text)}");
+                      print(
+                          "_questionControllers.length ${_questionControllers.map((e) => e.text)}");
                       QuestionComponent.selectQuestion(
                           context,
                           _questionControllers,
-                          questions,
+                          // questions,
                           selectedQuestionRequired,
                           selectedQuestionPublic,
                           (List<Question> questionsList) {
@@ -1077,7 +1096,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                         // }
 
                         // NavigationUtil.pop(context);
-                            editGroupCubit.addQuestions(questionsList);
+                        editGroupCubit.addQuestions(questionsList);
                         LoggerUtil.logs(
                             "eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
                         LoggerUtil.logs(
@@ -1099,11 +1118,11 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                       QuestionComponent.selectQuestion(
                           context,
                           _questionControllers,
-                          questions,
+                          // questions,
                           selectedQuestionRequired,
                           selectedQuestionPublic,
                           (List<Question> questionsList) {
-                            editGroupCubit.addQuestions(questionsList);
+                        editGroupCubit.addQuestions(questionsList);
                         // List<Question> questionsList = eventCubit.eventModel.question?? [];
                         // for(int i = 0; i < _questionControllers.length; i++){
                         //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
@@ -1122,8 +1141,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                             "eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
                         LoggerUtil.logs(
                             "eventCubit.eventModel.tojson ${eventCubit.eventModel.toJson()}");
-                      },
-                          questionId: questionId);
+                      }, questionId: questionId);
 
                       // _selectQuestion();
                     } else if (askQuestion == false) {
@@ -1135,26 +1153,35 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                   },
                 ),
                 SizedBoxConstants.sizedBoxTenH(),
+                ListTileComponent(
+                  leadingIconWidth: 25,
+                  leadingIconHeight: 25,
+                  // trailingIcon: Icons.arrow_forward_ios,
+                  leadingIcon: AssetConstants.deleteRound,
+                  leadingText: "  ${StringConstants.deleteGroup}",
+                  // trailingText: selectedVisibilityValue,
+                  onTap: () {
+                    editGroupCubit.deleteGroup(editGroupCubit.eventModel.id!);
+                  },
+                  subTextColor: themeCubit.textColor,
+                ),
+                SizedBoxConstants.sizedBoxTenH(),
                 Container(
                   margin: EdgeInsets.only(left: 8, right: 8, top: 8),
                   child: ButtonComponent(
-                    bgcolor:
-                            groupName != null &&
-                            selectedImagePath != null
+                    bgcolor: groupName != null && selectedImagePath != null
                         ? themeCubit.primaryColor
                         : themeCubit.darkBackgroundColor,
                     buttonText: StringConstants.updateGroup,
-                    textColor: groupName != null &&
-                            selectedImagePath != null
+                    textColor: groupName != null && selectedImagePath != null
                         ? themeCubit.backgroundColor
                         : ColorConstants.grey1,
                     onPressed: () {
                       editGroupCubit.addStartDate(startDate);
                       editGroupCubit.addEndDate(endDate);
-                      if (
-                          groupName != null &&
-                          selectedImagePath != null) {
-                        editGroupCubit.updateGroupData(editGroupCubit.eventModel);
+                      if (groupName != null && selectedImagePath != null) {
+                        editGroupCubit
+                            .updateGroupData(editGroupCubit.eventModel);
                       }
                       // _createBottomSheet();
                     },
@@ -1179,7 +1206,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
     );
     Future.delayed(const Duration(milliseconds: 1000), () async {
       NavigationUtil.pop(context);
-      _createEventBottomSheet();
+      // _createEventBottomSheet();
     });
   }
 
@@ -1276,14 +1303,14 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
     }));
   }
 
-  _createEventBottomSheet() {
-    BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false,
-        isShowHeader: false,
-        body: SuccessShareBottomSheet(
-            contacts: contacts,
-            successTitle: StringConstants.eventCreatedSuccessfully));
-  }
+  // _createEventBottomSheet() {
+  //   BottomSheetComponent.showBottomSheet(context,
+  //       takeFullHeightWhenPossible: false,
+  //       isShowHeader: false,
+  //       body: SuccessShareBottomSheet(
+  //           contacts: contacts,
+  //           successTitle: StringConstants.eventCreatedSuccessfully));
+  // }
 
   _goBackBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,

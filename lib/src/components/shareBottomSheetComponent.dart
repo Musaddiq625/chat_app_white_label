@@ -12,21 +12,42 @@ import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
-import 'package:chat_app_white_label/src/models/contact.dart';
+import 'package:chat_app_white_label/src/locals_views/view_your_group_screen/cubit/view_your_event_screen_cubit.dart';
+import 'package:chat_app_white_label/src/screens/chat_screen/chat_screen.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:chat_app_white_label/src/wrappers/friend_list_response_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ShareBottomSheet {
-  static shareBottomSheet(
-      BuildContext context, List<ContactModel> contacts, String type) {
-    late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+import '../../main.dart';
 
+class ShareBottomSheet {
+  static shareBottomSheet(BuildContext context, String name, String id,
+      List<FriendListData> contacts, String type)async {
+
+    if(type == "Profile"){
+      type = 'profile';
+    }
+    else{
+      if(type=="Event"){
+        type = "event";
+      }
+      else{
+        type = "group";
+      }
+
+    }
+
+    late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+    userId = await getIt<SharedPreferencesUtil>()
+        .getString(SharedPreferenceConstants.userIdValue);
     BottomSheetComponent.showBottomSheet(context,
         bgColor: themeCubit.darkBackgroundColor,
         takeFullHeightWhenPossible: false,
@@ -71,7 +92,7 @@ class ShareBottomSheet {
                   GestureDetector(
                     onTap: () async {
                       await Clipboard.setData(
-                              ClipboardData(text: "www.locals.com/event"))
+                              ClipboardData(text: "https://locals.weuno.com/${type}/${id}id?=${userId}"))
                           .then((value) => ToastComponent.showToast(
                               StringConstants.copiedToClipboard,
                               context: context));
@@ -91,7 +112,8 @@ class ShareBottomSheet {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      Share.share('www.locals.com/event');
+                      print("https://locals.weuno.com/${(type=="Event"?"event":"group")}id?=${userId}");
+                      Share.share('https://locals.weuno.com/${type}/${id}id?=${userId}');
                     },
                     child: IconComponent(
                       iconData: Icons.facebook,
@@ -105,7 +127,7 @@ class ShareBottomSheet {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Share.share('www.locals.com/event');
+                      Share.share("https://locals.weuno.com/${type}/${id}id?=${userId}");
                     },
                     child: Column(
                       children: [
@@ -131,7 +153,7 @@ class ShareBottomSheet {
                     // backgroundColor:ColorConstants.transparent,
                     circleSize: 60,
                     onTap: () {
-                      Share.share('www.locals.com/event');
+                      Share.share("https://locals.weuno.com/${type}/${id}id?=${userId}");
                     },
                     customText: StringConstants.share,
                     customTextColor: themeCubit.textColor,
@@ -160,21 +182,25 @@ class ShareBottomSheet {
                       return ContactCard(
                         imageSize: 50,
                         showDivider: (!isLast),
-                        name: contacts[index].name,
-                        title: contacts[index].title,
-                        url: contacts[index].url,
+                        name:
+                            "${contacts[index].firstName ?? ""} ${contacts[index].lastName}",
+                        title: contacts[index].aboutMe ?? "",
+                        url: contacts[index].image ?? "",
                         // contact: contacts[index],
                         onShareTap: () {
                           Navigator.pop(context);
                           shareWithConnectionBottomSheet(
-                              StringConstants.fireWorks,
-                              contacts[index].name,
+                              id,
+                              name,
+                              contacts[index].id!,
+                              contacts[index].image ?? "",
+                              "${contacts[index].firstName ?? ""} ${contacts[index].lastName}",
                               context,
                               type);
                         },
                         onProfileTap: () {
                           NavigationUtil.push(
-                              context, RouteConstants.profileScreenLocal);
+                              context, RouteConstants.profileScreenLocal,args: contacts[index].id);
                         },
                       );
                     },
@@ -187,8 +213,18 @@ class ShareBottomSheet {
   }
 
   static shareWithConnectionBottomSheet(
-      String eventName, String userName, BuildContext context, String type) {
+      String id,
+      String eventName,
+      String friendId,
+      String url,
+      String userName,
+      BuildContext context,
+      String type) async {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+    late final viewYourGroupCubit =
+        BlocProvider.of<ViewYourGroupScreenCubit>(context);
+    userId = await getIt<SharedPreferencesUtil>()
+        .getString(SharedPreferenceConstants.userIdValue);
     BottomSheetComponent.showBottomSheet(context,
         bgColor: themeCubit.darkBackgroundColor,
         takeFullHeightWhenPossible: false,
@@ -196,7 +232,7 @@ class ShareBottomSheet {
         body: Column(
           children: [
             const SizedBox(height: 25),
-            const ProfileImageComponent(url: ''),
+            ProfileImageComponent(url: url),
             const SizedBox(height: 20),
             RichText(
               textAlign: TextAlign.center,
@@ -240,7 +276,9 @@ class ShareBottomSheet {
                   isSmallBtn: true,
                   textColor: themeCubit.backgroundColor,
                   buttonText: StringConstants.yesShareIt,
-                  onPressed: () {
+                  onPressed: () async {
+                    print("id $id userId $userId friendId$friendId ");
+                    await viewYourGroupCubit.shareGroup(id, (type=="Event"?"event_invite":"group_invite"),friendId!);
                     Navigator.pop(context);
                     yesShareItBottomSheet(context, type);
                   },

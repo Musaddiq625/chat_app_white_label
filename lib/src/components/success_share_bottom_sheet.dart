@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/contacts_card_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
@@ -9,20 +10,27 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/view_your_group_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../models/contact.dart';
+import '../wrappers/friend_list_response_wrapper.dart';
 
 class SuccessShareBottomSheet extends StatefulWidget {
   final String successTitle;
+  final String eventId;
+  final String type;
 
   // final List<Map<String, dynamic>> contacts;
-  final List<ContactModel> contacts;
+  final List<FriendListData> contacts;
 
   final Function()? onCopyLink;
   final Function()? onFacbook;
@@ -34,6 +42,8 @@ class SuccessShareBottomSheet extends StatefulWidget {
       {super.key,
       required this.contacts,
       required this.successTitle,
+      required this.eventId,
+      required this.type,
       this.onCopyLink,
       this.onFacbook,
       this.onInstagram,
@@ -46,18 +56,32 @@ class SuccessShareBottomSheet extends StatefulWidget {
 }
 
 class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
-  List<ContactModel> filteredContacts = [];
+  List<FriendListData> filteredContacts = [];
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   TextEditingController searchControllerConnections = TextEditingController();
+
+  String? userId;
 
   @override
   void initState() {
     super.initState();
-    filteredContacts = widget.contacts; // Initialize with all contacts
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      filteredContacts = widget.contacts;
+      userId = await getIt<SharedPreferencesUtil>()
+          .getString(SharedPreferenceConstants.userIdValue);
+    });
+
+
+    // Initialize with all contacts
   }
 
   @override
   Widget build(BuildContext context) {
+
+    late final viewYourGroupCubit =
+    BlocProvider.of<ViewYourGroupScreenCubit>(context);
+
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
@@ -149,7 +173,9 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                 circleSize: 60,
                 customText: StringConstants.copyLink,
                 customTextColor: themeCubit.textColor,
-                onTap: widget.onCopyLink,
+                onTap: (){widget.onCopyLink;
+                Share.share("https://locals.weuno.com/${(widget.type=="Event"?"event":"group")}/${widget.eventId}id?=${userId}");
+                  },
               ),
               IconComponent(
                 iconData: Icons.facebook,
@@ -159,7 +185,9 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                 iconSize: 30,
                 customText: StringConstants.facebook,
                 customTextColor: themeCubit.textColor,
-                onTap: widget.onFacbook,
+                onTap:(){ widget.onFacbook;
+                Share.share("https://locals.weuno.com/${(widget.type=="Event"?"event":"group")}/${widget.eventId}id?=${userId}");
+                  },
               ),
               // IconComponent(
               //   svgDataCheck: false,
@@ -172,7 +200,10 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
               //   iconSize: 60,
               // ),
               GestureDetector(
-                onTap: widget.onInstagram,
+                onTap: (){
+                  widget.onInstagram;
+                  Share.share("https://locals.weuno.com/${(widget.type=="Event"?"event":"group")}/${widget.eventId}id?=${userId}");
+                },
                 child: Column(
                   children: [
                     ImageComponent(
@@ -198,7 +229,11 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                 circleSize: 60,
                 customText: StringConstants.share,
                 customTextColor: themeCubit.textColor,
-                onTap: widget.onShare,
+                onTap: (){
+                  widget.onShare;
+                    Share.share("https://locals.weuno.com/${(widget.type=="Event"?"event":"group")}/${widget.eventId}id?=${userId}");
+
+                },
               )
             ],
           ),
@@ -235,13 +270,13 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                   setState(() {
                     filteredContacts = widget.contacts
                         .where((contact) =>
-                            contact.name
+                    ( contact.firstName ??"")
                                 .toLowerCase()
                                 .contains(text.toLowerCase()) ||
-                            contact.title
+                        ( contact.lastName??"")
                                 .toLowerCase()
                                 .contains(text.toLowerCase()) ||
-                            contact.number
+                        (contact.aboutMe ?? "")
                                 .toLowerCase()
                                 .contains(text.toLowerCase()))
                         .toList();
@@ -260,12 +295,13 @@ class _SuccessShareBottomSheetState extends State<SuccessShareBottomSheet> {
                   final contact = filteredContacts[index];
                   return ContactCard(
                     imageSize: 45,
-                    name: contact.name,
-                    title: contact.title,
-                    url: contact.url,
+                    name: "${contact.firstName} ${contact.lastName}",
+                    title: contact.aboutMe ?? "",
+                    url: contact.image!,
                     // contact: contacts[index],
                     onShareTap: () {
-                      Navigator.pop(context);
+                       viewYourGroupCubit.shareGroup(widget.eventId,widget.type ,contact.id!);
+                      NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen);
                       widget.onContactShareTap;
                     },
                   );

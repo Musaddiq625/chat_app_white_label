@@ -7,6 +7,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/view_group_screen.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:flutter/material.dart';
 
@@ -166,9 +167,8 @@ class _AllGroupScreenState extends State<AllGroupScreen> {
                 return GestureDetector(
                   onTap: (){
                     if(_selectedIndex == 0){
-                      NavigationUtil.push(
-                          context, RouteConstants.viewGroupScreen,
-                          args:event?[index].id ?? "");
+                      NavigationUtil.push(context, RouteConstants.viewGroupScreen,
+                          args:ViewGroupArg(event?[index].id ?? "", false, false));
                     }
                     else{
                       NavigationUtil.push(

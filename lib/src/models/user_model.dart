@@ -55,6 +55,7 @@ class UserModel {
     this.favouriteEvent,
     this.authToken,
     this.friends,
+    this.isFriend,
     this.bankDetails,
   });
 
@@ -71,13 +72,13 @@ class UserModel {
     aboutMe = json['aboutMe'];
     bio = json['bio'];
     fcmToken = json['fcmToken'];
-    phoneNumber = json['phoneNumber'];
+    phoneNumber = json['phoneNumber'].toString();
     chats = json['chats'] != null ? json['chats'].cast<String>() : [];
     userPhotos = json['userPhotos'] != null ? json['userPhotos'].cast<String>() : [];
     moreAbout = json['moreAbout'] != null ? MoreAbout.fromJson(json['moreAbout']) : null;
     socialLink = json['socialLink'] != null ? SocialLink.fromJson(json['socialLink']) : null;
     interest = json['interest'] != null ? Interest.fromJson(json['interest']) : null;
-    isOnline = json['isOnline'];
+    isOnline = json['is_online'];
     lastActive = json['lastActive'];
     pushToken = json['pushToken'];
     status = json['status'];
@@ -92,6 +93,7 @@ class UserModel {
         friends?.add(Friends.fromJson(v));
       });
     }
+    isFriend= json['isFriend'];
     bankDetails = json['bankDetails'] != null ? BankDetails.fromJson(json['bankDetails']) : null;
   }
   String? id;
@@ -122,6 +124,7 @@ class UserModel {
   List<String>? favouriteEvent;
   List<String>? authToken;
   List<Friends>? friends;
+  String? isFriend;
   BankDetails? bankDetails;
   UserModel copyWith({  String? id,
     String? firstName,
@@ -151,6 +154,7 @@ class UserModel {
     List<String>? favouriteEvent,
     List<String>? authToken,
     List<Friends>? friends,
+    String? isFriend,
     BankDetails? bankDetails,
   }) => UserModel(  id: id ?? this.id,
     firstName: firstName ?? this.firstName,
@@ -180,6 +184,7 @@ class UserModel {
     favouriteEvent: favouriteEvent ?? this.favouriteEvent,
     authToken: authToken ?? this.authToken,
     friends: friends ?? this.friends,
+    isFriend: isFriend ?? this.isFriend,
     bankDetails: bankDetails ?? this.bankDetails,
   );
   Map<String, dynamic> toJson() {
@@ -208,7 +213,7 @@ class UserModel {
     if (interest != null) {
       map['interest'] = interest?.toJson();
     }
-    map['isOnline'] = isOnline;
+    map['is_online'] = isOnline;
     map['lastActive'] = lastActive;
     map['pushToken'] = pushToken;
     map['status'] = status;
@@ -220,6 +225,7 @@ class UserModel {
     if (friends != null) {
       map['friends'] = friends?.map((v) => v.toJson()).toList();
     }
+    map['isFriend'] = isFriend;
     if (bankDetails != null) {
       map['bankDetails'] = bankDetails?.toJson();
     }
@@ -251,7 +257,7 @@ class UserModel {
     if (interest != null) {
       map['interest'] = interest?.toJson();
     }
-    map['isOnline'] = isOnline;
+    map['is_online'] = isOnline;
     map['lastActive'] = lastActive;
     map['pushToken'] = pushToken;
     map['status'] = status;

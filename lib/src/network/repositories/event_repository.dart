@@ -1,6 +1,8 @@
 import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/models/ticket_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/wrappers/delete_group_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/share_group_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/ticket_model_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/view_event_response_wrapper.dart';
 
@@ -37,6 +39,15 @@ class EventRepository {
     return EventResponseWrapper.fromJson(response);
   }
 
+  static Future<DeleteGroupWrapper> deleteGroup(String id) async {
+    final response = await getIt<DioClientNetwork>().deleteRequest(
+      "${HttpConstants.event}/",{
+      "id":id
+    },
+    );
+    return DeleteGroupWrapper.fromJson(response);
+  }
+
     static Future<EventResponseWrapper> fetchEventByKeys(String pageValue) async {
       // await DioClientNetwork.initializeDio(removeToken: false);
       // LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
@@ -64,6 +75,39 @@ class EventRepository {
       return x;
     }
 
+    static Future<EventResponseWrapper> searchEvent(String pageValue,String value) async {
+      // await DioClientNetwork.initializeDio(removeToken: false);
+      // LoggerUtil.logs("Http Value ${HttpConstants.users}$userId");
+      final response =
+          await getIt<DioClientNetwork>().postRequest(HttpConstants.event, {
+        "keys": [
+          "_id",
+          "title",
+          "type",
+          "userId",
+          "isMyEvent",
+          "venue",
+          "images",
+          "isVisibility",
+          "isFavourite",
+          "eventFavouriteBy",
+          "event_request",
+          "eventParticipants",
+          "eventTotalParticipants"
+        ],
+            "query": {
+              "title": {
+                "\$regex": ".*${value}.*",
+                "\$options": "i"
+              }
+            }
+      }, queryParameters: {
+        'pages': pageValue,
+      });
+      final x = EventResponseWrapper.keysFromJson(response);
+      return x;
+    }
+
   static Future<ViewEventResponseWrapper> fetchEventById(String id) async {
     final response =
         await getIt<DioClientNetwork>().postRequest(HttpConstants.event, {
@@ -82,6 +126,16 @@ class EventRepository {
           "isVisibility": isVisibility
     });
     final x = ViewEventResponseWrapper.fromJsonSingleData(response);
+    return x;
+  }
+  static Future<ShareGroupWrapper> shareGroup(String id,String type,String inviteId) async {
+    final response =
+        await getIt<DioClientNetwork>().postRequest(HttpConstants.shareGroup, {
+          "eventId": id,
+          "type":type,
+          "inviteUserId": [inviteId]
+    });
+    final x = ShareGroupWrapper.fromJson(response);
     return x;
   }
 
@@ -147,12 +201,24 @@ class EventRepository {
       String eventId, EventRequest eventRequestModel) async {
     final response = await getIt<DioClientNetwork>()
         .putRequest("${HttpConstants.event}/$eventId", {
-      "createRequest ": true,
       "event_request": [eventRequestModel.toRequestJson()]
     });
     final x = EventResponseWrapper.fromJson(response);
     return x;
   }
+
+  static Future<EventResponseWrapper> sendGroupJoinRequest(
+      String eventId,String requestStatus, EventRequest eventRequestModel) async {
+    final response = await getIt<DioClientNetwork>()
+        .putRequest("${HttpConstants.event}/$eventId", {
+      "request_status ": requestStatus,
+      "event_request": [eventRequestModel.toRequestJson()]
+    });
+    final x = EventResponseWrapper.fromJson(response);
+    return x;
+  }
+
+
 
   static Future<TicketModelWrapper> buyTicketRequest(
       TicketModel ticketModel) async {

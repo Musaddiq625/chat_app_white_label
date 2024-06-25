@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/repositories/event_repository.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/wrappers/share_group_wrapper.dart';
 import 'package:flutter/foundation.dart';
 
 part 'view_your_group_screen_state.dart';
@@ -39,6 +40,16 @@ class ViewYourGroupScreenCubit extends Cubit<ViewYourGroupScreenState> {
       emit(GroupVisibilitySuccessState(resp.data2));
     } catch (e) {
       emit(GroupVisibilityFailureState(e.toString()));
+    }
+  }
+
+  Future<void> shareGroup(String id,String type,String inviteId) async {
+    emit(ShareGroupLoadingState());
+    try {
+      var resp = await EventRepository.shareGroup(id,type,inviteId);
+      emit(ShareGroupSuccessState(resp));
+    } catch (e) {
+      emit(ShareGroupFailureState(e.toString()));
     }
   }
 

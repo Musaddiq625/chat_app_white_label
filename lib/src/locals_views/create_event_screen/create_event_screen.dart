@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/drop_down_bottom_sheet.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
@@ -20,6 +18,7 @@ import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -101,6 +100,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   String? selectedLocation;
   List<String> questions = ['Question 1'];
   late FocusNode myFocusNode;
+  TimeOfDay? lastSelectedStartTime;
+  TimeOfDay? lastSelectedEndTime;
   List<TextEditingController> _questionControllers =
       []; // Initialize with one question
 
@@ -112,14 +113,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
   late OnboardingCubit onBoardingCubit =
       BlocProvider.of<OnboardingCubit>(context);
+  late UserScreenCubit userScreenCubit =
+      BlocProvider.of<UserScreenCubit>(context);
 
   @override
   void initState() {
     super.initState();
     eventCubit.eventModel = EventModel();
-    print("widget.eventModel?.images?.first; ${widget.eventModel?.toJson()}");
+
     selectedImagePath = widget.eventModel?.images?.first;
-    LoggerUtil.logs("UserId-- ${AppConstants.userId}");
+
     _questionControllers =
         List.generate(questions.length, (index) => TextEditingController());
     myFocusNode = FocusNode();
@@ -143,7 +146,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           LoadingDialog.showLoadingDialog(context);
         } else if (state is CreateEventSuccessState) {
           LoadingDialog.hideLoadingDialog(context);
-          _createBottomSheet();
+          _createBottomSheet(state.eventModel!.id!);
         } else if (state is CreateEventFailureState) {
           LoadingDialog.hideLoadingDialog(context);
           ToastComponent.showToast(state.toString(), context: context);
@@ -179,7 +182,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         setState(() {
           _inputPriceValuecontroller.text = "";
           selectedPriceValueContainer =
-              ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex];
+              ["Free", "${AppConstants.currency} 5", "${AppConstants.currency} 10", "${AppConstants.currency} 25", "${AppConstants.currency} 50", "${AppConstants.currency} 100"][containerIndex];
           // eventCubit.addPrice(
           //     selectedPriceValue == "Free" ? "0" : selectedPriceValue);
         }),
@@ -196,7 +199,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         ),
         alignment: Alignment.center,
         child: TextComponent(
-          ["Free", "£5", "£10", "£25", "£50", "£100"][containerIndex],
+          ["Free", "${AppConstants.currency} 5", "${AppConstants.currency} 10", "${AppConstants.currency} 25", "${AppConstants.currency} 50", "${AppConstants.currency} 100"][containerIndex],
           style: TextStyle(
               fontSize: 15,
               color: selectedIndexPrice == containerIndex
@@ -314,7 +317,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                               editEventName = true;
                                               eventName =
                                                   eventNameController.text;
-                                              print("eventName ${eventName}");
+
                                               eventCubit.eventModel
                                                   .copyWith(title: eventName);
                                             });
@@ -342,7 +345,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         setState(() {
                                           myFocusNode.requestFocus();
                                           editEventName = false;
-                                          print("setState ${editEventName}");
                                         });
                                       },
                                       child: IconComponent(
@@ -457,18 +459,26 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       DateTime.parse(
                                                           endDate!))) {
                                                 showTimePicker(
-                                                  context: context,
-                                                  initialTime: TimeOfDay.now(),
-                                                ).then((selectedTime) {
+                                                        context: context,
+                                                        initialTime: lastSelectedStartTime??TimeOfDay.now())
+                                                    .then((selectedTime) {
                                                   // Handle the selected date and time here.
                                                   if (selectedTime != null) {
+                                                    lastSelectedStartTime= selectedTime;
+
+                                                    int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
+                                                    int adjustedHour = selectedTime.hour;
+                                                    if (roundedMinute > 45) {
+                                                      adjustedHour += 1;
+                                                      roundedMinute -= 60;
+                                                    }
                                                     DateTime selectedDateTime =
                                                         DateTime(
                                                       selectedDate.year,
                                                       selectedDate.month,
                                                       selectedDate.day,
-                                                      selectedTime.hour,
-                                                      selectedTime.minute,
+                                                   adjustedHour,
+                                                      roundedMinute,
                                                     );
 
                                                     String formattedDateTime =
@@ -521,20 +531,30 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                         "Start date cannot be After end date."),
                                                   ),
                                                 );
-                                              } else {
+                                              }
+                                              else {
                                                 showTimePicker(
                                                   context: context,
-                                                  initialTime: TimeOfDay.now(),
+                                                  initialTime:lastSelectedStartTime?? TimeOfDay.now(),
                                                 ).then((selectedTime) {
                                                   // Handle the selected date and time here.
                                                   if (selectedTime != null) {
+                                                    lastSelectedStartTime= selectedTime;
+                                                    int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
+                                                    int adjustedHour = selectedTime.hour;
+                                                    if (roundedMinute > 45) {
+                                                      adjustedHour += 1;
+                                                      roundedMinute -= 60;
+                                                    }
+                                                    print("adjustedHour $adjustedHour roundedMinute $roundedMinute ");
+
                                                     DateTime selectedDateTime =
                                                         DateTime(
                                                       selectedDate.year,
                                                       selectedDate.month,
                                                       selectedDate.day,
-                                                      selectedTime.hour,
-                                                      selectedTime.minute,
+                                                      adjustedHour,
+                                                          roundedMinute,
                                                     );
 
                                                     String formattedDateTime =
@@ -582,7 +602,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         },
                                         child: TextComponent(
                                           startDate != null
-                                              ? DateFormat('d MMM \'at\' hh a')
+                                              ? DateFormat('d MMM \'at\' hh:mm a')
                                                   .format(DateTime.parse(
                                                       startDate!))
                                               : "Select Date & Time",
@@ -668,19 +688,26 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 startDate!))) {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime:
-                                                        TimeOfDay.now(),
+                                                    initialTime:lastSelectedEndTime?? TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     // Handle the selected date and time here.
                                                     if (selectedTime != null) {
+
+                                                      lastSelectedEndTime= selectedTime;
+                                                      int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
+                                                      int adjustedHour = selectedTime.hour;
+                                                      if (roundedMinute > 45) {
+                                                        adjustedHour += 1;
+                                                        roundedMinute -= 60;
+                                                      }
                                                       DateTime
                                                           selectedDateTime =
                                                           DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
                                                         selectedDate.day,
-                                                        selectedTime.hour,
-                                                        selectedTime.minute,
+                                                        adjustedHour,
+                                                        roundedMinute,
                                                       );
 
                                                       String formattedDateTime =
@@ -747,18 +774,26 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                 } else {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime:
+                                                    initialTime:lastSelectedEndTime??
                                                         TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     if (selectedTime != null) {
+                                                      lastSelectedEndTime= selectedTime;
+                                                      int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
+                                                      int adjustedHour = selectedTime.hour;
+                                                      if (roundedMinute > 45) {
+                                                        adjustedHour += 1;
+                                                        roundedMinute -= 60;
+                                                      }
+
                                                       DateTime
                                                           selectedDateTime =
                                                           DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
                                                         selectedDate.day,
-                                                        selectedTime.hour,
-                                                        selectedTime.minute,
+                                                        adjustedHour,
+                                                        roundedMinute,
                                                       );
 
                                                       String formattedDateTime =
@@ -850,7 +885,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         },
                                         child: TextComponent(
                                           endDate != null
-                                              ? DateFormat('d MMM \'at\' hh a')
+                                              ? DateFormat('d MMM \'at\' hh:mm a')
                                                   .format(
                                                       DateTime.parse(endDate!))
                                               : "Select Date & Time",
@@ -1000,17 +1035,47 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 SwitchPermissionComponent(
                   name: StringConstants.askQuestionWhenPeopleJoin,
                   detail: StringConstants.askQuestionWhenPeopleJoinBody,
-                  switchValue: _questionControllers.isNotEmpty &&
-                          _questionControllers.first.text.isNotEmpty
+                  switchValue: (_questionControllers.isNotEmpty &&
+                          eventCubit.eventModel.question != null &&
+                          (eventCubit.eventModel.question ?? []).isNotEmpty &&
+                          eventCubit.eventModel.question?.first.question !=
+                              null &&
+                          (eventCubit.eventModel.question?.first.question ?? "")
+                              .isNotEmpty)
                       ? true
                       : false,
                   editQuestionsTap: () {
+                    _questionControllers = eventCubit.eventModel.question!
+                        .map((e) => TextEditingController(text: e.question))
+                        .toList();
+                    selectedQuestionRequired = eventCubit.eventModel.question!
+                        .asMap()
+                        .map((index, question) => MapEntry(
+                            index,
+                            question.isRequired == true
+                                ? 'Required'
+                                : 'Optional'));
+                    selectedQuestionPublic = eventCubit.eventModel.question!
+                        .asMap()
+                        .map((index, question) => MapEntry(index,
+                            question.isPublic == true ? 'Public' : 'Private'));
+
+                    while (_questionControllers.length > questions.length) {
+                      int nextQuestionNumber = questions.length + 1;
+                      questions.add('Question $nextQuestionNumber');
+                    }
+
+                    setState(() {});
+                    // _questionControllers.addAll((eventCubit.eventModel.question??Question()).map((e) => e.question));
+
+                    print(
+                        "question ccc ${_questionControllers}  ${eventCubit.eventModel.question?.map((e) => e.question)}");
                     if (askQuestion == true) {
                       // _selectQuestion();
                       QuestionComponent.selectQuestion(
                           context,
                           _questionControllers,
-                          questions,
+                          // questions,
                           selectedQuestionRequired,
                           selectedQuestionPublic,
                           (List<Question> questionsList) {
@@ -1028,10 +1093,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
                         // NavigationUtil.pop(context);
 
-                            print("_questionControllers  ${_questionControllers} ${questions} ${selectedQuestionRequired} ${selectedQuestionPublic}");
-                            // _questionControllers.removeWhere((element) => element.value.text == "" );
+                        // _questionControllers.removeWhere((element) => element.value.text == "" );
 
-                            List<Question> filteredQuestions = questionsList.where((element) => element.question?.trim()!= null && element.question?.trim()!= "").toList();
+                        List<Question> filteredQuestions = questionsList
+                            .where((element) =>
+                                element.question?.trim() != null &&
+                                element.question?.trim() != "")
+                            .toList();
                         eventCubit.addQuestions(filteredQuestions);
                         LoggerUtil.logs(
                             "eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
@@ -1040,8 +1108,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       });
                     }
                   },
-                  editQuestions: _questionControllers.isNotEmpty &&
-                          _questionControllers.first.text.isNotEmpty
+                  editQuestions: (_questionControllers.isNotEmpty &&
+                          eventCubit.eventModel.question != null &&
+                          (eventCubit.eventModel.question ?? []).isNotEmpty &&
+                          eventCubit.eventModel.question?.first.question !=
+                              null &&
+                          (eventCubit.eventModel.question?.first.question ?? "")
+                              .isNotEmpty)
                       ? true
                       : false,
                   onSwitchChanged: (bool value) {
@@ -1053,30 +1126,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       QuestionComponent.selectQuestion(
                           context,
                           _questionControllers,
-                          questions,
+                          // questions,
                           selectedQuestionRequired,
                           selectedQuestionPublic,
                           (List<Question> questionsList) {
-                            //
-                            // _questionControllers.removeWhere((element) => element.value == "" );
-                            
-                        // eventCubit.addQuestions(questionsList);
-                        // List<Question> questionsList = eventCubit.eventModel.question?? [];
-                        // for(int i = 0; i < _questionControllers.length; i++){
-                        //   LoggerUtil.logs("questionControllers ${_questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
-                        //   Question newQuestion = Question(
-                        //     questionId: "auto", // Assuming you have a mechanism to generate unique IDs
-                        //     question: _questionControllers[i].value.text, // Pass the entire list of controllers
-                        //     isPublic: selectedQuestionPublic[i]=="Public"?true:false ,
-                        //     isRequired: selectedQuestionRequired[i]=="Required"?true:false ,
-                        //   );
-                        //   questionsList.add(newQuestion);
-                        // }
-                        // eventCubit.eventModel.copyWith(question: questionsList);
-                        // NavigationUtil.pop(context);
-
-                            List<Question> filteredQuestions = questionsList.where((element) => element.question?.trim()!= null && element.question?.trim()!= "").toList();
-                            eventCubit.addQuestions(filteredQuestions);
+                        List<Question> filteredQuestions = questionsList
+                            .where((element) =>
+                                element.question?.trim() != null &&
+                                element.question?.trim() != "")
+                            .toList();
+                        eventCubit.addQuestions(filteredQuestions);
 
                         LoggerUtil.logs(
                             "eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
@@ -1102,7 +1161,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             eventName != null &&
                             selectedImagePath != null &&
                             selectedPriceValue.isNotEmpty &&
-                            capacityValue.isNotEmpty
+                            capacityValue.isNotEmpty &&
+                  _controllerDescription.text.isNotEmpty
                         ? themeCubit.primaryColor
                         : themeCubit.darkBackgroundColor,
                     buttonText: StringConstants.createEvent,
@@ -1111,7 +1171,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             eventName != null &&
                             selectedImagePath != null &&
                             selectedPriceValue.isNotEmpty &&
-                            capacityValue.isNotEmpty
+                            capacityValue.isNotEmpty &&
+                        _controllerDescription.text.isNotEmpty
                         ? themeCubit.backgroundColor
                         : ColorConstants.grey1,
                     onPressed: () {
@@ -1137,7 +1198,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  _createBottomSheet() {
+  _createBottomSheet(String eventId) {
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,
@@ -1148,7 +1209,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
     Future.delayed(const Duration(milliseconds: 1000), () async {
       NavigationUtil.pop(context);
-      _createEventBottomSheet();
+      _createEventBottomSheet(eventId);
     });
   }
 
@@ -1245,13 +1306,19 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     }));
   }
 
-  _createEventBottomSheet() {
+  _createEventBottomSheet(String eventId) {
     BottomSheetComponent.showBottomSheet(context,
         takeFullHeightWhenPossible: false,
+        isEnableDrag: false,
         isShowHeader: false,
-        body: SuccessShareBottomSheet(
-            contacts: contacts,
-            successTitle: StringConstants.eventCreatedSuccessfully));
+        body: PopScope(
+          canPop: false,
+          child: SuccessShareBottomSheet(
+              eventId: eventId,
+              type: "event_invite",
+              contacts: userScreenCubit.friendListResponseWrapper.data ?? [],
+              successTitle: StringConstants.eventCreatedSuccessfully),
+        ));
   }
 
   _goBackBottomSheet() {
@@ -1394,9 +1461,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       ),
                       controller: _inputPriceValuecontroller,
                       onChanged: (value) {
-                        print("onChange 0");
                         setState2(() {
-                          print("onChange 1");
                           selectedPriceValueContainer = "";
                           selectedIndexPrice = null;
                           // selectedPriceValue =
@@ -1411,7 +1476,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 15.0),
-                        hintText: "£",
+                        hintText: "${AppConstants.currency}",
                         filled: true,
                         fillColor:
                             ColorConstants.backgroundColor.withOpacity(0.3),
@@ -1446,9 +1511,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         textColor: ColorConstants.black,
                         buttonText: StringConstants.done,
                         onPressed: () {
-                          print(
-                              "_inputPriceValuecontroller.text ${_inputPriceValuecontroller.text}, selectedvalue ${selectedPriceValue}");
-
                           setState(() {
                             selectedPriceValue = selectedPriceValueContainer;
                             eventCubit.addPrice(selectedPriceValue == "Free"
@@ -1458,7 +1520,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             if (_inputPriceValuecontroller
                                 .value.text.isNotEmpty)
                               selectedPriceValue =
-                                  "${"£" + _inputPriceValuecontroller.text}";
+                                  "${AppConstants.currency + _inputPriceValuecontroller.text}";
                             if (_inputPriceValuecontroller
                                 .value.text.isNotEmpty)
                               eventCubit.addPrice(_inputPriceValuecontroller
@@ -1541,6 +1603,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     style: const TextStyle(
                       color: ColorConstants.white,
                     ),
+                    keyboardType: TextInputType.number,
                     controller: _inputCapacityValuecontroller,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(

@@ -9,6 +9,7 @@ import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -156,11 +157,13 @@ class _AllConnectionsState extends State<AllConnections> {
                     //   return showMore();
                     // },
                     // isLeadingImageSVG: true,
-
                     // isSocialConnected: true,
                     subIconColor: themeCubit.textColor,
                     // trailingText: "heelo",
-                    onTap: () {});
+                    onTap: () {
+                      NavigationUtil.push(
+                          context, RouteConstants.profileScreenLocal,args: contact.id);
+                    });
               },
             ),
           ),

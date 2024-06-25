@@ -7,7 +7,11 @@ class EventInitial extends EventState {}
 
 class EventLoadingState extends EventState {}
 
+
 class EventFetchLoadingState extends EventState {}
+class SearchEventFetchLoadingState extends EventState {}
+class EventFetchPaginationSearchLoadingState extends EventState {}
+class UpdateFcmTokenSuccessState extends EventState {}
 class GetFiltersDataLoadingState extends EventState {}
 
 class EventFetchByIdLoadingState extends EventState {}
@@ -22,6 +26,7 @@ class EventFiltersLoadingState extends EventState {}
 class BuyTicketRequestLoadingState extends EventState {}
 
 class EventFavRequestLoadingState extends EventState {}
+class UpdateFcmTokenLoadingState extends EventState {}
 
 class CreateEventSuccessState extends EventState {
   final EventModel? eventModel;
@@ -68,6 +73,20 @@ class EventFetchSuccessState extends EventState {
   final List<EventModel>? eventModel;
 
   EventFetchSuccessState(this.eventModelWrapper, this.eventModel);
+}
+
+class SearchEventFetchSuccessState extends EventState {
+  final EventResponseWrapper? eventModelWrapper;
+  final List<EventModel>? eventModel;
+
+  SearchEventFetchSuccessState(this.eventModelWrapper, this.eventModel);
+}
+
+class EventFetchPaginationSearchSuccessState extends EventState {
+  final EventResponseWrapper? eventModelWrapper;
+  final List<EventModel>? eventModel;
+
+  EventFetchPaginationSearchSuccessState(this.eventModelWrapper, this.eventModel);
 }
 
 class SendEventRequestSuccessState extends EventState {
@@ -139,4 +158,10 @@ class GetFiltersDataFailureState extends EventState {
   final String error;
 
   GetFiltersDataFailureState (this.error);
+}
+
+class UpdateFcmTokenFailureState extends EventState {
+  final String error;
+
+  UpdateFcmTokenFailureState(this.error);
 }

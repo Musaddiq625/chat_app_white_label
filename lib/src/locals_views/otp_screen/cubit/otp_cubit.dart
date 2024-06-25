@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/screens/otp/cubit/otp_cubit.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -57,28 +60,35 @@ class OTPCubit extends Cubit<OTPState> {
   }
 
 
-  Future<void> verifyOtpUser(String identifier,String otp) async {
-    emit(OTPLoadingState());
+  Future<void> verifyOtpUser(String type,String identifier,String otp) async {
+    if(type == "phoneNumber"){
+      emit(OTPSuccessPhoneUserState());
+    }else{
+      emit(OTPLoadingState());
+      try {
+        String? fcmToken = await FirebaseMessaging.instance.getToken();
+        print("Fcm token ${fcmToken}");
+        final device_id = await getIt<SharedPreferencesUtil>()
+            .getString(SharedPreferenceConstants.deviceId);
+        var resp = await AuthRepository.verifyOtp(identifier,otp,fcmToken,device_id!);
+        // LoggerUtil.logs("userDetailModel ${userDetailModel?.toJson()}");
+        if(resp.code == 200){
+          LoggerUtil.logs("test user data ${resp.data?.toJson()}");
 
-    try {
-    String? fcmToken = await FirebaseMessaging.instance.getToken();
-    print("Fcm token ${fcmToken}");
-      var resp = await AuthRepository.verifyOtp(identifier,otp,fcmToken);
-      // LoggerUtil.logs("userDetailModel ${userDetailModel?.toJson()}");
-      if(resp.code == 200){
-        LoggerUtil.logs("test user data ${resp.data?.toJson()}");
-        emit(OTPSuccessUserState(resp.data));
-        LoggerUtil.logs(resp);
-      }
-      else{
-        emit(OTPFailureState(resp.message ?? ""));
-        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
-      }
+          emit(OTPSuccessUserState(resp.data));
+          LoggerUtil.logs(resp);
+        }
+        else{
+          emit(OTPFailureState(resp.message ?? ""));
+          LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+        }
 
-    } catch (error) {
-      emit(OTPFailureState(error.toString()));
-      LoggerUtil.logs("General Error: $error");
+      } catch (error) {
+        emit(OTPFailureState(error.toString()));
+        LoggerUtil.logs("General Error: $error");
+      }
     }
+
   }
 
 
@@ -90,7 +100,7 @@ class OTPCubit extends Cubit<OTPState> {
         verificationCompleted: (PhoneAuthCredential credential) {},
         verificationFailed: (FirebaseAuthException e) {},
         codeSent: (String verificationId, int? resendToken) async {
-          emit(OtpSuccessResendState(verificationId));
+          // emit(OtpSuccessResendState(verificationId));
           // _verificationId = verificationId;
           //_resendToken = resendToken!;
         },
@@ -102,6 +112,28 @@ class OTPCubit extends Cubit<OTPState> {
       );
     } catch (e) {
       print("Error $e");
+    }
+  }
+
+
+  Future<void> resendOtpUser(String identifier) async {
+    emit(OTPLoadingState());
+
+    try {
+      var resp = await AuthRepository.login(identifier);
+      String? fcmToken = await FirebaseMessaging.instance.getToken();
+      print("Fcm token ${fcmToken}");
+      if(resp.code == 200){
+        emit(OtpSuccessResendState());
+        LoggerUtil.logs(resp);
+      }
+      else{
+        emit(OTPFailureState(resp.message ?? ""));
+        LoggerUtil.logs("General Error: ${resp.message ?? ""}");
+      }
+    } catch (error) {
+      emit(OTPFailureState(error.toString()));
+      LoggerUtil.logs("General Error: $error");
     }
   }
 

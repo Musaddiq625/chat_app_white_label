@@ -11,6 +11,7 @@ class OnBoardingRepository {
       String? userId,
       String? firstName,
       String? lastName,
+      String? phoneNumber,
       List<String?> profileImages) async {
     //Todo remove this when uploading image to server functionality is completed
     // profileImages = [
@@ -23,7 +24,8 @@ class OnBoardingRepository {
       {
         "firstName": firstName,
         "lastName": lastName,
-        "userPhotos": profileImages
+        "userPhotos": profileImages,
+        "phoneNumber":phoneNumber
       },
     );
     return OnBoardingResponseWrapper.fromJson(response);

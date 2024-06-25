@@ -360,7 +360,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         body: StatefulBuilder(builder: (context, setState) {
       return UserListComponent(
           headingName: StringConstants.addPeople,
-          dummyContactList: contacts,
+          dummyContactList: [],//contacts,
           subtitle: false,
           btnName: StringConstants.addPeopleToGroup,
           onBtnTap: () {});

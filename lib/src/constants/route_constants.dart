@@ -20,10 +20,12 @@ class RouteConstants {
   static const String groupChatRoomScreen = 'groupChatRoomScreen';
   static const String viewUserProfile = 'viewUserProfile';
   static const String viewGroupProfile = 'viewGroupProfile';
-
+  static const String viewFullImage = 'viewFullImage';
   static const String splashScreenLocal = 'splashScreen';
+  static const String mainSplashScreenLocal = 'mainSplashScreen';
   static const String eventScreen = 'eventScreen';
   static const String chatListingScreen = 'chatListingScreen';
+  static const String searchScreen = 'searchScreen';
   static const String chatRoomScreen = 'chatRoomScreen';
   static const String createEventScreen = 'createEventScreen';
   static const String editEventScreen = 'editEventScreen';
@@ -58,6 +60,8 @@ class RouteConstants {
   static const String earningScreen = 'earningScreen';
   static const String mainScreen = 'mainScreen';
   static const String viewYourEventScreen = 'viewYourEventScreen';
+  static const String userAllEvents = 'userAllEvents';
+  static const String userAllGroups = 'userAllGroups';
   static const String viewGroupScreen = 'viewGroupScreen';
   static const String viewYourGroupScreen = 'viewYourGroupScreen';
   static const String filterScreen = 'filterScreen';

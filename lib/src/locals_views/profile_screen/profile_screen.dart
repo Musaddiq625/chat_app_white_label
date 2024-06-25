@@ -1,19 +1,28 @@
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/src/components/common_bottom_sheet_component.dart';
+import 'package:chat_app_white_label/src/components/event_card.dart';
+import 'package:chat_app_white_label/src/components/group_card.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
+import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/view_group_screen.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../components/back_button_component.dart';
 import '../../components/bottom_sheet_component.dart';
@@ -25,9 +34,12 @@ import '../../constants/string_constants.dart';
 import '../../models/contact.dart';
 import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
+import 'cubit/view_user_screen_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  String userId;
+
+  ProfileScreen({super.key, required this.userId});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -35,8 +47,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late ViewUserScreenCubit viewUserScreenCubit =
+      BlocProvider.of<ViewUserScreenCubit>(context);
   bool connectSend = false;
   int _currentPage = 0;
+  String? isFriendValue;
   late PageController _pageController;
   final List<String> images = [
     "https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png",
@@ -55,15 +70,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ];
 
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', "","00112233455"),
-    ContactModel('Albert Ebert', 'Manager', "","45612378123"),
-    ContactModel('Json Ebert', 'Tester', "","03323333333"),
-    ContactModel('Mack', 'Intern', "","03312233445"),
-    ContactModel('Julia', 'Developer', "","88552233644"),
-    ContactModel('Rose', 'Human Resource', "","55366114532"),
-    ContactModel('Frank', 'xyz', "","25651412344"),
-    ContactModel('Taylor', 'Test', "","5511772266"),
+    ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
+    ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
+    ContactModel('Json Ebert', 'Tester', "", "03323333333"),
+    ContactModel('Mack', 'Intern', "", "03312233445"),
+    ContactModel('Julia', 'Developer', "", "88552233644"),
+    ContactModel('Rose', 'Human Resource', "", "55366114532"),
+    ContactModel('Frank', 'xyz', "", "25651412344"),
+    ContactModel('Taylor', 'Test', "", "5511772266"),
   ];
+
+  List<Map<String, dynamic>> tagLists = [];
 
   List<Map<String, dynamic>> tagList = [
     {
@@ -144,9 +161,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     },
   ];
 
+  List<InterestData>? interestData = [];
+  List<InterestData>? hobbiesData = [];
+  List<InterestData>? creativityData = [];
+  int? age;
+  UserModel? userModel;
+
   @override
   void initState() {
     super.initState();
+    viewUserScreenCubit.fetchUserData(widget.userId);
+    viewUserScreenCubit.fetchEventGroupData(widget.userId);
+
     _pageController = PageController(initialPage: 0)
       ..addListener(() {
         setState(() {
@@ -157,6 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void dispose() {
+    viewUserScreenCubit.userModelList.clear();
     _pageController.dispose();
     super.dispose();
   }
@@ -165,8 +192,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     BottomSheetComponent.showBottomSheet(
       context,
       isShowHeader: false,
-      body: const InfoSheetComponent(
-        heading: StringConstants.requestSend + " XyZ",
+      body: InfoSheetComponent(
+        heading: StringConstants.requestSend +
+            " ${userModel?.firstName ?? ""} ${userModel?.lastName ?? ""}",
         body: StringConstants.connectSendBody,
       ),
     );
@@ -182,59 +210,155 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //   overrideBackgroundImage: "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
     //   body: _profileWidget(),
     // );
-    return UIScaffold(
-      removeSafeAreaPadding: false,
-      bgColor: ColorConstants.backgroundColor,
-      widget: SingleChildScrollView(
-          child: Container(
-        color: themeCubit.backgroundColor,
-        child: Column(
-          children: [
-            _profileWidget(),
-            SizedBoxConstants.sizedBoxTenH(),
-            _aboutMe(),
-            SizedBoxConstants.sizedBoxTenH(),
-            _myInterest(),
-            SizedBoxConstants.sizedBoxTenH(),
-            _event(),
-            SizedBoxConstants.sizedBoxTenH(),
-            _clubs(),
-            const SizedBox(
-              height: 100,
+    return BlocConsumer<ViewUserScreenCubit, ViewUserScreenState>(
+      listener: (context, state) {
+        if (state is ViewUserScreenLoadingState) {
+        }
+        else if (state is ViewUserScreenSuccessState) {
+          viewUserScreenCubit.initializeUserData(state.userModelList!);
+          userModel = viewUserScreenCubit.userModelList.first;
+          // isFriendValue = viewUserScreenCubit.userModelList.first.isFriend;
+          isFriendValue = userModel?.isFriend;
+          if (isFriendValue == "Pending") {
+            setState(() {
+              connectSend = true;
+            });
+          }
+          // hobbiesData = viewUserScreenCubit.userModelList.first.interest?.hobbies;
+          hobbiesData = userModel?.interest?.hobbies;
+          creativityData =
+              viewUserScreenCubit.userModelList.first.interest?.creativity;
+          creativityData = userModel?.interest?.creativity;
+          interestData?.addAll(hobbiesData ?? []);
+          interestData?.addAll(creativityData ?? []);
+          tagLists = [
+            if ((userModel?.moreAbout?.diet ?? "").isNotEmpty &&
+                userModel?.moreAbout?.diet != null)
+              {
+                'iconData': AssetConstants.diet,
+                'name': userModel?.moreAbout?.diet,
+              },
+            if ((userModel?.moreAbout?.workout ?? "").isNotEmpty &&
+                userModel?.moreAbout?.workout != null)
+              {
+                'iconData': AssetConstants.workout,
+                'name': userModel?.moreAbout?.workout,
+              },
+            if ((userModel?.moreAbout?.height ?? "").isNotEmpty &&
+                userModel?.moreAbout?.height != null)
+              {
+                'iconData': AssetConstants.height,
+                'name': userModel?.moreAbout?.height,
+              },
+            if ((userModel?.moreAbout?.smoking ?? "").isNotEmpty &&
+                userModel?.moreAbout?.smoking != null)
+              {
+                'iconData': AssetConstants.smoking,
+                'name': userModel?.moreAbout?.smoking,
+              },
+            if ((userModel?.moreAbout?.drinking ?? "").isNotEmpty &&
+                userModel?.moreAbout?.drinking != null)
+              {
+                'iconData': AssetConstants.drinking,
+                'name': userModel?.moreAbout?.drinking,
+              },
+            if ((userModel?.moreAbout?.pets ?? "").isNotEmpty &&
+                userModel?.moreAbout?.pets != null)
+              {
+                'iconData': AssetConstants.pets,
+                'name': userModel?.moreAbout?.pets,
+              },
+          ];
+          String dateString =
+              userModel?.dateOfBirth ?? DateTime.now().toString();
+          DateTime selectedDate;
+          try {
+            selectedDate =
+                DateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(dateString!);
+            // DateTime birthDate = DateTime.parse(selectedDate);
+          } catch (_) {
+            selectedDate = DateFormat("dd MM yyyy").parse(dateString);
+            // DateTime birthDate = DateTime.parse(selectedDate);
+          }
+          DateTime currentDate = DateTime.now();
+          age = currentDate.year - selectedDate.year;
+        }
+        else if (state is ViewUserScreenFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        } else if (state is ViewUserEventGroupLoadingState) {
+        } else if (state is ViewUserEventGroupSuccessState) {
+          // viewUserScreenCubit.userModelList.clear();
+          viewUserScreenCubit
+              .initializeUserEventGroupData(state.userEventGroupWrapper);
+          LoggerUtil.logs(
+              "viewUserScreenCubit ${viewUserScreenCubit.eventGroupWrapper.data?.toJson()}");
+        } else if (state is ViewUserEventGroupFailureState) {
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+      },
+      builder: (context, state) {
+        return UIScaffold(
+          removeSafeAreaPadding: false,
+          bgColor: ColorConstants.backgroundColor,
+          widget: SingleChildScrollView(
+              child: Container(
+            color: themeCubit.backgroundColor,
+            child: Column(
+              children: [
+                _profileWidget(),
+                SizedBoxConstants.sizedBoxTenH(),
+                if ((viewUserScreenCubit.userModelList).isNotEmpty) _aboutMe(),
+                SizedBoxConstants.sizedBoxTenH(),
+                _myInterest(),
+                SizedBoxConstants.sizedBoxTenH(),
+                _event(),
+                SizedBoxConstants.sizedBoxTenH(),
+                _clubs(),
+                const SizedBox(
+                  height: 100,
+                ),
+              ],
             ),
-          ],
-        ),
-      )),
-      floatingActionButton: connectSend
-          ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ButtonComponent(
-                bgcolor: themeCubit.primaryColor,
-                buttonText: StringConstants.connectSent,
-                textColor: themeCubit.backgroundColor,
-                onPressed: () {
-                  _yesShareItBottomSheet();
-                  // NavigationUtil.push(
-                  //     context, RouteConstants.localsEventScreen);
-                },
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ButtonComponent(
-                bgcolor: themeCubit.primaryColor,
-                buttonText: StringConstants.connect,
-                textColor: themeCubit.backgroundColor,
-                onPressed: () {
-                  setState(() {
-                    connectSend = true;
-                  });
-                  // NavigationUtil.push(
-                  //     context, RouteConstants.localsEventScreen);
-                },
-              ),
-            ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          )),
+          floatingActionButton: ((userModel?.firstName ?? "").isNotEmpty)
+              ? isFriendValue != "Accepted"
+                  ? connectSend
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: ButtonComponent(
+                            bgcolor: themeCubit.primaryColor,
+                            buttonText: StringConstants.connectSent,
+                            textColor: themeCubit.backgroundColor,
+                            onPressed: () {
+                              _yesShareItBottomSheet();
+                              // NavigationUtil.push(
+                              //     context, RouteConstants.localsEventScreen);
+                            },
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: ButtonComponent(
+                            bgcolor: themeCubit.primaryColor,
+                            buttonText: StringConstants.connect,
+                            textColor: themeCubit.backgroundColor,
+                            onPressed: () {
+                              viewUserScreenCubit.sendFriendRequest(
+                                  userModel!.id!, "request_sent");
+                              setState(() {
+                                connectSend = true;
+                              });
+                              // NavigationUtil.push(
+                              //     context, RouteConstants.localsEventScreen);
+                            },
+                          ),
+                        )
+                  : Container()
+              : Container(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        );
+      },
     );
   }
 
@@ -248,50 +372,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
               percentage: 98), // Adjust this value as needed
           child: Stack(
             children: [
-              Column(
-                children: [
-                  Expanded(
-                    child: PageView.builder(
-                      controller: _pageController,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: imgList.length,
-                      itemBuilder: (context, index) {
-                        final file = imgList[index];
-                        return Column(
-                          children: [
-                            Expanded(
-                              child: Image.network(
-                                file,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+              if((viewUserScreenCubit.userModelList).isNotEmpty)
+                   Column(
+                      children: [
+                        Expanded(
+                          child: PageView.builder(
+                            controller: _pageController,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: viewUserScreenCubit
+                                .userModelList.first.userPhotos?.length,
+                            itemBuilder: (context, index) {
+                              final file = viewUserScreenCubit
+                                  .userModelList.first.userPhotos?[index];
+                              return Column(
+                                children: [
+                                  Expanded(
+                                    child: Image.network(
+                                      file ?? "",
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
               // AppBarComponent(""),
-
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: InkWell(
-                  onTap: () => NavigationUtil.pop(context),
-                  child: BackButtonComponent(
-                      bgColor: ColorConstants.iconBg,
-                      image: AssetConstants.backArrow,
-                      //! pass your asset here
-                      enableDark: false,
-                      isImage: true,
-                      isCircular: true,
-                      onTap: () {
-                        NavigationUtil.pop(context);
-                      }),
+              if ((viewUserScreenCubit.userModelList).isNotEmpty)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  child: InkWell(
+                    onTap: () => NavigationUtil.pop(context),
+                    child: BackButtonComponent(
+                        bgColor: ColorConstants.iconBg,
+                        image: AssetConstants.backArrow,
+                        //! pass your asset here
+                        enableDark: false,
+                        isImage: true,
+                        isCircular: true,
+                        onTap: () {
+                          NavigationUtil.pop(context);
+                        }),
+                  ),
                 ),
-              ),
-              _infoWidget(),
+               ((viewUserScreenCubit.userModelList).isNotEmpty)?_infoWidget():_ShimmerInfoWidget(),
             ],
           ),
         ),
@@ -310,7 +437,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Carousel indicator
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: List.generate(imgList.length, (index) {
+            children: List.generate(
+                (viewUserScreenCubit.userModelList.first.userPhotos ?? [])
+                    .length, (index) {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 height: 4,
@@ -329,7 +458,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextComponent(
-                "NAME ",
+                " ${viewUserScreenCubit.userModelList.first.firstName ?? ""} ${viewUserScreenCubit.userModelList.first.lastName ?? ""}",
                 style: FontStylesConstants.style38(color: ColorConstants.white),
               ),
               SizedBoxConstants.sizedBoxTenH(),
@@ -342,7 +471,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   SizedBoxConstants.sizedBoxFourW(),
                   TextComponent(
-                    "Founder, WeUno",
+                    viewUserScreenCubit.userModelList.first.aboutMe ?? "",
+                    //"Founder, WeUno",
                     style: FontStylesConstants.style16(),
                   ),
                 ],
@@ -357,7 +487,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   SizedBoxConstants.sizedBoxFourW(),
                   TextComponent(
-                    "31 yo",
+                    "$age yo",
                     style: FontStylesConstants.style16(),
                   ),
                   SizedBoxConstants.sizedBoxTwentyW(),
@@ -428,7 +558,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     iconSize: 13,
                     onTap: () {
                       ShareBottomSheet.shareBottomSheet(
-                          context, contacts, StringConstants.profile);
+                          context, "", "", [], StringConstants.profile);
                     },
                   ),
                   showMore(),
@@ -440,6 +570,118 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  Widget _ShimmerInfoWidget() {
+    return Shimmer.fromColors(
+        baseColor: ColorConstants.lightGray, //Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        enabled: true,
+      child:
+      Container(
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+      margin: EdgeInsets.only(left: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // Carousel indicator
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: List.generate(
+                (viewUserScreenCubit.userModelList ??[])
+                    .length, (index) {
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                height: 4,
+                width: 15,
+                decoration: BoxDecoration(
+                  color: _currentPage == index
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              );
+            }),
+          ),
+          SizedBoxConstants.sizedBoxTenH(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 150,
+                height: 10,
+                color: ColorConstants.white,
+              ),
+              SizedBoxConstants.sizedBoxTenH(),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.business_center_rounded,
+                    color: ColorConstants.lightGray,
+                    size: 15,
+                  ),
+                  SizedBoxConstants.sizedBoxFourW(),
+                  Container(
+                    width: 80,
+                    height: 10,
+                    color: ColorConstants.white,
+                  ),
+                ],
+              ),
+              SizedBoxConstants.sizedBoxTenH(),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.cake,
+                    color: ColorConstants.lightGray,
+                    size: 15,
+                  ),
+                  SizedBoxConstants.sizedBoxFourW(),
+                  Container(
+                    width: 50,
+                    height: 10,
+                    color: ColorConstants.white,
+                  ),
+                  SizedBoxConstants.sizedBoxTwentyW(),
+                  const Icon(
+                    Icons.location_on_sharp,
+                    color: ColorConstants.lightGray,
+                    size: 15,
+                  ),
+                  SizedBoxConstants.sizedBoxFourW(),
+                  Container(
+                    width: 150,
+                    height: 10,
+                    color: ColorConstants.white,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+
+                  IconComponent(
+                    svgData: AssetConstants.share,
+                    // iconData: Icons.share,
+                    borderColor: Colors.transparent,
+                    backgroundColor: ColorConstants.iconBg,
+                    iconColor: Colors.white,
+                    circleSize: 33,
+                    iconSize: 13,
+                    onTap: () {
+                      ShareBottomSheet.shareBottomSheet(
+                          context, "", "", [], StringConstants.profile);
+                    },
+                  ),
+                  showMore(),
+                ],
+              ),
+              SizedBoxConstants.sizedBoxHundredH(),
+            ],
+          )
+        ],
+      ),
+    ));
   }
 
   Widget showMore() {
@@ -545,77 +787,163 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _aboutMe() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        color: themeCubit.darkBackgroundColor,
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: TextComponent(
-                    StringConstants.aboutMe,
-                    style: FontStylesConstants.style18(
-                        color: themeCubit.primaryColor),
-                  )),
-              SizedBoxConstants.sizedBoxTenH(),
-              TextComponent(
-                "New to the city, keen to explore with new minded people and build my own network",
-                style: FontStylesConstants.style14(color: ColorConstants.white),
-                maxLines: 6,
-              ),
-              SizedBoxConstants.sizedBoxTenH(),
-              Wrap(
-                children: [
-                  IconComponent(
-                    iconData: Icons.facebook,
-                    borderColor: Colors.transparent,
-                    backgroundColor: ColorConstants.blue,
-                    circleSize: 30,
-                  ),
-                  SizedBoxConstants.sizedBoxTenW(),
-                  ImageComponent(
-                    height: 30,
-                    width: 30,
-                    imgUrl: AssetConstants.instagram,
-                    imgProviderCallback: (imageProvider) {},
-                  ),
-                  // IconComponent(
-                  //   // iconData: Icons.facebook,
-                  //   svgDataCheck: false,
-                  //   svgData: AssetConstants.instagramNoSVg,
-                  //   // borderColor: Colors.red,
-                  //   backgroundColor: ColorConstants.transparent,
-                  //   iconSize: 100,
-                  //   borderSize: 0,
-                  //   // circleSize: 30,
-                  //   // circleHeight: 30,
-                  // ),
-                  SizedBoxConstants.sizedBoxTenW(),
-                  ...tagList
-                      .map((tag) =>
-                          Row(mainAxisSize: MainAxisSize.min, children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 5.0),
-                              child: TagComponent(
-                                iconData: tag['iconData'],
-                                customTextColor: themeCubit.textColor,
-                                backgroundColor:
-                                    ColorConstants.lightGray.withOpacity(0.3),
-                                iconColor: themeCubit.primaryColor,
-                                customIconText: tag['name'],
-                                circleHeight: 35,
-                                iconSize: 20,
+      child: Container(
+        width: AppConstants.responsiveWidth(context),
+        child: Card(
+          color: themeCubit.darkBackgroundColor,
+          elevation: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: TextComponent(
+                      StringConstants.aboutMe,
+                      style: FontStylesConstants.style18(
+                          color: themeCubit.primaryColor),
+                    )),
+                SizedBoxConstants.sizedBoxTenH(),
+                TextComponent(
+                  viewUserScreenCubit.userModelList.first.bio ?? "",
+                  // "New to the city, keen to explore with new minded people and build my own network",
+                  style:
+                      FontStylesConstants.style14(color: ColorConstants.white),
+                  maxLines: 6,
+                ),
+                SizedBoxConstants.sizedBoxTenH(),
+                Wrap(
+                  // spacing: , // Adjust the spacing between items
+                  runSpacing: 8,
+                  children: [
+                    IconComponent(
+                      iconData: Icons.facebook,
+                      borderColor: Colors.transparent,
+                      backgroundColor: ColorConstants.blue,
+                      circleSize: 30,
+                    ),
+                    SizedBoxConstants.sizedBoxTenW(),
+                    ImageComponent(
+                      height: 30,
+                      width: 30,
+                      imgUrl: AssetConstants.instagram,
+                      imgProviderCallback: (imageProvider) {},
+                    ),
+                    // IconComponent(
+                    //   // iconData: Icons.facebook,
+                    //   svgDataCheck: false,
+                    //   svgData: AssetConstants.instagramNoSVg,
+                    //   // borderColor: Colors.red,
+                    //   backgroundColor: ColorConstants.transparent,
+                    //   iconSize: 100,
+                    //   borderSize: 0,
+                    //   // circleSize: 30,
+                    //   // circleHeight: 30,
+                    // ),
+
+                    // Row(// Space between items
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   children: [
+                    //     if((viewUserScreenCubit.userModelList.first.moreAbout?.diet?? "").isNotEmpty && viewUserScreenCubit.userModelList.first.moreAbout?.diet != null)
+                    //       TagComponent(
+                    //         iconData: AssetConstants.diet,
+                    //         customTextColor: themeCubit.textColor,
+                    //         backgroundColor:
+                    //         ColorConstants.lightGray.withOpacity(0.3),
+                    //         iconColor: themeCubit.primaryColor,
+                    //         customIconText: viewUserScreenCubit.userModelList.first.moreAbout?.diet ?? "",
+                    //         circleHeight: 35,
+                    //         iconSize: 20,
+                    //       ),
+                    //     SizedBoxConstants.sizedBoxTenW(),
+                    //     if((viewUserScreenCubit.userModelList.first.moreAbout?.diet?? "").isNotEmpty && viewUserScreenCubit.userModelList.first.moreAbout?.workout != null)
+                    //       TagComponent(
+                    //         iconData: AssetConstants.workout,
+                    //         customTextColor: themeCubit.textColor,
+                    //         backgroundColor:
+                    //         ColorConstants.lightGray.withOpacity(0.3),
+                    //         iconColor: themeCubit.primaryColor,
+                    //         customIconText: viewUserScreenCubit.userModelList.first.moreAbout?.workout ?? "",
+                    //         circleHeight: 35,
+                    //         iconSize: 20,
+                    //       ),
+                    //     SizedBoxConstants.sizedBoxTenW(),
+                    //     if((viewUserScreenCubit.userModelList.first.moreAbout?.diet?? "").isNotEmpty && viewUserScreenCubit.userModelList.first.moreAbout?.height != null)
+                    //       TagComponent(
+                    //         iconData: AssetConstants.height,
+                    //         customTextColor: themeCubit.textColor,
+                    //         backgroundColor:
+                    //         ColorConstants.lightGray.withOpacity(0.3),
+                    //         iconColor: themeCubit.primaryColor,
+                    //         customIconText: viewUserScreenCubit.userModelList.first.moreAbout?.height ?? "",
+                    //         circleHeight: 35,
+                    //         iconSize: 20,
+                    //       ),
+                    //     SizedBoxConstants.sizedBoxTenW(),
+                    //     if((viewUserScreenCubit.userModelList.first.moreAbout?.diet?? "").isNotEmpty && viewUserScreenCubit.userModelList.first.moreAbout?.smoking != null)
+                    //       TagComponent(
+                    //         iconData: AssetConstants.smoking,
+                    //         customTextColor: themeCubit.textColor,
+                    //         backgroundColor:
+                    //         ColorConstants.lightGray.withOpacity(0.3),
+                    //         iconColor: themeCubit.primaryColor,
+                    //         customIconText: viewUserScreenCubit.userModelList.first.moreAbout?.smoking ?? "",
+                    //         circleHeight: 35,
+                    //         iconSize: 20,
+                    //       ),
+                    //     SizedBoxConstants.sizedBoxTenW(),
+                    //     if((viewUserScreenCubit.userModelList.first.moreAbout?.diet?? "").isNotEmpty && viewUserScreenCubit.userModelList.first.moreAbout?.drinking != null)
+                    //       TagComponent(
+                    //         iconData: AssetConstants.drinking,
+                    //         customTextColor: themeCubit.textColor,
+                    //         backgroundColor:
+                    //         ColorConstants.lightGray.withOpacity(0.3),
+                    //         iconColor: themeCubit.primaryColor,
+                    //         customIconText: viewUserScreenCubit.userModelList.first.moreAbout?.drinking ?? "",
+                    //         circleHeight: 35,
+                    //         iconSize: 20,
+                    //       ),
+                    //     SizedBoxConstants.sizedBoxTenW(),
+                    //     if((viewUserScreenCubit.userModelList.first.moreAbout?.diet?? "").isNotEmpty && viewUserScreenCubit.userModelList.first.moreAbout?.pets != null)
+                    //       TagComponent(
+                    //         iconData: AssetConstants.pets,
+                    //         customTextColor: themeCubit.textColor,
+                    //         backgroundColor:
+                    //         ColorConstants.lightGray.withOpacity(0.3),
+                    //         iconColor: themeCubit.primaryColor,
+                    //         customIconText: viewUserScreenCubit.userModelList.first.moreAbout?.pets ?? "",
+                    //         circleHeight: 35,
+                    //         iconSize: 20,
+                    //       ),
+                    //   ],
+                    // )
+
+                    SizedBoxConstants.sizedBoxTenW(),
+                    ...(tagLists)
+                        .map((tag) =>
+                            Row(mainAxisSize: MainAxisSize.min, children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 5.0, right: 5, left: 5),
+                                child: TagComponent(
+                                  iconData: tag['iconData'],
+                                  customTextColor: themeCubit.textColor,
+                                  backgroundColor:
+                                      ColorConstants.lightGray.withOpacity(0.3),
+                                  iconColor: themeCubit.primaryColor,
+                                  customIconText: tag['name'],
+                                  circleHeight: 35,
+                                  iconSize: 20,
+                                ),
                               ),
-                            ),
-                            SizedBoxConstants.sizedBoxTenW(),
-                          ]))
-                      .toList(),
-                ],
-              )
-            ],
+                              SizedBoxConstants.sizedBoxTenW(),
+                            ]))
+                        .toList(),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -645,18 +973,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBoxConstants.sizedBoxTenH(),
                 Wrap(
                   children: [
-                    ...interestTagList
-                        .map((tag) =>
+                    ...?interestData
+                        ?.map((tag) =>
                             Row(mainAxisSize: MainAxisSize.min, children: [
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 5.0),
                                 child: TagComponent(
-                                  iconData: tag['iconData'],
+                                  iconData: tag.icon,
                                   customTextColor: themeCubit.textColor,
                                   backgroundColor:
                                       ColorConstants.lightGray.withOpacity(0.3),
                                   iconColor: themeCubit.primaryColor,
-                                  customIconText: tag['name'],
+                                  customIconText: tag.value,
                                   circleHeight: 35,
                                   iconSize: 20,
                                 ),
@@ -694,34 +1022,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         text: "${StringConstants.events}  ",
                       ),
                       TextSpan(
-                        text: "387",
+                        text:
+                            "${viewUserScreenCubit.eventGroupWrapper.data?.totalCounts?.eventsCount ?? 0}",
                         style: FontStylesConstants.style20(
                             color: ColorConstants.lightGray.withOpacity(0.8)),
                       ),
                     ],
                   ),
                 )),
-            Padding(
-                padding: const EdgeInsets.only(top: 10, right: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextComponent(
-                      "See all",
-                      style: FontStylesConstants.style15(
-                          color: ColorConstants.lightGray.withOpacity(0.8)),
-                    ),
-                    IconComponent(
-                      iconData: Icons.arrow_forward_ios,
-                      backgroundColor: ColorConstants.transparent,
-                      borderColor: ColorConstants.transparent,
-                      iconSize: 18,
-                      borderSize: 0,
-                      circleSize: 20,
-                      iconColor: ColorConstants.lightGray,
-                    )
-                  ],
-                )),
+            GestureDetector(
+              onTap: () {
+                NavigationUtil.push(context, RouteConstants.userAllEvents,
+                    args: widget.userId);
+              },
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 10, right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextComponent(
+                        "See all",
+                        style: FontStylesConstants.style15(
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
+                      ),
+                      IconComponent(
+                        iconData: Icons.arrow_forward_ios,
+                        backgroundColor: ColorConstants.transparent,
+                        borderColor: ColorConstants.transparent,
+                        iconSize: 18,
+                        borderSize: 0,
+                        circleSize: 20,
+                        iconColor: ColorConstants.lightGray,
+                      )
+                    ],
+                  )),
+            ),
           ],
         ),
         SizedBoxConstants.sizedBoxTenH(),
@@ -730,104 +1065,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // This makes the list scrollable horizontally
           child: Row(
             children: [
-              ...eventList
-                  .map(
-                    (event) => Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-                            ),
-                            fit: BoxFit.cover,
-                          ),
+              ...?viewUserScreenCubit.eventGroupWrapper.data?.events
+                  ?.map(((tag) => GestureDetector(
+                        onTap: () {
+                          LoggerUtil.logs("tap--- ${tag.toJson()}");
+                          if (tag.isMyEvent == true) {
+                            NavigationUtil.push(
+                                context, RouteConstants.viewYourEventScreen,
+                                args: tag.id ?? "");
+                          } else {
+                            NavigationUtil.push(
+                                context, RouteConstants.eventScreen,
+                                args: EventScreenArg(tag.id ?? "", ""));
+                          }
+                        },
+                        child: EventCard(
+                          totalCount: (tag.acceptedCount ?? 0) as int,
+                          imageUrl: (tag.images ?? []).firstWhere(
+                              (element) => (element ?? "").isNotEmpty,
+                              orElse: () => ""),
+                          images: (tag.eventRequest ?? [])
+                              .take(3) // Take only the first three elements
+                              .map((e) =>
+                                  e.image ??
+                                  "") // Transform each element to its image property, or "" if null
+                              .toList(),
+                          title: tag.title ?? "",
+                          startTime: (tag.venue ?? []).first.startDatetime,
+                          endTime: (tag.venue ?? []).first.endDatetime,
+                          // startTime: (tag.venue ?? []).firstWhere((element) => element.startDatetime!= null && element.startDatetime.toString().isNotEmpty, orElse: () => "" ),
+                          radius2: 20,
+                          viewTicket: !(tag.isFree ?? false),
                         ),
-                        width: 186,
-                        height: 308,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: radius2 * images.length.toDouble(),
-                                      height: radius2,
-                                      child: Stack(
-                                        children: [
-                                          for (int i = 0;
-                                              i < images.length;
-                                              i++)
-                                            Positioned(
-                                              left: i * radius2 / 1.5,
-                                              child: ClipOval(
-                                                  child: ImageComponent(
-                                                imgUrl: images[i],
-                                                width: radius2,
-                                                height: radius2,
-                                                imgProviderCallback:
-                                                    (ImageProvider<Object>
-                                                        imgProvider) {},
-                                              )
-                                                  // Image(
-                                                  //   image: images[i],
-                                                  //   width: radius2,
-                                                  //   height: radius2,
-                                                  //   fit: BoxFit.cover,
-                                                  // ),
-                                                  ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                    TextComponent(
-                                      "${event['joined']}${StringConstants.joined}",
-                                      style: FontStylesConstants.style14(
-                                          color: ColorConstants.white),
-                                      // style: const TextStyle(
-                                      //     fontSize: 13,
-                                      //     color: ColorConstants.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: TextComponent(
-                                  event['eventName'],
-                                  style: FontStylesConstants.style20(
-                                      color: ColorConstants.white),
-                                  maxLines: 6,
-                                  // style: const TextStyle(
-                                  //     fontSize: 20,
-                                  //     fontFamily:
-                                  //         FontConstants.fontProtestStrike,
-                                  //     color: ColorConstants.white),
-                                ),
-                              ),
-                              SizedBoxConstants.sizedBoxTenH(),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: TextComponent(
-                                  event['dateTime'],
-                                  style: FontStylesConstants.style13(
-                                      color: ColorConstants.white),
-                                ),
-                              ),
-                              SizedBoxConstants.sizedBoxTenH(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
+                      )))
                   .toList(),
             ],
           ),
@@ -854,36 +1124,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                        text: "${StringConstants.clubs}  ",
+                        text: "${StringConstants.groups}  ",
                       ),
                       TextSpan(
-                        text: "387",
+                        text:
+                            "${viewUserScreenCubit.eventGroupWrapper.data?.totalCounts?.groupsCount ?? 0}",
                         style: FontStylesConstants.style20(
                             color: ColorConstants.lightGray.withOpacity(0.8)),
                       ),
                     ],
                   ),
                 )),
-            Padding(
-                padding: const EdgeInsets.only(top: 10, right: 10),
-                child: Row(
-                  children: [
-                    TextComponent(
-                      "See all",
-                      style: FontStylesConstants.style15(
-                          color: ColorConstants.lightGray.withOpacity(0.8)),
-                    ),
-                    IconComponent(
-                      iconData: Icons.arrow_forward_ios,
-                      backgroundColor: ColorConstants.transparent,
-                      borderColor: ColorConstants.transparent,
-                      iconSize: 18,
-                      borderSize: 0,
-                      circleSize: 20,
-                      iconColor: ColorConstants.lightGray,
-                    )
-                  ],
-                )),
+            GestureDetector(
+              onTap: () {
+                NavigationUtil.push(context, RouteConstants.userAllGroups,
+                    args: widget.userId);
+              },
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 10, right: 10),
+                  child: Row(
+                    children: [
+                      TextComponent(
+                        "See all",
+                        style: FontStylesConstants.style15(
+                            color: ColorConstants.lightGray.withOpacity(0.8)),
+                      ),
+                      IconComponent(
+                        iconData: Icons.arrow_forward_ios,
+                        backgroundColor: ColorConstants.transparent,
+                        borderColor: ColorConstants.transparent,
+                        iconSize: 18,
+                        borderSize: 0,
+                        circleSize: 20,
+                        iconColor: ColorConstants.lightGray,
+                      )
+                    ],
+                  )),
+            ),
           ],
         ),
         SizedBoxConstants.sizedBoxTenH(),
@@ -892,98 +1169,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // This makes the list scrollable horizontally
           child: Row(
             children: [
-              ...eventList
-                  .map(
-                    (tag) => Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        width: 186,
-                        height: 308,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: radius2 * images.length.toDouble(),
-                                      height: radius2,
-                                      child: Stack(
-                                        children: [
-                                          for (int i = 0;
-                                              i < images.length;
-                                              i++)
-                                            Positioned(
-                                              left: i * radius2 / 1.5,
-                                              child: ClipOval(
-                                                  child: ImageComponent(
-                                                imgUrl: images[i],
-                                                width: radius2,
-                                                height: radius2,
-                                                imgProviderCallback:
-                                                    (ImageProvider<Object>
-                                                        imgProvider) {},
-                                              )
-
-                                                  // Image(
-                                                  //   image: images[i],
-                                                  //   width: radius2,
-                                                  //   height: radius2,
-                                                  //   fit: BoxFit.cover,
-                                                  // ),
-                                                  ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                    TextComponent(
-                                      "+1456 ${StringConstants.joined}",
-                                      style: FontStylesConstants.style14(
-                                          color: ColorConstants.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: TextComponent(
-                                  "Property networking event",
-                                  style: FontStylesConstants.style20(
-                                      color: ColorConstants.white),
-                                  maxLines: 6,
-                                ),
-                              ),
-                              SizedBoxConstants.sizedBoxTenH(),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10),
-                                child: TextComponent(
-                                  "17 Feb . 11AM - 2PM ",
-                                  style: FontStylesConstants.style13(
-                                      color: ColorConstants.white),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+              ...?viewUserScreenCubit.eventGroupWrapper.data?.groups
+                  ?.map(
+                    (tag) => GestureDetector(
+                        onTap: () {
+                          if (tag.isMyEvent == false) {
+                            NavigationUtil.push(
+                                context, RouteConstants.viewGroupScreen,
+                                args: ViewGroupArg(tag.id ?? "", false, false));
+                          } else {
+                            NavigationUtil.push(
+                                context, RouteConstants.viewYourGroupScreen,
+                                args: tag.id ?? "");
+                          }
+                        },
+                        child: GroupCard(
+                          imageUrl: (tag.images ?? []).firstWhere(
+                              (element) => (element ?? "").isNotEmpty,
+                              orElse: () => ""),
+                          images: [],
+                          name: tag.title ?? "",
+                          membersCount: tag.members.toString(),
+                        )),
                   )
                   .toList(),
             ],

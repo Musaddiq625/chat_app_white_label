@@ -3,15 +3,22 @@ import 'package:chat_app_white_label/src/constants/http_constansts.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/dio_client_network.dart';
 import 'package:chat_app_white_label/src/wrappers/all_groups_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/create_update_user_bank_detail_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/earning_detail_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/event_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/events_going_to_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/forget_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/friend_list_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/login_response_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/logout_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/notification_listing_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/send_otp_response_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/userEventGroup_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/user_bank_detail_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/user_model_wrapper.dart';
 import 'package:http/http.dart';
+
+import '../../wrappers/send_friend_request_wrapper.dart';
 
 class AuthRepository {
   static Future<SendOtpResponseWrapper> login(String email) async {
@@ -22,9 +29,9 @@ class AuthRepository {
   }
 
   static Future<LoginResponseWrapper> verifyOtp(
-      String email, String otp,String? fcmToken) async {
+      String email, String otp,String? fcmToken,String deviceId) async {
     final response = await getIt<DioClientNetwork>()
-        .postRequest(HttpConstants.verifyOtp, {"email": email, "otp": otp,"fcm_token":fcmToken,});
+        .postRequest(HttpConstants.verifyOtp, {"email": email, "otp": otp,"fcm_token":fcmToken,"device_id":deviceId});
     return LoginResponseWrapper.fromJson(response);
   }
 
@@ -35,6 +42,14 @@ class AuthRepository {
     return ForgetResponseWrapper.fromJson(response);
   }
 
+  static Future<void> updateFCM(String fcm,String deviceId) async {
+    // Response response =
+    await getIt<DioClientNetwork>()
+        .postRequest(HttpConstants.updateFcm, {"fcm_token": fcm,"device_id":deviceId});
+
+    return ;
+  }
+
   static Future<UserModelWrapper> fetchUserData(String id) async {
     final response =
         await getIt<DioClientNetwork>().postRequest(HttpConstants.users, {
@@ -43,6 +58,38 @@ class AuthRepository {
       },
     });
     final x = UserModelWrapper.fromListJson(response);
+    return x;
+  }
+
+  static Future<UserEventGroupWrapper> fetchUserEventGroupData(String id) async {
+    final response =
+        await getIt<DioClientNetwork>().postRequest(HttpConstants.eventGroups, {
+
+        "userId":  id
+    });
+    final x = UserEventGroupWrapper.fromJson(response);
+    return x;
+  }
+
+
+  static Future<UserEventGroupWrapper> fetchAllUserEventGroupData(String id,String eventType) async {
+    final response =
+    await getIt<DioClientNetwork>().postRequest(HttpConstants.allEventGroups, {
+
+      "userId":  id,
+      "event_type":eventType
+    });
+    final x = UserEventGroupWrapper.fromJson(response);
+    return x;
+  }
+
+  static Future<SendFriendRequestWrapper> sendFriendRequest(String id,String requestType) async {
+    final response =
+    await getIt<DioClientNetwork>().postRequest(HttpConstants.friendRequest, {
+      "friendId":  id,
+      "action":requestType
+    });
+    final x = SendFriendRequestWrapper.fromJson(response);
     return x;
   }
 
@@ -61,10 +108,41 @@ class AuthRepository {
     final x = EventsGoingToResponseWrapper.fromJson(response);
     return x;
   }
+
+  static Future<LogoutWrapper> userLogout() async {
+    final response = await getIt<DioClientNetwork>()
+        .postRequest(HttpConstants.userLogout, {});
+    final x = LogoutWrapper.fromJson(response);
+    return x;
+  }
+
   static Future<EventResponseWrapper> fetchMyEventsData() async {
     final response = await getIt<DioClientNetwork>()
         .postRequest(HttpConstants.myEvent, {});
     final x = EventResponseWrapper.listFromJson(response);
+    return x;
+  }
+
+  static Future<EarningDetailWrapper> earningDetailsData() async {
+    final response = await getIt<DioClientNetwork>()
+        .postRequest(HttpConstants.earnings, {});
+    final x = EarningDetailWrapper.fromJson(response);
+    return x;
+  }
+  static Future<UserBankDetailWrapper> userBankDetailsData() async {
+    final response = await getIt<DioClientNetwork>()
+        .postRequest(HttpConstants.userBankDetail, {});
+    final x = UserBankDetailWrapper.fromJson(response);
+    return x;
+  }
+  static Future<CreateUpdateUserBankDetailWrapper> updateUserBankDetailsData(String? id,String accountNumber,String accountTitle,String bankCode) async {
+    final response = await getIt<DioClientNetwork>()
+        .putRequest("${HttpConstants.updateUserBankDetail}/$id", {
+      "account_no": accountNumber,
+      "account_title": accountTitle,
+      "bank_code": bankCode
+    });
+    final x = CreateUpdateUserBankDetailWrapper.fromJson(response);
     return x;
   }
   static Future<FriendListResponseWrapper> fetchMyFriendListData() async {

@@ -10,6 +10,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -59,6 +60,7 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
     // Replace with your asset path
     // Add more image providers as needed
   ];
+  late final appCubit = BlocProvider.of<AppSettingCubit>(context);
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,9 @@ class _SelectProfileImageScreenState extends State<SelectProfileImageScreen> {
         LoggerUtil.logs('login state: $state');
         if (state is OnBoardingUserNameImageLoadingState) {
           // LoadingDialog.showLoadingDialog(context);
+
         } else if (state is OnBoardingUserNameImageSuccessState) {
+          appCubit.setUserModel(state.userModel);
           // LoadingDialog.hideLoadingDialog(context);
           onBoardingCubit.initializeUserData(state.userModel!);
 

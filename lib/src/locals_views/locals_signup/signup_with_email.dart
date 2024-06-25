@@ -66,7 +66,11 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
         } else {
           NavigationUtil.push(context, RouteConstants.otpScreenLocal,
               args: OtpArg("", _emailcontroller.text.trim(), "",
-                  "setPasswordBeforeNumber"));
+                  // "setPasswordBeforeNumber"
+              "email"
+              )
+
+          );
         }
       } else if (state is SignUpSignInState) {
         LoadingDialog.hideLoadingDialog(context);

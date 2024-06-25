@@ -200,12 +200,17 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
                     itemCount: filteredContacts.length,
                     itemBuilder: (context, index) {
                       final contact = filteredContacts[index];
-                      return ChatTileComponent(
-                        name: contact.name,
-                        detail: contact.designation,
-                      );
+                      return Container();
+                      //   ChatTileComponent(
+                      //   name: contact.name,
+                      //   detail: contact.designation,
+                      // ); ChatTileComponent(
+                      //   name: contact.name,
+                      //   detail: contact.designation,
+                      // );
                     })
-                : Container(
+                :
+            Container(
                     width:
                         AppConstants.responsiveWidth(context, percentage: 80),
                     child: Column(
@@ -258,7 +263,7 @@ class _ChatListingScreenState extends State<ChatListingScreen> {
         isShowHeader: false,
         body: UserListComponent(
             headingName: StringConstants.createChat,
-            dummyContactList: contacts,
+            dummyContactList:[] ,//contacts,
             selectedContacts: selectedContacts,
             subtitle: true,
             btnName: StringConstants.startChatting,

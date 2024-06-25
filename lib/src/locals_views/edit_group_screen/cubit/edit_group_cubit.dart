@@ -3,6 +3,7 @@ import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/models/ticket_model.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
+import 'package:chat_app_white_label/src/wrappers/delete_group_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/event_response_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/ticket_model_wrapper.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,20 @@ class EditGroupCubit extends Cubit<EditGroupState> {
       emit(EditGroupFailureState(e.toString()));
     }
   }
+
+
+
+  Future<void> deleteGroup(String id) async {
+    emit(DeleteGroupLoadingState());
+    try {
+      var resp = await EventRepository.deleteGroup(id);
+      emit(DeleteGroupSuccessState(resp));
+      LoggerUtil.logs(resp.toJson());
+    } catch (e) {
+      emit(DeleteGroupFailureState(e.toString()));
+    }
+  }
+
 
   addTitle(String title) {
     eventModel = eventModel.copyWith(title: title);

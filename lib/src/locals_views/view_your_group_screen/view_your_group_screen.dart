@@ -4,6 +4,7 @@ import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/contacts_card_component.dart';
 import 'package:chat_app_white_label/src/components/event_summary_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
+import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
@@ -19,8 +20,11 @@ import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/edit_event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/group_screens/cubit/group_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
+import 'package:chat_app_white_label/src/models/message_model.dart';
+import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
@@ -120,6 +124,8 @@ class _ViewYourGroupScreenState extends State<ViewYourGroupScreen> {
   List<String?>? imagesUserInEvent;
   List<EventRequest>? pendingRequests;
   late final List<Map<String, dynamic>>? memberResponseDetail;
+  late UserScreenCubit userScreenCubit =
+  BlocProvider.of<UserScreenCubit>(context);
 
   void initState() {
     super.initState();
@@ -132,6 +138,7 @@ class _ViewYourGroupScreenState extends State<ViewYourGroupScreen> {
       //   _price = int.parse(eventCubit.eventModel.pricing?.price ?? "");
       // }
       // _price = 50;
+      userScreenCubit.fetchMyFriendListData();
     });
     memberResponseDetail = [
       {
@@ -208,6 +215,7 @@ class _ViewYourGroupScreenState extends State<ViewYourGroupScreen> {
         if (state is ViewYourGroupScreenLoadingState) {
         } else if (state is ViewYourGroupScreenSuccessState) {
           viewYourGroupCubit.initializeEventData(state.eventModel!);
+          print("viewYourGroupCubit.eventModel.id ${viewYourGroupCubit.eventModel.id}");
           totalAcceptedMembers = viewYourGroupCubit.eventModel.eventRequest
               ?.where(
                   (eventRequest) => eventRequest.requestStatus == "Accepted")
@@ -305,13 +313,18 @@ class _ViewYourGroupScreenState extends State<ViewYourGroupScreen> {
 // Calculate the difference
     return Stack(children: [
       (viewYourGroupCubit.eventModel.images ?? []).isNotEmpty
-          ? Image.network(
-        viewYourGroupCubit.eventModel.images?.first ?? "",
-              // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-              fit: BoxFit.fill,
-              width: double.infinity,
-              height: 500,
-            )
+          ? GestureDetector(
+        onTap:(){
+          NavigationUtil.push(context, RouteConstants.viewFullImage,args:viewYourGroupCubit.eventModel.images?.first ?? "");
+        },
+            child: Image.network(
+                    viewYourGroupCubit.eventModel.images?.first ?? "",
+                // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 500,
+              ),
+          )
           : Container(
               color: ColorConstants.black,
               height: 500,
@@ -473,7 +486,11 @@ class _ViewYourGroupScreenState extends State<ViewYourGroupScreen> {
                   bgcolor: ColorConstants.transparent,
                   textColor: ColorConstants.black,
                   buttonText: StringConstants.inviteFriends,
-                  onPressed: () {}),
+                  onPressed: () {
+                    ShareBottomSheet.shareBottomSheet(
+                        context, viewYourGroupCubit.eventModel.title!,viewYourGroupCubit.eventModel.id! ,userScreenCubit.friendListResponseWrapper.data ?? [], StringConstants.group);
+
+                  }),
             ),
             // _members(),
           ],
@@ -882,6 +899,7 @@ class _ViewYourGroupScreenState extends State<ViewYourGroupScreen> {
                         questionsAndAnswers: details.eventQuestions,
                         questions: viewYourGroupCubit.eventModel.question,
                         onTapPending: () {
+                          print("detail.phoneNumber ${details.phoneNumber}");
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -967,8 +985,17 @@ class _ViewYourGroupScreenState extends State<ViewYourGroupScreen> {
                                           buttonText: "Accept",
                                           bgcolor: ColorConstants.primaryColor,
                                           textColor: ColorConstants.black,
-                                          onPressed: () {
+                                          onPressed: () async{
                                             _queryController.clear();
+                                            await ChatUtils.addMoreMembersToGroupChat(
+                                              viewYourGroupCubit.eventModel.id ?? "",
+                                              [details.phoneNumber] ?? [],
+                                            );
+                                            await ChatUtils.sendGropuMessage(
+                                              groupChatId: viewYourGroupCubit.eventModel.id!,
+                                              msg: "${viewYourGroupCubit.eventModel.userName}#%#added ${details.name}",
+                                              type: MessageType.info,
+                                            );
                                             viewYourGroupCubit.replyQueryById(
                                                 viewYourGroupCubit
                                                         .eventModel.id ??
@@ -978,6 +1005,7 @@ class _ViewYourGroupScreenState extends State<ViewYourGroupScreen> {
                                                 viewYourGroupCubit
                                                         .eventRequest.query ??
                                                     Query());
+
                                             NavigationUtil.pop(context);
                                           }),
                                     ],

@@ -4,10 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
+import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/screens/chat_room/preview_screen.dart';
 import 'package:chat_app_white_label/src/utils/api_utlils.dart';
+import 'package:chat_app_white_label/src/utils/chats_utils.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/dialogs.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
@@ -16,11 +19,12 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:voice_message_package/voice_message_package.dart';
-import 'package:path_provider/path_provider.dart';
+
 // import 'package:gallery_saver/gallery_saver.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:voice_message_package/voice_message_package.dart';
 
 import '../models/message_model.dart';
 
@@ -29,10 +33,13 @@ class MessageCard extends StatefulWidget {
     super.key,
     required this.message,
     required this.isRead,
+     this.image,
     this.isGroupMessage = false,
     this.updateGroupChatReadStatus,
   });
+
   final MessageModel message;
+  final String? image;
   final bool? isRead;
   final bool isGroupMessage;
   final Function()? updateGroupChatReadStatus;
@@ -43,9 +50,18 @@ class MessageCard extends StatefulWidget {
 
 class _MessageCardState extends State<MessageCard> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
+  late bool isMe;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isMe = '921122334455' == widget.message.fromId;
+    isMe = FirebaseUtils.user!.id == widget.message.fromId;
+    // bool isMe = '921122334455' == widget.message.fromId;
     bool isDateMessage = false;
     //  add daet message logic here;
     return InkWell(
@@ -65,9 +81,11 @@ class _MessageCardState extends State<MessageCard> {
         // },
         child: isDateMessage
             ? _dateMessage()
-            : isMe
-                ? _blackMessage()
-                : _greenMessage());
+            : widget.message.type == MessageType.info
+                ? InfoMessageCompnent(message: widget.message, isMe: isMe)
+                : isMe!
+                    ? _blackMessage()
+                    : _greenMessage());
   }
 
   Widget _dateMessage() {
@@ -87,15 +105,15 @@ class _MessageCardState extends State<MessageCard> {
   Widget _greenMessage() {
     // if (FirebaseUtils.user?.isOnline == true) {
     //update last read message if sender and receiver are different
-    // if (widget.isGroupMessage == false) {
-    //   if (widget.message.readAt == null) {
-    //     ChatUtils.updateMessageReadStatus(widget.message);
-    //   }
-    // } else {
-    //   if (!widget.message.readBy!.contains(FirebaseUtils.user?.id ?? '')) {
-    //     widget.updateGroupChatReadStatus!();
-    //   }
-    // }
+    if (widget.isGroupMessage == false) {
+      if (widget.message.readAt == null) {
+        ChatUtils.updateMessageReadStatus(widget.message);
+      }
+    } else {
+      if (!widget.message.readBy!.contains(FirebaseUtils.user?.id ?? '')) {
+        widget.updateGroupChatReadStatus!();
+      }
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -109,8 +127,8 @@ class _MessageCardState extends State<MessageCard> {
               const SizedBox(
                 width: 10,
               ),
-              const ProfileImageComponent(
-                url: null,
+               ProfileImageComponent(
+                url: widget.image,
                 size: 40,
               ),
               Flexible(
@@ -492,6 +510,7 @@ class _OptionItem extends StatelessWidget {
 class VoiceMessageCompnent extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
+
   const VoiceMessageCompnent(
       {super.key, required this.message, required this.isMe});
 
@@ -520,8 +539,42 @@ class VoiceMessageCompnent extends StatelessWidget {
   }
 }
 
+class InfoMessageCompnent extends StatelessWidget {
+  final MessageModel message;
+  final bool isMe;
+
+  const InfoMessageCompnent(
+      {super.key, required this.message, required this.isMe});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          decoration: const BoxDecoration(
+            color: ColorConstants.darkBackgrounddColor,
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
+          alignment: Alignment.center,
+          child: TextComponent(
+            isMe
+                ? "You ${message.msg!.split('#%#').last}"
+                : message.msg!.replaceAll('#%#', ' '),
+            style: FontStylesConstants.style12(color: ColorConstants.white),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class ImageMessageComponent extends StatelessWidget {
   final MessageModel message;
+
   const ImageMessageComponent({super.key, required this.message});
 
   @override
@@ -549,6 +602,7 @@ class ImageMessageComponent extends StatelessWidget {
 
 class VideoMessageComponent extends StatelessWidget {
   final MessageModel message;
+
   const VideoMessageComponent({super.key, required this.message});
 
   @override
@@ -604,6 +658,7 @@ class DocumentMessageComponent extends StatefulWidget {
   final String downloadUrl;
 
   final String fileNameWithExt;
+
   const DocumentMessageComponent(
       {super.key, required this.downloadUrl, required this.fileNameWithExt});
 
@@ -615,6 +670,7 @@ class DocumentMessageComponent extends StatefulWidget {
 class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
   ValueNotifier<String?> filePathToExternalStorage =
       ValueNotifier<String?>(null);
+
   @override
   void initState() {
     super.initState();
@@ -705,23 +761,23 @@ class _DocumentMessageComponentState extends State<DocumentMessageComponent> {
     filePathToExternalStorage.value = '$dirPath/${widget.fileNameWithExt}';
   }
 
-  // getFileNameAndExt(String downloadUrl) {
-  //   final splitted = downloadUrl.split('?');
-  //   documentMessage?.fileNameWithExt =
-  //       splitted[splitted.length - 2].split('_we_uno_chat_').last;
-  //   setState(() {});
-  // }
+// getFileNameAndExt(String downloadUrl) {
+//   final splitted = downloadUrl.split('?');
+//   documentMessage?.fileNameWithExt =
+//       splitted[splitted.length - 2].split('_we_uno_chat_').last;
+//   setState(() {});
+// }
 }
 
 class DocumentMessageModel {
   final String downloadUrl;
   String? filePathToExternalStorage;
+
   DocumentMessageModel({
     required this.downloadUrl,
     this.filePathToExternalStorage,
   });
 }
-
 
 // class MessageCard extends StatefulWidget {
 //   const MessageCard({

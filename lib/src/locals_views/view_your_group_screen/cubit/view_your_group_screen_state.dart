@@ -8,6 +8,7 @@ class ViewYourGroupScreenInitial extends ViewYourGroupScreenState {}
 class ViewYourGroupScreenLoadingState extends ViewYourGroupScreenState {}
 
 class GroupVisibilityLoadingState extends ViewYourGroupScreenState {}
+class ShareGroupLoadingState extends ViewYourGroupScreenState {}
 
 class SendGroupRequestQueryAndStatusLoadingState
     extends ViewYourGroupScreenState {}
@@ -16,6 +17,11 @@ class ViewYourGroupScreenSuccessState extends ViewYourGroupScreenState {
   final EventModel? eventModel;
 
   ViewYourGroupScreenSuccessState(this.eventModel);
+}
+class ShareGroupSuccessState extends ViewYourGroupScreenState {
+  final ShareGroupWrapper? shareGroupWrapper;
+
+  ShareGroupSuccessState(this.shareGroupWrapper);
 }
 
 class SendGroupRequestQueryAndStatusSuccessState
@@ -35,6 +41,11 @@ class ViewYourGroupScreenFailureState extends ViewYourGroupScreenState {
   final String error;
 
   ViewYourGroupScreenFailureState(this.error);
+}
+class ShareGroupFailureState extends ViewYourGroupScreenState {
+  final String error;
+
+  ShareGroupFailureState(this.error);
 }
 
 class GroupVisibilityFailureState extends ViewYourGroupScreenState {

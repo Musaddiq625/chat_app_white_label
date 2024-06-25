@@ -22,6 +22,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../on_boarding/cubit/onboarding_cubit.dart';
+
 class SignUpWithNumber extends StatefulWidget {
   final String? routeType;
 
@@ -38,6 +40,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
       TextEditingController(text: '+92');
 
   late SignUpCubit signUpCubit = BlocProvider.of<SignUpCubit>(context);
+  late OnboardingCubit onboardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final _formKey = GlobalKey<FormState>();
   bool isFieldsValidate = false;
 
@@ -64,7 +67,8 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
                     "${_countryCodeController.text}${_phoneNumbercontroller.text}",
                     _countryCodeController.text,
                     "afterEmail"));
-          } else {
+          }
+          else {
             NavigationUtil.push(
               context,
               RouteConstants.otpScreenLocal,
@@ -90,7 +94,7 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
       },
       builder: (context, state) {
         return UIScaffold(
-            appBar: AppBarComponent(""),
+            appBar: AppBarComponent("",showBackbutton: (widget.routeType != null)?true:false,),
             removeSafeAreaPadding: false,
             bgColor: themeCubit.backgroundColor,
             widget: continueWithNumber());
@@ -200,17 +204,19 @@ class _SignUpWithNumberState extends State<SignUpWithNumber> {
 
   void onContinuePressed() async {
     if (_formKey.currentState!.validate()) {
-      // NavigationUtil.push(
-      //   context,
-      //   RouteConstants.otpScreenLocal,
-      //   args: OtpArg(
-      //        state.verificationId,
-      //       "${_countryCodeController.text}${_phoneNumbercontroller.text}",
-      //       _countryCodeController.text,
-      //       "number"),
-      // );
-      await signUpCubit.loginUser(
-          (_countryCodeController.text + _phoneNumbercontroller.text).trim());
+      onboardingCubit.setPhoneNumberValues( (_countryCodeController.text + _phoneNumbercontroller.text).trim());
+      NavigationUtil.push(
+        context,
+        RouteConstants.otpScreenLocal,
+        args: OtpArg(
+           "",  // state.verificationId,
+            "${_countryCodeController.text}${_phoneNumbercontroller.text}",
+            _countryCodeController.text,
+            "phoneNumber"),
+      );
+      
+
+      // NavigationUtil.push(context, RouteConstants.nameScreen);
     }
   }
 

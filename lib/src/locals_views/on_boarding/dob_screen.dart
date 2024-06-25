@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/ui_scaffold.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +25,8 @@ import '../../utils/navigation_util.dart';
 import '../../utils/theme_cubit/theme_cubit.dart';
 
 class DOBScreen extends StatefulWidget {
-  const DOBScreen({super.key});
+  bool? routeFromMain;
+   DOBScreen({super.key,this.routeFromMain=false});
 
   @override
   State<DOBScreen> createState() => _DOBScreenState();
@@ -39,10 +46,31 @@ class _DOBScreenState extends State<DOBScreen> {
   late final DateTime? picked;
   DateTime selectedDate = DateTime.now();
 
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.routeFromMain == true){
+      setUserData();
+    }
+
+
+  }
+
+  void setUserData() async{
+    final serializedUserModel = await getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
+    UserModel userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+    setState(() {
+      onBoardingCubit.userModel = userModel;
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return UIScaffold(
-        appBar: AppBarComponent(""),
+        appBar: AppBarComponent("",showBackbutton:(widget.routeFromMain?? false)?false:true ,),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: setPassword());

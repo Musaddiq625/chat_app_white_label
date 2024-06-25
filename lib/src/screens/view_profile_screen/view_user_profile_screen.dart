@@ -3,7 +3,9 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/date_utils.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ViewUserProfileScreen extends StatefulWidget {
   final UserModel user;
@@ -17,6 +19,8 @@ class ViewUserProfileScreen extends StatefulWidget {
 }
 
 class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
+
+  late final ThemeCubit themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -25,7 +29,7 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
       child: Scaffold(
           //app bar
           appBar: AppBar(
-              backgroundColor: ColorConstants.greenMain,
+              backgroundColor: themeCubit.darkBackgroundColor,//ColorConstants.greenMain,
               title: Text(widget.user.firstName ?? '',
                   style: const TextStyle(
                     color: Colors.white,
@@ -40,6 +44,7 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                 color: ColorConstants.white,
               )),
           //body
+          backgroundColor: themeCubit.backgroundColor,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: SingleChildScrollView(
@@ -58,13 +63,13 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                       const Text(
                         'Name: ',
                         style: TextStyle(
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
                       ),
                       Text(widget.user.firstName ?? '',
                           style: const TextStyle(
-                              color: Colors.black87, fontSize: 16)),
+                              color: Colors.white, fontSize: 16)),
                     ],
                   ),
                   // user phone number
@@ -74,13 +79,13 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                       const Text(
                         'Phone Number: ',
                         style: TextStyle(
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
                       ),
                       Text(widget.user.phoneNumber ?? '',
                           style: const TextStyle(
-                              color: Colors.black87, fontSize: 16)),
+                              color: Colors.white, fontSize: 16)),
                     ],
                   ),
                   const SizedBox(height: 50),
@@ -91,13 +96,13 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                       const Text(
                         'About: ',
                         style: TextStyle(
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
                       ),
                       Text(widget.user.aboutMe ?? '',
                           style: const TextStyle(
-                              color: Colors.black54, fontSize: 15)),
+                              color: Colors.white, fontSize: 15)),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -108,13 +113,13 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                         Text(
                           'Status: ',
                           style: TextStyle(
-                              color: Colors.black87,
+                              color: Colors.white,
                               fontWeight: FontWeight.w500,
                               fontSize: 15),
                         ),
                         Text('Online',
                             style:
-                                TextStyle(color: Colors.black54, fontSize: 15)),
+                                TextStyle(color: Colors.white, fontSize: 15)),
                       ],
                     )
                   else
@@ -124,7 +129,7 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                         const Text(
                           'Last Seen: ',
                           style: TextStyle(
-                              color: Colors.black87,
+                              color: Colors.white,
                               fontWeight: FontWeight.w500,
                               fontSize: 15),
                         ),
@@ -134,7 +139,7 @@ class _ViewUserProfileScreenState extends State<ViewUserProfileScreen> {
                                 time: widget.user.lastActive ?? '',
                                 showYear: true),
                             style: const TextStyle(
-                                color: Colors.black54, fontSize: 15)),
+                                color: Colors.white, fontSize: 15)),
                       ],
                     )
                 ],

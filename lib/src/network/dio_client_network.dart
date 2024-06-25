@@ -22,13 +22,16 @@ class DioClientNetwork {
     _dio.options = BaseOptions(
       baseUrl: HttpConstants.base,
     );
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       LoggerUtil.logs("token value $token");
       // _dio.options.headers['Authorization'] = 'Bearer $token';
-      _dio.options.headers["device_id"]= device_id;
-      _dio.options.headers['x-access-token'] = token;
-    }
-    else{
+      _dio.options.headers = {
+        'device-id': device_id,
+        'x-access-token': token,
+      };
+      // _dio.options.headers["device"]= device_id;
+      // _dio.options.headers['x-access-token'] = token;
+    } else {
       LoggerUtil.logs("token is null $token");
     }
     _dio.interceptors.clear();
@@ -59,12 +62,14 @@ class DioClientNetwork {
     'errorCode': 'internet_connection_error',
   };
 
-  Future postRequest(String url, Map<String, dynamic> data, {Map<String,dynamic>? queryParameters}) async {
+  Future postRequest(String url, Map<String, dynamic> data,
+      {Map<String, dynamic>? queryParameters}) async {
     // final dio = await _getApiClient();
     try {
       final connected = await _checkInternetConnectivity();
       if (connected) {
-        final response = await _dio.post(url, data: data,queryParameters: queryParameters);
+        final response =
+            await _dio.post(url, data: data, queryParameters: queryParameters);
         return response.data;
       } else {
         return _internetError;
@@ -157,12 +162,12 @@ class DioClientNetwork {
     }
   }
 
-  Future deleteRequest(String url) async {
+  Future deleteRequest(String url, Map<String, dynamic> data) async {
     // final dio = await _getApiClient();
     try {
       final connected = await _checkInternetConnectivity();
       if (connected) {
-        final response = await _dio.delete(url);
+        final response = await _dio.delete(url, data: data);
         return response.data;
       } else {
         return _internetError;
@@ -172,18 +177,21 @@ class DioClientNetwork {
         e,
         _dio,
         HttpConstants.base + url,
+        data: data,
       );
     } on FormatException catch (e) {
       return NetworkExceptions.getDioException(
         e,
         _dio,
         HttpConstants.base + url,
+        data: data,
       );
     } catch (e) {
       return NetworkExceptions.getDioException(
         e,
         _dio,
         HttpConstants.base + url,
+        data: data,
       );
     }
   }

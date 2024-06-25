@@ -1,5 +1,6 @@
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/constants/firebase_constants.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/models/chat_model.dart';
 import 'package:chat_app_white_label/src/models/message_model.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
@@ -7,6 +8,7 @@ import 'package:chat_app_white_label/src/utils/firebase_notification_utils.dart'
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/service/firbase_service.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatUtils {
@@ -15,10 +17,19 @@ class ChatUtils {
   static CollectionReference<Map<String, dynamic>> get chatsCollection =>
       firebaseService.firestore.collection(FirebaseConstants.chats);
 
+  // static String getConversationID(String chatUserPhoneNumber) =>
+  //     FirebaseUtils.phoneNumber.hashCode <= chatUserPhoneNumber.hashCode
+  //         ? '${FirebaseUtils.phoneNumber}_$chatUserPhoneNumber'
+  //         : '${chatUserPhoneNumber}_${FirebaseUtils.phoneNumber}';
   static String getConversationID(String chatUserPhoneNumber) =>
-      FirebaseUtils.phoneNumber.hashCode <= chatUserPhoneNumber.hashCode
-          ? '${FirebaseUtils.phoneNumber}_$chatUserPhoneNumber'
-          : '${chatUserPhoneNumber}_${FirebaseUtils.phoneNumber}';
+      FirebaseUtils.user!.id.hashCode <= chatUserPhoneNumber.hashCode
+          ? '${FirebaseUtils.user!.id}_$chatUserPhoneNumber'
+          : '${chatUserPhoneNumber}_${FirebaseUtils.user!.id}';
+
+  static String getConversationIDLocals(String chatUserPhoneNumber, String myPhoneNumber) =>
+      myPhoneNumber.hashCode <= chatUserPhoneNumber.hashCode
+          ? '${myPhoneNumber}_$chatUserPhoneNumber'
+          : '${chatUserPhoneNumber}_${myPhoneNumber}';
 
   static String createGroupChatId(String chatName) =>
       '${chatName}_${FirebaseUtils.getDateTimeNowAsId()}';
@@ -29,9 +40,13 @@ class ChatUtils {
     return FirebaseUtils.usersCollection.doc(chatUserId).snapshots();
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChats() {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllChats(String userId) {
+    print("FirebaseUtils.user?.id ${FirebaseUtils.user?.id}   userId ${userId}");
+    final replacedPhoneNumber = userId.replaceAll('+', '');
+    print("replacedPhoneNumber ${replacedPhoneNumber}");
     return chatsCollection
-        .where('users', arrayContains: FirebaseUtils.user?.id)
+        // .where('users', arrayContains: FirebaseUtils.user?.id)
+        .where('users', arrayContains: replacedPhoneNumber)
         .orderBy('updated_at', descending: true)
         .snapshots();
   }
@@ -48,11 +63,30 @@ class ChatUtils {
         .collection(FirebaseConstants.messages)
         .orderBy('sentAt', descending: true)
         .snapshots();
+
   }
 
   // for creating one to one chat
   static Future<void> createChat(UserModel chatUser) async {
     final chatId = getConversationID(chatUser.id ?? '');
+
+    await chatsCollection.doc(chatId).set(ChatModel(
+        id: '${FirebaseUtils.user?.id}_${chatUser.id ?? ''}', // 123 -> 123_456     456-> 123_456
+        isGroup: false,
+        updatedAt: FirebaseUtils.getDateTimeNowAsId(),
+        users: [FirebaseUtils.user!.id!, chatUser.id ?? '']).toJson());
+
+    await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
+      'chats': FieldValue.arrayUnion([chatId])
+    }, SetOptions(merge: true));
+
+    await FirebaseUtils.usersCollection.doc(chatUser.id ?? '').set({
+      'chats': FieldValue.arrayUnion([chatId])
+    }, SetOptions(merge: true));
+  }
+
+  static Future<void> createChatLocals(UserModel chatUser) async {
+    final chatId = getConversationIDLocals(chatUser.id ?? '',"");
 
     await chatsCollection.doc(chatId).set(ChatModel(
         id: '${FirebaseUtils.user?.id}_${chatUser.id ?? ''}', // 123 -> 123_456     456-> 123_456
@@ -122,6 +156,7 @@ class ChatUtils {
         await createChat(chatUser);
       }
       if (type == MessageType.image) {
+
         sendingMessage = await FirebaseUtils.uploadMedia(filePath!,
             MediaType.chatImage, getConversationID(chatUser.id ?? ''));
       } else if (type == MessageType.video) {
@@ -144,7 +179,7 @@ class ChatUtils {
       final sendingTimeAsId = FirebaseUtils.getDateTimeNowAsId();
       final chatId = getConversationID(chatUser.id ?? '');
       final chatDoc = chatsCollection.doc(chatId);
-
+print("---FirebaseUtils.user?.id ${FirebaseUtils.user?.id} chatId ${chatId}   chat userId ${chatUser.id}");
       final MessageModel message = MessageModel(
           toId: chatUser.id ?? '',
           msg: sendingMessage,
@@ -192,6 +227,10 @@ class ChatUtils {
   //   await chatDoc.update({'last_message.readAt': sendingTime});
   // }
 
+
+
+
+
   /// TODO: WARNING - Replace it with Group chat logic
   static Future<void> updateUnreadCount(
       String chatUserId, String count, bool isUpdatingMe) async {
@@ -236,15 +275,52 @@ class ChatUtils {
     return chatData;
   }
 
+  static Future<ChatModel> createGroupChatLocals(
+      String groupId,
+      String groupName,
+      String groupAbout,
+      String? groupImage,
+      List contacts,
+      ) async {
+    final groupChatId =
+    createGroupChatId(groupName.toLowerCase().trim().replaceAll(' ', '_'));
+    final chatData = ChatModel(
+        id: groupId,
+        isGroup: true,
+        updatedAt: FirebaseUtils.getDateTimeNowAsId(),
+        groupData: GroupData(
+            id: groupId,
+            adminId: FirebaseUtils.user?.id,
+            grougName: groupName,
+            groupAbout: groupAbout,
+            groupImage: groupImage),
+        lastMessage: null,
+        users: [FirebaseUtils.user?.id ?? '', ...contacts]);
+
+    await chatsCollection.doc(groupId).set(chatData.toJson());
+
+    await FirebaseUtils.usersCollection.doc(FirebaseUtils.user?.id ?? '').set({
+      'chats': FieldValue.arrayUnion([groupId])
+    }, SetOptions(merge: true));
+    for (var i = 0; i < contacts.length; i++) {
+      await FirebaseUtils.usersCollection.doc(contacts[i]).set({
+        'chats': FieldValue.arrayUnion([groupId])
+      }, SetOptions(merge: true));
+    }
+    return chatData;
+  }
+
   static Future<void> addMoreMembersToGroupChat(
     String groupChatId,
     List contacts,
   ) async {
     for (var i = 0; i < contacts.length; i++) {
+      var contact = contacts[i].replaceAll('+', '');
+      print("contacts---$contacts");
       await chatsCollection.doc(groupChatId).set({
-        'users': FieldValue.arrayUnion([contacts[i]])
+        'users': FieldValue.arrayUnion([contact])
       }, SetOptions(merge: true));
-      await FirebaseUtils.usersCollection.doc(contacts[i]).set({
+      await FirebaseUtils.usersCollection.doc(contact).set({
         'chats': FieldValue.arrayUnion([groupChatId])
       }, SetOptions(merge: true));
     }
@@ -381,6 +457,21 @@ class ChatUtils {
       }, SetOptions(merge: true));
     }
   }
+
+
+  // /// TODO: WARNING - Replace it with Group chat logic
+  static Future<void> updateMessageReadStatus(MessageModel message) async {
+    final sendingTime = DateTime.now().millisecondsSinceEpoch.toString();
+    final chatId = getConversationID(message.fromId ?? '');
+    final chatDoc = chatsCollection.doc(chatId);
+
+    await chatDoc
+        .collection(FirebaseConstants.messages)
+        .doc(message.sentAt)
+        .update({'readAt': DateTime.now().millisecondsSinceEpoch.toString()});
+    await chatDoc.update({'last_message.readAt': sendingTime});
+  }
+
 
   static Future<void> updateGroupReadCount(
     String groupChatId,

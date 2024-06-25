@@ -54,6 +54,18 @@ class ViewYourEventScreenCubit extends Cubit<ViewYourEventScreenState> {
   }
 
 
+  Future<void> sendEventFavById(String eventId, bool fav) async {
+    emit(ViewEventFavRequestLoadingState());
+    try {
+      var resp = await EventRepository.sendEventFavById(eventId, fav);
+      LoggerUtil.logs(" Event data by favourite${resp.toJson()}");
+      emit(ViewEventFavSuccessState(resp.data));
+    } catch (e) {
+      emit(ViewEventFavRequestFailureState(e.toString()));
+    }
+  }
+
+
 
 
 

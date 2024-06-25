@@ -20,17 +20,19 @@ class AppSettingCubit extends Cubit<AppSettingState> {
   FirebaseService firebaseService = getIt<FirebaseService>();
   SharedPreferencesUtil sharedPreferencesUtil = getIt<SharedPreferencesUtil>();
 
-  String appName = 'WeUno Chat';
-  String appLogo = 'assets/images/logo.jpg';
+  String appName = 'Locals';
+  // String appLogo = 'assets/images/logo.jpg';
+  String appLogo = 'assets/icons/locals.png';
   String? userId ;
 
   void setFlavor(String packageName) async {
     if (packageName == 'com.example.chat_app_white_label') {
-      appName = 'WeUno Chat Alpha';
-      appLogo = 'assets/images/logo.jpg';
+      // appName = 'Locals Alpha';
+      appName = 'Locals';
+      appLogo = 'assets/icons/locals.png';
     } else if (packageName == 'com.example.chat_app_white_label_beta') {
-      appName = 'WeUno Chat Beta';
-      appLogo = 'assets/images/whatsapp.png';
+      appName = 'Locals Beta';
+      appLogo = 'assets/icons/locals.png';
     }
     emit(SetFlavorState());
   }
@@ -38,6 +40,9 @@ class AppSettingCubit extends Cubit<AppSettingState> {
 
   setToken(String? token)async{
     await sharedPreferencesUtil.setString(SharedPreferenceConstants.apiAuthToken, token);
+  }
+  setUserId(String? userId)async{
+    await sharedPreferencesUtil.setString(SharedPreferenceConstants.userIdValue, userId);
   }
   setDeviceId(String? deviceId)async{
     await sharedPreferencesUtil.setString(SharedPreferenceConstants.deviceId, deviceId);

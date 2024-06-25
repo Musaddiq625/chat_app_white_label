@@ -94,7 +94,7 @@ class AppBarComponent extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: Padding(
-                      padding: EdgeInsets.only(left: showBackbutton ? 5 : 16),
+                      padding: EdgeInsets.only(left: showBackbutton ? 5 : 10),
                       child: TextComponent(
                         '',
                         listOfText: [titleText!, titleText2 ?? ''],

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:chat_app_white_label/main.dart';
@@ -24,10 +26,13 @@ import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/payment_success_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/main_screen/cubit/main_screen_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
 import 'package:chat_app_white_label/src/models/ticket_model.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -105,14 +110,19 @@ class _EventScreenState extends State<EventScreen> {
   int _count = 0;
   int _price = 0;
   int _totalAmount = 0;
+  final _debouncer = Debouncer(milliseconds: 1000);
   late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
+  late final mainScreenCubit = BlocProvider.of<MainScreenCubit>(context);
   UserModel? userModel;
+  late UserScreenCubit userScreenCubit =
+      BlocProvider.of<UserScreenCubit>(context);
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       eventCubit.eventModel = EventModel();
       await eventCubit.fetchEventDataById(widget.eventScreenArg?.eventId ?? "");
+      userScreenCubit.fetchMyFriendListData();
 
       // if (eventCubit.eventModel.pricing?.price != "0" &&
       //     (eventCubit.eventModel.pricing?.price ?? "").isNotEmpty) {
@@ -121,7 +131,7 @@ class _EventScreenState extends State<EventScreen> {
       final serializedUserModel = await getIt<SharedPreferencesUtil>()
           .getString(SharedPreferenceConstants.userModel);
       userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
-      print("userId ${userModel?.id}");
+
       setState(() {
         userId = "${userModel?.id}";
       });
@@ -129,15 +139,15 @@ class _EventScreenState extends State<EventScreen> {
       if (eventCubit.eventModel.eventRequest != null) {
         alreadyJoin = (eventCubit.eventModel.eventRequest ?? [])
             .any((eventRequest) => eventRequest.userId == userId);
-        print(
-            "userId ${userId} object ${eventCubit.eventModel.eventRequest!.any((eventRequest) => eventRequest.userId == userId)}");
+
+        // yourEventRequest = eventCubit.eventModel.eventRequest
+        //     ?.where((eventRequest) => eventRequest.userId == userId)
+        //     .toList()
+        //     .first;
         yourEventRequest = eventCubit.eventModel.eventRequest
             ?.where((eventRequest) => eventRequest.userId == userId)
-            .toList()
-            .first;
-        print(" 0 yourEventRequest${yourEventRequest?.toJson()}");
+            .firstWhere((eventRequest) => true, orElse: () => EventRequest());
       }
-      print("alreadyJoin ${alreadyJoin}");
 
       // _price = 50;
     });
@@ -150,6 +160,7 @@ class _EventScreenState extends State<EventScreen> {
       listener: (context, state) {
         if (state is EventFetchByIdLoadingState) {
         } else if (state is EventFetchByIdSuccessState) {
+          LoggerUtil.logs("fetch event data-- ${state.eventModel?.toJson()}");
           eventCubit.initializeEventData(state.eventModel!);
           print(
               "eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
@@ -173,6 +184,23 @@ class _EventScreenState extends State<EventScreen> {
               _price = int.parse(priceWithoutDollarSign);
               print("price $_price");
             }
+            if (eventCubit.eventModel.eventRequest != null) {
+              alreadyJoin = (eventCubit.eventModel.eventRequest ?? [])
+                  .any((eventRequest) => eventRequest.userId == userId);
+              print(
+                  "userId ${userId} object ${eventCubit.eventModel.eventRequest!.any((eventRequest) => eventRequest.userId == userId)}");
+              // yourEventRequest = eventCubit.eventModel.eventRequest
+              //     ?.where((eventRequest) => eventRequest.userId == userId)
+              //     .toList()
+              //     .first;
+              yourEventRequest = eventCubit.eventModel.eventRequest
+                  ?.where((eventRequest) => eventRequest.userId == userId)
+                  .firstWhere((eventRequest) => true,
+                      orElse: () => EventRequest());
+              // print(" 0 yourEventRequest${yourEventRequest?.toJson()}");
+              print(" 0 yourEventRequest${yourEventRequest?.toJson()}");
+            }
+            print("alreadyJoin 1 ${alreadyJoin}");
           }
         } else if (state is EventFetchByIdFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
@@ -192,6 +220,51 @@ class _EventScreenState extends State<EventScreen> {
           // eventCubit.initializeEventData(state.eventModel!);
           // print("eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
         } else if (state is SendEventRequestSuccessState) {
+          print("SendEventRequestSuccessState ${alreadyJoin}");
+          eventCubit.initializeEventData(state.eventModel!);
+          print(
+              "eventDate ${eventCubit.eventModel.venues?.first.startDatetime}");
+          acceptedRequests = eventCubit.eventModel.eventRequest
+              ?.where(
+                  (eventRequest) => eventRequest.requestStatus == "Accepted")
+              .toList();
+          print("1 yourEventRequest${yourEventRequest}");
+          if (eventCubit.eventModel.pricing?.price != "0" &&
+              (eventCubit.eventModel.pricing?.price ?? "").isNotEmpty) {
+            String priceWithoutDollarSign =
+                (eventCubit.eventModel.pricing?.price ?? "").replaceAllMapped(
+              RegExp(r'^[€£\$SAR]?([0-9,.]+)'),
+              // Correctly passing RegExp as the first argument
+              (match) =>
+                  match.group(1)?.toString() ??
+                  '', // Correctly passing a function as the second argument
+            );
+
+            if (priceWithoutDollarSign.isNotEmpty) {
+              _price = int.parse(priceWithoutDollarSign);
+              print("price $_price");
+            }
+            if (eventCubit.eventModel.eventRequest != null) {
+              alreadyJoin = (eventCubit.eventModel.eventRequest ?? [])
+                  .any((eventRequest) => eventRequest.userId == userId);
+              print(
+                  "userId ${userId} object ${eventCubit.eventModel.eventRequest!.any((eventRequest) => eventRequest.userId == userId)}");
+              // yourEventRequest = eventCubit.eventModel.eventRequest
+              //     ?.where((eventRequest) => eventRequest.userId == userId)
+              //     .toList()
+              //     .first;
+              yourEventRequest = eventCubit.eventModel.eventRequest
+                  ?.where((eventRequest) => eventRequest.userId == userId)
+                  .firstWhere((eventRequest) => true,
+                      orElse: () => EventRequest());
+              // print(" 0 yourEventRequest${yourEventRequest?.toJson()}");
+              print(" 0 yourEventRequest${yourEventRequest?.toJson()}");
+            }
+            print("alreadyJoin 1 ${alreadyJoin}");
+          }
+          setState(() {
+            alreadyJoin = true;
+          });
           _navigateToBack();
         } else if (state is BuyTicketRequestFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
@@ -206,10 +279,10 @@ class _EventScreenState extends State<EventScreen> {
       builder: (context, state) {
         return UIScaffold(
           removeSafeAreaPadding: false,
-          bgColor: ColorConstants.backgroundColor,
+          bgColor: themeCubit.backgroundColor,
           widget: SingleChildScrollView(
             child: Container(
-              color: themeCubit.backgroundColor,
+              // color: themeCubit.backgroundColor,
               child: Column(
                 children: [
                   _eventWidget(),
@@ -232,14 +305,15 @@ class _EventScreenState extends State<EventScreen> {
           ),
           floatingActionButton: ((eventCubit.eventModel.id ?? "").isNotEmpty)
               ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       (eventCubit.eventModel.pricing?.price != "0" &&
                               (eventCubit.eventModel.pricing?.price ?? "")
                                   .isNotEmpty)
-                          ? SizedBox(
+                          ? Container(
+                              alignment: Alignment.bottomLeft,
                               width: AppConstants.responsiveWidth(context,
                                   percentage: 30),
                               child: ButtonWithIconComponent(
@@ -255,36 +329,38 @@ class _EventScreenState extends State<EventScreen> {
                           : Container(
                               alignment: Alignment.bottomLeft,
                             ),
-                      if (yourEventRequest == null)
-                        Container(
-                          alignment: Alignment.bottomRight,
-                          width: AppConstants.responsiveWidth(context,
-                              percentage: 30),
-                          child: ButtonWithIconComponent(
-                            btnText: '  ${StringConstants.join}',
-                            icon: Icons.add_circle,
+                      (yourEventRequest?.id == null && alreadyJoin == false)
+                          ? Container(
+                              alignment: Alignment.bottomRight,
+                              width: AppConstants.responsiveWidth(context,
+                                  percentage: 30),
+                              child: ButtonWithIconComponent(
+                                btnText: '  ${StringConstants.join}',
+                                icon: Icons.add_circle,
 
-                            bgcolor: themeCubit.primaryColor,
-                            // btnTextColor: themeCubit.textColor,
-                            onPressed: () {
-                              JoinBottomSheet.showJoinBottomSheet(
-                                  context,
-                                  _controller,
-                                  eventCubit.eventModel.id ?? "",
-                                  eventCubit.eventModel.userId,
-                                  eventCubit.eventModel.userName,
-                                  eventCubit.eventModel.userImages,
-                                  eventCubit.eventModel.title ?? "",
-                                  (eventCubit.eventModel.isFree ?? true)
-                                      ? "Free to join"
-                                      : "Ticket Required",
-                                  "ABC",
-                                  "",
-                                  questions: eventCubit.eventModel.question);
-                              // _showJoinBottomSheet();
-                            },
-                          ),
-                        ),
+                                bgcolor: themeCubit.primaryColor,
+                                // btnTextColor: themeCubit.textColor,
+                                onPressed: () {
+                                  JoinBottomSheet.showJoinBottomSheet(
+                                      context,
+                                      _controller,
+                                      eventCubit.eventModel.id ?? "",
+                                      eventCubit.eventModel.userId,
+                                      eventCubit.eventModel.userName,
+                                      eventCubit.eventModel.userImages,
+                                      eventCubit.eventModel.title ?? "",
+                                      (eventCubit.eventModel.isFree ?? true)
+                                          ? "Free to join"
+                                          : "Ticket Required",
+                                      "ABC",
+                                      "",
+                                      questions:
+                                          eventCubit.eventModel.question);
+                                  // _showJoinBottomSheet();
+                                },
+                              ),
+                            )
+                          : Container(),
                     ],
                   ),
                 )
@@ -299,11 +375,17 @@ class _EventScreenState extends State<EventScreen> {
   Widget _eventWidget() {
     return Stack(children: [
       (eventCubit.eventModel.images?.first != null)
-          ? Image.network(
-              eventCubit.eventModel.images?.first ?? "",
-              fit: BoxFit.fill,
-              width: double.infinity,
-              height: 500,
+          ? GestureDetector(
+              onTap: () {
+                NavigationUtil.push(context, RouteConstants.viewFullImage,
+                    args: eventCubit.eventModel.images?.first ?? "");
+              },
+              child: Image.network(
+                eventCubit.eventModel.images?.first ?? "",
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 500,
+              ),
             )
           : Container(
               color: ColorConstants.black,
@@ -421,9 +503,8 @@ class _EventScreenState extends State<EventScreen> {
                                     DateFormat('d MMM \'at\' hh a').format(
                                         DateTime.parse(
                                             (eventCubit.eventModel.venues ?? [])
-                                                    .first
-                                                    .startDatetime!
-                                                )),
+                                                .first
+                                                .startDatetime!)),
                                   // eventCubit.eventModel.venues?.first.startDatetime ?? "",
                                   "-",
                                   if (eventCubit.eventModel.venues != null &&
@@ -460,63 +541,193 @@ class _EventScreenState extends State<EventScreen> {
                 : _shimmerTopEventData(),
 
             SizedBoxConstants.sizedBoxTenH(),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Row(
-                children: [
-                  IconComponent(
-                    iconData: Icons.favorite,
-                    backgroundColor:
-                        ColorConstants.darkBackgrounddColor.withOpacity(0.9),
-                    iconColor: eventCubit.eventModel.isFavourite == false ||
-                            eventCubit.eventModel.isFavourite == null
-                        ? Colors.white
-                        : ColorConstants.red,
-                    customIconText:
-                        "${eventCubit.eventModel.eventFavouriteBy?.length ?? 0}",
-                    circleSize: 70,
-                    circleHeight: 36,
-                    iconSize: 20,
-                    onTap: () {
-                      if (eventCubit.eventModel.isFavourite == false ||
-                          eventCubit.eventModel.isFavourite == null) {
-                        eventCubit.eventModel.eventFavouriteBy?.length++;
-                        eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0")] =
-                            eventCubit.eventModelList[int.parse(widget.eventScreenArg?.indexValue ?? "0")].copyWith(isFavourite: true);
-                        eventCubit.eventModel =
-                            eventCubit.eventModel.copyWith(isFavourite: true);
-                        eventCubit.sendEventFavById(eventCubit.eventModel.id ?? "", true);
-                      } else {
-                        eventCubit.eventModel.eventFavouriteBy?.length--;
-                        eventCubit.eventModelList[int.parse(
-                                widget.eventScreenArg?.indexValue ?? "0")] =
-                            eventCubit.eventModelList[int.parse(
-                                    widget.eventScreenArg?.indexValue ?? "0")]
-                                .copyWith(isFavourite: false);
-                        eventCubit.eventModel =
-                            eventCubit.eventModel.copyWith(isFavourite: false);
-                        eventCubit.sendEventFavById(
-                            eventCubit.eventModel.id ?? "", false);
-                      }
-                    },
+            (eventCubit.eventModel.title != null)
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(
+                      children: [
+                        IconComponent(
+                          iconData: Icons.favorite,
+                          backgroundColor: ColorConstants.darkBackgrounddColor
+                              .withOpacity(0.9),
+                          iconColor:
+                              eventCubit.eventModel.isFavourite == false ||
+                                      eventCubit.eventModel.isFavourite == null
+                                  ? Colors.white
+                                  : ColorConstants.red,
+                          customIconText:
+                              "${eventCubit.eventModel.eventFavouriteBy?.length ?? 0}",
+                          circleSize: 70,
+                          circleHeight: 36,
+                          iconSize: 20,
+                          onTap: () {
+                            _debouncer.run(() {
+                              if (eventCubit.eventModel.isFavourite == false ||
+                                  eventCubit.eventModel.isFavourite == null) {
+                                eventCubit
+                                    .eventModel.eventFavouriteBy?.length++;
+                                if (widget.eventScreenArg?.indexValue != null &&
+                                    (widget.eventScreenArg?.indexValue ?? "")
+                                        .isNotEmpty) {
+                                  print(
+                                      "index value  ${widget.eventScreenArg?.indexValue}");
+                                  eventCubit.eventModelList[int.parse(
+                                      widget.eventScreenArg?.indexValue ??
+                                          "0")] = eventCubit
+                                      .eventModelList[int.parse(
+                                          widget.eventScreenArg?.indexValue ??
+                                              "0")]
+                                      .copyWith(isFavourite: true);
+                                }
+
+                                eventCubit.eventModel = eventCubit.eventModel
+                                    .copyWith(isFavourite: true);
+                                eventCubit.sendEventFavById(
+                                    eventCubit.eventModel.id ?? "", true);
+                              } else {
+                                eventCubit
+                                    .eventModel.eventFavouriteBy?.length--;
+                                if (widget.eventScreenArg?.indexValue != null &&
+                                    (widget.eventScreenArg?.indexValue ?? "")
+                                        .isNotEmpty) {
+                                  eventCubit.eventModelList[int.parse(
+                                      widget.eventScreenArg?.indexValue ??
+                                          "0")] = eventCubit
+                                      .eventModelList[int.parse(
+                                          widget.eventScreenArg?.indexValue ??
+                                              "0")]
+                                      .copyWith(isFavourite: false);
+                                }
+
+                                eventCubit.eventModel = eventCubit.eventModel
+                                    .copyWith(isFavourite: false);
+                                eventCubit.sendEventFavById(
+                                    eventCubit.eventModel.id ?? "", false);
+                              }
+                            });
+                          },
+                        ),
+                        const SizedBox(width: 10),
+                        IconComponent(
+                            // iconData: Icons.share,
+                            svgData: AssetConstants.share,
+                            backgroundColor: ColorConstants.darkBackgrounddColor
+                                .withOpacity(0.9),
+                            circleSize: 35,
+                            iconSize: 14,
+                            onTap: () {
+                              ShareBottomSheet.shareBottomSheet(
+                                  context,
+                                  eventCubit.eventModel.title!,
+                                  eventCubit.eventModel.id!,
+                                  userScreenCubit
+                                          .friendListResponseWrapper.data ??
+                                      [],
+                                  StringConstants.event);
+                              // _shareEventBottomSheet();
+                            }),
+                        showMore(),
+                      ],
+                    ),
+                  )
+                : Shimmer.fromColors(
+                    baseColor: ColorConstants.lightGray, //Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    enabled: true,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Row(
+                        children: [
+                          IconComponent(
+                            iconData: Icons.favorite,
+                            backgroundColor: ColorConstants.darkBackgrounddColor
+                                .withOpacity(0.9),
+                            iconColor: eventCubit.eventModel.isFavourite ==
+                                        false ||
+                                    eventCubit.eventModel.isFavourite == null
+                                ? Colors.white
+                                : ColorConstants.red,
+                            customIconText:
+                                "${eventCubit.eventModel.eventFavouriteBy?.length ?? 0}",
+                            circleSize: 70,
+                            circleHeight: 36,
+                            iconSize: 20,
+                            onTap: () {
+                              _debouncer.run(() {
+                                if (eventCubit.eventModel.isFavourite ==
+                                        false ||
+                                    eventCubit.eventModel.isFavourite == null) {
+                                  eventCubit
+                                      .eventModel.eventFavouriteBy?.length++;
+                                  if (widget.eventScreenArg?.indexValue !=
+                                          null &&
+                                      (widget.eventScreenArg?.indexValue ?? "")
+                                          .isNotEmpty) {
+                                    print(
+                                        "index value  ${widget.eventScreenArg?.indexValue}");
+                                    eventCubit.eventModelList[int.parse(
+                                        widget.eventScreenArg?.indexValue ??
+                                            "0")] = eventCubit
+                                        .eventModelList[int.parse(
+                                            widget.eventScreenArg?.indexValue ??
+                                                "0")]
+                                        .copyWith(isFavourite: true);
+                                  }
+
+                                  eventCubit.eventModel = eventCubit.eventModel
+                                      .copyWith(isFavourite: true);
+                                  eventCubit.sendEventFavById(
+                                      eventCubit.eventModel.id ?? "", true);
+                                } else {
+                                  eventCubit
+                                      .eventModel.eventFavouriteBy?.length--;
+                                  if (widget.eventScreenArg?.indexValue !=
+                                          null &&
+                                      (widget.eventScreenArg?.indexValue ?? "")
+                                          .isNotEmpty) {
+                                    eventCubit.eventModelList[int.parse(
+                                        widget.eventScreenArg?.indexValue ??
+                                            "0")] = eventCubit
+                                        .eventModelList[int.parse(
+                                            widget.eventScreenArg?.indexValue ??
+                                                "0")]
+                                        .copyWith(isFavourite: false);
+                                  }
+
+                                  eventCubit.eventModel = eventCubit.eventModel
+                                      .copyWith(isFavourite: false);
+                                  eventCubit.sendEventFavById(
+                                      eventCubit.eventModel.id ?? "", false);
+                                }
+                              });
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          IconComponent(
+                              // iconData: Icons.share,
+                              svgData: AssetConstants.share,
+                              backgroundColor: ColorConstants
+                                  .darkBackgrounddColor
+                                  .withOpacity(0.9),
+                              circleSize: 35,
+                              iconSize: 14,
+                              onTap: () {
+                                ShareBottomSheet.shareBottomSheet(
+                                    context,
+                                    eventCubit.eventModel.title!,
+                                    eventCubit.eventModel.id!,
+                                    userScreenCubit
+                                            .friendListResponseWrapper.data ??
+                                        [],
+                                    StringConstants.event);
+                                // _shareEventBottomSheet();
+                              }),
+                          showMore(),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 10),
-                  IconComponent(
-                      // iconData: Icons.share,
-                      svgData: AssetConstants.share,
-                      backgroundColor:
-                          ColorConstants.darkBackgrounddColor.withOpacity(0.9),
-                      circleSize: 35,
-                      iconSize: 14,
-                      onTap: () {
-                        ShareBottomSheet.shareBottomSheet(
-                            context, contacts, StringConstants.event);
-                        // _shareEventBottomSheet();
-                      }),
-                  showMore(),
-                ],
-              ),
-            ),
+
             _aboutTheEvent(),
             // _members(),
           ],
@@ -720,52 +931,56 @@ class _EventScreenState extends State<EventScreen> {
                             TextComponent(StringConstants.abouttheEvent,
                                 style: FontStylesConstants.style18(
                                     color: themeCubit.primaryColor)),
-                            if((eventCubit.eventModel.description ?? "").isNotEmpty)
-                            SizedBox(
-                              height: 10,
-                            ),
-                            if((eventCubit.eventModel.description ?? "").isNotEmpty)
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _showFullText = !_showFullText;
-                                });
-                              },
-                              child: RichText(
-                                text: TextSpan(
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: _showFullText
-                                          ? eventCubit.eventModel.description
-                                          : (((eventCubit.eventModel.description
-                                                              ?.length) ??
-                                                          0) >
-                                                      150
-                                                  ? eventCubit
-                                                      .eventModel.description
-                                                      ?.substring(0, 150)
-                                                  : eventCubit.eventModel
-                                                      .description) ??
-                                              "No description available",
-                                      style: TextStyle(
-                                          color: themeCubit.textColor),
-                                    ),
-                                    if ((eventCubit.eventModel.description
-                                                ?.length ??
-                                            0) >
-                                        150)
+                            if ((eventCubit.eventModel.description ?? "")
+                                .isNotEmpty)
+                              SizedBox(
+                                height: 10,
+                              ),
+                            if ((eventCubit.eventModel.description ?? "")
+                                .isNotEmpty)
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _showFullText = !_showFullText;
+                                  });
+                                },
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
                                       TextSpan(
                                         text: _showFullText
-                                            ? ' ${StringConstants.showLess}'
-                                            : ' ...${StringConstants.readMore}',
+                                            ? eventCubit.eventModel.description
+                                            : (((eventCubit
+                                                                .eventModel
+                                                                .description
+                                                                ?.length) ??
+                                                            0) >
+                                                        150
+                                                    ? eventCubit
+                                                        .eventModel.description
+                                                        ?.substring(0, 150)
+                                                    : eventCubit.eventModel
+                                                        .description) ??
+                                                "No description available",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,
                                             color: themeCubit.textColor),
                                       ),
-                                  ],
+                                      if ((eventCubit.eventModel.description
+                                                  ?.length ??
+                                              0) >
+                                          150)
+                                        TextSpan(
+                                          text: _showFullText
+                                              ? ' ${StringConstants.showLess}'
+                                              : ' ...${StringConstants.readMore}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: themeCubit.textColor),
+                                        ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -907,7 +1122,7 @@ class _EventScreenState extends State<EventScreen> {
                     children: [
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 18,right: 18),
+                          padding: const EdgeInsets.only(left: 18, right: 18),
                           child: Container(
                             height: 15,
                             width: 20,
@@ -961,7 +1176,8 @@ class _EventScreenState extends State<EventScreen> {
                 )),
             SizedBoxConstants.sizedBoxThirtyH(),
             if (yourEventRequest?.requestStatus != "Accepted" &&
-                yourEventRequest != null)
+                yourEventRequest != null &&
+                yourEventRequest?.id != null)
               Row(
                 children: [
                   Expanded(
@@ -987,7 +1203,8 @@ class _EventScreenState extends State<EventScreen> {
                 ],
               ),
             if (yourEventRequest?.requestStatus != "Accepted" &&
-                yourEventRequest != null)
+                yourEventRequest != null &&
+                yourEventRequest?.id != null)
               DividerCosntants.divider1,
             ListView.separated(
               separatorBuilder: (context, index) => const DividerComponent(),
@@ -1023,7 +1240,29 @@ class _EventScreenState extends State<EventScreen> {
                 // isSocialConnected: true,
                 subIconColor: themeCubit.textColor,
                 // trailingText: "heelo",
-                onTap: () {},
+                onTap: () async{
+                  final serializedUserModel = await getIt<SharedPreferencesUtil>()
+                      .getString(SharedPreferenceConstants.userModel);
+                  userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+                  // userId = await getIt<SharedPreferencesUtil>()
+                  //     .getString(SharedPreferenceConstants.userIdValue);
+                 String?  myId = userModel?.id;
+
+
+                  if(acceptedRequests?[index].userId != myId){
+                    NavigationUtil.push(
+                        context, RouteConstants.profileScreenLocal,
+                        args: acceptedRequests?[index].userId);
+                  }
+                  else {
+                    print("My Id $myId  accpeted id ${acceptedRequests?[index].userId}");
+                    NavigationUtil.push(
+                        context, RouteConstants.mainScreen,args: "4");
+                    // mainScreenCubit.updateIndex(4);
+
+                  }
+
+                },
               ),
             ),
             // ContactCard(
@@ -1904,30 +2143,32 @@ class _EventScreenState extends State<EventScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            width: AppConstants.responsiveWidth(context,
-                                percentage: 40),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 0, vertical: 4),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: ColorConstants.white),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.apple,
-                                  color: ColorConstants.black,
-                                ),
-                                TextComponent(
-                                  StringConstants.pay,
-                                  style: FontStylesConstants.style16(
-                                      color: ColorConstants.black,
-                                      fontWeight: FontWeight.bold),
+                          (Platform.isIOS)
+                              ? Container(
+                                  width: AppConstants.responsiveWidth(context,
+                                      percentage: 40),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 4),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: ColorConstants.white),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.apple,
+                                        color: ColorConstants.black,
+                                      ),
+                                      TextComponent(
+                                        StringConstants.pay,
+                                        style: FontStylesConstants.style16(
+                                            color: ColorConstants.black,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
                                 )
-                              ],
-                            ),
-                          ),
+                              : Container(),
                           // ButtonComponent(
                           //   horizontalLength:
                           //   AppConstants.responsiveWidth(context, percentage: 18),
@@ -2257,6 +2498,20 @@ class _EventScreenState extends State<EventScreen> {
           size14Disc: true,
           onBtnTap: () {},
         ));
+  }
+}
+
+class Debouncer {
+  final int milliseconds;
+  Timer? _timer;
+
+  Debouncer({required this.milliseconds});
+
+  void run(VoidCallback action) {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }
 

@@ -1,3 +1,5 @@
+import 'package:chat_app_white_label/src/constants/app_constants.dart';
+
 class StringConstants {
   static const String errSomethingWentWrong = 'Something Went Wrong';
   static const String testingPhoneNo = '3331111111';
@@ -62,6 +64,7 @@ class StringConstants {
   static const String updateEvent = "Update Event";
   static const String updateGroup = "Update Group";
   static const String editEvent = "Edit Event";
+  static const String editGroup = "Edit Group";
   static const String createGroup = "Create Group";
   static const String categories = "Categories";
   static const String private = "Private";
@@ -163,6 +166,8 @@ class StringConstants {
   static const String capacity = "Capacity";
   static const String questions = "Questions";
   static const String visibility = "Visibility";
+  static const String deleteGroup = "Delete Group";
+  static const String deleteEvent = "Delete Event";
   static const String pets = "pets";
   static const String linkedIn = "LinkedIn";
   static const String editQuestions = "Edit Questions";
@@ -178,7 +183,7 @@ class StringConstants {
       "They will not know you have reported them";
 
   static const String setOtherAmount =
-      "You can also set other amount. If ticket is above £1000, please send contact our support at hello@locals.com";
+      "You can also set other amount. If ticket is above ${AppConstants.currency} 1000, please send contact our support at hello@locals.com";
   static const String choseToAskQuestion =
       "You can choose to ask questions when people join.";
   static const String limitNumberOfParticipants =
@@ -290,6 +295,7 @@ class StringConstants {
   static const String eventsYouGoingTo = "Events you'e going to";
   static const String allGroups = "All Groups";
   static const String myEvents = "My Events";
+  static const String search = "Search";
   static const String clubs = "Clubs";
   static const String somethingToKnow = "Something to know";
   static const String requestSent = "Request Sent!";
@@ -307,7 +313,7 @@ class StringConstants {
 
   static const String chat = "Chats";
   static const String createChat = "Create Chat";
-  static const String startDirectChat = 'Start a direct chat or make a group.';
+  static const String startDirectChat = 'Start a direct chat.';
   static const String itsReallyQuiet = "It’s really quiet!";
   static const String startChatwithYourFriends =
       'Start a chat with your friends or join any event or group to be a part of group chat!';

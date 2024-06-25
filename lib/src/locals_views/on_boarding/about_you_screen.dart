@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/bottom_sheet_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
@@ -11,11 +14,13 @@ import 'package:chat_app_white_label/src/constants/app_constants.dart';
 import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,10 +34,11 @@ import '../../wrappers/more_about_wrapper.dart';
 
 class AboutYouScreen extends StatefulWidget {
   final bool comingFromEditProfile;
+  final bool? routeFromMain;
   UserModel? userModel;
 
 
-   AboutYouScreen({super.key, this.comingFromEditProfile = false, this.userModel});
+   AboutYouScreen({super.key, this.comingFromEditProfile = false, this.userModel,this.routeFromMain});
 
   @override
   State<AboutYouScreen> createState() => _AboutYouScreenState();
@@ -206,7 +212,22 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
     // print("_bioController Values ${_bioController.text} - ${userScreenCubit.userModelList.first.bio} - ${widget.userModel?.bio} ");
     // onBoardingCubit.initializeMoreAboutData();
     // print("MoreAboutData Values ${onBoardingCubit.moreAboutWrapper.toJson()}");
+
+    if(widget.routeFromMain == true){
+      setUserData();
+    }
+
     super.initState();
+  }
+
+
+  void setUserData() async{
+    final serializedUserModel = await getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
+    UserModel userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+    setState(() {
+      onBoardingCubit.userModel = userModel;
+    });
+
   }
 
 
@@ -237,7 +258,8 @@ class _AboutYouScreenState extends State<AboutYouScreen> {
                     ? null
                     : AppBarComponent(
                         "",
-                        action: GestureDetector(
+                    showBackbutton:(widget.routeFromMain ?? false)?false:true,
+                    action: GestureDetector(
                           onTap: ()=> NavigationUtil.push(context, RouteConstants.interestScreen),
                           child: TextComponent(StringConstants.skip,
                               style: TextStyle(

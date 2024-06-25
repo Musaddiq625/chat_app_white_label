@@ -9,6 +9,7 @@ import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
+import 'package:chat_app_white_label/src/utils/firebase_utils.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
@@ -153,16 +154,18 @@ class _InterestScreenState extends State<InterestScreen> {
           LoadingDialog.hideLoadingDialog(context);
           // onBoardingCubit.initializeUserData(state.userModel!);
           appCubit.setUserModel(state.userModel);
-
           final serializedUserModel =await getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
           UserModel userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
           LoggerUtil.logs("sharedPreferencesUtil userModel Value ${userModel.toJson()}");
-          // NavigationUtil.push(context, RouteConstants.doneScreen);
+          final replacedPhoneNumber =onBoardingCubit.userModel.phoneNumber?.replaceAll('+', '');
+          FirebaseUtils.user = await FirebaseUtils.getCurrentFirebaseUser(
+              replacedPhoneNumber!);
+          NavigationUtil.push(context, RouteConstants.doneScreen);
         } else if (state is OnBoardingAboutYouToInterestFailureState) {
           // LoadingDialog.hideLoadingDialog(context);
           LoggerUtil.logs("Error ${state.error}");
         }else if (state is OnBoardingInterestLoadingState) {
-          print("Loading interest");
+
           LoadingDialog.showLoadingDialog(context);
         } else if (state is OnBoardingInterestSuccess) {
           LoadingDialog.hideLoadingDialog(context);
@@ -186,7 +189,6 @@ class _InterestScreenState extends State<InterestScreen> {
               onBoardingCubit.userModel.socialLink,
               onBoardingCubit.userModel.moreAbout,
               null,true),
-                NavigationUtil.push(context, RouteConstants.doneScreen),
               },
 
               child: TextComponent(StringConstants.skip,
@@ -225,7 +227,7 @@ class _InterestScreenState extends State<InterestScreen> {
                         onBoardingCubit.userModel.moreAbout,
                         onBoardingCubit.userModel.interest,true);
 
-                    NavigationUtil.push(context, RouteConstants.doneScreen);
+                    // NavigationUtil.push(context, RouteConstants.doneScreen);
                   }
 
 

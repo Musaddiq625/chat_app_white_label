@@ -120,6 +120,7 @@ class NotificationData {
   NotificationData({
     this.todayNotifications,
     this.earlierThisWeekNotifications,
+    this.connectionRequests,
   });
 
   NotificationData.fromJson(dynamic json) {
@@ -135,19 +136,27 @@ class NotificationData {
         earlierThisWeekNotifications?.add(TodayNotifications.fromJson(v));
       });
     }
+    if (json['connectionRequests'] != null) {
+      connectionRequests = [];
+      json['connectionRequests'].forEach((v) {
+        connectionRequests?.add(ConnectionRequests.fromJson(v));
+      });
+    }
   }
 
   List<TodayNotifications>? todayNotifications;
   List<TodayNotifications>? earlierThisWeekNotifications;
+  List<ConnectionRequests>? connectionRequests;
 
   NotificationData copyWith({
     List<TodayNotifications>? todayNotifications,
     List<TodayNotifications>? earlierThisWeekNotifications,
+    List<ConnectionRequests>? connectionRequests,
   }) =>
       NotificationData(
         todayNotifications: todayNotifications ?? this.todayNotifications,
-        earlierThisWeekNotifications:
-            earlierThisWeekNotifications ?? this.earlierThisWeekNotifications,
+        earlierThisWeekNotifications: earlierThisWeekNotifications ?? this.earlierThisWeekNotifications,
+        connectionRequests: connectionRequests ?? this.connectionRequests,
       );
 
   Map<String, dynamic> toJson() {
@@ -159,6 +168,10 @@ class NotificationData {
     if (earlierThisWeekNotifications != null) {
       map['earlierThisWeekNotifications'] =
           earlierThisWeekNotifications?.map((v) => v.toJson()).toList();
+    }
+    if (connectionRequests != null) {
+      map['connectionRequests'] =
+          connectionRequests?.map((v) => v.toJson()).toList();
     }
     return map;
   }
@@ -275,6 +288,134 @@ class EarlierThisWeekNotifications {
 /// data : {"eventId":"6642150a48ed4352b0a71f1c","type":"event"}
 /// to : "c0L58E77TH2gNWUXkL5lrl:APA91bGA2OE86DBXgBjJfl6OJzOXPokEpDMoOxlPMzv9tB6qAGITX3LdZJNg7eQXInG6y7G5LcaJbMXzG_Pg34u5loMUDzXQ1qz0dow2yx7_8wfp70BttsiNUiNpnq8lGvrBMBHR9MDj"
 
+
+class ConnectionRequests {
+  ConnectionRequests({
+    this.id,
+    this.recieverId,
+    this.eventId,
+    this.type,
+    this.resourceId,
+    this.title,
+    this.text,
+    this.payload,
+    this.readStatus,
+    this.createdAt,
+    this.updatedAt,
+    this.v,});
+
+  ConnectionRequests.fromJson(dynamic json) {
+    id = json['_id'];
+    recieverId = json['recieverId'];
+    eventId = json['eventId'];
+    type = json['type'];
+    resourceId = json['resource_id'];
+    title = json['title'];
+    text = json['text'];
+    payload = json['payload'] != null ? Payload2.fromJson(json['payload']) : null;
+    readStatus = json['read_status'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    v = json['__v'];
+  }
+  String? id;
+  String? recieverId;
+  dynamic eventId;
+  String? type;
+  String? resourceId;
+  String? title;
+  String? text;
+  Payload2? payload;
+  bool? readStatus;
+  String? createdAt;
+  String? updatedAt;
+  num? v;
+  ConnectionRequests copyWith({  String? id,
+    String? recieverId,
+    dynamic eventId,
+    String? type,
+    String? resourceId,
+    String? title,
+    String? text,
+    Payload2? payload,
+    bool? readStatus,
+    String? createdAt,
+    String? updatedAt,
+    num? v,
+  }) => ConnectionRequests(  id: id ?? this.id,
+    recieverId: recieverId ?? this.recieverId,
+    eventId: eventId ?? this.eventId,
+    type: type ?? this.type,
+    resourceId: resourceId ?? this.resourceId,
+    title: title ?? this.title,
+    text: text ?? this.text,
+    payload: payload ?? this.payload,
+    readStatus: readStatus ?? this.readStatus,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    v: v ?? this.v,
+  );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['_id'] = id;
+    map['recieverId'] = recieverId;
+    map['eventId'] = eventId;
+    map['type'] = type;
+    map['resource_id'] = resourceId;
+    map['title'] = title;
+    map['text'] = text;
+    if (payload != null) {
+      map['payload'] = payload?.toJson();
+    }
+    map['read_status'] = readStatus;
+    map['created_at'] = createdAt;
+    map['updated_at'] = updatedAt;
+    map['__v'] = v;
+    return map;
+  }
+
+}
+
+/// notification : {"title":"Connection Request!","body":"Jawwad test 1 testing"}
+/// data : {"type":"Connection Request","friendId":"66472edbbb880ed91c93213d","friendName":"Jawwad test 1","friendAboutMe":"testing","friendImage":"https://locals.se-sto-1.linodeobjects.com/profile/IMG_20240529_103650.jpg"}
+/// to : "eomYG0ccTHq_nuYVHUBq-d:APA91bHy0YEXJMLK85ZYI8KC4FF4VijtxEnOpWtRSczs6rUFdNaX9dRlgexmv0A4TlLc1GQqbgk37etXgJc2UUUeHpQcsXz16QBrRzD-53tHhSw8zj03nvjxfUr3sNAOIl6rmW4Kuq9e"
+
+class Payload2 {
+  Payload2({
+    this.notification,
+    this.data,
+    this.to,});
+
+  Payload2.fromJson(dynamic json) {
+    notification = json['notification'] != null ? Notification.fromJson(json['notification']) : null;
+    data = json['data'] != null ? Data2.fromJson(json['data']) : null;
+    to = json['to'];
+  }
+  Notification? notification;
+  Data2? data;
+  String? to;
+  Payload2 copyWith({  Notification? notification,
+    Data2? data,
+    String? to,
+  }) => Payload2(  notification: notification ?? this.notification,
+    data: data ?? this.data,
+    to: to ?? this.to,
+  );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    if (notification != null) {
+      map['notification'] = notification?.toJson();
+    }
+    if (data != null) {
+      map['data'] = data?.toJson();
+    }
+    map['to'] = to;
+    return map;
+  }
+
+}
+
+
 class Payload {
   Payload({
     this.notification,
@@ -321,6 +462,7 @@ class Payload {
 /// eventId : "6642150a48ed4352b0a71f1c"
 /// type : "event"
 
+
 class Data {
   Data({
     this.eventId,
@@ -358,6 +500,55 @@ class Data {
     map['type'] = type;
     map['userImage'] = userImage;
     map['userId'] = userId;
+    return map;
+  }
+}
+
+class Data2 {
+  Data2({
+    this.friendId,
+    this.type,
+    this.friendImage,
+    this.friendName,
+    this.friendAboutMe,
+  });
+
+  Data2.fromJson(dynamic json) {
+    friendId = json['friendId'];
+    type = json['type'];
+    friendImage = json['friendImage'];
+    friendName = json['friendName'];
+    friendAboutMe = json['friendAboutMe'];
+  }
+
+  String? friendId;
+  String? type;
+  String? friendImage;
+  String? friendName;
+  String? friendAboutMe;
+
+  Data2 copyWith({
+    String? friendId,
+    String? type,
+    String? friendImage,
+    String? friendName,
+    String? friendAboutMe,
+  }) =>
+      Data2(
+        friendId: friendId ?? this.friendId,
+        type: type ?? this.type,
+        friendImage: friendImage ?? this.friendImage,
+        friendName: friendName ?? this.friendName,
+        friendAboutMe: friendAboutMe ?? this.friendAboutMe,
+      );
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['friendId'] = friendId;
+    map['type'] = type;
+    map['friendImage'] = friendImage;
+    map['friendName'] = friendName;
+    map['friendAboutMe'] = friendAboutMe;
     return map;
   }
 }

@@ -10,6 +10,7 @@ import 'package:chat_app_white_label/src/wrappers/ticket_model_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../network/repositories/auth_repository.dart';
 import '../../../network/repositories/event_repository.dart';
 
 part 'event_state.dart';
@@ -21,7 +22,9 @@ class EventCubit extends Cubit<EventState> {
   EventModel eventModel = EventModel();
   EventRequest eventRequestModel = EventRequest();
   List<EventModel> eventModelList = [];
+  List<EventModel> searchEventModelList = [];
   EventResponseWrapper eventResponseWrapper = EventResponseWrapper();
+  EventResponseWrapper searchEventResponseWrapper = EventResponseWrapper();
   FiltersListModel filtersListModel = FiltersListModel();
 
   // List<EventModel> eventModelList = EventModel();
@@ -44,6 +47,8 @@ class EventCubit extends Cubit<EventState> {
 
   void initializeEventWrapperData(EventResponseWrapper event) =>
       eventResponseWrapper = event;
+  void initializeSearchEventWrapperData(EventResponseWrapper event) =>
+      searchEventResponseWrapper = event;
 
   void initializeFiltersListModel(FiltersListModel filtersList) =>
       filtersListModel = filtersList;
@@ -70,12 +75,58 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
+
+  Future<void> updateFcm(String fcm,String deviceId) async {
+    emit(UpdateFcmTokenLoadingState());
+
+    try {
+      // var resp =
+      await AuthRepository.updateFCM(fcm,deviceId);
+      // print("Fcm token ${fcmToken}");
+      emit(UpdateFcmTokenSuccessState());
+    } catch (error) {
+      emit(UpdateFcmTokenFailureState(error.toString()));
+      LoggerUtil.logs("General Error: $error");
+    }
+  }
+
   Future<void> fetchEventDataByKeys(String pageValue) async {
     emit(EventFetchLoadingState());
     // try {
     var resp = await EventRepository.fetchEventByKeys(pageValue);
     LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
     emit(EventFetchSuccessState(resp, resp.data2));
+    // } catch (e) {
+    //   emit(EventFetchFailureState(e.toString()));
+    // }
+  }
+
+  Future<void> fetchEventDataByKeysPagination(String pageValue) async {
+    // emit(EventFetchLoadingState());
+    // try {
+    var resp = await EventRepository.fetchEventByKeys(pageValue);
+    LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+    emit(EventFetchSuccessState(resp, resp.data2));
+    // } catch (e) {
+    //   emit(EventFetchFailureState(e.toString()));
+    // }
+  }
+Future<void> searchEventDataByKeys(String pageValue,String value) async {
+    emit(SearchEventFetchLoadingState());
+    // try {
+    var resp = await EventRepository.searchEvent(pageValue, value);
+    LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+    emit(SearchEventFetchSuccessState(resp, resp.data2));
+    // } catch (e) {
+    //   emit(EventFetchFailureState(e.toString()));
+    // }
+  }
+  Future<void> searchEventDataByNewPageValueKeys(String pageValue,String value) async {
+    emit(EventFetchPaginationSearchLoadingState());
+    // try {
+    var resp = await EventRepository.searchEvent(pageValue, value);
+    LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+    emit(EventFetchPaginationSearchSuccessState(resp, resp.data2));
     // } catch (e) {
     //   emit(EventFetchFailureState(e.toString()));
     // }
@@ -142,7 +193,7 @@ class EventCubit extends Cubit<EventState> {
     emit(EventFetchByIdLoadingState());
     // try {
     var resp = await EventRepository.fetchEventById(id);
-    LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+    LoggerUtil.logs("Fetch Event data by Id${resp.toJson()}");
     emit(EventFetchByIdSuccessState(resp.data?.first));
     //  } catch (e) {
     //  emit(EventFetchByIdFailureState(e.toString()));
@@ -155,6 +206,19 @@ class EventCubit extends Cubit<EventState> {
     try {
       var resp =
           await EventRepository.sendEventJoinRequest(eventId, eventRequest);
+      LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
+      emit(SendEventRequestSuccessState(resp.data));
+    } catch (e) {
+      emit(SendEventRequestFailureState(e.toString()));
+    }
+  }
+
+  Future<void> sendGroupJoinRequest(
+      String eventId,String requestStatus ,EventRequest eventRequest) async {
+    emit(SendEventRequestLoadingState());
+    try {
+      var resp =
+          await EventRepository.sendGroupJoinRequest(eventId,requestStatus,eventRequest);
       LoggerUtil.logs("Fetch Event data by keys${resp.toJson()}");
       emit(SendEventRequestSuccessState(resp.data));
     } catch (e) {

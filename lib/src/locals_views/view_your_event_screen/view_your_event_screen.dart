@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/about_event_component.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
@@ -15,19 +18,28 @@ import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/route_constants.dart';
+import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/edit_event_screen/cubit/edit_event_cubit.dart';
+import 'package:chat_app_white_label/src/locals_views/event_screen/event_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/view_your_event_screen/cubit/view_your_event_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
+import 'package:chat_app_white_label/src/models/user_model.dart';
+import 'package:chat_app_white_label/src/screens/chat_screen/chat_screen.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../components/member_respsonse_component.dart';
+import '../../components/shareBottomSheetComponent.dart';
 import '../../constants/asset_constants.dart';
 import '../../models/event_model.dart';
 
@@ -44,6 +56,9 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late final viewYourEventCubit =
       BlocProvider.of<ViewYourEventScreenCubit>(context);
+  late UserScreenCubit userScreenCubit =
+  BlocProvider.of<UserScreenCubit>(context);
+  late EventCubit eventCubit = BlocProvider.of<EventCubit>(context);
   String? totalAcceptedMembers;
   String? totalRequestedMembers;
   final List<Map<String, dynamic>> contacts = [
@@ -71,6 +86,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
     // Add more image providers as needed
   ];
   double radius = 30;
+  final _debouncer = Debouncer(milliseconds: 1000);
 
   final String _fullText =
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
@@ -245,7 +261,33 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
           pendingRequests = viewYourEventCubit.eventModel.eventRequest
               ?.where((eventRequest) => eventRequest.requestStatus == "Pending")
               .toList();
-        } else if (state is ViewYourEventScreenFailureState) {
+        }
+        else if (state is ViewEventFavSuccessState) {
+          viewYourEventCubit.initializeEventData(state.eventModel!);
+          totalAcceptedMembers = viewYourEventCubit.eventModel.eventRequest
+              ?.where(
+                  (eventRequest) => eventRequest.requestStatus == "Accepted")
+              .length
+              .toString();
+          totalRequestedMembers = viewYourEventCubit.eventModel.eventRequest
+              ?.where((eventRequest) => eventRequest.requestStatus == "Pending")
+              .length
+              .toString();
+
+          print("totalRequestedMembers ${totalRequestedMembers}");
+          acceptedRequests = viewYourEventCubit.eventModel.eventRequest
+              ?.where(
+                  (eventRequest) => eventRequest.requestStatus == "Accepted")
+              .toList();
+          imagesUserInEvent = acceptedRequests?.map((e) => e.image).where((image) => image!= null).toList(); // Filter out null values.toList();
+          pendingRequests = viewYourEventCubit.eventModel.eventRequest
+              ?.where((eventRequest) => eventRequest.requestStatus == "Pending")
+              .toList();
+          print("totalAcceptedMembers $totalAcceptedMembers");
+          print("totalRequestedMembers $totalRequestedMembers");
+        }
+
+        else if (state is ViewYourEventScreenFailureState) {
           // LoadingDialog.hideLoadingDialog(context);
           ToastComponent.showToast(state.toString(), context: context);
         } else if (state is SendEventRequestQueryAndStatusFailureState) {
@@ -264,11 +306,11 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
             return UIScaffold(
               // appBar: AppBarComponent(""),
               removeSafeAreaPadding: false,
-              bgColor: ColorConstants.backgroundColor,
+              bgColor: themeCubit.backgroundColor,
               widget: SingleChildScrollView(
                 // physics: BouncingScrollPhysics(),
                 child: Container(
-                  color: themeCubit.backgroundColor,
+                  // color: themeCubit.backgroundColor,
                   child: Column(
                     children: [
                       _eventWidget(),
@@ -314,13 +356,18 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
     var remainingTickets = capacityInt - ticketSoldInt;
     return Stack(children: [
       (viewYourEventCubit.eventModel.images ?? []).isNotEmpty
-          ? Image.network(
-              viewYourEventCubit.eventModel.images?.first ?? "",
-              // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-              fit: BoxFit.fill,
-              width: double.infinity,
-              height: 500,
-            )
+          ? GestureDetector(
+        onTap:(){
+          NavigationUtil.push(context, RouteConstants.viewFullImage,args:viewYourEventCubit.eventModel.images?.first ?? "");
+        },
+            child: Image.network(
+                viewYourEventCubit.eventModel.images?.first ?? "",
+                // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 500,
+              ),
+          )
           : Container(
               color: ColorConstants.black,
               height: 500,
@@ -399,7 +446,7 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                       ),
                       SizedBoxConstants.sizedBoxTenH(),
                       Padding(
-                        padding: const EdgeInsets.only(left: 15, right: 15),
+                        padding: const EdgeInsets.only(left: 5, right: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -437,10 +484,69 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                           ],
                         ),
                       ),
+                      SizedBoxConstants.sizedBoxTenH(),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Row(
+                          children: [
+                            IconComponent(
+                              iconData: Icons.favorite,
+                              backgroundColor:
+                              ColorConstants.darkBackgrounddColor.withOpacity(0.9),
+                              iconColor: viewYourEventCubit.eventModel.isFavourite == false ||
+                                  viewYourEventCubit.eventModel.isFavourite == null
+                                  ? Colors.white
+                                  : ColorConstants.red,
+                              customIconText:
+                              "${viewYourEventCubit.eventModel.eventFavouriteBy?.length ?? 0}",
+                              circleSize: 70,
+                              circleHeight: 36,
+                              iconSize: 20,
+                              onTap: () {
+                                _debouncer.run(() {
+
+                                  if (viewYourEventCubit.eventModel.isFavourite == false ||
+                                      viewYourEventCubit.eventModel.isFavourite == null) {
+                                    viewYourEventCubit.eventModel.eventFavouriteBy?.length++;
+                                    viewYourEventCubit.eventModel = viewYourEventCubit.eventModel.copyWith(isFavourite: true);
+                                    viewYourEventCubit.sendEventFavById(
+                                        viewYourEventCubit.eventModel.id ?? "", true);
+                                  }
+                                  else {
+                                    viewYourEventCubit.eventModel.eventFavouriteBy?.length--;
+                                    viewYourEventCubit.eventModel = viewYourEventCubit.eventModel.copyWith(isFavourite: false);
+                                    viewYourEventCubit.sendEventFavById(
+                                        viewYourEventCubit.eventModel.id ?? "", false);
+                                  }
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            IconComponent(
+                              // iconData: Icons.share,
+                                svgData: AssetConstants.share,
+                                backgroundColor:
+                                ColorConstants.darkBackgrounddColor.withOpacity(0.9),
+                                circleSize: 35,
+                                iconSize: 14,
+                                onTap: () {
+                                  ShareBottomSheet.shareBottomSheet(
+                                      context,
+                                      viewYourEventCubit.eventModel.title!,
+                                      viewYourEventCubit.eventModel.id!,
+                                      userScreenCubit.friendListResponseWrapper.data ??
+                                          [],
+                                      StringConstants.event);
+                                  // _shareEventBottomSheet();
+                                }),
+                          ],
+                        ),
+                      ),
+
                     ],
                   )
                 : _shimmerTopData(),
-            SizedBoxConstants.sizedBoxThirtyH(),
+            SizedBoxConstants.sizedBoxTwentyH(),
             (viewYourEventCubit.eventModel.isFree ?? true)
                 ? Container()
                 : EventSummary(
@@ -789,18 +895,42 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
             SizedBoxConstants.sizedBoxThirtyH(),
             Row(
               children: [
-                Container(
-                    margin: EdgeInsets.only(left: 5),
-                    width:
-                        AppConstants.responsiveWidth(context, percentage: 66),
-                    child: ContactCard(
-                      name: (viewYourEventCubit.eventModel.userName ?? ""),
-                      url: (viewYourEventCubit.eventModel.userImages ?? ""),
-                      title: (viewYourEventCubit.eventModel.userAboutMe ?? ""),
-                      showShareIcon: false,
-                      showDivider: false,
-                      imageSize: 40,
-                    )),
+                GestureDetector(
+                  onTap: ()async{
+                    final serializedUserModel = await getIt<SharedPreferencesUtil>()
+                        .getString(SharedPreferenceConstants.userModel);
+                    UserModel userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+                    // userId = await getIt<SharedPreferencesUtil>()
+                    //     .getString(SharedPreferenceConstants.userIdValue);
+                    String?  myId = userModel.id;
+
+
+                    if(viewYourEventCubit.eventModel.userId != myId){
+                      NavigationUtil.push(
+                          context, RouteConstants.profileScreenLocal,
+                          args: viewYourEventCubit.eventModel.userId);
+                    }
+                    else {
+                      print("My Id $myId  accpeted id ${viewYourEventCubit.eventModel.userId}");
+                      NavigationUtil.push(
+                          context, RouteConstants.mainScreen,args: "4");
+                      // mainScreenCubit.updateIndex(4);
+
+                    }
+                  },
+                  child: Container(
+                      margin: EdgeInsets.only(left: 5),
+                      width:
+                          AppConstants.responsiveWidth(context, percentage: 66),
+                      child: ContactCard(
+                        name: (viewYourEventCubit.eventModel.userName ?? ""),
+                        url: (viewYourEventCubit.eventModel.userImages ?? ""),
+                        title: (viewYourEventCubit.eventModel.userAboutMe ?? ""),
+                        showShareIcon: false,
+                        showDivider: false,
+                        imageSize: 40,
+                      )),
+                ),
                 Container(
                   padding: const EdgeInsets.only(
                       left: 16, right: 16, top: 3, bottom: 3),
@@ -825,17 +955,41 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                   children: [
                     Container(
                       margin: EdgeInsets.only(left: 5),
-                      child: MemberResponseComponent(
-                        name: details.name ?? "",
-                        url: details.image ?? "",
-                        //details['url'],
-                        title: details.aboutMe ?? "",
-                        //details['title'],
-                        // contact: details['title'],
-                        messageValue: details.query?.question ?? "",
-                        //details['messageValue'],
-                        questionsAndAnswers: details.eventQuestions,
-                        questions: viewYourEventCubit.eventModel.question,
+                      child: GestureDetector(
+                        onTap: ()async{
+                          final serializedUserModel = await getIt<SharedPreferencesUtil>()
+                              .getString(SharedPreferenceConstants.userModel);
+                          userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+                          // userId = await getIt<SharedPreferencesUtil>()
+                          //     .getString(SharedPreferenceConstants.userIdValue);
+                          String?  myId = userModel?.id;
+
+
+                          if(acceptedRequests?[index].userId != myId){
+                            NavigationUtil.push(
+                                context, RouteConstants.profileScreenLocal,
+                                args: acceptedRequests?[index].userId);
+                          }
+                          else {
+                            print("My Id $myId  accpeted id ${acceptedRequests?[index].userId}");
+                            NavigationUtil.push(
+                                context, RouteConstants.mainScreen,args: "4");
+                            // mainScreenCubit.updateIndex(4);
+
+                          }
+                        },
+                        child: MemberResponseComponent(
+                          name: details.name ?? "",
+                          url: details.image ?? "",
+                          //details['url'],
+                          title: details.aboutMe ?? "",
+                          //details['title'],
+                          // contact: details['title'],
+                          messageValue: details.query?.question ?? "",
+                          //details['messageValue'],
+                          questionsAndAnswers: details.eventQuestions,
+                          questions: viewYourEventCubit.eventModel.question,
+                        ),
                       ),
                     ),
                     if (!isLast) DividerCosntants.divider1,
@@ -922,121 +1076,145 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                   children: [
                     Container(
                       margin: EdgeInsets.only(left: 5),
-                      child: MemberResponseComponent(
-                        name: details.name ?? "",
-                        url: details.image ?? "",
-                        isPending: true,
-                        title: details.aboutMe ?? "",
-                        messageValue: details.query?.question ?? "",
-                        questionsAndAnswers: details.eventQuestions,
-                        questions: viewYourEventCubit.eventModel.question,
-                        onTapPending: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                backgroundColor:
-                                    DarkTheme.darkBackgroundColor100,
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const TextComponent(
-                                      "Reply to Query",
-                                      style: TextStyle(
-                                          color: ColorConstants.white),
-                                    ),
-                                    InkWell(
-                                      onTap: () => {
-                                        _queryController.clear(),
-                                        Navigator.pop(context)
-                                      },
-                                      child: IconComponent(
-                                        iconData: Icons.close,
-                                        borderColor: Colors.transparent,
-                                        iconColor: themeCubit.textColor,
-                                        circleSize: 50,
-                                        backgroundColor: Colors.transparent,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                content: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextComponent(details.query?.question ?? "",
-                                        style: TextStyle(
-                                            color: ColorConstants.white)),
-                                    SizedBoxConstants.sizedBoxTenH(),
-                                    TextFieldComponent(_queryController,
-                                        hintText: "",
-                                        maxLines: 3,
-                                        minLines: 3,
-                                        autoFocus: true,
-                                        filled: true,
-                                        autovalidateMode:
-                                            AutovalidateMode.onUserInteraction,
-                                        textColor: themeCubit.textColor,
-                                        onChanged: (value) {
-                                      Query queryReply = Query(
-                                          question:
-                                              details.query?.question ?? "",
-                                          answer: _queryController.value.text);
-                                      viewYourEventCubit.addQuery(queryReply);
-                                    })
-                                  ],
-                                ),
-                                actions: <Widget>[
-                                  SizedBoxConstants.sizedBoxTenH(),
-                                  Row(
+                      child: GestureDetector(
+                        onTap: ()async{
+                          final serializedUserModel = await getIt<SharedPreferencesUtil>()
+                              .getString(SharedPreferenceConstants.userModel);
+                          userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
+                          // userId = await getIt<SharedPreferencesUtil>()
+                          //     .getString(SharedPreferenceConstants.userIdValue);
+                          String?  myId = userModel?.id;
+
+
+                          if(acceptedRequests?[index].userId != myId){
+                            NavigationUtil.push(
+                                context, RouteConstants.profileScreenLocal,
+                                args: acceptedRequests?[index].userId);
+                          }
+                          else {
+                            print("My Id $myId  accpeted id ${acceptedRequests?[index].userId}");
+                            NavigationUtil.push(
+                                context, RouteConstants.mainScreen,args: "4");
+                            // mainScreenCubit.updateIndex(4);
+
+                          }
+                        },
+                        child: MemberResponseComponent(
+                          name: details.name ?? "",
+                          url: details.image ?? "",
+                          isPending: true,
+                          title: details.aboutMe ?? "",
+                          messageValue: details.query?.question ?? "",
+                          questionsAndAnswers: details.eventQuestions,
+                          questions: viewYourEventCubit.eventModel.question,
+                          onTapPending: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  backgroundColor:
+                                      DarkTheme.darkBackgroundColor100,
+                                  title: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      ButtonComponent(
-                                          isSmallBtn: true,
-                                          buttonText: "Reject",
-                                          bgcolor: ColorConstants.blackLight,
-                                          textColor: ColorConstants.white,
-                                          onPressed: () {
-                                            _queryController.clear();
-                                            viewYourEventCubit.replyQueryById(
-                                                viewYourEventCubit
-                                                        .eventModel.id ??
-                                                    "",
-                                                details.id ?? "",
-                                                "Rejected",
-                                                viewYourEventCubit
-                                                        .eventRequest.query ??
-                                                    Query());
-                                            NavigationUtil.pop(context);
-                                          }),
-                                      ButtonComponent(
-                                          isSmallBtn: true,
-                                          buttonText: "Accept",
-                                          bgcolor: ColorConstants.primaryColor,
-                                          textColor: ColorConstants.black,
-                                          onPressed: () {
-                                            _queryController.clear();
-                                            viewYourEventCubit.replyQueryById(
-                                                viewYourEventCubit
-                                                        .eventModel.id ??
-                                                    "",
-                                                details.id ?? "",
-                                                "Accepted",
-                                                viewYourEventCubit
-                                                        .eventRequest.query ??
-                                                    Query());
-                                            NavigationUtil.pop(context);
-                                          }),
+                                      const TextComponent(
+                                        "Reply to Query",
+                                        style: TextStyle(
+                                            color: ColorConstants.white),
+                                      ),
+                                      InkWell(
+                                        onTap: () => {
+                                          _queryController.clear(),
+                                          Navigator.pop(context)
+                                        },
+                                        child: IconComponent(
+                                          iconData: Icons.close,
+                                          borderColor: Colors.transparent,
+                                          iconColor: themeCubit.textColor,
+                                          circleSize: 50,
+                                          backgroundColor: Colors.transparent,
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                  SizedBoxConstants.sizedBoxTenH(),
-                                ],
-                              );
-                            },
-                          );
-                        },
+                                  content: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextComponent(details.query?.question ?? "",
+                                          style: TextStyle(
+                                              color: ColorConstants.white)),
+                                      SizedBoxConstants.sizedBoxTenH(),
+                                      TextFieldComponent(_queryController,
+                                          hintText: "",
+                                          maxLines: 3,
+                                          minLines: 3,
+                                          autoFocus: true,
+                                          filled: true,
+                                          autovalidateMode:
+                                              AutovalidateMode.onUserInteraction,
+                                          textColor: themeCubit.textColor,
+                                          onChanged: (value) {
+                                        Query queryReply = Query(
+                                            question:
+                                                details.query?.question ?? "",
+                                            answer: _queryController.value.text);
+                                        viewYourEventCubit.addQuery(queryReply);
+                                      })
+                                    ],
+                                  ),
+                                  actions: <Widget>[
+                                    SizedBoxConstants.sizedBoxTenH(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        ButtonComponent(
+                                            isSmallBtn: true,
+                                            buttonText: "Reject",
+                                            bgcolor: ColorConstants.blackLight,
+                                            textColor: ColorConstants.white,
+                                            onPressed: () {
+                                              _queryController.clear();
+                                              viewYourEventCubit.replyQueryById(
+                                                  viewYourEventCubit
+                                                          .eventModel.id ??
+                                                      "",
+                                                  details.id ?? "",
+                                                  "Rejected",
+                                                  viewYourEventCubit
+                                                          .eventRequest.query ??
+                                                      Query());
+                                              NavigationUtil.pop(context);
+                                            }),
+                                        ButtonComponent(
+                                            isSmallBtn: true,
+                                            buttonText: "Accept",
+                                            bgcolor: ColorConstants.primaryColor,
+                                            textColor: ColorConstants.black,
+                                            onPressed: () {
+                                              _queryController.clear();
+                                              viewYourEventCubit.replyQueryById(
+                                                  viewYourEventCubit
+                                                          .eventModel.id ??
+                                                      "",
+                                                  details.id ?? "",
+                                                  "Accepted",
+                                                  viewYourEventCubit
+                                                          .eventRequest.query ??
+                                                      Query());
+                                              NavigationUtil.pop(context);
+                                            }),
+                                      ],
+                                    ),
+                                    SizedBoxConstants.sizedBoxTenH(),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
                       //onTapPending show dailog where detail query pass show in text field and text input field to reply that query and give button of accept and reject
                     ),

@@ -24,7 +24,7 @@ class QuestionComponent {
   static void selectQuestion(
       BuildContext context,
       List<TextEditingController> questionControllers,
-      List<String> questions,
+      // List<String> questions,
       Map<int, String> selectedQuestionRequired,
       Map<int, String> selectedQuestionPublic,
       Function(List<Question>) onDone,
@@ -38,11 +38,12 @@ class QuestionComponent {
     Widget question(StateSetter setStateBottomSheet) {
       late final themeCubit = BlocProvider.of<ThemeCubit>(context);
       final FocusNode buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
+      // final FocusScopeNode _focusScopeNode = FocusScopeNode();
       int? draggingIndex;
       return ReorderableListView(
         primary: false,
         shrinkWrap: true,
-        buildDefaultDragHandles: questions.length > 1,
+        buildDefaultDragHandles: questionControllers.length > 1,
         // disable drag&drop if there's only one item
 
         physics: const NeverScrollableScrollPhysics(),
@@ -57,14 +58,14 @@ class QuestionComponent {
             if (oldIndex < newIndex) {
               newIndex -= 1;
             }
-            final String item = questions.removeAt(oldIndex);
+            // final String item = questions.removeAt(oldIndex);
             final TextEditingController controller =
                 questionControllers.removeAt(oldIndex);
-            questions.insert(newIndex, item);
+            // questions.insert(newIndex, item);
             questionControllers.insert(newIndex, controller);
           });
         },
-        children: List<Widget>.generate(questions.length, (int index) {
+        children: List<Widget>.generate(questionControllers.length, (int index) {
           selectedQuestionRequired[index] ??= 'Required';
           selectedQuestionPublic[index] ??= 'Public';
           return Container(
@@ -83,7 +84,9 @@ class QuestionComponent {
                     onTap: () => {
                       setStateBottomSheet(() {
                         questionControllers.removeAt(index);
-                        questions.removeAt(index); // Remove the question
+                        // questions.removeAt(index);// Remove the question
+                        print("questionsList.map((e) => e.question); ${questionsList.map((e) => e.question)}");
+
                       })
                     },
                     child: IconComponent(
@@ -113,7 +116,10 @@ class QuestionComponent {
                       margin: EdgeInsets.only(top: 5),
                       child: Material(
                         color: ColorConstants.transparent,
-                        child: TextFieldComponent(questionControllers[index],
+                        child: TextFieldComponent(
+                            // focusNode: buttonFocusNode,
+                            key: ValueKey(DateTime.now().microsecondsSinceEpoch.toString()),
+                            questionControllers[index],
                             hintText: StringConstants.typeYourQuestion,
                             textColor: themeCubit.textColor,
                             fieldColor: ColorConstants.transparent,
@@ -370,178 +376,252 @@ class QuestionComponent {
         }),
       );
     }
-
+    print("question controller $questionControllers");
+    // print("question lenght ${questions.length} questions.value ${questions}");
     BottomSheetComponent.showBottomSheet(context,
+        isEnableDrag: false,
         takeFullHeightWhenPossible: false, isShowHeader: false,
-        body: StatefulBuilder(builder: (context, setState2) {
-      return Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // SizedBoxConstants.sizedBoxTwentyH(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const TextComponent(
-                      StringConstants.questions,
-                      style: TextStyle(
-                          color: ColorConstants.primaryColor,
-                          fontFamily: FontConstants.fontProtestStrike,
-                          fontSize: 18),
-                    ),
-                    InkWell(
-                      onTap: () => {
-                        for (int i = 0; i < questionControllers.length; i++)
-                          {
-                            if (questionControllers[i].value.text.isEmpty)
-                              {
-                                print(
-                                    "questions length $i ${questionControllers[i].text}   ${questions.length}"),
-                                setState2(() {
-                                  questionControllers[i].clear();
-                                  selectedQuestionPublic[i] = "";
-                                  selectedQuestionRequired[i] = "";
-                                  questions[i] = "";
-                                  questions
-                                      .removeWhere((element) => element == "");
-                                  questionControllers.removeWhere(
-                                      (element) => element.text == "");
-                                  selectedQuestionPublic.removeWhere(
-                                      (key, value) => value.isEmpty);
-                                  selectedQuestionRequired.removeWhere(
-                                      (key, value) => value.isEmpty);
-                                  questions
-                                      .removeWhere((element) => element == "");
-                                }),
-                              }
-                          },
-                        Navigator.pop(context)
-                      },
-                      child: IconComponent(
-                        iconData: Icons.close,
-                        borderColor: Colors.transparent,
-                        iconColor: Colors.white,
-                        circleSize: 20,
-                        backgroundColor: Colors.transparent,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBoxConstants.sizedBoxTenH(),
-                TextComponent(
-                  StringConstants.choseToAskQuestion,
-                  maxLines: 2,
-                  style: TextStyle(color: themeCubit.textColor),
-                ),
-                SizedBoxConstants.sizedBoxSixteenH(),
-                question(setState2),
-                SizedBoxConstants.sizedBoxTwentyH(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ButtonWithIconComponent(
-                      btnText: '  ${StringConstants.addQuestion}',
-                      icon: Icons.add_circle,
-                      btnTextStyle: const TextStyle(
-                          color: ColorConstants.black,
-                          fontWeight: FontWeight.bold),
-                      onPressed: () {
-                        setState2(() =>
-                            questions.add('Question ${questions.length + 1}'));
-                        TextEditingController newController =
-                            TextEditingController();
-                        // Add the new controller to the _questionControllers list
-                        questionControllers.add(newController);
-                      },
-                    ),
-                    ButtonComponent(
-                      isSmallBtn: true,
-                      bgcolor: ColorConstants.primaryColor,
-                      textColor: ColorConstants.black,
-                      buttonText: StringConstants.done,
+        body: PopScope(
+          canPop: false,
+          child: StatefulBuilder(builder: (context, setState2) {
 
-                      onPressed: () {
-                        List<Question> questionsList =
-                            eventCubit.eventModel.question ?? [];
-                        questionsList.clear();
-                        for (int i = 0; i < questionControllers.length; i++) {
-                          print(
-                              "questions length $i ${questionControllers[i].text}");
-                          if (questionControllers[i].value.text.isEmpty) {
+                print("event cubit questions $questionsList");
+                print("event cubit questions ${questionsList.map((e) => e.question)}");
+                return Container(
+                    // constraints: BoxConstraints(
+                        // maxHeight: AppConstants.responsiveHeight(context, percentage: 80)),
+            decoration:  BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // SizedBoxConstants.sizedBoxTwentyH(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const TextComponent(
+                          StringConstants.questions,
+                          style: TextStyle(
+                              color: ColorConstants.primaryColor,
+                              fontFamily: FontConstants.fontProtestStrike,
+                              fontSize: 18),
+                        ),
+                        InkWell(
+                          onTap: ()  {
+                            // if( questionControllers[0].value.text.isEmpty)
+                            // print("length-- ${  questionControllers[0].value.text}")
+                
+                            for (int i = 0; i < questionControllers.length; i++)
+                              {
+                                if (questionControllers[i].value.text.isEmpty)
+                                  {
+                                    // print(
+                                    //     "questions length $i ${questionControllers[i].text} ${questions[i]}  ${questions.length}");
+                                    setState2(() {
+                                      questionControllers[i].clear();
+                                      selectedQuestionPublic[i] = "";
+                                      selectedQuestionRequired[i] = "";
+                                      selectedQuestionPublic.remove(i);
+                                      selectedQuestionRequired.remove(i);
+                                      questionControllers.removeAt(i);
+                                      // questions.remove(i);
+                                      // questions
+                                      //     .removeWhere((element) => element == "");
+                                      // questionControllers.removeWhere(
+                                      //     (element) => element.text == "");
+                                      // selectedQuestionPublic.removeWhere(
+                                      //     (key, value) => value.isEmpty);
+                                      // selectedQuestionRequired.removeWhere(
+                                      //     (key, value) => value.isEmpty);
+                                      // questions
+                                      //     .removeWhere((element) => element == "");
+                                    });
+                                  }
+                                else if(questionControllers[i].value.text.isNotEmpty){
+                                  print("2");
+                                  if(questionsList.length>0){
+                                    for (int j = 0; j < questionControllers.length; j++) {
+                                      bool matchFound = false;
+                                      for (int k = 0; k < questionsList.length; k++) {
+                                        if (questionsList[k].question != null && questionControllers[j].value.text.toString() == questionsList[k].question.toString()) {
+                                          matchFound = true;
+                                          break; // Found a matching controller, no need to continue checking other controllers
+                                        }
+                                        // else{
+                                        //   matchFound= false;
+                                        //   break;
+                                        // }
+                                      }
+                                      if (matchFound) {
+                                        print("should not delete");
+                                        // print("Should not delete questionsList[${j}].question ${questionsList[j].question} ");
+                                      } else {
+                                        print("should delete");
+                                        // print("Should delete questionsList[${j}].question ${questionsList[j].question} ");
+                
+                                        setState2(() { // Assuming setState2 was a typo, corrected to setState
+                                          questionControllers[j].clear(); // Use k instead of i
+                                          selectedQuestionPublic[j] = ""; // Use k instead of i
+                                          selectedQuestionRequired[j] = ""; // Use k instead of i
+                                          selectedQuestionPublic.remove(j); // Use k instead of i
+                                          selectedQuestionRequired.remove(j); // Use k instead of i
+                                          questionControllers.removeAt(j); // Use k instead of i
+                                          // questions.remove(j); // Use j to remove from questionsList
+                                        });
+                                        break; // Exit the outer loop after processing
+                                      }
+                                    }
+                                  }
+                                  else{
+                                    print("3");
+                                    setState2(() {
+                                      questionControllers[i].clear();
+                                      selectedQuestionPublic[i] = "";
+                                      selectedQuestionRequired[i] = "";
+                                      selectedQuestionPublic.remove(i);
+                                      selectedQuestionRequired.remove(i);
+                                      questionControllers.removeAt(i);
+                                      // questions.removeAt(i);
+                                    });
+                                  }
+                
+                                }
+                              };
+                
                             print(
-                                "questions length $i ${questionControllers[i].text}   ${questions.length}");
-                            setState2(() {
-                              questionControllers[i].clear();
-                              selectedQuestionPublic[i] = "";
-                              selectedQuestionRequired[i] = "";
-                              questions[i] = "";
-                              questions.removeWhere((element) => element == "");
-                              questionControllers
-                                  .removeWhere((element) => element.text == "");
-                              selectedQuestionPublic
-                                  .removeWhere((key, value) => value.isEmpty);
-                              selectedQuestionRequired
-                                  .removeWhere((key, value) => value.isEmpty);
-                              questions.removeWhere((element) => element == "");
+                                "questions controller ${questionControllers.map((e) => e)}   ");
+                            Navigator.pop(context);
+                          },
+                          child: IconComponent(
+                            iconData: Icons.close,
+                            borderColor: Colors.transparent,
+                            iconColor: Colors.white,
+                            circleSize: 20,
+                            backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBoxConstants.sizedBoxTenH(),
+                    TextComponent(
+                      StringConstants.choseToAskQuestion,
+                      maxLines: 2,
+                      style: TextStyle(color: themeCubit.textColor),
+                    ),
+                    SizedBoxConstants.sizedBoxSixteenH(),
+                    question(setState2),
+                    SizedBoxConstants.sizedBoxTwentyH(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ButtonWithIconComponent(
+                          btnText: '  ${StringConstants.addQuestion}',
+                          icon: Icons.add_circle,
+                          btnTextStyle: const TextStyle(
+                              color: ColorConstants.black,
+                              fontWeight: FontWeight.bold),
+                          onPressed: () {
+                            // setState2(() =>
+                            //     // questions.add('Question ${questions.length + 1}')
+                            // );
+                            setState2((){
+                            TextEditingController newController =
+                                TextEditingController();
+                            // Add the new controller to the _questionControllers list
+                            questionControllers.add(newController);
+
                             });
-                          }
-                          LoggerUtil.logs(
-                              "questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
-                          Question newQuestion = Question(
-                            questionId: questionId?[i] ??
-                                FirebaseUtils.getDateTimeNowAsId(),
-                            // Assuming you have a mechanism to generate unique IDs
-                            question: questionControllers[i].value.text,
-                            // Pass the entire list of controllers
-                            isPublic: selectedQuestionPublic[
-                                        questionControllers[i]] ==
-                                    "Public"
-                                ? true
-                                : false,
-                            isRequired: selectedQuestionRequired[
-                                        questionControllers[i]] ==
-                                    "Required"
-                                ? true
-                                : false,
-                            sequence: i + 1,
-                          );
-                          questionsList.add(newQuestion);
-                        }
-                        questionsList
-                            .removeWhere((element) => element.question == "");
-                        onDone(questionsList);
-                        NavigationUtil.pop(context);
-                      },
-                      // onPressed: () {
-                      //
-                      //   List<Question> questionsList = eventCubit.eventModel.question?? [];
-                      //   for(int i = 0; i < questionControllers.length; i++){
-                      //     LoggerUtil.logs("questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
-                      //     Question newQuestion = Question(
-                      //       questionId: "auto", // Assuming you have a mechanism to generate unique IDs
-                      //       question: questionControllers[i].value.text, // Pass the entire list of controllers
-                      //       isPublic: selectedQuestionPublic[questionControllers[i]]=="Public"?true:false ,
-                      //       isRequired: selectedQuestionRequired[questionControllers[i]]=="Required"?true:false ,
-                      //     );
-                      //     questionsList.add(newQuestion);
-                      //   }
-                      //   eventCubit.eventModel.copyWith(question: questionsList);
-                      //   // NavigationUtil.pop(context);
-                      //
-                      //   LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
-                      // },
+                          },
+                        ),
+                        ButtonComponent(
+                          isSmallBtn: true,
+                          bgcolor: ColorConstants.primaryColor,
+                          textColor: ColorConstants.black,
+                          buttonText: StringConstants.done,
+                
+                          onPressed: () {
+                            List<Question> questionsList =
+                                eventCubit.eventModel.question ?? [];
+                            questionsList.clear();
+                            for (int i = 0; i < questionControllers.length; i++) {
+                              print(
+                                  "questions length++ $i ${questionControllers[i].text}");
+                              if (questionControllers[i].value.text.isEmpty) {
+                                print(
+                                    "questions length $i ${questionControllers[i].text}  ");
+                                setState2(() {
+                                  questionControllers.removeAt(i);
+                                  selectedQuestionPublic.remove(i);
+                                  selectedQuestionRequired.remove(i);
+                                  // questions.removeAt(i);
+                                  // questions.removeWhere((element) => element == "");
+                                  // questionControllers
+                                  //     .removeWhere((element) => element.text == "");
+                                  // selectedQuestionPublic
+                                  //     .removeWhere((key, value) => value.isEmpty);
+                                  // selectedQuestionRequired
+                                  //     .removeWhere((key, value) => value.isEmpty);
+                                  // questions.removeWhere((element) => element == "");
+                                });
+                              }
+                              LoggerUtil.logs("questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                              Question newQuestion = Question(
+                                questionId: questionId?[i] ??
+                                    FirebaseUtils.getDateTimeNowAsId(),
+                                // Assuming you have a mechanism to generate unique IDs
+                                question: questionControllers[i].value.text,
+                                // Pass the entire list of controllers
+                                isPublic: selectedQuestionPublic[
+                                            questionControllers[i]] ==
+                                        "Public"
+                                    ? true
+                                    : false,
+                                isRequired: selectedQuestionRequired[
+                                            questionControllers[i]] ==
+                                        "Required"
+                                    ? true
+                                    : false,
+                                sequence: i + 1,
+                              );
+                              questionsList.add(newQuestion);
+                            }
+                            questionsList
+                                .removeWhere((element) => element.question == "");
+                            onDone(questionsList);
+                            NavigationUtil.pop(context);
+                          },
+                          // onPressed: () {
+                          //
+                          //   List<Question> questionsList = eventCubit.eventModel.question?? [];
+                          //   for(int i = 0; i < questionControllers.length; i++){
+                          //     LoggerUtil.logs("questionControllers ${questionControllers[i].value.text}  ${selectedQuestionPublic[i]}   ${selectedQuestionRequired[i]}");
+                          //     Question newQuestion = Question(
+                          //       questionId: "auto", // Assuming you have a mechanism to generate unique IDs
+                          //       question: questionControllers[i].value.text, // Pass the entire list of controllers
+                          //       isPublic: selectedQuestionPublic[questionControllers[i]]=="Public"?true:false ,
+                          //       isRequired: selectedQuestionRequired[questionControllers[i]]=="Required"?true:false ,
+                          //     );
+                          //     questionsList.add(newQuestion);
+                          //   }
+                          //   eventCubit.eventModel.copyWith(question: questionsList);
+                          //   // NavigationUtil.pop(context);
+                          //
+                          //   LoggerUtil.logs("eventCubit.eventModel.questions ${eventCubit.eventModel.question}");
+                          // },
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ));
-    }));
+              ),
+            ));
+              }),
+        ));
   }
 }

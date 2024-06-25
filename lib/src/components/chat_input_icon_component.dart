@@ -15,7 +15,7 @@ class ChatInputIconComponent extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 7),
-        child: Icon(icon, color: Colors.blueAccent, size: 25),
+        child: Icon(icon, color: Colors.white, size: 25),
       ),
     );
   }

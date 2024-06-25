@@ -11,9 +11,11 @@ import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/message_card_component.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants/color_constants.dart';
 import '../../models/message_model.dart';
@@ -34,14 +36,21 @@ class GroupChatRoomScreen extends StatefulWidget {
 }
 
 class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
+late final ThemeCubit themeCubit = BlocProvider.of<ThemeCubit>(context);
   late GroupChatRoomCubit groupChatRoomCubit =
       BlocProvider.of<GroupChatRoomCubit>(context);
 
   final _textController = TextEditingController();
   List<MessageModel> messagesList = [];
   List<String> userNumber = [];
+
+
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+          SystemUiOverlayStyle(statusBarColor:themeCubit.darkBackgroundColor),
+        );
     LoggerUtil.logs('Group Chat Room Build');
     return BlocConsumer<GroupChatRoomCubit, GroupChatRoomState>(
       listener: (context, state) async {
@@ -72,12 +81,14 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                 }
               },
               child: Scaffold(
+
                 appBar: AppBar(
+        // systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: themeCubit.darkBackgroundColor),
                   automaticallyImplyLeading: false,
-                  backgroundColor: ColorConstants.greenMain,
+                  backgroundColor: themeCubit.darkBackgroundColor,//ColorConstants.greenMain,
                   flexibleSpace: _appBar(),
                 ),
-                backgroundColor: const Color.fromARGB(255, 234, 248, 255),
+                backgroundColor: themeCubit.backgroundColor,//const Color.fromARGB(255, 234, 248, 255),
                 body: Column(
                   children: [
                     Expanded(
@@ -136,7 +147,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                             } else {
                               return const Center(
                                 child: Text('Say Hii! 👋',
-                                    style: TextStyle(fontSize: 20)),
+                                    style: TextStyle(fontSize: 20,color: ColorConstants.white)),
                               );
                             }
                         }
@@ -282,30 +293,30 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
             ],
           ),
           Expanded(child: Container()), // This will take up all available space
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: () => callTap(),
-                icon: const Icon(
-                  Icons.call,
-                  size: 25,
-                  color: Colors.white,
-                ),
-              ),
-              IconButton(
-                onPressed: () => videoTap(),
-                icon: const Icon(
-                  Icons.video_call,
-                  size: 25,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-            ],
-          ),
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.end,
+          //   children: [
+          //     IconButton(
+          //       onPressed: () => callTap(),
+          //       icon: const Icon(
+          //         Icons.call,
+          //         size: 25,
+          //         color: Colors.white,
+          //       ),
+          //     ),
+          //     IconButton(
+          //       onPressed: () => videoTap(),
+          //       icon: const Icon(
+          //         Icons.video_call,
+          //         size: 25,
+          //         color: Colors.white,
+          //       ),
+          //     ),
+          //     SizedBox(
+          //       width: 10,
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

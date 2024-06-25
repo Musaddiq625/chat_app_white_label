@@ -1,14 +1,10 @@
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
-import 'package:chat_app_white_label/src/components/list_tile_component.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
-import 'package:chat_app_white_label/src/components/toast_component.dart';
 import 'package:chat_app_white_label/src/constants/app_constants.dart';
-import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
-import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
@@ -21,8 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class FilterScreen extends StatefulWidget {
-
-  FilterScreen({super.key });
+  FilterScreen({super.key});
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();
@@ -37,7 +32,6 @@ class _FilterScreenState extends State<FilterScreen> {
     "This weekend": false,
     "Choose a date": false,
   };
-
 
   Map<String, dynamic> categories = {
     "Music": true,
@@ -89,11 +83,15 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 
   Future<void> _selectEndDate(BuildContext context) async {
+    print("startdate ${startingDate}");
+    DateTime selectedStartDate =
+    DateFormat.yMMMMd().parse(
+        startingDate.toString());
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: selectedStartDate,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
-        firstDate: DateTime(2015, 8),
+        firstDate: selectedStartDate,
         lastDate: DateTime(2101));
     if (picked != null) {
       setState(() {
@@ -107,15 +105,14 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   void initState() {
-    print("state.getFiltersDataModel?.categoryData ${eventCubit.filtersListModel.categoryData?.map((e) => e.title)}");
-    categoryData = eventCubit.filtersListModel.categoryData ?? [] ;
-    dateFilterData= eventCubit.filtersListModel.dateFilterData ?? [];
+    print(
+        "state.getFiltersDataModel?.categoryData ${eventCubit.filtersListModel.categoryData?.map((e) => e.title)}");
+    categoryData = eventCubit.filtersListModel.categoryData ?? [];
+    dateFilterData = eventCubit.filtersListModel.dateFilterData ?? [];
     selectedDateFilter = eventCubit.selectedDateFilter;
     selectedCategories = eventCubit.selectedCategories ?? [];
-    isFree = eventCubit.isFree ;
-    isFreeValue= eventCubit.isFreeValue;
-
-
+    isFree = eventCubit.isFree;
+    isFreeValue = eventCubit.isFreeValue;
 
     super.initState();
   }
@@ -125,13 +122,14 @@ class _FilterScreenState extends State<FilterScreen> {
     final themeCubit = BlocProvider.of<ThemeCubit>(context);
     return BlocConsumer<EventCubit, EventState>(
       listener: (context, state) {
-        if(state is GetFiltersDataSuccessState){
-          print("state.getFiltersDataModel?.categoryData ${state.getFiltersDataModel?.categoryData?.map((e) => e.title)}");
-          if(state.getFiltersDataModel?.categoryData != null){
-            categoryData = state.getFiltersDataModel!.categoryData! ;
+        if (state is GetFiltersDataSuccessState) {
+          print(
+              "state.getFiltersDataModel?.categoryData ${state.getFiltersDataModel?.categoryData?.map((e) => e.title)}");
+          if (state.getFiltersDataModel?.categoryData != null) {
+            categoryData = state.getFiltersDataModel!.categoryData!;
           }
-          if(state.getFiltersDataModel?.dateFilterData != null){
-            dateFilterData = state.getFiltersDataModel!.dateFilterData! ;
+          if (state.getFiltersDataModel?.dateFilterData != null) {
+            dateFilterData = state.getFiltersDataModel!.dateFilterData!;
           }
         }
         // else if(state is EventFiltersSuccessState){
@@ -160,11 +158,10 @@ class _FilterScreenState extends State<FilterScreen> {
   Widget _chooseDate(context, themeCubit) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) =>
-          _pageController.previousPage(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.linear,
-          ),
+      onPopInvoked: (didPop) => _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -172,12 +169,11 @@ class _FilterScreenState extends State<FilterScreen> {
           AppBarComponent(StringConstants.chooseDate,
               titleFontSize: 18,
               isBackBtnCircular: false,
-              centerTitle: false,
-              overrideBackPressed: () {
-                _pageController.previousPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.linear);
-              },
+              centerTitle: false, overrideBackPressed: () {
+            _pageController.previousPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.linear);
+          },
               action: IconComponent(
                 iconData: Icons.close,
                 onTap: () => NavigationUtil.pop(context),
@@ -206,7 +202,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ],
                   listOfOnPressedFunction: [
-                        () {
+                    () {
                       _selectStartDate(context);
                     }
                   ],
@@ -233,7 +229,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ],
                   listOfOnPressedFunction: [
-                        () {
+                    () {
                       _selectEndDate(context);
                     }
                   ],
@@ -257,6 +253,17 @@ class _FilterScreenState extends State<FilterScreen> {
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.linear,
                     );
+                    setState(() {
+                      dateFilterData.map((item) {
+                        print(" item titel   ${item.title}");
+                        return item.title ==
+                                StringConstants.chooseDate.toLowerCase()
+                            ? {'title': "${startingDate}-${endingDate}"}
+                            : item;
+                      }).toList();
+                    });
+
+                    // dateFilterData.where((element) => element  == StringConstants.chooseDate.toLowerCase()).toList() replace it with slected start date and end date
                   },
                   buttonText: StringConstants.selectDateRange)),
         ],
@@ -346,27 +353,37 @@ class _FilterScreenState extends State<FilterScreen> {
                             padding: const EdgeInsets.all(4.0),
                             child: TagComponent(
                               customIconText: e.title,
-                              customFontWeight: isSelected? FontWeight.w600 : FontWeight.normal,
-                              customTextColor: isSelected? themeCubit.backgroundColor : themeCubit.textColor,
-                              backgroundColor: isSelected? themeCubit.primaryColor : themeCubit.textSecondaryColor.withOpacity(0.4),
+                              customFontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
+                              customTextColor: isSelected
+                                  ? themeCubit.backgroundColor
+                                  : themeCubit.textColor,
+                              backgroundColor: isSelected
+                                  ? themeCubit.primaryColor
+                                  : themeCubit.textSecondaryColor
+                                      .withOpacity(0.4),
                               customTextSize: 16,
                               tagAlignment: null,
                               onTap: () {
+                                navigateIfDateChosen(e.title!);
                                 setState(() {
                                   // Deselect all dates
-                                  availableDates.updateAll((key, value) => false);
+                                  availableDates
+                                      .updateAll((key, value) => false);
 
-                                  if(selectedDateFilter != e.slug){
+                                  if (selectedDateFilter != e.slug) {
                                     selectedDateFilter = e.slug;
-                                    eventCubit.selectedDateFilter = selectedDateFilter;
-                                  }
-                                  else{
+                                    eventCubit.selectedDateFilter =
+                                        selectedDateFilter;
+                                  } else {
                                     selectedDateFilter = "";
-                                    eventCubit.selectedDateFilter = selectedDateFilter;
+                                    eventCubit.selectedDateFilter =
+                                        selectedDateFilter;
                                   }
 
-                                  availableDates[e.title ?? ""] = true; // Assuming e.title uniquely identifies each date filter
-
+                                  availableDates[e.title ?? ""] =
+                                      true; // Assuming e.title uniquely identifies each date filter
                                 });
                               },
                             ),
@@ -421,18 +438,25 @@ class _FilterScreenState extends State<FilterScreen> {
                       //   }).toList(),
                       // )
 
-
                       Wrap(
                         direction: Axis.horizontal,
                         children: categoryData.map((e) {
-                          bool isSelected = selectedCategories?.contains(e.slug)?? false;
+                          bool isSelected =
+                              selectedCategories?.contains(e.slug) ?? false;
                           return Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: TagComponent(
                               customIconText: e.title,
-                              customFontWeight: isSelected? FontWeight.w600 : FontWeight.normal,
-                              customTextColor: isSelected? themeCubit.backgroundColor : themeCubit.textColor,
-                              backgroundColor: isSelected? themeCubit.primaryColor : themeCubit.textSecondaryColor.withOpacity(0.4),
+                              customFontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
+                              customTextColor: isSelected
+                                  ? themeCubit.backgroundColor
+                                  : themeCubit.textColor,
+                              backgroundColor: isSelected
+                                  ? themeCubit.primaryColor
+                                  : themeCubit.textSecondaryColor
+                                      .withOpacity(0.4),
                               customTextSize: 16,
                               tagAlignment: null,
                               onTap: () {
@@ -441,14 +465,17 @@ class _FilterScreenState extends State<FilterScreen> {
                                   if (isSelected) {
                                     print("selected removed");
                                     selectedCategories?.remove(e.slug);
-                                    eventCubit.selectedCategories = selectedCategories;
+                                    eventCubit.selectedCategories =
+                                        selectedCategories;
                                   } else {
                                     print("selected");
-                                    selectedCategories?.add(e.slug?? "");
-                                    eventCubit.selectedCategories = selectedCategories;
+                                    selectedCategories?.add(e.slug ?? "");
+                                    eventCubit.selectedCategories =
+                                        selectedCategories;
                                   }
                                 });
-                                print("Selected Categories: ${selectedCategories?.join(", ")?? "None"}");
+                                print(
+                                    "Selected Categories: ${selectedCategories?.join(", ") ?? "None"}");
                               },
                             ),
                           );
@@ -479,29 +506,34 @@ class _FilterScreenState extends State<FilterScreen> {
                             padding: const EdgeInsets.all(4.0),
                             child: TagComponent(
                               customIconText: e,
-                              customFontWeight: isSelected? FontWeight.w600 : FontWeight.normal,
-                              customTextColor: isSelected? themeCubit.backgroundColor : themeCubit.textColor,
-                              backgroundColor: isSelected? themeCubit.primaryColor : themeCubit.textSecondaryColor.withOpacity(0.4),
+                              customFontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
+                              customTextColor: isSelected
+                                  ? themeCubit.backgroundColor
+                                  : themeCubit.textColor,
+                              backgroundColor: isSelected
+                                  ? themeCubit.primaryColor
+                                  : themeCubit.textSecondaryColor
+                                      .withOpacity(0.4),
                               customTextSize: 16,
                               tagAlignment: null,
                               onTap: () {
                                 setState(() {
                                   // Toggle selection
-                                  if (isFree!= e) {
+                                  if (isFree != e) {
                                     isFree = e;
-                                    if(isFree == "Free"){
-                                      isFreeValue= true;
+                                    if (isFree == "Free") {
+                                      isFreeValue = true;
+                                      eventCubit.isFree = isFree;
+                                      eventCubit.isFreeValue = isFreeValue;
+                                    } else {
+                                      isFreeValue = false;
                                       eventCubit.isFree = isFree;
                                       eventCubit.isFreeValue = isFreeValue;
                                     }
-                                    else{
-                                      isFreeValue= false;
-                                      eventCubit.isFree = isFree;
-                                      eventCubit.isFreeValue = isFreeValue;
-                                    }
-
                                   } else {
-                                    isFreeValue=null;
+                                    isFreeValue = null;
                                     isFree = null; // Clear selection
                                     eventCubit.isFree = isFree;
                                     eventCubit.isFreeValue = isFreeValue;
@@ -524,48 +556,71 @@ class _FilterScreenState extends State<FilterScreen> {
           ),
         ),
         Container(
-            padding: const EdgeInsets.all(32).copyWith(bottom: 120),
-            // alignment: Alignment.bottomCenter,
-            child: Row(
-              children: [
-                Expanded(
-                  flex:2,
-                  child: ButtonComponent(
-                      bgcolor: ColorConstants.white,
-                      textColor: themeCubit.backgroundColor,
-                      isBold: true,
-                      onPressed: () {
-                        eventCubit.sendEventFilters("1",null,null,selectedDateFilter,selectedCategories ?? [],isFreeValue);
-                        NavigationUtil.pop(context);
-                        // ToastComponent.showToast(StringConstants.filtersApplied,
-                        //     context: context);
-                      },
-                      buttonText: StringConstants.applyFilters),
-                ),
-                SizedBoxConstants.sizedBoxFourW(),
-                Expanded(
-                  child: ButtonComponent(
-                      bgcolor: ColorConstants.primaryColor,
-                      textColor: themeCubit.backgroundColor,
-                      isBold: true,
-                      onPressed: () {
-                        eventCubit.isFilteredApply = false;
-                        eventCubit.selectedDateFilter = null;
-                        eventCubit.selectedCategories = [];
-                        eventCubit.isFree = null;
-                        eventCubit.isFreeValue = null;
+          padding: const EdgeInsets.all(32).copyWith(bottom: 120),
+          // alignment: Alignment.bottomCenter,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: ButtonComponent(
+                    bgcolor: ColorConstants.white,
+                    textColor: themeCubit.backgroundColor,
+                    isBold: true,
+                    onPressed: () {
+                      DateTime selectedStartDate = DateFormat("MMMM d, yyyy").parse(startingDate);
+                      DateTime selectedEndDate = DateFormat("MMMM d, yyyy").parse(endingDate);
+                      String? startDate = selectedStartDate.toString();
+                      String? endDate = selectedEndDate.toString();
+                      setState(() {
+                      });
+                      if(selectedDateFilter != "choose_a_date"){
+                        startDate = null;
+                        endDate = null;
+                      }
+                      else{
+                        if(startingDate.isNotEmpty && endingDate.isNotEmpty){
+                          selectedDateFilter = null;
+                          setState(() {
+                          });
+                        }
+                      }
 
-                        eventCubit.fetchEventDataByKeys("1");
-                        NavigationUtil.pop(context);
-                        // ToastComponent.showToast(StringConstants.filtersApplied,
-                        //     context: context);
-                      },
-                      buttonText: StringConstants.clear),
-                )
-              ],
-            ),
-        
-        
+
+                      eventCubit.sendEventFilters(
+                          "1",
+                          startDate,
+                          endDate,
+                          selectedDateFilter,
+                          selectedCategories ?? [],
+                          isFreeValue);
+                      NavigationUtil.pop(context);
+                      // ToastComponent.showToast(StringConstants.filtersApplied,
+                      //     context: context);
+                    },
+                    buttonText: StringConstants.applyFilters),
+              ),
+              SizedBoxConstants.sizedBoxFourW(),
+              Expanded(
+                child: ButtonComponent(
+                    bgcolor: ColorConstants.primaryColor,
+                    textColor: themeCubit.backgroundColor,
+                    isBold: true,
+                    onPressed: () {
+                      eventCubit.isFilteredApply = false;
+                      eventCubit.selectedDateFilter = null;
+                      eventCubit.selectedCategories = [];
+                      eventCubit.isFree = null;
+                      eventCubit.isFreeValue = null;
+
+                      eventCubit.fetchEventDataByKeys("1");
+                      NavigationUtil.pop(context);
+                      // ToastComponent.showToast(StringConstants.filtersApplied,
+                      //     context: context);
+                    },
+                    buttonText: StringConstants.clear),
+              )
+            ],
+          ),
         ),
       ],
     );

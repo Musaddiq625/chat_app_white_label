@@ -66,7 +66,8 @@ class FriendListData {
       this.firstName, 
       this.lastName, 
       this.aboutMe, 
-      this.image,});
+      this.image,
+      this.phoneNumber,});
 
   FriendListData.fromJson(dynamic json) {
     id = json['id'];
@@ -74,22 +75,26 @@ class FriendListData {
     lastName = json['lastName'];
     aboutMe = json['aboutMe'];
     image = json['image'];
+    phoneNumber = json['phoneNumber'];
   }
   String? id;
   String? firstName;
   String? lastName;
   String? aboutMe;
   String? image;
+  String? phoneNumber;
 FriendListData copyWith({  String? id,
   String? firstName,
   String? lastName,
   String? aboutMe,
   String? image,
+  String? phoneNumber,
 }) => FriendListData(  id: id ?? this.id,
   firstName: firstName ?? this.firstName,
   lastName: lastName ?? this.lastName,
   aboutMe: aboutMe ?? this.aboutMe,
   image: image ?? this.image,
+  phoneNumber: phoneNumber ?? this.phoneNumber,
 );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -98,6 +103,7 @@ FriendListData copyWith({  String? id,
     map['lastName'] = lastName;
     map['aboutMe'] = aboutMe;
     map['image'] = image;
+    map['phoneNumber'] = phoneNumber;
     return map;
   }
 

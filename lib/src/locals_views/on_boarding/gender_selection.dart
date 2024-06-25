@@ -9,6 +9,7 @@ import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/cubit/onboarding_cubit.dart';
+import 'package:chat_app_white_label/src/screens/app_setting_cubit/app_setting_cubit.dart';
 import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/utils/navigation_util.dart';
@@ -26,6 +27,7 @@ class GenderSelection extends StatefulWidget {
 class _GenderSelectionState extends State<GenderSelection> {
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
   late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
+  late final appCubit = BlocProvider.of<AppSettingCubit>(context);
   String? _selectedOption;
 
   // late final OnBoardingUserStepTwoState onBoardingUserStepTwoState;
@@ -64,6 +66,7 @@ class _GenderSelectionState extends State<GenderSelection> {
           // LoadingDialog.showLoadingDialog(context);
         } else if (state is OnBoardingDobToGenderSuccessState) {
           // LoadingDialog.hideLoadingDialog(context);
+          appCubit.setUserModel(state.userModel);
           onBoardingCubit.initializeUserData(state.userModel!);
 
         } else if (state is OnBoardingDobToGenderFailureState) {

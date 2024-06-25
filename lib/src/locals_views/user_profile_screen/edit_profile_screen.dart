@@ -195,9 +195,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: GestureDetector(
                 onTap: (){
                   appCubit.setUserModel(userScreenCubit.userModel);
+                  // userScreenCubit.updatePhoneNumber("923322222222");
                   LoggerUtil.logs("Updated userScreenCubit.userModel ${userScreenCubit.userModelList.first.toJson()}");
+                  LoggerUtil.logs("widget.userModel?.id ${widget.userModel?.id}");
                   userScreenCubit.updateMoreAboutYou(userScreenCubit.moreAbout);
-                  userScreenCubit.updateUserData(widget.userModel?.id ?? "", userScreenCubit.userModelList.first);  //66472edbbb880ed91c93213d
+                  userScreenCubit.updateUserData(userScreenCubit.userModelList.first.id ?? "", userScreenCubit.userModelList.first);  //66472edbbb880ed91c93213d
                   userScreenCubit.moreAbout= MoreAbout();
                 },
                 child: TextComponent(StringConstants.saveChanges,
@@ -230,7 +232,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           key: ValueKey('value ${Random().nextInt(1000)}'),
                           onImagePick: (pickedImage)async {
                             NavigationUtil.pop(context);
+                            print("0 before upload image ${pickedImage.path.toString()}");
                             var uploadImage = await AppConstants.uploadImage(pickedImage.path.toString(),"profile");
+                            print("1 after upload image ${uploadImage}");
                             tempEmptyImageData.removeLast();
                             // tempImageData.add(pickedImage.path);
                             tempImageData.add(uploadImage??"");
@@ -277,8 +281,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           image: image,
                           // 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
                           key: ValueKey('value ${Random().nextInt(1000)}'),
-                          onImagePick: (pickedImage) {
-                            tempEmptyImageData.add(pickedImage.path);
+                          onImagePick: (pickedImage) async{
+                            NavigationUtil.pop(context);
+                            print("before upload image ${pickedImage.path.toString()}");
+                            var uploadImage = await AppConstants.uploadImage(pickedImage.path.toString(),"profile");
+                            print("after upload image ${uploadImage}");
+
+                            // tempEmptyImage
+                            // Data.removeLast();
+                            setState(() {
+                              int currentIndex = tempImageData.indexWhere((img) => img == image);
+                              // tempImageData.remove(image);
+                              // tempImageData.add(pickedImage.path);
+                              tempImageData[currentIndex] = uploadImage?? "";
+                              // tempImageData.add(uploadImage??"");
+                              userScreenCubit.uploadUserPhoto(tempImageData);
+                            });
+
+
+                            // tempEmptyImageData.add(pickedImage.path);
+                          },
+                          onDeleteTap: (){
+
+                            setState(() {
+                              tempImageData.remove(image);
+                              tempEmptyImageData.clear();
+                              print("tempImageData ${tempImageData}");
+                              tempEmptyImageData.addAll(List.filled(6 - (tempImageData ?? []).length, ""));
+                              userScreenCubit.uploadUserPhoto(tempImageData);
+                            });
+
                           },
                         ),
                       )
@@ -684,6 +716,7 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      print("userData ${widget.userModel?.toJson()}");
     selectedGender = genderList.keys.first;
     _firstNameController.text = widget.userModel?.firstName ?? "";
     _lastNameController.text = widget.userModel?.lastName ?? "";
@@ -844,34 +877,36 @@ class _PersonalInfoWidgetState extends State<PersonalInfoWidget> {
                 ),
                 SizedBoxConstants.sizedBoxTenH(),
 
-                // TextFieldComponent(
-                //   _phoneNumberController,
-                //   filled: true,
-                //   title: StringConstants.phoneNumber,
-                //   titlePaddingFromLeft: 15,
-                //
-                //   prefixWidget: CountryCodePickerComponent(
-                //     isSignupScreen: false,
-                //     onChange: (CountryCode) {
-                //       _countryCodeController.text = '+${CountryCode.dialCode}';
-                //
-                //     },
-                //   ),
-                //   maxLength: AppConstants.phoneNumberMaxLength,
-                //   keyboardType: TextInputType.phone,
-                //   // autoFocus: true,
-                //   hintText: StringConstants.phoneTextFieldHint,
-                //   validator: (phone) => ValidationService.validatePhone(
-                //       phone!.trim(),
-                //       fieldName: StringConstants.phoneNumber),
-                //   onChanged: (phone) {
-                //     userScreenCubit.updatePhoneNumber(_countryCodeController.text+_phoneNumberController.text);
-                //     // handlePhoneOnChange();
-                //     // setState(() {
-                //     // _phoneNumberValid = _formKey.currentState!.validate();
-                //     // });
-                //   },
-                // ),
+                TextFieldComponent(
+                  enabled: false,
+                  disableField: true,
+                  _phoneNumberController,
+                  filled: true,
+                  title: StringConstants.phoneNumber,
+                  titlePaddingFromLeft: 15,
+
+                  prefixWidget: CountryCodePickerComponent(
+                    isSignupScreen: false,
+                    onChange: (CountryCode) {
+                      _countryCodeController.text = '+${CountryCode.dialCode}';
+
+                    },
+                  ),
+                  maxLength: AppConstants.phoneNumberMaxLength,
+                  keyboardType: TextInputType.phone,
+                  // autoFocus: true,
+                  hintText: StringConstants.phoneTextFieldHint,
+                  validator: (phone) => ValidationService.validatePhone(
+                      phone!.trim(),
+                      fieldName: StringConstants.phoneNumber),
+                  onChanged: (phone) {
+                    userScreenCubit.updatePhoneNumber(_countryCodeController.text+_phoneNumberController.text);
+                    // handlePhoneOnChange();
+                    // setState(() {
+                    // _phoneNumberValid = _formKey.currentState!.validate();
+                    // });
+                  },
+                ),
                 SizedBoxConstants.sizedBoxTenH(),
                 GestureDetector(
                   onTap: () {

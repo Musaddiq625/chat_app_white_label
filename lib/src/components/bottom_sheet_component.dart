@@ -16,6 +16,7 @@ class BottomSheetComponent {
     IconData leadingIcon = Icons.home,
     required Widget body,
     Widget? header,
+     bool   isEnableDrag= true,
     bool isShowHeader = true,
     bool isScrollable = true,
     Color? bgColor = Colors.white,
@@ -24,6 +25,7 @@ class BottomSheetComponent {
   }) async {
     late final themeCubit = BlocProvider.of<ThemeCubit>(context);
     await showModalBottomSheet(
+      enableDrag: isEnableDrag,
       isScrollControlled: true,
       isDismissible: true,
       backgroundColor: themeCubit.darkBackgroundColor,

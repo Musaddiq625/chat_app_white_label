@@ -55,9 +55,8 @@ class _EventSummaryState extends State<EventSummary> {
     final radius = 30.0; // Example radius, adjust as needed
     final images =
         widget.imagesUserInEvent; // Use the images passed as a parameter
-    print(
-        "total tickeet sold ${widget.ticketsSold} remaing sold ${widget.remainingTickets}");
-    print( "capcity ${widget.capacity}");
+    // print("total tickeet sold ${widget.ticketsSold} remaing sold ${widget.remainingTickets}");
+    // print( "capcity ${widget.capacity}");
     final themeCubit = BlocProvider.of<ThemeCubit>(context);
     final viewYourEventCubit =
         BlocProvider.of<ViewYourEventScreenCubit>(context);

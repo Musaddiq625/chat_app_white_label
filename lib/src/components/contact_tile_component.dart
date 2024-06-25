@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ContactTileComponent extends StatefulWidget {
   final String title;
   final String subtitle;
+  final String? image;
   final bool isSelected;
   final bool showDivider;
   final Function() onTap;
@@ -22,6 +23,7 @@ class ContactTileComponent extends StatefulWidget {
       {super.key,
       required this.title,
       required this.subtitle,
+       this.image,
       required this.isSelected,
       this.showDivider = true,
       required this.onTap});
@@ -60,7 +62,7 @@ class _ContactTileComponentState extends State<ContactTileComponent> {
                       child: ContactCard(
                         name: widget.title,
                         title: widget.subtitle,
-                        url: "",
+                        url: widget.image ?? "",
                         showShareIcon: false,
                         showDivider: false,
                         imageSize: 45,
@@ -95,19 +97,21 @@ class _ContactTileComponentState extends State<ContactTileComponent> {
                   const Spacer(),
                   Transform.scale(
                     scale: 1.2, // Adjust the scale factor as needed
-                    child: Checkbox(
-                      checkColor: ColorConstants.black,
-                      shape: const CircleBorder(),
-                      fillColor: MaterialStateProperty.resolveWith((states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return ColorConstants.primaryColor;
-                        }
-                        return ColorConstants.blackLight;
-                      }),
-                      value: widget.isSelected,
-                      onChanged: (bool? newValue) {
-                        // Your onChanged logic here
-                      },
+                    child: AbsorbPointer(
+                      child: Checkbox(
+                        checkColor: ColorConstants.black,
+                        shape: const CircleBorder(),
+                        fillColor: MaterialStateProperty.resolveWith((states) {
+                          if (states.contains(MaterialState.selected)) {
+                            return ColorConstants.primaryColor;
+                          }
+                          return ColorConstants.blackLight;
+                        }),
+                        value: widget.isSelected,
+                        onChanged: (bool? newValue) {
+                          // Your onChanged logic here
+                        },
+                      ),
                     ),
                   )
                 ],

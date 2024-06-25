@@ -41,12 +41,12 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _getDeviceID() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    print("androidInfo ${androidInfo}");
+
     setState(() {
       _deviceID = androidInfo.id; // Use androidInfo.androidId for Android ID
       appCubit.setDeviceId(_deviceID);
 
-      print("device Id ${_deviceID}");
+
     });
   }
   @override
@@ -200,29 +200,29 @@ class _SplashScreenState extends State<SplashScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                ColorConstants.btnGradientColor,
-                                const Color.fromARGB(255, 220, 210, 210)
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          width: MediaQuery.sizeOf(context).width,
-                          child: ButtonComponent(
-                              bgcolor: ColorConstants.transparent,
-                              textColor: ColorConstants.black,
-                              buttonText: StringConstants.continueWithPhone,
-                              onPressed: () {
-                                NavigationUtil.push(
-                                  // context, RouteConstants.genderScreen
-                                  context,
-                                  RouteConstants.signUpNumber,
-                                );
-                              }),
-                        ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     gradient: LinearGradient(
+                        //       colors: [
+                        //         ColorConstants.btnGradientColor,
+                        //         const Color.fromARGB(255, 220, 210, 210)
+                        //       ],
+                        //     ),
+                        //     borderRadius: BorderRadius.circular(25),
+                        //   ),
+                        //   width: MediaQuery.sizeOf(context).width,
+                        //   child: ButtonComponent(
+                        //       bgcolor: ColorConstants.transparent,
+                        //       textColor: ColorConstants.black,
+                        //       buttonText: StringConstants.continueWithPhone,
+                        //       onPressed: () {
+                        //         NavigationUtil.push(
+                        //           // context, RouteConstants.genderScreen
+                        //           context,
+                        //           RouteConstants.signUpNumber,
+                        //         );
+                        //       }),
+                        // ),
                         SizedBoxConstants.sizedBoxTenH(),
                         SizedBox(
                           width: MediaQuery.sizeOf(context).width,

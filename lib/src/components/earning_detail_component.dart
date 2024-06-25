@@ -56,7 +56,7 @@ class EarningDetailComponent extends StatelessWidget {
                         ],
                         maxLines: 2)),
                 Spacer(),
-                TextComponent("+ SAR $earningsAmount",
+                TextComponent("+ ${AppConstants.currency} $earningsAmount",
                   style: FontStylesConstants.style14(color: ColorConstants.white),)
               ],
             ),

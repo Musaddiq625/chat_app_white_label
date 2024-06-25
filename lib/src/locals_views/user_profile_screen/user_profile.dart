@@ -17,6 +17,7 @@ import 'package:chat_app_white_label/src/constants/shared_preference_constants.d
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/event_screen/all_event_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/group_screens/view_group_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/all_group_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/user_profile_screen/cubit/user_screen_cubit.dart';
 import 'package:chat_app_white_label/src/utils/logger_util.dart';
@@ -170,15 +171,17 @@ class _UserProfileState extends State<UserProfile> {
       final serializedUserModel = await getIt<SharedPreferencesUtil>()
           .getString(SharedPreferenceConstants.userModel);
       userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
-      print("usermodel ${userModel?.toJson()}");
+
+      print("userData model ${userModel?.toJson()}");
+
       setState(() {
         userName = "${userModel?.firstName} ${userModel?.lastName}";
         imageUrl = userModel?.userPhotos?.first ?? "";
       });
-      print("userName $userName");
-      print("imageUrl $imageUrl");
-      LoggerUtil.logs(
-          "sharedPreferencesUtil userModel Value ${userModel?.toJson()}");
+      // print("userName $userName");
+      // print("imageUrl $imageUrl");
+      // LoggerUtil.logs(
+      //     "sharedPreferencesUtil userModel Value ${userModel?.toJson()}");
     });
     super.initState();
   }
@@ -302,6 +305,8 @@ class _UserProfileState extends State<UserProfile> {
           imageUrl = userModel?.userPhotos?.first ?? "";
         }
         else if (state is FetchMyEventsDataSuccessState) {
+          userScreenCubit.eventModelList.clear();
+
           print(
               "Event Data Success ${state.eventResponseWrapper?.data2?.map((e) => e.transectionData?.ticketSold)}");
           userScreenCubit.eventModelList.addAll(state.eventModel ?? []);
@@ -313,11 +318,11 @@ class _UserProfileState extends State<UserProfile> {
         else if (state is UserScreenFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
         } else if (state is FetchEventsGoingToFailureState) {
-          ToastComponent.showToast(state.toString(), context: context);
+          // ToastComponent.showToast(state.toString(), context: context);
         } else if (state is FetchGroupsToFailureState) {
           ToastComponent.showToast(state.toString(), context: context);
         } else if (state is FetchMyEventsDataFailureState) {
-          ToastComponent.showToast(state.toString(), context: context);
+          // ToastComponent.showToast(state.toString(), context: context);
         }
       },
       builder: (context, state) {
@@ -529,7 +534,7 @@ class _UserProfileState extends State<UserProfile> {
                   "",
                   listOfText: [
                     StringConstants.connections,
-                    (userModel?.friendConnection != "null" || (userModel?.friendConnection ?? "").isNotEmpty || userModel?.friendConnection != null)?"${userModel?.friendConnection ?? 0}":0.toString(),
+                    (userModel?.friendConnection != "null" && (userModel?.friendConnection ?? "").isNotEmpty && userModel?.friendConnection != null)?"${userModel?.friendConnection ?? 0}":0.toString(),
                   ],
                   listOfTextStyle: [
                     FontStylesConstants.style20(
@@ -583,7 +588,7 @@ class _UserProfileState extends State<UserProfile> {
                   itemCount: (userModel?.friends ?? []).length,
                   itemBuilder: (context, index) {
                     var userImages = (userModel?.friends ?? [])[index];
-                    print("friends images ${userImages.image}");
+                    // print("friends images ${userImages.image}");
                     return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       child: GestureDetector(
@@ -1214,9 +1219,8 @@ class _UserProfileState extends State<UserProfile> {
                     .map((tag) => GestureDetector(
                         onTap: () {
                           if (_selectedIndexGroup == 0) {
-                            NavigationUtil.push(
-                                context, RouteConstants.viewGroupScreen,
-                                args: tag.id ?? "");
+                            NavigationUtil.push(context, RouteConstants.viewGroupScreen,
+                                args:ViewGroupArg(tag.id ?? "", false, false));
                           } else {
                             NavigationUtil.push(
                                 context, RouteConstants.viewYourGroupScreen,

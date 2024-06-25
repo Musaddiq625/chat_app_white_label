@@ -6,6 +6,7 @@ abstract class OTPState {}
 class OTPInitial extends OTPState {}
 
 class OTPLoadingState extends OTPState {}
+class OTPPhoneLoadingState extends OTPState {}
 
 class OTPSuccessOldUserState extends OTPState {
   final UserModel user;
@@ -14,15 +15,26 @@ class OTPSuccessOldUserState extends OTPState {
 }
 
 class OtpSuccessResendState extends OTPState {
-  final String verificationId;
+  // final String verificationId;
 
-  OtpSuccessResendState(this.verificationId);
+  OtpSuccessResendState(
+      // this.verificationId
+      );
 }
 
 class OTPSuccessUserState extends OTPState {
   final UserModel? userModel;
 
   OTPSuccessUserState(this.userModel);
+
+}
+
+class OTPSuccessPhoneUserState extends OTPState {
+  // final UserModel? userModel;
+
+  OTPSuccessPhoneUserState(
+      // this.userModel
+      );
 
 }
 
@@ -39,4 +51,9 @@ class OTPFailureState extends OTPState {
   final String error;
 
   OTPFailureState(this.error);
+}
+class OTPFailurePhoneState extends OTPState {
+  final String error;
+
+  OTPFailurePhoneState(this.error);
 }

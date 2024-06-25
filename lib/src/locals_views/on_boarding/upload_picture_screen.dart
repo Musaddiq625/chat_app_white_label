@@ -45,7 +45,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
   @override
   void initState() {
     super.initState();
-    print("adding images");
+
     selectedImages.addAll(List.filled(6 - selectedImages.length, ""));
   }
 
@@ -141,8 +141,9 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
                       margin: const EdgeInsets.only(right: 20),
                       child: ChooseImageComponent(
                         image: selectedImages[index],
-                        showImageSelectionBottomSheet: false,
+                        showImageSelectionBottomSheet: true,
                         onImagePick: (image) {
+                          NavigationUtil.pop(context);
                           setState(() {
                             insertImage(image, index: index);
                             // selectedImages.insert(0, image.path);
@@ -150,6 +151,15 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
 
                             // selectedImages.removeLast();
                           });
+                        },
+                        onDeleteTap: (){
+                          setState(() {
+                            selectedImages.remove(selectedImages[index]);
+                            if(selectedImages.length <6){
+                              selectedImages
+                                  .addAll(List.filled(6 - selectedImages.length, ""));}
+                          });
+
                         },
                       ),
                     );
@@ -297,7 +307,7 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
 
     bool isListEmpty = selectedImages.every((element) => element.isNotEmpty);
     if (index == null && isListEmpty) {
-      print("5 replacing image $index");
+
       selectedImages.insert(0, image.path);
     }
     // if (index != null) {
@@ -310,14 +320,14 @@ class _UploadPictureScreenState extends State<UploadPictureScreen> {
     // }
     // else
       if (selectedImages.any((element) => element == '')) {
-      print("0 replacing image $index");
+
       if (index != null) {
-        print("1 replacing image $index");
+
         selectedImages[index] = image.path;
       } else {
-        print("2 replacing image $index");
+
         if (selectedImages[selectedImages.indexOf("")] == "") {
-          print("3 replacing image $index");
+
           selectedImages[selectedImages.indexOf("")] = image.path;
         }
       }

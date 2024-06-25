@@ -30,11 +30,11 @@ class _DoneScreenState extends State<DoneScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Future.delayed(const Duration(milliseconds: 1500), () async {
+    Future.delayed(const Duration(milliseconds: 3000), () async {
       NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen);
-    });
+    }
+    );
   }
 
   Widget getStarted() {

@@ -53,6 +53,8 @@ class _EditEventScreenState extends State<EditEventScreen> {
   final TextEditingController _controller = TextEditingController();
   TextEditingController searchController = TextEditingController();
   TextEditingController searchControllerConnections = TextEditingController();
+  TimeOfDay? lastSelectedStartTime;
+  TimeOfDay? lastSelectedEndTime;
   bool requireGuest = true;
   bool askQuestion = false;
   bool editQuestion = false;
@@ -126,7 +128,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
       editEventCubit.eventModel = EventModel.fromJson(widget.eventModel?.toJson() ?? {});
       editEventCubit.initializeEventData(editEventCubit.eventModel);
       setState(() {
-        selectedImagePath = widget.eventModel?.images?.first;
+        selectedImagePath = widget.eventModel?.images?.isEmpty?? true? "" : (widget.eventModel?.images?.first);
         eventNameController.value =
             TextEditingValue(text: editEventCubit.eventModel.title ?? '');
         eventName = editEventCubit.eventModel.title ?? '';
@@ -212,14 +214,29 @@ class _EditEventScreenState extends State<EditEventScreen> {
       listener: (context, state) {
         if (state is EditEventLoadingState) {
           LoadingDialog.showLoadingDialog(context);
-        } else if (state is EditEventSuccessState) {
+        }
+        else if (state is EditEventSuccessState) {
           LoadingDialog.hideLoadingDialog(context);
           // viewYourEventScreenCubit.initializeEventData(state.eventModel!);
           setState(() {
             viewYourEventScreenCubit.eventModel = state.eventModel!;
           });
           NavigationUtil.pop(context);
-        } else if (state is EditEventFailureState) {
+        }
+
+        else if (state is DeleteEventLoadingState) {
+          LoadingDialog.showLoadingDialog(context);
+        }
+        else if (state is DeleteEventSuccessState) {
+          LoadingDialog.hideLoadingDialog(context);
+          NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen);
+        }
+
+        else if (state is DeleteEventFailureState) {
+          LoadingDialog.hideLoadingDialog(context);
+          ToastComponent.showToast(state.toString(), context: context);
+        }
+        else if (state is EditEventFailureState) {
           LoadingDialog.hideLoadingDialog(context);
           ToastComponent.showToast(state.toString(), context: context);
         }
@@ -533,17 +550,25 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                                           endDate!))) {
                                                 showTimePicker(
                                                   context: context,
-                                                  initialTime: TimeOfDay.now(),
+                                                  initialTime:lastSelectedStartTime?? TimeOfDay.now(),
                                                 ).then((selectedTime) {
                                                   // Handle the selected date and time here.
                                                   if (selectedTime != null) {
+                                                    lastSelectedStartTime= selectedTime;
+
+                                                    int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
+                                                    int adjustedHour = selectedTime.hour;
+                                                    if (roundedMinute > 45) {
+                                                      adjustedHour += 1;
+                                                      roundedMinute -= 60;
+                                                    }
                                                     DateTime selectedDateTime =
-                                                        DateTime(
+                                                    DateTime(
                                                       selectedDate.year,
                                                       selectedDate.month,
                                                       selectedDate.day,
-                                                      selectedTime.hour,
-                                                      selectedTime.minute,
+                                                      adjustedHour,
+                                                      roundedMinute,
                                                     );
 
                                                     String formattedDateTime =
@@ -599,19 +624,26 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                               } else {
                                                 showTimePicker(
                                                   context: context,
-                                                  initialTime: TimeOfDay.now(),
+                                                  initialTime:lastSelectedStartTime?? TimeOfDay.now(),
                                                 ).then((selectedTime) {
                                                   // Handle the selected date and time here.
                                                   if (selectedTime != null) {
+                                                    lastSelectedStartTime= selectedTime;
+
+                                                    int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
+                                                    int adjustedHour = selectedTime.hour;
+                                                    if (roundedMinute > 45) {
+                                                      adjustedHour += 1;
+                                                      roundedMinute -= 60;
+                                                    }
                                                     DateTime selectedDateTime =
-                                                        DateTime(
+                                                    DateTime(
                                                       selectedDate.year,
                                                       selectedDate.month,
                                                       selectedDate.day,
-                                                      selectedTime.hour,
-                                                      selectedTime.minute,
+                                                      adjustedHour,
+                                                      roundedMinute,
                                                     );
-
                                                     String formattedDateTime =
                                                         DateFormat(
                                                                 'd MMM \'at\' hh a')
@@ -657,7 +689,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                         },
                                         child: TextComponent(
                                           startDate != null
-                                              ? DateFormat('d MMM \'at\' hh a')
+                                              ? DateFormat('d MMM \'at\' hh:mm a')
                                                   .format(DateTime.parse(
                                                       startDate!))
                                               : "Select Date & Time",
@@ -735,21 +767,27 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                                             startDate!))) {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime:
-                                                    TimeOfDay.now(),
+                                                    initialTime:lastSelectedEndTime?? TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     // Handle the selected date and time here.
                                                     if (selectedTime != null) {
+
+                                                      lastSelectedEndTime= selectedTime;
+                                                      int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
+                                                      int adjustedHour = selectedTime.hour;
+                                                      if (roundedMinute > 45) {
+                                                        adjustedHour += 1;
+                                                        roundedMinute -= 60;
+                                                      }
                                                       DateTime
                                                       selectedDateTime =
                                                       DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
                                                         selectedDate.day,
-                                                        selectedTime.hour,
-                                                        selectedTime.minute,
+                                                        adjustedHour,
+                                                        roundedMinute,
                                                       );
-
                                                       String formattedDateTime =
                                                       DateFormat(
                                                           'd MMM \'at\' hh a')
@@ -801,20 +839,25 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                                 else {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime:
-                                                    TimeOfDay.now(),
+                                                    initialTime:lastSelectedEndTime?? TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     if (selectedTime != null) {
+                                                      lastSelectedEndTime= selectedTime;
+                                                      int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
+                                                      int adjustedHour = selectedTime.hour;
+                                                      if (roundedMinute > 45) {
+                                                        adjustedHour += 1;
+                                                        roundedMinute -= 60;
+                                                      }
                                                       DateTime
                                                       selectedDateTime =
                                                       DateTime(
                                                         selectedDate.year,
                                                         selectedDate.month,
                                                         selectedDate.day,
-                                                        selectedTime.hour,
-                                                        selectedTime.minute,
+                                                        adjustedHour,
+                                                        roundedMinute,
                                                       );
-
                                                       String formattedDateTime =
                                                       DateFormat(
                                                           'd MMM \'at\' hh a')
@@ -897,7 +940,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                         },
                                         child: TextComponent(
                                           endDate != null
-                                              ? DateFormat('d MMM \'at\' hh a')
+                                              ? DateFormat('d MMM \'at\' hh:mm a')
                                                   .format(
                                                       DateTime.parse(endDate!))
                                               : "Select Date & Time",
@@ -1058,7 +1101,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                       QuestionComponent.selectQuestion(
                           context,
                           _questionControllers,
-                          questions,
+                          // questions,
                           selectedQuestionRequired,
                           selectedQuestionPublic,
                           (List<Question> questionsList) {
@@ -1097,7 +1140,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                       QuestionComponent.selectQuestion(
                           context,
                           _questionControllers,
-                          questions,
+                          // questions,
                           selectedQuestionRequired,
                           selectedQuestionPublic,
                           (List<Question> questionsList) {
@@ -1131,6 +1174,19 @@ class _EditEventScreenState extends State<EditEventScreen> {
                     // }
                     setState(() {});
                   },
+                ),
+                SizedBoxConstants.sizedBoxTenH(),
+                ListTileComponent(
+                  leadingIconWidth: 25,
+                  leadingIconHeight: 25,
+                  // trailingIcon: Icons.arrow_forward_ios,
+                  leadingIcon: AssetConstants.deleteRound,
+                  leadingText: "  ${StringConstants.deleteEvent}",
+                  // trailingText: selectedVisibilityValue,
+                  onTap: () {
+                    editEventCubit.deleteGroup(editEventCubit.eventModel.id!);
+                  },
+                  subTextColor: themeCubit.textColor,
                 ),
                 SizedBoxConstants.sizedBoxTenH(),
                 Container(
@@ -1187,7 +1243,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
     );
     Future.delayed(const Duration(milliseconds: 1000), () async {
       NavigationUtil.pop(context);
-      _createEventBottomSheet();
+      // _createEventBottomSheet();
     });
   }
 
@@ -1284,14 +1340,14 @@ class _EditEventScreenState extends State<EditEventScreen> {
     }));
   }
 
-  _createEventBottomSheet() {
-    BottomSheetComponent.showBottomSheet(context,
-        takeFullHeightWhenPossible: false,
-        isShowHeader: false,
-        body: SuccessShareBottomSheet(
-            contacts: contacts,
-            successTitle: StringConstants.eventCreatedSuccessfully));
-  }
+  // _createEventBottomSheet() {
+  //   BottomSheetComponent.showBottomSheet(context,
+  //       takeFullHeightWhenPossible: false,
+  //       isShowHeader: false,
+  //       body: SuccessShareBottomSheet(
+  //           contacts: contacts,
+  //           successTitle: StringConstants.eventCreatedSuccessfully));
+  // }
 
   _goBackBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,

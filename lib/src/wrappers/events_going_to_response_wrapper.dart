@@ -668,7 +668,7 @@ class Venue {
     startDatetime = json['startDatetime'];
     endDatetime = json['endDatetime'];
     location = json['location'];
-    capacity = json['capacity'];
+    capacity = json['capacity'].toString();
   }
   String? startDatetime;
   String? endDatetime;

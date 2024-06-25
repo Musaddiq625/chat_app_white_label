@@ -16,13 +16,32 @@ class CreateGroupChatCubit extends Cubit<CreateGroupChatState> {
       List contacts, String? filePath) async {
     emit(CreateGroupChatLoadingState());
     try {
-      String? groupImage;
-      if (filePath != null) {
-        groupImage =
-            await FirebaseUtils.uploadMedia(filePath, MediaType.profilePicture);
-      }
+      // String? groupImage;
+      // if (filePath != null) {
+      //   groupImage =
+      //       await FirebaseUtils.uploadMedia(filePath, MediaType.profilePicture);
+      // }
       final groupData = await ChatUtils.createGroupChat(
-          gropuName, groupAbout, groupImage, contacts);
+          gropuName, groupAbout, filePath, contacts);
+      emit(CreateGroupChatSuccessState(groupData));
+    } catch (e) {
+      emit(CreateGroupChatFailureState(e.toString()));
+      LoggerUtil.logs(e.toString());
+    }
+  }
+
+
+  Future<void> createGroupChatLocals(String groupId,String gropuName, String groupAbout,
+      List contacts, String? filePath) async {
+    emit(CreateGroupChatLoadingState());
+    try {
+      // String? groupImage;
+      // if (filePath != null) {
+      //   groupImage =
+      //       await FirebaseUtils.uploadMedia(filePath, MediaType.profilePicture);
+      // }
+      final groupData = await ChatUtils.createGroupChatLocals(groupId,
+          gropuName ,groupAbout, filePath, contacts);
       emit(CreateGroupChatSuccessState(groupData));
     } catch (e) {
       emit(CreateGroupChatFailureState(e.toString()));
@@ -30,3 +49,5 @@ class CreateGroupChatCubit extends Cubit<CreateGroupChatState> {
     }
   }
 }
+
+

@@ -35,6 +35,7 @@ class OTPCubit extends Cubit<OTPState> {
 
       String? fcmToken = await FirebaseMessaging.instance.getToken();
 
+
       if (userData != null) {
         if (userData.isProfileCompleted == true) {
           if (fcmToken != null) {

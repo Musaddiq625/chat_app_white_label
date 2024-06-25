@@ -1,3 +1,4 @@
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/app_constants.dart';
@@ -11,6 +12,7 @@ class SearchTextField extends StatelessWidget {
   final Widget? action;
   final Color filledColor;
   final Color iconColor;
+  final bool searching;
   final Function(String)? onSearch;
   final TextEditingController? textEditingController;
 
@@ -18,6 +20,7 @@ class SearchTextField extends StatelessWidget {
     required this.title,
     required this.hintText,
     this.action,
+    this.searching = false,
     this.filledColor= ColorConstants.darkBackgrounddColor,
     this.iconColor = ColorConstants.white,
     required this.onSearch,
@@ -60,14 +63,29 @@ class SearchTextField extends StatelessWidget {
 
                 child: Padding(
                     padding: EdgeInsets.only(right: 20, top: 8),
-                    child: IconComponent(
+                    child: searching==false ?
+                    IconComponent(
                       iconData: Icons.search_rounded,
                       borderColor: ColorConstants.transparent,
                       backgroundColor: ColorConstants.transparent,
                       iconColor: iconColor,//ColorConstants.lightGray.withOpacity(0.5),
                       iconSize: 25,
                       circleSize: 25,
-                    )),
+                    ):
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(ColorConstants.grey1),
+                          ),
+                        )
+                      ],
+                    )
+
+                ),
               ),
               hintText: hintText,
               hintStyle: TextStyle(color: Colors.grey, fontSize: 15),

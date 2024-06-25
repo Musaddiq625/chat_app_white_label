@@ -38,7 +38,7 @@ class _NameScreenState extends State<NameScreen> {
   @override
   Widget build(BuildContext context) {
     return UIScaffold(
-        appBar: AppBarComponent(""),
+        appBar: AppBarComponent("",showBackbutton: false,),
         removeSafeAreaPadding: false,
         bgColor: themeCubit.backgroundColor,
         widget: onBoarding());

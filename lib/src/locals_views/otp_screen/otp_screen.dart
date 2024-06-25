@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chat_app_white_label/globals.dart';
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/app_bar_component.dart';
 import 'package:chat_app_white_label/src/components/button_component.dart';
@@ -26,11 +25,13 @@ import 'package:chat_app_white_label/src/utils/service/validation_service.dart';
 import 'package:chat_app_white_label/src/utils/shared_preferences_util.dart';
 import 'package:chat_app_white_label/src/utils/string_utils.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/shared_preference_constants.dart';
+import '../../utils/firebase_utils.dart';
 
 class OtpScreen extends StatefulWidget {
   final OtpArg otpArg;
@@ -47,6 +48,7 @@ class _OtpScreenState extends State<OtpScreen> {
   Timer? _timer;
   int _counter = 30;
   SharedPreferencesUtil sharedPreferencesUtil = getIt<SharedPreferencesUtil>();
+
   // late UserModel userModel ;
   late OTPCubit otpCubit = BlocProvider.of<OTPCubit>(context);
   late final themeCubit = BlocProvider.of<ThemeCubit>(context);
@@ -54,7 +56,6 @@ class _OtpScreenState extends State<OtpScreen> {
   late final onBoardingCubit = BlocProvider.of<OnboardingCubit>(context);
   final TextEditingController _phoneNumbercontroller = TextEditingController();
   final TextEditingController _countryCodeController =
-
       TextEditingController(text: '+92');
   bool isFieldsValidate = false;
   final _formKey = GlobalKey<FormState>();
@@ -66,29 +67,140 @@ class _OtpScreenState extends State<OtpScreen> {
       if (state is OTPLoadingState) {
         LoadingDialog.showLoadingDialog(context);
       }
-      else if (state is OTPSuccessUserState){
-        LoggerUtil.logs("state.userModel?.toJson  ${state.userModel?.toJson()}");
+      else if (state is OTPSuccessPhoneUserState) {
+        final replacedPhoneNumber =onBoardingCubit.userModel.phoneNumber?.replaceAll('+', '');
+        final userData = await FirebaseUtils.getCurrentFirebaseUser(
+            replacedPhoneNumber!);
+
+
+        print("userData ${ onBoardingCubit.userModel.toJson()}");
+        if (userData == null) {
+          print("0 state.userModel!.phoneNumber! ${onBoardingCubit.userModel.phoneNumber!}");
+          await FirebaseUtils.createFirebaseUser(onBoardingCubit.userModel.phoneNumber!);
+        } else {
+          print(
+              "1 state.userModel!.phoneNumber! ${onBoardingCubit.userModel.phoneNumber!}");
+        }
+        NavigationUtil.push(context, RouteConstants.nameScreen);
+      }
+      else if (state is OTPSuccessUserState) {
+        LoggerUtil.logs(
+            "state.userModel?.toJson  ${state.userModel?.toJson()}");
         onBoardingCubit.initializeUserData(state.userModel!);
-        AppConstants.userId =state.userModel?.id;
-        LoggerUtil.logs("state.userModel?.id.toString() friends ${state.userModel?.friends.toString()}");
-        LoggerUtil.logs("state.userModel?.id.toString() friendConnection ${state.userModel?.friendConnection.toString()}");
+        AppConstants.userId = state.userModel?.id;
+        LoggerUtil.logs(
+            "state.userModel?.id.toString() friends ${state.userModel?.friends.toString()}");
+        LoggerUtil.logs(
+            "state.userModel?.id.toString() friendConnection ${state.userModel?.friendConnection.toString()}");
         appCubit.setToken(state.userModel?.token);
+        appCubit.setUserId(state.userModel?.id);
         appCubit.setUserModel(state.userModel);
 
-        final serializedUserModel = await getIt<SharedPreferencesUtil>().getString(SharedPreferenceConstants.userModel);
-        UserModel userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
-        LoggerUtil.logs("sharedPreferencesUtil userModel Value ${userModel.toJson()}");
+        final serializedUserModel = await getIt<SharedPreferencesUtil>()
+            .getString(SharedPreferenceConstants.userModel);
+        UserModel userModel =
+            UserModel.fromJson(jsonDecode(serializedUserModel!));
+        LoggerUtil.logs(
+            "sharedPreferencesUtil userModel Value ${userModel.toJson()}");
         DioClientNetwork.initializeDio(removeToken: false);
-        LoadingDialog.hideLoadingDialog(context);
-        if(state.userModel?.isProfileCompleted == true){
-          NavigationUtil.push(context, RouteConstants.mainScreen);
+        if(userModel.phoneNumber != null && (userModel.phoneNumber ?? "").isNotEmpty && userModel.phoneNumber != "null"){
+          if (onBoardingCubit.userModel.isProfileCompleted == true) {
+
+            final replacedPhoneNumber =onBoardingCubit.userModel.phoneNumber?.replaceAll('+', '');
+            String? fcmToken = await FirebaseMessaging.instance.getToken();
+            final userData = await FirebaseUtils.getCurrentFirebaseUser(replacedPhoneNumber!);
+            FirebaseUtils.user = await FirebaseUtils.getCurrentFirebaseUser(replacedPhoneNumber!);
+
+
+            print("userData  onBoardingCubit ${ onBoardingCubit.userModel.toJson()}");
+            print("userData ${ userData?.toJson()}");
+            if (userData == null) {
+              print(
+                  "0 state.userModel!.phoneNumber! ${onBoardingCubit.userModel.phoneNumber!}");
+              await FirebaseUtils.createFirebaseUser(onBoardingCubit.userModel.phoneNumber!);
+            } else {
+              print(
+                  "1 state.userModel!.phoneNumber! ${onBoardingCubit.userModel.phoneNumber!}");
+            }
+            print("Fcm token ${fcmToken}");
+            await FirebaseUtils.addFcmToken(
+                onBoardingCubit.userModel.phoneNumber!, fcmToken!);
+            await FirebaseUtils.updateUser(
+                onBoardingCubit.userModel.firstName!,
+                onBoardingCubit.userModel.aboutMe!,
+                onBoardingCubit.userModel.userPhotos!.first!,
+                onBoardingCubit.userModel.phoneNumber!);
+
+
+            FirebaseUtils.user = await FirebaseUtils.getCurrentFirebaseUser(
+                replacedPhoneNumber!);
+            LoadingDialog.hideLoadingDialog(context);
+            NavigationUtil.push(context, RouteConstants.mainScreen);
+          }
+          else if ((onBoardingCubit.userModel.gender ?? "").isNotEmpty &&
+              onBoardingCubit.userModel.gender != null) {
+            NavigationUtil.push(context, RouteConstants.aboutYouScreen,
+                args: true);
+          } else if ((onBoardingCubit.userModel.userPhotos ?? []).isNotEmpty) {
+            NavigationUtil.push(context, RouteConstants.dobScreen, args: true);
+          } else {
+            NavigationUtil.push(context, RouteConstants.nameScreen);
+          }
         }
         else{
-          NavigationUtil.push(context, RouteConstants.nameScreen);
+          NavigationUtil.push(context, RouteConstants.signUpNumber);
         }
-      }
-      else if (state is OTPSuccessNewUserState) {
 
+        // if((state.userModel?.userPhotos??[]).isNotEmpty){
+        //   NavigationUtil.push(context, RouteConstants.dobScreen);
+        // }
+        // else if((state.userModel?.gender??"").isNotEmpty && state.userModel?.gender != null ){
+        //   NavigationUtil.push(context, RouteConstants.aboutYouScreen);
+        // }
+        // else if(state.userModel?.isProfileCompleted == true){
+        //   NavigationUtil.push(context, RouteConstants.mainScreen);
+        // }
+        // else{
+        //   NavigationUtil.push(context, RouteConstants.nameScreen);
+        // }
+
+        // if ((state.userModel?.userPhotos?? []).isNotEmpty) {
+        //   NavigationUtil.push(context,  RouteConstants.dobScreen,args: true);
+        // } else if ((state.userModel?.gender?? "").isNotEmpty && state.userModel?.gender!= null) {
+        //   NavigationUtil.push(context,  RouteConstants.aboutYouScreen,args: true);
+        // } else if (state.userModel?.isProfileCompleted == true) {
+        //   NavigationUtil.push(context,  RouteConstants.mainScreen);
+        // } else {
+        //   NavigationUtil.push(context,  RouteConstants.nameScreen);
+        // }
+
+        //  if (widget.otpArg.type == "email") {
+        //   NavigationUtil.push(context, RouteConstants.signUpNumber);
+        // }
+        //  else if(widget.otpArg.type == "number"){
+        //    if (state.userModel?.isProfileCompleted == true) {
+        //      String? fcmToken = await FirebaseMessaging.instance.getToken();
+        //      print("Fcm token ${fcmToken}");
+        //      await FirebaseUtils.addFcmToken(state.userModel!.id!, fcmToken!);
+        //      await FirebaseUtils.updateUser(
+        //          state.userModel!.firstName!,
+        //          state.userModel!.aboutMe!,
+        //          state.userModel!.userPhotos!.first!,
+        //          state.userModel!.id!
+        //      );
+        //      NavigationUtil.push(context,  RouteConstants.mainScreen);
+        //    }
+        //
+        //    else if ((state.userModel?.gender?? "").isNotEmpty && state.userModel?.gender!= null) {
+        //      NavigationUtil.push(context,  RouteConstants.aboutYouScreen,args: true);
+        //    }
+        //    else if ((state.userModel?.userPhotos?? []).isNotEmpty) {
+        //      NavigationUtil.push(context,  RouteConstants.dobScreen,args: true);
+        //    }  else {
+        //      NavigationUtil.push(context,  RouteConstants.nameScreen);
+        //    }
+        //  }
+      } else if (state is OTPSuccessNewUserState) {
         // if (state.fcmToken != null) {
         //   await FirebaseUtils.addFcmToken(state.phoneNumber, state.fcmToken!);
         // }
@@ -121,25 +233,21 @@ class _OtpScreenState extends State<OtpScreen> {
           NavigationUtil.push(context, RouteConstants.nameScreen,
               args: "OnBoarding");
         }
-      }
-      else if (state is OtpSuccessResendState) {
+      } else if (state is OtpSuccessResendState) {
         LoadingDialog.hideLoadingDialog(context);
         setState(() {
-          _counter = 15; // Reset the counter
+          _counter = 30; // Reset the counter
           startTimer(); // Restart the timer
         });
-      }
-      else if (state is OTPSuccessOldUserState) {
+      } else if (state is OTPSuccessOldUserState) {
         NavigationUtil.popAllAndPush(context, RouteConstants.mainScreen);
-      }
-      else if (state is OTPFailureState) {
+      } else if (state is OTPFailureState) {
         LoadingDialog.hideLoadingDialog(context);
         // ToastComponent.showToast(state.error.toString(), context: context);
         // AppConstants.openKeyboard(context);
 
         ToastComponent.showToast("Invalid Otp", context: context);
-      }
-      else if (state is OTPCancleState) {
+      } else if (state is OTPCancleState) {
         LoadingDialog.hideLoadingDialog(context);
       }
     }, builder: (context, state) {
@@ -241,11 +349,12 @@ class _OtpScreenState extends State<OtpScreen> {
                 if (_counter <= 0)
                   GestureDetector(
                     onTap: () {
-                      otpCubit.resendOtptoUser(
-                        widget.otpArg.phoneNumber,
-                        // otpController.text,
-                        // widget.otpScreenArg.phoneNumber,
-                      );
+                      // otpCubit.resendOtptoUser(
+                      //   widget.otpArg.phoneNumber, // otpController.text,
+                      //   // widget.otpScreenArg.phoneNumber,
+                      // );
+
+                      otpCubit.resendOtpUser(widget.otpArg.phoneNumber);
                     },
                     child: TextComponent(StringConstants.resendCode,
                         style: TextStyle(
@@ -298,7 +407,8 @@ class _OtpScreenState extends State<OtpScreen> {
     //     widget.otpArg.phoneNumber,
     //   );
 
-      await otpCubit.verifyOtpUser( widget.otpArg.phoneNumber, otpController.text);
+    await otpCubit.verifyOtpUser(
+        widget.otpArg.type, widget.otpArg.phoneNumber, otpController.text);
     // }
   }
 }

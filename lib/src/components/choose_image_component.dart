@@ -5,6 +5,7 @@ import 'package:chat_app_white_label/src/components/button_component.dart';
 import 'package:chat_app_white_label/src/components/icon_component.dart';
 import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/tag_component.dart';
+import 'package:chat_app_white_label/src/constants/asset_constants.dart';
 import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
@@ -18,11 +19,13 @@ class ChooseImageComponent extends StatefulWidget {
   final Function(XFile image) onImagePick;
   final bool isCurrentProfilePic;
   final bool showImageSelectionBottomSheet;
+  final Function()? onDeleteTap;
 
   const ChooseImageComponent(
       {super.key,
       required this.image,
       required this.onImagePick,
+        this.onDeleteTap,
       this.isCurrentProfilePic = false,
       this.showImageSelectionBottomSheet = true});
 
@@ -111,6 +114,7 @@ class _ChooseImageComponentState extends State<ChooseImageComponent> {
                       ? Stack(
                           fit: StackFit.expand,
                           children: [
+
                             ImageComponent(
                               height: 250,
                               imgUrl: widget.image,
@@ -120,9 +124,10 @@ class _ChooseImageComponentState extends State<ChooseImageComponent> {
                                 );
                               },
                             ),
+
                             Positioned(
                               left: 5,
-                              top: 150,
+                              top: 130,
                               child: TagComponent(
                                 backgroundColor: themeCubit.primaryColor,
                                 customFontWeight: FontWeight.bold,
@@ -130,17 +135,48 @@ class _ChooseImageComponentState extends State<ChooseImageComponent> {
                                 onTap: () {},
                               ),
                             ),
+                            Positioned(
+                              right: -6,
+                              top:-10,
+                              child: IconComponent(
+                                svgData: AssetConstants.delete,
+                                svgDataCheck: false,
+                                backgroundColor: ColorConstants.darkBackgrounddColor.withOpacity(0.6),
+                                circleSize: 50,
+                                // iconData: Icons.delete_outline_sharp,
+                                iconColor: ColorConstants.red,
+                                onTap: widget.onDeleteTap,
+                              ),
+                            ),
                           ],
                         )
-                      : ImageComponent(
-                          height: 250,
-                          imgUrl: widget.image,
-                          imgProviderCallback: (imgProvider) {
-                            return Container(
-                              color: Colors.red,
-                            );
-                          },
-                        ),
+                      : Stack(
+                    fit: StackFit.expand,
+                        children: [
+                          ImageComponent(
+                              height: 250,
+                              imgUrl: widget.image,
+                              imgProviderCallback: (imgProvider) {
+                                return Container(
+                                  color: Colors.red,
+                                );
+                              },
+                            ),
+                          Positioned(
+                            right: -6,
+                            top:-10,
+                            child: IconComponent(
+                              svgData: AssetConstants.delete,
+                              svgDataCheck: false,
+                              backgroundColor: ColorConstants.darkBackgrounddColor.withOpacity(0.6),
+                              circleSize: 50,
+                              // iconData: Icons.delete_outline_sharp,
+                              iconColor: ColorConstants.red,
+                              onTap: widget.onDeleteTap,
+                            ),
+                          ),
+                        ],
+                      ),
                   // Stack(
                   //   fit: StackFit.expand,
                   //   children: [

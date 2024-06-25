@@ -4,6 +4,7 @@ import 'package:aws_s3_upload/aws_s3_upload.dart';
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_white_label/src/models/user_model.dart';
 import 'package:chat_app_white_label/src/network/repositories/onboarding_repository.dart';
+import 'package:chat_app_white_label/src/utils/logger_util.dart';
 import 'package:chat_app_white_label/src/wrappers/more_about_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,6 +38,10 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
 
   void setDobValues(String? dob) {
     userModel = userModel.copyWith(dateOfBirth: dob);
+  }
+
+  void setPhoneNumberValues(String? phoneNumberValues) {
+    userModel = userModel.copyWith(phoneNumber: phoneNumberValues);
   }
 
   void setAboutMeValues(String? aboutMe) {
@@ -80,6 +85,7 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
       // Map each imagePath to a Future that completes with the URL of the uploaded image
       List<Future<String?>> uploadFutures = profileImages.map((imagePath) async {
         final file = File(imagePath);
+        print("file $file");
         if (!file.existsSync()) {
           throw Exception('File does not exist: $imagePath');
         }
@@ -95,7 +101,7 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
             domain: "linodeobjects.com",
             metadata: {"test": "test"}
         );
-
+print("ImageUrl ${uploadedImageUrl}");
         // Return the URL of the uploaded image
         return uploadedImageUrl;
       }).toList();
@@ -130,14 +136,16 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
   userDetailAboutYouToInterestStep(String userId, String bio,
       SocialLink? socialLink, MoreAbout? moreAbout, Interest? interest, bool? isProfileCompleted ) async {
     emit(OnBoardingUserAboutYouToInterestLoadingState());
-    try {
+    // try {
+      LoggerUtil.logs("0 userDetailAboutYouToInterestStep resp data ");
       var resp = await OnBoardingRepository.updateUserAboutYouToInterest(
           userId, bio, socialLink, moreAbout, interest,isProfileCompleted);
+      LoggerUtil.logs("1 userDetailAboutYouToInterestStep resp data ${resp.data?.toJson()}");
       emit(OnBoardingAboutYouToInterestSuccessState(resp.data));
-      print("resp data ${resp.toJson()}");
-    } catch (e) {
-      emit(OnBoardingAboutYouToInterestFailureState(e.toString()));
-    }
+      // print("resp data ${resp.toJson()}");
+    // } catch (e) {
+    //   emit(OnBoardingAboutYouToInterestFailureState(e.toString()));
+    // }
   }
 
   Future<void> updateUserPhoto(List<String?> profileImages) async {
@@ -147,7 +155,7 @@ class OnboardingCubit extends Cubit<OnBoardingState> {
       userModel = userModel.copyWith(userPhotos: profileImages);
 
       var resp = await OnBoardingRepository.updateUserNameWithPhoto(
-          userModel.id, userModel.firstName, userModel.lastName, profileImages);
+          userModel.id, userModel.firstName, userModel.lastName,userModel.phoneNumber,profileImages);
       emit(OnBoardingUserNameImageSuccessState(resp.data));
     } catch (e) {
       emit(OnBoardingUserNameImageFailureState(e.toString()));

@@ -13,6 +13,7 @@ import 'package:chat_app_white_label/src/components/image_component.dart';
 import 'package:chat_app_white_label/src/components/joinBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/profile_image_component.dart';
 import 'package:chat_app_white_label/src/components/search_text_field_component.dart';
+import 'package:chat_app_white_label/src/components/shareBottomSheetComponent.dart';
 import 'package:chat_app_white_label/src/components/text_component.dart';
 import 'package:chat_app_white_label/src/components/text_field_component.dart';
 import 'package:chat_app_white_label/src/components/toast_component.dart';
@@ -23,9 +24,11 @@ import 'package:chat_app_white_label/src/constants/color_constants.dart';
 import 'package:chat_app_white_label/src/constants/divier_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_constants.dart';
 import 'package:chat_app_white_label/src/constants/font_styles.dart';
+import 'package:chat_app_white_label/src/constants/route_constants.dart';
 import 'package:chat_app_white_label/src/constants/shared_preference_constants.dart';
 import 'package:chat_app_white_label/src/constants/size_box_constants.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
+import 'package:chat_app_white_label/src/locals_views/create_event_screen/cubit/event_cubit.dart';
 import 'package:chat_app_white_label/src/locals_views/group_screens/cubit/group_cubit.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
 import 'package:chat_app_white_label/src/models/event_model.dart';
@@ -37,11 +40,12 @@ import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ViewGroupScreen extends StatefulWidget {
-  String? groupId;
+  ViewGroupArg? viewGroupArg;
 
-  ViewGroupScreen({super.key, this.groupId});
+  ViewGroupScreen({super.key, this.viewGroupArg});
 
   @override
   State<ViewGroupScreen> createState() => _ViewGroupScreenState();
@@ -78,19 +82,20 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
   ];
 
   final List<ContactModel> contacts = [
-    ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
-    ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
-    ContactModel('Json Ebert', 'Tester', "", "03323333333"),
-    ContactModel('Mack', 'Intern', "", "03312233445"),
-    ContactModel('Julia', 'Developer', "", "88552233644"),
-    ContactModel('Rose', 'Human Resource', "", "55366114532"),
-    ContactModel('Frank', 'xyz', "", "25651412344"),
-    ContactModel('Taylor', 'Test', "", "5511772266"),
+    // ContactModel('Jesse Ebert', 'Graphic Designer', "", "00112233455"),
+    // ContactModel('Albert Ebert', 'Manager', "", "45612378123"),
+    // ContactModel('Json Ebert', 'Tester', "", "03323333333"),
+    // ContactModel('Mack', 'Intern', "", "03312233445"),
+    // ContactModel('Julia', 'Developer', "", "88552233644"),
+    // ContactModel('Rose', 'Human Resource', "", "55366114532"),
+    // ContactModel('Frank', 'xyz', "", "25651412344"),
+    // ContactModel('Taylor', 'Test', "", "5511772266"),
   ];
 
   TextEditingController searchControllerConnections = TextEditingController();
 
   late final groupCubit = BlocProvider.of<GroupCubit>(context);
+  late final eventCubit = BlocProvider.of<EventCubit>(context);
   List<EventRequest>? acceptedRequests;
   String? userId;
   UserModel? userModel;
@@ -98,16 +103,21 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final serializedUserModel = await getIt<SharedPreferencesUtil>()
           .getString(SharedPreferenceConstants.userModel);
       userModel = UserModel.fromJson(jsonDecode(serializedUserModel!));
-
+      print("widget.viewGroupArg?.joinGroup ${widget.viewGroupArg?.joinGroup}");
       setState(() {
+        joinGroup = widget.viewGroupArg?.joinGroup ?? false;
+        print("joinGroup 00 $joinGroup");
+        groupMember = widget.viewGroupArg?.groupMember ?? false;
+        print("joinGroup 000 $joinGroup");
         userId = "${userModel?.id}";
       });
       groupCubit.eventModel = EventModel();
-      await groupCubit.viewGroupById(widget.groupId ?? "");
+      await groupCubit.viewGroupById(widget.viewGroupArg?.groupId ?? "");
       yourEventRequest = groupCubit.eventModel.eventRequest
           ?.where((eventRequest) => eventRequest.userId == userId)
           .toList()
@@ -123,9 +133,9 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
     return BlocConsumer<GroupCubit, GroupState>(
       listener: (context, state) {
         if (state is ViewGroupLoadingState) {
-          LoadingDialog.showLoadingDialog(context);
+          // LoadingDialog.showLoadingDialog(context);
         } else if (state is ViewGroupSuccessState) {
-          LoadingDialog.hideLoadingDialog(context);
+          // LoadingDialog.hideLoadingDialog(context);
           groupCubit.initializeEventData(state.eventModel!);
           totalAcceptedMembers = groupCubit.eventModel.eventRequest
               ?.where(
@@ -136,12 +146,25 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
               ?.where((eventRequest) => eventRequest.userId == userId)
               .firstWhere(
                 (eventRequest) => eventRequest.userId == userId,
-            orElse: () => EventRequest(), // Fallback to null if no match is found
-          );
+                orElse: () =>
+                    EventRequest(), // Fallback to null if no match is found
+              );
+          print(
+              " 01 yourEventRequestyourEventRequest${yourEventRequest?.toJson()}");
+          if (yourEventRequest?.requestStatus == "Accepted") {
+            print("groupMember 01 $groupMember");
+            setState(() {
+              joinGroup = true;
+              groupMember = true;
+            });
+          }
+
           acceptedRequests = groupCubit.eventModel.eventRequest
               ?.where(
                   (eventRequest) => eventRequest.requestStatus == "Accepted")
               .toList();
+
+          setState(() {});
         } else if (state is ViewGroupFailureState) {
           LoadingDialog.hideLoadingDialog(context);
           ToastComponent.showToast(state.toString(), context: context);
@@ -150,11 +173,11 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
       builder: (context, state) {
         return UIScaffold(
           removeSafeAreaPadding: false,
-          bgColor: ColorConstants.backgroundColor,
+          bgColor: themeCubit.backgroundColor,
           widget: SingleChildScrollView(
             // physics: BouncingScrollPhysics(),
             child: Container(
-              color: themeCubit.backgroundColor,
+              // color: themeCubit.backgroundColor,
               child: Column(
                 children: [_eventWidget()],
               ),
@@ -167,29 +190,31 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(),
-                      ((yourEventRequest?.id ?? "").isEmpty)?
-                      ButtonWithIconComponent(
-                        btnText: '  ${StringConstants.join}',
-                        icon: Icons.check_circle,
-                        bgcolor: themeCubit.primaryColor,
-                        widthSpace: 30,
-                        // btnTextColor: themeCubit.textColor,
-                        onPressed: () {
-                          JoinBottomSheet.showJoinBottomSheet(
-                              context,
-                              _messageController,
-                              groupCubit.eventModel.id ?? "",
-                              groupCubit.eventModel.userId,
-                              groupCubit.eventModel.userName,
-                              groupCubit.eventModel.userImages,
-                              groupCubit.eventModel.title ?? "",
-                              "Group",
-                              "ABC",
-                              "",
-                              questions: groupCubit.eventModel.question);
-                          // _showJoinBottomSheet();
-                        },
-                      ):  SizedBox(),
+                      ((yourEventRequest?.id ?? "").isEmpty &&
+                              (groupCubit.eventModel.title != null))
+                          ? ButtonWithIconComponent(
+                              btnText: '  ${StringConstants.join}',
+                              icon: Icons.check_circle,
+                              bgcolor: themeCubit.primaryColor,
+                              widthSpace: 30,
+                              // btnTextColor: themeCubit.textColor,
+                              onPressed: () {
+                                JoinBottomSheet.showJoinBottomSheet(
+                                    context,
+                                    _messageController,
+                                    groupCubit.eventModel.id ?? "",
+                                    groupCubit.eventModel.userId,
+                                    groupCubit.eventModel.userName,
+                                    groupCubit.eventModel.userImages,
+                                    groupCubit.eventModel.title ?? "",
+                                    "Group",
+                                    "ABC",
+                                    "",
+                                    questions: groupCubit.eventModel.question);
+                                // _showJoinBottomSheet();
+                              },
+                            )
+                          : SizedBox(),
                     ],
                   )
                 : (!groupMember)
@@ -205,6 +230,10 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                             bgcolor: ColorConstants.blackLight,
                             // btnTextColor: themeCubit.textColor,
                             onPressed: () {
+                              eventCubit.sendGroupJoinRequest(
+                                  groupCubit.eventModel.id ?? "",
+                                  "rejected",
+                                  eventCubit.eventRequestModel);
                               // _showJoinBottomSheet();
                             },
                           ),
@@ -215,10 +244,11 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                             widthSpace: 30,
                             // btnTextColor: themeCubit.textColor,
                             onPressed: () {
-                              JoinBottomSheet.showJoinBottomSheet(
+                              JoinBottomSheet.showJoinBottomSheetGroup(
                                   context,
                                   _messageController,
                                   groupCubit.eventModel.id ?? "",
+                                  "accepted",
                                   groupCubit.eventModel.userId,
                                   groupCubit.eventModel.userName,
                                   groupCubit.eventModel.userImages,
@@ -239,7 +269,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                               iconData: Icons.favorite,
                               backgroundColor: ColorConstants.blackLight,
                               circleSize: 40,
-                              iconSize: 25,
+                              iconSize: 20,
                               onTap: () {
                                 // _shareEventBottomSheet();
                               }),
@@ -249,7 +279,17 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                             svgData: AssetConstants.share,
                             backgroundColor: ColorConstants.blackLight,
                             circleSize: 40,
-                            iconSize: 20,
+                            iconSize: 15,
+                            onTap: () {
+                              ShareBottomSheet.shareBottomSheet(
+                                  context,
+                                  groupCubit.eventModel.title!,
+                                  groupCubit.eventModel.id!,
+                                  [],
+                                  (groupCubit.eventModel.type == "event")
+                                      ? StringConstants.event
+                                      : StringConstants.group);
+                            },
                             // onTap: _showMoreBottomSheet,
                           ),
                           SizedBoxConstants.sizedBoxTenW(),
@@ -270,6 +310,7 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                               widthSpace: 30,
                               // btnTextColor: themeCubit.textColor,
                               onPressed: () {
+                                // NavigationUtil.push(context, RouteConstants.groupChatRoomScreen args: )
                                 // _showJoinBottomSheet();
                               },
                             ),
@@ -283,17 +324,21 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
     );
   }
 
-
-
   Widget _eventWidget() {
     return Stack(children: [
       (groupCubit.eventModel.images?.first != null)
-          ? Image.network(
-              groupCubit.eventModel.images?.first ?? "",
-              // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
-              fit: BoxFit.fill,
-              width: double.infinity,
-              height: 500,
+          ? GestureDetector(
+              onTap: () {
+                NavigationUtil.push(context, RouteConstants.viewFullImage,
+                    args: groupCubit.eventModel.images?.first ?? "");
+              },
+              child: Image.network(
+                groupCubit.eventModel.images?.first ?? "",
+                // "https://img.freepik.com/free-photo/mesmerizing-view-high-buildings-skyscrapers-with-calm-ocean_181624-14996.jpg",
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 500,
+              ),
             )
           : Container(
               color: ColorConstants.black,
@@ -309,65 +354,149 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
               iconBgColor: ColorConstants.iconBg,
             ),
             SizedBoxConstants.sizedBoxEightyH(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                (groupCubit.eventModel.title != null)
-                    ? Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: TextComponent(
-                      groupCubit.eventModel.title ?? "", //groupName,
-                      maxLines: 6,
-                      style: FontStylesConstants.style38(
-                          color: ColorConstants.white)),
-                )
-                    : SizedBox(),
-                SizedBoxConstants.sizedBoxTenH(),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Row(
+            (groupCubit.eventModel.title != null)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconComponent(
-                        iconData: (groupCubit.eventModel.isPublic ?? true)
-                            ? Icons.lock_open_outlined
-                            : Icons.lock,
-                        backgroundColor: ColorConstants.transparent,
-                        customIconText: (groupCubit.eventModel.isPublic ?? true)
-                            ? StringConstants.public
-                            : StringConstants.private,
-                        circleSize: 60,
-                        circleHeight: 35,
-                        iconSize: 20,
+                      (groupCubit.eventModel.title != null)
+                          ? Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: TextComponent(
+                                  groupCubit.eventModel.title ??
+                                      "", //groupName,
+                                  maxLines: 6,
+                                  style: FontStylesConstants.style38(
+                                      color: ColorConstants.white)),
+                            )
+                          : SizedBox(),
+                      SizedBoxConstants.sizedBoxTenH(),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Row(
+                          children: [
+                            IconComponent(
+                              iconData: (groupCubit.eventModel.isPublic ?? true)
+                                  ? Icons.lock_open_outlined
+                                  : Icons.lock,
+                              backgroundColor: ColorConstants.transparent,
+                              customIconText:
+                                  (groupCubit.eventModel.isPublic ?? true)
+                                      ? StringConstants.public
+                                      : StringConstants.private,
+                              circleSize: 60,
+                              circleHeight: 35,
+                              iconSize: 20,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
+                  )
+                : Shimmer.fromColors(
+                    baseColor: ColorConstants.lightGray, //Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 10, top: 15, left: 20),
+                          height: 15,
+                          width: AppConstants.responsiveWidth(context,
+                              percentage: 30),
+                          color: ColorConstants.white,
+                        ),
+                        SizedBoxConstants.sizedBoxTenH(),
+                        Container(
+                          margin: const EdgeInsets.only(
+                              bottom: 10, top: 15, left: 20),
+                          height: 15,
+                          width: AppConstants.responsiveWidth(context,
+                              percentage: 30),
+                          color: ColorConstants.white,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
 
             SizedBoxConstants.sizedBoxTenH(),
-            Container(
-              width: AppConstants.responsiveWidth(context, percentage: 100),
-              //MediaQuery.of(context).size.width * 0.8, // Adjust the width as needed
-              decoration: BoxDecoration(
-                color: ColorConstants.darkBackgrounddColor,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: ContactCard(
-                  name: groupCubit.eventModel.userName ?? "",
-                  //"Jesse",
-                  url: groupCubit.eventModel.userImages ?? "",
-                  //"",
-                  title: "Group Creator",
-                  showShareIcon: false,
-                  showDivider: false,
-                  imageSize: 40,
-                ),
-              ),
-            ),
-            _aboutTheGroup(),
+            (groupCubit.eventModel.title != null)
+                ? Container(
+                    width:
+                        AppConstants.responsiveWidth(context, percentage: 100),
+                    //MediaQuery.of(context).size.width * 0.8, // Adjust the width as needed
+                    decoration: BoxDecoration(
+                      color: ColorConstants.darkBackgrounddColor,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final serializedUserModel =
+                              await getIt<SharedPreferencesUtil>().getString(
+                                  SharedPreferenceConstants.userModel);
+                          userModel = UserModel.fromJson(
+                              jsonDecode(serializedUserModel!));
+                          // userId = await getIt<SharedPreferencesUtil>()
+                          //     .getString(SharedPreferenceConstants.userIdValue);
+                          String? myId = userModel?.id;
+
+                          if (groupCubit.eventModel.userId != myId) {
+                            NavigationUtil.push(
+                                context, RouteConstants.profileScreenLocal,
+                                args: groupCubit.eventModel.userId);
+                          } else {
+                            print(
+                                "My Id $myId  accpeted id ${groupCubit.eventModel.userId}");
+                            NavigationUtil.push(
+                                context, RouteConstants.mainScreen,
+                                args: "4");
+                          }
+                          // mainScreenCubit.updateIndex(4);}
+                        },
+                        child: ContactCard(
+                          name: groupCubit.eventModel.userName ?? "",
+                          //"Jesse",
+                          url: groupCubit.eventModel.userImages ?? "",
+                          //"",
+                          title: "Group Creator",
+                          showShareIcon: false,
+                          showDivider: false,
+                          imageSize: 40,
+                        ),
+                      ),
+                    ),
+                  )
+                : Shimmer.fromColors(
+                    baseColor: ColorConstants.lightGray, //Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      width: AppConstants.responsiveWidth(context,
+                          percentage: 100),
+                      //MediaQuery.of(context).size.width * 0.8, // Adjust the width as needed
+                      decoration: BoxDecoration(
+                        color: ColorConstants.darkBackgrounddColor,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        child: ContactCard(
+                          name: groupCubit.eventModel.userName ?? "",
+                          //"Jesse",
+                          url: groupCubit.eventModel.userImages ?? "",
+                          //"",
+                          title: "Group Creator",
+                          showShareIcon: false,
+                          showDivider: false,
+                          imageSize: 40,
+                        ),
+                      ),
+                    ),
+                  ),
+            (groupCubit.eventModel.title != null)
+                ? _aboutTheGroup()
+                : _shimmerAboutTheGroup(),
             if (groupMember) SizedBoxConstants.sizedBoxTenH(),
             if (groupMember)
               Container(
@@ -386,7 +515,12 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                     bgcolor: ColorConstants.transparent,
                     textColor: ColorConstants.black,
                     buttonText: StringConstants.inviteFriends,
-                    onPressed: () {}),
+                    onPressed: () {
+                      ShareBottomSheet.shareBottomSheet(
+                          context, "", "", [], StringConstants.event);
+                      // showShareBottomSheet(context,contacts);
+                      // ShareBottomSheet(contacts: contacts,contextValue: context,);
+                    }),
               ),
             if (groupMember) SizedBoxConstants.sizedBoxTenH(),
 
@@ -531,6 +665,123 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
         ));
   }
 
+  Widget _shimmerAboutTheGroup() {
+    return Shimmer.fromColors(
+      baseColor: ColorConstants.lightGray, //Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                20.0), // Adjust the border radius as needed
+          ),
+          color: themeCubit.darkBackgroundColor,
+          elevation: 0,
+          child: Container(
+            width: AppConstants.responsiveWidth(context),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0, left: 18, right: 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextComponent(StringConstants.aboutTheGroup,
+                        style: FontStylesConstants.style18(
+                            color: themeCubit.primaryColor)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    if (groupCubit.eventModel.description != null &&
+                        (groupCubit.eventModel.description ?? "").isNotEmpty)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _showFullText = !_showFullText;
+                          });
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: _showFullText
+                                    ? groupCubit.eventModel.description
+                                    : ((groupCubit.eventModel.description ?? "")
+                                                    .length >
+                                                150
+                                            ? (groupCubit.eventModel
+                                                        .description ??
+                                                    "")
+                                                .substring(0, 150)
+                                            : groupCubit
+                                                .eventModel.description) ??
+                                        "No description available",
+                                style: TextStyle(color: themeCubit.textColor),
+                              ),
+                              if ((groupCubit.eventModel.description ?? "")
+                                      .length >
+                                  150)
+                                TextSpan(
+                                  text: _showFullText
+                                      ? ' ${StringConstants.showLess}'
+                                      : ' ...${StringConstants.readMore}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: themeCubit.textColor),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              SizedBoxConstants.sizedBoxTwentyH(),
+              // DividerCosntants.divider1,
+              // SizedBoxConstants.sizedBoxTenH(),
+              // Container(
+              //   // padding: const EdgeInsets.only(left: 16, bottom: 8, right: 20),
+              //   child: Column(
+              //     children: [
+              //       // AboutEventComponent(
+              //       //   name: "1456 ${StringConstants.participants}",
+              //       //   detail: "Elena, Ilsa and more",
+              //       //   icon: AssetConstants.happy,
+              //       //   showPersonIcon: true,
+              //       //   selectedImages: images,
+              //       // ),
+              //       // AboutEventComponent(
+              //       //   name: StringConstants.flexibleDate,
+              //       //   detail: StringConstants.dateWillbeDecidelater,
+              //       //   icon: AssetConstants.calendar,
+              //       // ),
+              //       //////location////////
+              //       // AboutEventComponent(
+              //       //   divider: false,
+              //       //   name: "Manchester",
+              //       //   detail: StringConstants.exactLocationAfterJoining,
+              //       //   icon: AssetConstants.marker,
+              //       // ),
+              //       // if (ticketRequired == true)
+              //       // AboutEventComponent(
+              //       //   name: "SR 150",
+              //       //   detail: StringConstants.ticketrequired,
+              //       //   icon: AssetConstants.ticket,
+              //       // ),
+              //       // AboutEventComponent(
+              //       //   divider: false,
+              //       //   name: StringConstants.capacityOf,
+              //       //   detail: StringConstants.limitedGuests,
+              //       //   icon: AssetConstants.tag,
+              //       // ),
+              //       SizedBoxConstants.sizedBoxTenH()
+              //     ],
+              //   ),
+              // ),
+            ]),
+          )),
+    );
+  }
+
   Widget _members() {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -567,7 +818,10 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                   )),
               SizedBoxConstants.sizedBoxThirtyH(),
               if (yourEventRequest?.requestStatus != "Accepted" &&
-                  yourEventRequest != null)
+                  yourEventRequest?.id != null &&
+                  (yourEventRequest?.id ?? "").isNotEmpty &&
+                  yourEventRequest != null &&
+                  yourEventRequest != "null")
                 Row(
                   children: [
                     Expanded(
@@ -593,9 +847,18 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
                     ),
                   ],
                 ),
-              SizedBoxConstants.sizedBoxTwentyH(),
-              if (yourEventRequest?.requestStatus != "Accepted" && yourEventRequest != null &&(acceptedRequests ?? []).length > 0  )
-                 DividerCosntants.divider1,
+              if (yourEventRequest?.requestStatus != "Accepted" &&
+                  yourEventRequest?.id != null &&
+                  (yourEventRequest?.id ?? "").isNotEmpty &&
+                  yourEventRequest != null &&
+                  yourEventRequest != "null")
+                SizedBoxConstants.sizedBoxTwentyH(),
+              if (yourEventRequest?.requestStatus != "Accepted" &&
+                  yourEventRequest?.id != null &&
+                  (yourEventRequest?.id ?? "").isNotEmpty &&
+                  yourEventRequest != null &&
+                  (acceptedRequests ?? []).length > 0)
+                DividerCosntants.divider1,
               // Row(
               //   children: [
               //     Container(
@@ -633,17 +896,41 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
               // DividerCosntants.divider1,
               ...List.generate(
                   (acceptedRequests ?? []).length,
-                  (index) => ContactCard(
-                      imageSize: 45,
-                      name: acceptedRequests?[index].name ?? "",
-                      title: acceptedRequests?[index].aboutMe ?? "",
-                      url: acceptedRequests?[index].image ?? "",
-                      // contact: contacts[index],
-                      showShareIcon: false)),
+                  (index) => GestureDetector(
+                        onTap: () async {
+                          final serializedUserModel =
+                              await getIt<SharedPreferencesUtil>().getString(
+                                  SharedPreferenceConstants.userModel);
+                          userModel = UserModel.fromJson(
+                              jsonDecode(serializedUserModel!));
+                          // userId = await getIt<SharedPreferencesUtil>()
+                          //     .getString(SharedPreferenceConstants.userIdValue);
+                          String? myId = userModel?.id;
 
-              if( (acceptedRequests ?? []).length > 0)
-              SizedBoxConstants.sizedBoxHundredH(),
+                          if (acceptedRequests?[index].userId != myId) {
+                            NavigationUtil.push(
+                                context, RouteConstants.profileScreenLocal,
+                                args: acceptedRequests?[index].userId);
+                          } else {
+                            print(
+                                "My Id $myId  accpeted id ${acceptedRequests?[index].userId}");
+                            NavigationUtil.push(
+                                context, RouteConstants.mainScreen,
+                                args: "4");
+                          }
+                          // mainScreenCubit.updateIndex(4);
+                        },
+                        child: ContactCard(
+                            imageSize: 45,
+                            name: acceptedRequests?[index].name ?? "",
+                            title: acceptedRequests?[index].aboutMe ?? "",
+                            url: acceptedRequests?[index].image ?? "",
+                            // contact: contacts[index],
+                            showShareIcon: false),
+                      )),
 
+              if ((acceptedRequests ?? []).length > 0)
+                SizedBoxConstants.sizedBoxHundredH(),
             ],
           ),
         )
@@ -1164,4 +1451,12 @@ class _ViewGroupScreenState extends State<ViewGroupScreen> {
       NavigationUtil.pop(context);
     });
   }
+}
+
+class ViewGroupArg {
+  final String groupId;
+  final bool? groupMember;
+  final bool? joinGroup;
+
+  ViewGroupArg(this.groupId, this.groupMember, this.joinGroup);
 }

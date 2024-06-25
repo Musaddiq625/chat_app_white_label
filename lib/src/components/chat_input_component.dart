@@ -1,7 +1,9 @@
 import 'package:chat_app_white_label/main.dart';
 import 'package:chat_app_white_label/src/components/chat_input_icon_component.dart';
 import 'package:chat_app_white_label/src/components/record_button_component.dart';
+import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatInputComponent extends StatefulWidget {
   final TextEditingController controller;
@@ -28,6 +30,7 @@ class ChatInputComponent extends StatefulWidget {
 }
 
 class _ChatInputComponentState extends State<ChatInputComponent> {
+  late final ThemeCubit themeCubit = BlocProvider.of<ThemeCubit>(context);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,6 +41,7 @@ class _ChatInputComponentState extends State<ChatInputComponent> {
           //input field & buttons
           Expanded(
             child: Card(
+              color: themeCubit.darkBackgroundColor,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
               child: Row(
@@ -54,7 +58,7 @@ class _ChatInputComponentState extends State<ChatInputComponent> {
                     onTap: widget.onTextInputTap,
                     decoration: const InputDecoration(
                         hintText: 'Type Something...',
-                        hintStyle: TextStyle(color: Colors.blueAccent),
+                        hintStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none),
                   )),
 
@@ -74,6 +78,7 @@ class _ChatInputComponentState extends State<ChatInputComponent> {
 
                   //voice message mutton
                   RecordButtonComponent(
+
                     onRecordingFinished: widget.onRecordingFinished,
                   ),
 
@@ -91,8 +96,8 @@ class _ChatInputComponentState extends State<ChatInputComponent> {
             padding:
                 const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
             shape: const CircleBorder(),
-            color: Colors.green,
-            child: const Icon(Icons.send, color: Colors.white, size: 28),
+            color: themeCubit.primaryColor,
+            child: const Icon(Icons.send, color: Colors.black, size: 28),
           )
         ],
       ),

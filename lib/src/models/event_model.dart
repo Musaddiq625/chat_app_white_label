@@ -358,6 +358,7 @@ class EventRequest {
     this.userId,
     this.name,
     this.aboutMe,
+    this.phoneNumber,
     this.image,
     this.requestStatus,
     this.eventQuestions,
@@ -369,6 +370,7 @@ class EventRequest {
     userId = json['user_id'];
     name = json['name'];
     aboutMe = json['aboutMe'];
+    phoneNumber = json['phoneNumber'];
     image = json['image'];
     requestStatus = json['request_status'];
     if (json['event_questions'] != null) {
@@ -386,6 +388,7 @@ class EventRequest {
   String? userId;
   String? name;
   String? aboutMe;
+  String? phoneNumber;
   String? image;
   String? requestStatus;
   List<EventQuestions>? eventQuestions;
@@ -396,6 +399,7 @@ class EventRequest {
     String? userId,
     String? name,
     String? aboutMe,
+    String? phoneNumber,
     String? image,
     String? requestStatus,
     List<EventQuestions>? eventQuestions,
@@ -406,6 +410,7 @@ class EventRequest {
         userId: userId ?? this.userId,
         name: name ?? this.name,
         aboutMe: aboutMe ?? this.aboutMe,
+        phoneNumber: phoneNumber ?? this.phoneNumber,
         image: image ?? this.image,
         requestStatus: requestStatus ?? this.requestStatus,
         eventQuestions: eventQuestions ?? this.eventQuestions,
@@ -418,6 +423,7 @@ class EventRequest {
     map['user_id'] = userId;
     map['name'] = name;
     map['aboutMe'] = aboutMe;
+    map['phoneNumber'] = phoneNumber;
     map['image'] = image;
     map['request_status'] = requestStatus;
     if (eventQuestions != null) {
@@ -430,7 +436,9 @@ class EventRequest {
   }
   Map<String, dynamic> toRequestJson() {
     final map = <String, dynamic>{};
-    map['id'] = id;
+    if (id != null) {
+      map['id'] = id;
+    }
     if (eventQuestions != null) {
       map['event_questions'] = eventQuestions?.map((v) => v.toJson()).toList();
     }

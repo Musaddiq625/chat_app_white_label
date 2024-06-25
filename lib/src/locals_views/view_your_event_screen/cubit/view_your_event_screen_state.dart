@@ -9,6 +9,15 @@ class ViewYourEventScreenLoadingState extends ViewYourEventScreenState {}
 
 class EventVisibilityLoadingState extends ViewYourEventScreenState {}
 
+class ViewEventFavRequestLoadingState extends ViewYourEventScreenState {}
+
+class ViewEventFavSuccessState extends ViewYourEventScreenState {
+  final EventModel? eventModel;
+
+  ViewEventFavSuccessState(this.eventModel);
+}
+
+
 class SendEventRequestQueryAndStatusLoadingState
     extends ViewYourEventScreenState {}
 
@@ -42,6 +51,14 @@ class EventVisibilityFailureState extends ViewYourEventScreenState {
 
   EventVisibilityFailureState(this.error);
 }
+
+
+class ViewEventFavRequestFailureState extends ViewYourEventScreenState {
+  final String error;
+
+  ViewEventFavRequestFailureState(this.error);
+}
+
 
 class SendEventRequestQueryAndStatusFailureState
     extends ViewYourEventScreenState {
