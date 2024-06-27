@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:chat_app_white_label/src/locals_views/chat_listing/chat_listing_screen.dart';
-
 import 'package:chat_app_white_label/src/locals_views/done_screen/done_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/edit_event_screen/edit_event_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/edit_group_screen/edit_group_screen.dart';
@@ -14,6 +11,7 @@ import 'package:chat_app_white_label/src/locals_views/group_screens/view_group_s
 import 'package:chat_app_white_label/src/locals_views/locals_signup/password_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/locals_signup/signup_with_email.dart';
 import 'package:chat_app_white_label/src/locals_views/main_screen/main_screen.dart';
+import 'package:chat_app_white_label/src/locals_views/notification_screen/all_connection_request.dart';
 import 'package:chat_app_white_label/src/locals_views/notification_screen/notification_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/about_you_screen.dart';
 import 'package:chat_app_white_label/src/locals_views/on_boarding/dob_screen.dart';
@@ -70,6 +68,7 @@ import '../screens/chat_room/chat_room_screen.dart';
 import '../screens/create_group_chat/select_contacts_screen.dart';
 import '../screens/status_screen.dart';
 import '../screens/view_profile_screen/view_group_profile_screen.dart';
+import '../wrappers/notification_listing_wrapper.dart';
 
 Route generateRoute(RouteSettings settings) {
   materialRoute(Widget widget) =>
@@ -93,20 +92,18 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.eventScreen:
       final arg = settings.arguments! as EventScreenArg;
-      return materialRoute( EventScreen(
-        eventScreenArg:arg,
+      return materialRoute(EventScreen(
+        eventScreenArg: arg,
       ));
 
-      // final arg = settings.arguments as String?;
-      // return materialRoute(SignUpWithNumber(
-      //   routeType: arg,
-      // ));
+    // final arg = settings.arguments as String?;
+    // return materialRoute(SignUpWithNumber(
+    //   routeType: arg,
+    // ));
 
     case RouteConstants.editProfileScreen:
       final arg = settings.arguments as UserModel;
-      return materialRoute(EditProfileScreen(
-        userModel :arg
-      ));
+      return materialRoute(EditProfileScreen(userModel: arg));
 
     // case RouteConstants.splashScreen:
     //   return materialRoute(const SplashScreen());
@@ -176,26 +173,24 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.createEventScreen:
       final arg = settings.arguments as EventModel?;
-      return materialRoute( CreateEventScreen(
+      return materialRoute(CreateEventScreen(
         eventModel: arg,
       ));
 
     case RouteConstants.editEventScreen:
       final arg = settings.arguments as EventModel?;
-      return materialRoute( EditEventScreen(
+      return materialRoute(EditEventScreen(
         eventModel: arg,
       ));
 
     case RouteConstants.editGroupScreen:
       final arg = settings.arguments as EventModel?;
-      return materialRoute( EditGroupScreen(
+      return materialRoute(EditGroupScreen(
         eventModel: arg,
       ));
 
-
     case RouteConstants.createGroupScreenLocals:
       return materialRoute(const CreateGroupScreens());
-
 
     case RouteConstants.viewFullImage:
       final arg = settings.arguments as String;
@@ -258,39 +253,34 @@ Route generateRoute(RouteSettings settings) {
     case RouteConstants.allConnectionScreen:
       return materialRoute(const AllConnections());
 
-    case RouteConstants.viewYourEventScreen:
-      final arg = settings.arguments as String?;
-      return materialRoute(ViewYourEventScreen(
-        eventId : arg
+    case RouteConstants.allConnectionRequestScreen:
+      final arg = settings.arguments as List<ConnectionRequests>?;
+      return materialRoute( AllConnectionsRequest(
+        connectionRequests: arg,
       ));
 
- case RouteConstants.userAllGroups:
+    case RouteConstants.viewYourEventScreen:
+      final arg = settings.arguments as String?;
+      return materialRoute(ViewYourEventScreen(eventId: arg));
+
+    case RouteConstants.userAllGroups:
       final arg = settings.arguments as String;
-      return materialRoute(UserGroupScreen(
-          userId : arg
-      ));
- case RouteConstants.userAllEvents:
+      return materialRoute(UserGroupScreen(userId: arg));
+    case RouteConstants.userAllEvents:
       final arg = settings.arguments as String;
-      return materialRoute(UserEventScreen(
-          userId : arg
-      ));
+      return materialRoute(UserEventScreen(userId: arg));
 
     case RouteConstants.viewYourGroupScreen:
       final arg = settings.arguments as String?;
-      return materialRoute(ViewYourGroupScreen(
-          eventId : arg
-      ));
-
+      return materialRoute(ViewYourGroupScreen(eventId: arg));
 
     case RouteConstants.viewGroupScreen:
       final arg = settings.arguments as ViewGroupArg?;
-      return materialRoute( ViewGroupScreen(
-          viewGroupArg : arg
-      ));
+      return materialRoute(ViewGroupScreen(viewGroupArg: arg));
 
     case RouteConstants.paymentSuccessScreen:
       final arg = settings.arguments as PaymentSuccessArg;
-      return materialRoute( PaymentSuccessScreen(
+      return materialRoute(PaymentSuccessScreen(
         paymentSuccessArg: arg,
       ));
 
@@ -309,22 +299,21 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.allEventScreen:
       final arg = settings.arguments as AllEventsArg;
-      return materialRoute( AllEventScreen(
+      return materialRoute(AllEventScreen(
         allEventsArg: arg,
       ));
 
     case RouteConstants.allGroupScreen:
       final arg = settings.arguments as AllGroupsArg;
-      return materialRoute( AllGroupScreen(
+      return materialRoute(AllGroupScreen(
         allGroupsArg: arg,
       ));
 
     case RouteConstants.allYourEventScreen:
       // final arg = settings.arguments as AllEventsArg;
-      return materialRoute( AllYourEventScreen(
-        // allEventsArg: arg,
-      ));
-
+      return materialRoute(AllYourEventScreen(
+          // allEventsArg: arg,
+          ));
 
     case RouteConstants.earningScreen:
       return materialRoute(const EarningScreen());
@@ -347,8 +336,8 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.dobScreen:
       final arg = settings.arguments as bool?;
-      return materialRoute( DOBScreen(
-        routeFromMain : arg,
+      return materialRoute(DOBScreen(
+        routeFromMain: arg,
       ));
 
     case RouteConstants.genderScreen:
@@ -359,8 +348,8 @@ Route generateRoute(RouteSettings settings) {
 
     case RouteConstants.aboutYouScreen:
       final arg = settings.arguments as bool?;
-      return materialRoute( AboutYouScreen(
-        routeFromMain : arg,
+      return materialRoute(AboutYouScreen(
+        routeFromMain: arg,
       ));
 
     case RouteConstants.whatDoYouDoScreen:

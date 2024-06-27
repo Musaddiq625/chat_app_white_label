@@ -8,12 +8,19 @@ class EarningScreenInitial extends EarningScreenState {}
 class EarningScreenLoadingState extends EarningScreenState {}
 class UserBankDetailLoadingState extends EarningScreenState {}
 class UpdateUserBankDetailLoadingState extends EarningScreenState {}
+class WithDrawAmountLoadingState extends EarningScreenState {}
 
 
 class EarningScreenSuccessState extends EarningScreenState {
   final EarningDetailWrapper? earningDetailWrapper;
 
   EarningScreenSuccessState(this.earningDetailWrapper);
+}
+
+class WithDrawAmountSuccessState extends EarningScreenState {
+  final WithDrawAmountWrapper? withDrawAmountWrapper;
+
+  WithDrawAmountSuccessState(this.withDrawAmountWrapper);
 }
 
 class UserBankDetailSuccessState extends EarningScreenState {
@@ -46,5 +53,11 @@ class UpdateUserBankDetailFailureState extends EarningScreenState {
   final String error;
 
   UpdateUserBankDetailFailureState(this.error);
+}
+
+class WithDrawAmountFailureState extends EarningScreenState {
+  final String error;
+
+  WithDrawAmountFailureState(this.error);
 }
 

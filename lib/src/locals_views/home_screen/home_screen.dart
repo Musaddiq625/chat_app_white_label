@@ -345,6 +345,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  DateTime convertToUserTimeZone(String dateTime) {
+    DateTime utcDateTime = DateTime.parse(dateTime);
+    // No need to parse again; just use the provided DateTime object
+    // Get the user's local timezone offset
+    Duration offset = DateTime.now().timeZoneOffset;
+
+    // Convert from UTC to user's local time
+    DateTime userDateTime = utcDateTime.add(offset);
+
+    return userDateTime;
+  }
+
+
+
   Widget _topData() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -421,6 +435,24 @@ class _HomeScreenState extends State<HomeScreen> {
     acceptedRequests = eventCubit.eventModelList[index].eventRequest
         ?.where((eventRequest) => eventRequest.requestStatus == "Accepted")
         .toList();
+    String? formattedStart;
+    String? formattedEnd;
+    if(eventCubit.eventModelList[index].type == "event"){
+      if ((eventCubit.eventModelList[index].venues ?? []).isNotEmpty){
+        final startDateTimeStr = (eventCubit.eventModelList[index].venues ?? []).first.startDatetime.toString();
+        final endDateTimeStr = (eventCubit.eventModelList[index].venues ?? []).first.endDatetime;
+
+        print("startDateTimeStr ${startDateTimeStr}");
+        DateTime startLocal = convertToUserTimeZone(startDateTimeStr);
+        DateTime endLocal = convertToUserTimeZone(endDateTimeStr!);
+        print("startLocal $startLocal");
+
+        formattedStart = DateFormat('d MMM \'at\' hh a').format(startLocal);
+        formattedEnd = DateFormat('d MMM \'at\' hh a').format(endLocal);
+      }
+    }
+
+
 
 
     return Padding(
@@ -514,20 +546,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 TextComponent(
                   "",
                   listOfText: [
-                    DateFormat('d MMM \'at\' hh a').format(DateTime.tryParse(
-                            (eventCubit.eventModelList[index].venues ?? [])
-                                    .first
-                                    .startDatetime ??
-                                "") ??
-                        DateTime.now()),
+                    formattedStart ?? "",
+                    // DateFormat('d MMM \'at\' hh a').format(DateTime.tryParse(
+                    //         (eventCubit.eventModelList[index].venues ?? []).first.startDatetime ??
+                    //             "") ??
+                    //     DateTime.now()),
                     //    DateFormat('d MMM \'at\' hh a').format(DateTime.parse(eventCubit.eventModelList[index].venues?.first.endDatetime ?? "")),
                     "-",
-                    DateFormat('d MMM \'at\' hh a').format(DateTime.tryParse(
-                            (eventCubit.eventModelList[index].venues ?? [])
-                                    .first
-                                    .endDatetime ??
-                                "") ??
-                        DateTime.now()),
+                    // DateFormat('d MMM \'at\' hh a').format(DateTime.tryParse(
+                    //         (eventCubit.eventModelList[index].venues ?? [])
+                    //                 .first
+                    //                 .endDatetime ??
+                    //             "") ??
+                    //     DateTime.now()),
+                    formattedEnd ?? "",
                     if ((eventCubit.eventModelList[index].venues?.first
                                     .location ??
                                 "")

@@ -16,6 +16,7 @@ import 'package:chat_app_white_label/src/wrappers/send_otp_response_wrapper.dart
 import 'package:chat_app_white_label/src/wrappers/userEventGroup_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/user_bank_detail_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/user_model_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/with_draw_amount_wrapper.dart';
 import 'package:http/http.dart';
 
 import '../../wrappers/send_friend_request_wrapper.dart';
@@ -143,6 +144,14 @@ class AuthRepository {
       "bank_code": bankCode
     });
     final x = CreateUpdateUserBankDetailWrapper.fromJson(response);
+    return x;
+  }
+  static Future<WithDrawAmountWrapper> withDrawAmount(String? amount) async {
+    final response = await getIt<DioClientNetwork>()
+        .putRequest("${HttpConstants.withDrawAmount}", {
+      "amount": amount,
+    });
+    final x = WithDrawAmountWrapper.fromJson(response);
     return x;
   }
   static Future<FriendListResponseWrapper> fetchMyFriendListData() async {

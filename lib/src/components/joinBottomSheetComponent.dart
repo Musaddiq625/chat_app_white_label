@@ -299,8 +299,7 @@ class JoinBottomSheet {
                 context,
                 isShowHeader: false,
                 body: InfoSheetComponent(
-                  heading: StringConstants.requestSent,
-                  body: StringConstants.requestStatus,
+                  heading: StringConstants.requestAccepted,
                   image: AssetConstants.paperPlaneImage,
                   // svg: true,
                 ),
@@ -457,7 +456,7 @@ class JoinBottomSheet {
                           eventId ?? "",
                           [phoneNumber] ?? [],
                         );
-                        await ChatUtils.sendGropuMessage(
+                        await ChatUtils.sendGroupMessageUserAcceptingRequest(
                           groupChatId: eventId,
                           msg: "${userName}#%#added ${myName}",
                           type: MessageType.info,

@@ -247,19 +247,95 @@ class _CreateGroupScreensState extends State<CreateGroupScreens> {
                             children: [
                               GestureDetector(
                                 onTap: () async {
-                                  final XFile? image = await ImagePicker()
-                                      .pickImage(source: ImageSource.gallery);
-                                  if (image != null) {
-                                    setState(() {
-                                      selectedImagePath = image
-                                          .path; // Update the state with the selected image path
-                                      // groupCubit.addImage(selectedImagePath);
-                                      // groupCubit.addImage("https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
-                                    });
-                                    var uploadImage = await AppConstants.uploadImage(selectedImagePath?? "","group");
-                                    print("uploadingImage $uploadImage");
-                                    await groupCubit.addImage(uploadImage);
-                                  }
+                                  BottomSheetComponent.showBottomSheet(context,
+                                      isShowHeader: false,
+                                      body: Column(
+                                        children: [
+                                          SizedBoxConstants.sizedBoxTwelveH(),
+                                          SizedBox(
+                                            width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.9,
+                                            child: ButtonComponent(
+                                                bgcolor: ColorConstants.lightGray
+                                                    .withOpacity(0.2),
+                                                textColor: ColorConstants.white,
+                                                buttonText: StringConstants
+                                                    .addPhotoFromGallery,
+                                                onPressed: () async {
+                                                  final XFile? pickedImage =
+                                                  await ImagePicker()
+                                                      .pickImage(
+                                                      source: ImageSource
+                                                          .gallery);
+
+                                                  if (pickedImage != null) {
+                                                    NavigationUtil.pop(context);
+                                                    print("pickedImage $pickedImage");
+                                                    selectedImagePath = pickedImage.path;
+                                                    var uploadImage =
+                                                    await AppConstants.uploadImage(
+                                                        selectedImagePath!, "event");
+                                                    print("uploadingImage $uploadImage");
+                                                    await groupCubit.addImage(uploadImage);
+                                                    setState(() {});
+                                                  }
+                                                }),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          SizedBox(
+                                            width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.9,
+                                            child: ButtonComponent(
+                                                bgcolor: ColorConstants.white,
+                                                textColor: ColorConstants.black,
+                                                buttonText:
+                                                StringConstants.takeAPicture,
+                                                onPressed: () async {
+                                                  final XFile? pickedImage =
+                                                  await ImagePicker().pickImage(
+                                                      source:
+                                                      ImageSource.camera,
+                                                      preferredCameraDevice:
+                                                      CameraDevice.rear);
+                                                  if (pickedImage != null) {
+                                                    NavigationUtil.pop(context);
+                                                    selectedImagePath = pickedImage.path;
+                                                    var uploadImage =
+                                                    await AppConstants.uploadImage(
+                                                        selectedImagePath!, "event");
+                                                    print("uploadingImage $uploadImage");
+                                                    await groupCubit.addImage(uploadImage);
+                                                    setState(() {});
+                                                  }
+
+                                                  // if (cameraImage != null) {
+                                                  //   // files.add(File(cameraImage.path));
+                                                  //   setState(() {
+                                                  //     tempEmptyImageData.add(File(cameraImage.path));
+                                                  //   });
+                                                  // }
+                                                }),
+                                          ),
+                                          SizedBoxConstants.sizedBoxTwelveH(),
+                                        ],
+                                      ));
+                                  // final XFile? image = await ImagePicker()
+                                  //     .pickImage(source: ImageSource.gallery);
+                                  // if (image != null) {
+                                  //   setState(() {
+                                  //     selectedImagePath = image
+                                  //         .path; // Update the state with the selected image path
+                                  //     // groupCubit.addImage(selectedImagePath);
+                                  //     // groupCubit.addImage("https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
+                                  //   });
+                                  //   var uploadImage = await AppConstants.uploadImage(selectedImagePath?? "","group");
+                                  //   print("uploadingImage $uploadImage");
+                                  //   await groupCubit.addImage(uploadImage);
+                                  // }
                                 },
                                 child: Row(
                                   children: [

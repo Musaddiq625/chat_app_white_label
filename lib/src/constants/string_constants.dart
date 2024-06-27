@@ -82,6 +82,7 @@ class StringConstants {
   static const String confirmProfilePicture = "Confirm profile picture";
   static const String addPhotoFromGallery = "Add photo from gallery";
   static const String takeASelfie = "Take a selfie";
+  static const String takeAPicture = "Take a picture";
   static const String resendCode = "Resend Code";
   static const String registerCreateManageEvents =
       "Register, create and manage events.";
@@ -96,6 +97,7 @@ class StringConstants {
   static const String connect = "Connect";
   static const String connected = "Connected";
   static const String connections = "Connections";
+  static const String connectionsRequest = "Connections Request";
   static const String loginExpired = "Login Expired";
   static const String settings = "Settings";
   static const String connectSent = "Connect Sent";
@@ -299,7 +301,9 @@ class StringConstants {
   static const String clubs = "Clubs";
   static const String somethingToKnow = "Something to know";
   static const String requestSent = "Request Sent!";
+  static const String requestAccepted = "Request Accepted!";
   static const String transactionComplete = "Transaction Complete!";
+  static const String transactionFailed = "Transaction Failed!";
   static const String requestStatus =
       "You will be notified when your request is accepted.";
   static const String transactionStatus =

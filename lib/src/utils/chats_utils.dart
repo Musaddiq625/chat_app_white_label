@@ -439,6 +439,75 @@ print("---FirebaseUtils.user?.id ${FirebaseUtils.user?.id} chatId ${chatId}   ch
     }
   }
 
+  // for sending group message
+  static Future<void> sendGroupMessageUserAcceptingRequest(
+      {required String groupChatId,
+      required MessageType type,
+      String? msg,
+      String? filePath,
+      int? length,
+      String? thumbnailPath,
+      String? fileName}) async {
+    try {
+      // if message type is text
+      String? sendingMessage = msg;
+      String? thumbnail;
+      if (type == MessageType.image) {
+        sendingMessage = await FirebaseUtils.uploadMedia(
+            filePath!, MediaType.chatImage, groupChatId);
+      } else if (type == MessageType.video) {
+        sendingMessage = await FirebaseUtils.uploadMedia(
+            filePath!, MediaType.chatVideo, groupChatId);
+        thumbnail = await FirebaseUtils.uploadMedia(
+            thumbnailPath!, MediaType.chatImage, groupChatId);
+      } else if (type == MessageType.document) {
+        sendingMessage = await FirebaseUtils.uploadMedia(
+          filePath!,
+          MediaType.chatDocument,
+          groupChatId,
+        );
+      } else if (type == MessageType.audio) {
+        sendingMessage = await FirebaseUtils.uploadMedia(
+            filePath!, MediaType.chatVoice, groupChatId);
+      }
+
+      //message sending time (also used as id)
+      final sendingTimeAsId = FirebaseUtils.getDateTimeNowAsId();
+      final chatId = groupChatId;
+      final chatDoc = chatsCollection.doc(chatId);
+
+      final MessageModel message = MessageModel(
+          toId: null,
+          msg: sendingMessage,
+          readAt: null,
+          type: type,
+          fromId: FirebaseUtils.user?.id ?? '',
+          sentAt: sendingTimeAsId,
+          length: length,
+          thumbnail: thumbnail,
+          fileName: fileName);
+
+      await chatDoc
+          .collection(FirebaseConstants.messages)
+          .doc(sendingTimeAsId)
+          .set(message.toJson())
+          .then((value) async =>
+                  //adding last message and adding mesage count
+                  await chatDoc.update({
+                    'message_count': FieldValue.increment(1),
+                    'last_message': message.toJson(),
+                    'updated_at': sendingTimeAsId,
+                    'last_message_readBy': []
+                  })
+              // )
+              // .then((value) =>
+              // sendPushNotification(chatUser, type == Type.text ? msg : 'image')
+              );
+    } catch (e) {
+      LoggerUtil.logs(e.toString());
+    }
+  }
+
   static Future<void> updateGroupMessageReadStatus(
       String groupChatId, MessageModel message, bool isLast) async {
     final chatDoc = chatsCollection.doc(groupChatId);

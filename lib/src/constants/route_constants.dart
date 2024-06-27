@@ -49,6 +49,7 @@ class RouteConstants {
   static const String whatDoYouDoScreen = 'whatDoYouDoScreen';
   static const String userProfileScreen = 'userProfileScreen';
   static const String allConnectionScreen = 'allConnectionScreen';
+  static const String allConnectionRequestScreen = 'allConnectionRequestScreen';
   static const String settingsScreen = 'settingsScreen';
   static const String notificationScreen = 'notificationScreen';
   static const String allowNotificationScreen = 'allowNotificationScreen';

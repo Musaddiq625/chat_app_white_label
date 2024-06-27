@@ -116,8 +116,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     '',
                                     listOfText: [StringConstants.seeAll],
                                     listOfOnPressedFunction: [
-                                      () => NavigationUtil.push(context,
-                                          RouteConstants.allConnectionScreen)
+                                      () => NavigationUtil.push(
+                                          context,
+                                          RouteConstants
+                                              .allConnectionRequestScreen,
+                                          args: notificationScreenCubit
+                                              .notificationListingWrapper
+                                              .data
+                                              ?.connectionRequests)
                                     ],
                                     listOfTextStyle: [
                                       FontStylesConstants.style14(
@@ -143,11 +149,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           shrinkWrap: true,
                           physics: BouncingScrollPhysics(),
                           padding: const EdgeInsets.only(bottom: 32),
+                          // itemCount: (notificationScreenCubit
+                          //             .notificationListingWrapper
+                          //             .data
+                          //             ?.connectionRequests ??
+                          //         [])
+                          //     .length,
                           itemCount: (notificationScreenCubit
                                       .notificationListingWrapper
                                       .data
                                       ?.connectionRequests ??
                                   [])
+                              .take(3)
                               .length,
                           separatorBuilder: (BuildContext context, int index) {
                             return const DividerComponent();
@@ -171,7 +184,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 // trailingIcon: Icons.add_circle,
                                 trailingIconSize: 30,
                                 leadingIcon: (connectionRequests.payload?.data)
-                                    ?.friendImage,
+                                        ?.friendImage ??
+                                    "",
                                 leadingIconHeight: 40,
                                 leadingIconWidth: 40,
                                 isLeadingImageProfileImage: true,
@@ -204,7 +218,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 // isSocialConnected: true,
                                 subIconColor: themeCubit.textColor,
                                 // trailingText: "heelo",
-                                onTap: () {});
+                                onTap: () {
+                                  NavigationUtil.push(context,
+                                      RouteConstants.profileScreenLocal,
+                                      args: connectionRequests
+                                          .payload?.data?.friendId);
+                                });
                           },
                         ),
 
@@ -309,7 +328,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   // trailingIcon: Icons.add_circle,
                                   // trailingIconSize: 30,
                                   leadingIcon: (todayNotification.payload?.data)
-                                      ?.userImage,
+                                          ?.userImage ??
+                                      "",
                                   //'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                                   leadingIconHeight: 40,
                                   leadingIconWidth: 40,
@@ -320,6 +340,29 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                                   // isSocialConnected: true,
                                   subIconColor: themeCubit.textColor,
+                                  profileImageTap: () async{
+                                    final serializedUserModel =
+                                        await getIt<SharedPreferencesUtil>()
+                                        .getString(SharedPreferenceConstants
+                                        .userModel);
+                                    userModel = UserModel.fromJson(
+                                        jsonDecode(serializedUserModel!));
+                                    // userId = await getIt<SharedPreferencesUtil>()
+                                    //     .getString(SharedPreferenceConstants.userIdValue);
+                                    String? myId = userModel?.id;
+                                    if (todayNotification
+                                        .payload?.data?.userId !=
+                                        myId) {
+                                      NavigationUtil.push(context,
+                                          RouteConstants.profileScreenLocal,
+                                          args: todayNotification
+                                              .payload?.data?.userId);
+                                    } else {
+                                      NavigationUtil.push(
+                                          context, RouteConstants.mainScreen,
+                                          args: "4");
+                                    }
+                                  },
                                   // trailingText: "heelo",
                                   onTap: () {
                                     if (todayNotification.payload?.data?.type ==
@@ -377,7 +420,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                         ?.eventId ??
                                                     "",
                                                 false,
-                                                false));
+                                                true));
                                       }
                                     } else {
                                       if (userId ==
@@ -539,8 +582,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   // trailingIcon: Icons.add_circle,
                                   // trailingIconSize: 30,
                                   leadingIcon: (earlyerThisWeekNotification
-                                          .payload?.data)
-                                      ?.userImage,
+                                              .payload?.data)
+                                          ?.userImage ??
+                                      "",
                                   //'https://www.pngitem.com/pimgs/m/404-4042710_circle-profile-picture-png-transparent-png.png',
                                   leadingIconHeight: 40,
                                   leadingIconWidth: 40,
@@ -552,6 +596,29 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   // isSocialConnected: true,
                                   subIconColor: themeCubit.textColor,
                                   // trailingText: "heelo",
+                                  profileImageTap: () async {
+                                    final serializedUserModel =
+                                        await getIt<SharedPreferencesUtil>()
+                                            .getString(SharedPreferenceConstants
+                                                .userModel);
+                                    userModel = UserModel.fromJson(
+                                        jsonDecode(serializedUserModel!));
+                                    // userId = await getIt<SharedPreferencesUtil>()
+                                    //     .getString(SharedPreferenceConstants.userIdValue);
+                                    String? myId = userModel?.id;
+                                    if (earlyerThisWeekNotification.payload?.data?.userId != myId) {
+                                      print(" earlyerThisWeekNotification.payload?.data?.userId ${ earlyerThisWeekNotification
+                                          .payload?.data?.userId}");
+                                      NavigationUtil.push(context,
+                                          RouteConstants.profileScreenLocal,
+                                          args: earlyerThisWeekNotification
+                                              .payload?.data?.userId);
+                                    } else {
+                                      NavigationUtil.push(
+                                          context, RouteConstants.mainScreen,
+                                          args: "4");
+                                    }
+                                  },
                                   onTap: () {
                                     if (earlyerThisWeekNotification
                                             .payload?.data?.type ==
@@ -638,7 +705,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                 true));
                                       }
                                     }
-                                  });
+                                  }
+                                  );
                             },
                           ),
                         ],

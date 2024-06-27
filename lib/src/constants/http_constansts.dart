@@ -23,6 +23,7 @@ class HttpConstants {
   static const String earnings = '/users/earnings';
   static const String userBankDetail = '/user_bankdetails';
   static const String updateUserBankDetail = '/user_bankdetails/';
+  static const String withDrawAmount = '/transactions/amount-withdraw/';
   static const String myFriendList = '/users/friendlist';
   static const String groupsData = '/event/groups';
   static const String eventVisibility = '/event/isVisibility';

@@ -252,12 +252,18 @@ Future<void> searchEventDataByKeys(String pageValue,String value) async {
   }
 
   addStartDate(String? startDate) {
-    venue = venue.copyWith(startDatetime: startDate);
+    DateTime dateTime = DateTime.parse(startDate!);
+    DateTime utcDateTime = dateTime.toUtc();
+    print("utcDateStartTime $utcDateTime");
+    venue = venue.copyWith(startDatetime: utcDateTime.toString());
   }
 
   addEndDate(String? endDate) {
+    DateTime dateTime = DateTime.parse(endDate!);
+    DateTime utcDateTime = dateTime.toUtc();
+    print("utcDateEndTime $utcDateTime");
     venue = venue.copyWith(
-        endDatetime: endDate, capacity: venue.capacity ?? "Unlimited");
+        endDatetime: utcDateTime.toString(), capacity: venue.capacity ?? "Unlimited");
   }
 
   addLocation(String location) {

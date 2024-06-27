@@ -181,8 +181,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             }),
         setState(() {
           _inputPriceValuecontroller.text = "";
-          selectedPriceValueContainer =
-              ["Free", "${AppConstants.currency} 5", "${AppConstants.currency} 10", "${AppConstants.currency} 25", "${AppConstants.currency} 50", "${AppConstants.currency} 100"][containerIndex];
+          selectedPriceValueContainer = [
+            "Free",
+            "${AppConstants.currency} 5",
+            "${AppConstants.currency} 10",
+            "${AppConstants.currency} 25",
+            "${AppConstants.currency} 50",
+            "${AppConstants.currency} 100"
+          ][containerIndex];
           // eventCubit.addPrice(
           //     selectedPriceValue == "Free" ? "0" : selectedPriceValue);
         }),
@@ -199,7 +205,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         ),
         alignment: Alignment.center,
         child: TextComponent(
-          ["Free", "${AppConstants.currency} 5", "${AppConstants.currency} 10", "${AppConstants.currency} 25", "${AppConstants.currency} 50", "${AppConstants.currency} 100"][containerIndex],
+          [
+            "Free",
+            "${AppConstants.currency} 5",
+            "${AppConstants.currency} 10",
+            "${AppConstants.currency} 25",
+            "${AppConstants.currency} 50",
+            "${AppConstants.currency} 100"
+          ][containerIndex],
           style: TextStyle(
               fontSize: 15,
               color: selectedIndexPrice == containerIndex
@@ -246,20 +259,98 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                final XFile? image = await ImagePicker()
-                                    .pickImage(source: ImageSource.gallery);
-                                if (image != null) {
-                                  setState(() {
-                                    selectedImagePath = image
-                                        .path; // Update the state with the selected image path
-                                    // eventCubit.addImage("https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
-                                  });
-                                  var uploadImage =
-                                      await AppConstants.uploadImage(
-                                          selectedImagePath!, "event");
-                                  print("uploadingImage $uploadImage");
-                                  await eventCubit.addImage(uploadImage);
-                                }
+                                XFile? image;
+                                BottomSheetComponent.showBottomSheet(context,
+                                    isShowHeader: false,
+                                    body: Column(
+                                      children: [
+                                        SizedBoxConstants.sizedBoxTwelveH(),
+                                        SizedBox(
+                                          width:
+                                              MediaQuery.sizeOf(context).width *
+                                                  0.9,
+                                          child: ButtonComponent(
+                                              bgcolor: ColorConstants.lightGray
+                                                  .withOpacity(0.2),
+                                              textColor: ColorConstants.white,
+                                              buttonText: StringConstants
+                                                  .addPhotoFromGallery,
+                                              onPressed: () async {
+                                                final XFile? pickedImage =
+                                                    await ImagePicker()
+                                                        .pickImage(
+                                                            source: ImageSource
+                                                                .gallery);
+
+                                                if (pickedImage != null) {
+                                                  NavigationUtil.pop(context);
+                                                  print("pickedImage $pickedImage");
+                                                  selectedImagePath = pickedImage.path;
+                                                  var uploadImage =
+                                                  await AppConstants.uploadImage(
+                                                      selectedImagePath!, "event");
+                                                  print("uploadingImage $uploadImage");
+                                                  await eventCubit.addImage(uploadImage);
+                                                  setState(() {});
+                                                }
+                                              }),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        SizedBox(
+                                          width:
+                                              MediaQuery.sizeOf(context).width *
+                                                  0.9,
+                                          child: ButtonComponent(
+                                              bgcolor: ColorConstants.white,
+                                              textColor: ColorConstants.black,
+                                              buttonText:
+                                                  StringConstants.takeAPicture,
+                                              onPressed: () async {
+                                                final XFile? pickedImage =
+                                                    await ImagePicker().pickImage(
+                                                        source:
+                                                            ImageSource.camera,
+                                                        preferredCameraDevice:
+                                                            CameraDevice.rear);
+                                                if (pickedImage != null) {
+                                                  NavigationUtil.pop(context);
+                                                  selectedImagePath = pickedImage.path;
+                                                  var uploadImage =
+                                                  await AppConstants.uploadImage(
+                                                      selectedImagePath!, "event");
+                                                  print("uploadingImage $uploadImage");
+                                                  await eventCubit.addImage(uploadImage);
+                                                  setState(() {});
+                                                }
+
+                                                // if (cameraImage != null) {
+                                                //   // files.add(File(cameraImage.path));
+                                                //   setState(() {
+                                                //     tempEmptyImageData.add(File(cameraImage.path));
+                                                //   });
+                                                // }
+                                              }),
+                                        ),
+                                        SizedBoxConstants.sizedBoxTwelveH(),
+                                      ],
+                                    ));
+                                // final XFile? image = await ImagePicker()
+                                //     .pickImage(source: ImageSource.gallery);
+                                // if (image != null) {
+                                //   print("Image Path $image");
+                                //   setState(() {
+                                //     selectedImagePath = image
+                                //         ?.path; // Update the state with the selected image path
+                                //     // eventCubit.addImage("https://i.dawn.com/large/2015/12/567d1ca45aabe.jpg");
+                                //   });
+                                //   var uploadImage =
+                                //       await AppConstants.uploadImage(
+                                //           selectedImagePath!, "event");
+                                //   print("uploadingImage $uploadImage");
+                                //   await eventCubit.addImage(uploadImage);
+                                // }
                               },
                               child: Row(
                                 children: [
@@ -460,14 +551,23 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                           endDate!))) {
                                                 showTimePicker(
                                                         context: context,
-                                                        initialTime: lastSelectedStartTime??TimeOfDay.now())
+                                                        initialTime:
+                                                            lastSelectedStartTime ??
+                                                                TimeOfDay.now())
                                                     .then((selectedTime) {
                                                   // Handle the selected date and time here.
                                                   if (selectedTime != null) {
-                                                    lastSelectedStartTime= selectedTime;
+                                                    lastSelectedStartTime =
+                                                        selectedTime;
 
-                                                    int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
-                                                    int adjustedHour = selectedTime.hour;
+                                                    int roundedMinute =
+                                                        ((selectedTime.minute /
+                                                                        16)
+                                                                    .floor() +
+                                                                1) *
+                                                            15;
+                                                    int adjustedHour =
+                                                        selectedTime.hour;
                                                     if (roundedMinute > 45) {
                                                       adjustedHour += 1;
                                                       roundedMinute -= 60;
@@ -477,7 +577,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       selectedDate.year,
                                                       selectedDate.month,
                                                       selectedDate.day,
-                                                   adjustedHour,
+                                                      adjustedHour,
                                                       roundedMinute,
                                                     );
 
@@ -531,22 +631,31 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                         "Start date cannot be After end date."),
                                                   ),
                                                 );
-                                              }
-                                              else {
+                                              } else {
                                                 showTimePicker(
                                                   context: context,
-                                                  initialTime:lastSelectedStartTime?? TimeOfDay.now(),
+                                                  initialTime:
+                                                      lastSelectedStartTime ??
+                                                          TimeOfDay.now(),
                                                 ).then((selectedTime) {
                                                   // Handle the selected date and time here.
                                                   if (selectedTime != null) {
-                                                    lastSelectedStartTime= selectedTime;
-                                                    int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
-                                                    int adjustedHour = selectedTime.hour;
+                                                    lastSelectedStartTime =
+                                                        selectedTime;
+                                                    int roundedMinute =
+                                                        ((selectedTime.minute /
+                                                                        16)
+                                                                    .floor() +
+                                                                1) *
+                                                            15;
+                                                    int adjustedHour =
+                                                        selectedTime.hour;
                                                     if (roundedMinute > 45) {
                                                       adjustedHour += 1;
                                                       roundedMinute -= 60;
                                                     }
-                                                    print("adjustedHour $adjustedHour roundedMinute $roundedMinute ");
+                                                    print(
+                                                        "adjustedHour $adjustedHour roundedMinute $roundedMinute ");
 
                                                     DateTime selectedDateTime =
                                                         DateTime(
@@ -554,7 +663,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                       selectedDate.month,
                                                       selectedDate.day,
                                                       adjustedHour,
-                                                          roundedMinute,
+                                                      roundedMinute,
                                                     );
 
                                                     String formattedDateTime =
@@ -602,7 +711,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         },
                                         child: TextComponent(
                                           startDate != null
-                                              ? DateFormat('d MMM \'at\' hh:mm a')
+                                              ? DateFormat(
+                                                      'd MMM \'at\' hh:mm a')
                                                   .format(DateTime.parse(
                                                       startDate!))
                                               : "Select Date & Time",
@@ -688,14 +798,22 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                                 startDate!))) {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime:lastSelectedEndTime?? TimeOfDay.now(),
+                                                    initialTime:
+                                                        lastSelectedEndTime ??
+                                                            TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     // Handle the selected date and time here.
                                                     if (selectedTime != null) {
-
-                                                      lastSelectedEndTime= selectedTime;
-                                                      int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
-                                                      int adjustedHour = selectedTime.hour;
+                                                      lastSelectedEndTime =
+                                                          selectedTime;
+                                                      int roundedMinute =
+                                                          ((selectedTime.minute /
+                                                                          16)
+                                                                      .floor() +
+                                                                  1) *
+                                                              15;
+                                                      int adjustedHour =
+                                                          selectedTime.hour;
                                                       if (roundedMinute > 45) {
                                                         adjustedHour += 1;
                                                         roundedMinute -= 60;
@@ -774,13 +892,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                                 } else {
                                                   showTimePicker(
                                                     context: context,
-                                                    initialTime:lastSelectedEndTime??
-                                                        TimeOfDay.now(),
+                                                    initialTime:
+                                                        lastSelectedEndTime ??
+                                                            TimeOfDay.now(),
                                                   ).then((selectedTime) {
                                                     if (selectedTime != null) {
-                                                      lastSelectedEndTime= selectedTime;
-                                                      int roundedMinute = ((selectedTime.minute / 16).floor() + 1) * 15;
-                                                      int adjustedHour = selectedTime.hour;
+                                                      lastSelectedEndTime =
+                                                          selectedTime;
+                                                      int roundedMinute =
+                                                          ((selectedTime.minute /
+                                                                          16)
+                                                                      .floor() +
+                                                                  1) *
+                                                              15;
+                                                      int adjustedHour =
+                                                          selectedTime.hour;
                                                       if (roundedMinute > 45) {
                                                         adjustedHour += 1;
                                                         roundedMinute -= 60;
@@ -885,7 +1011,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                         },
                                         child: TextComponent(
                                           endDate != null
-                                              ? DateFormat('d MMM \'at\' hh:mm a')
+                                              ? DateFormat(
+                                                      'd MMM \'at\' hh:mm a')
                                                   .format(
                                                       DateTime.parse(endDate!))
                                               : "Select Date & Time",
@@ -1162,7 +1289,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             selectedImagePath != null &&
                             selectedPriceValue.isNotEmpty &&
                             capacityValue.isNotEmpty &&
-                  _controllerDescription.text.isNotEmpty
+                            _controllerDescription.text.isNotEmpty
                         ? themeCubit.primaryColor
                         : themeCubit.darkBackgroundColor,
                     buttonText: StringConstants.createEvent,
@@ -1172,7 +1299,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             selectedImagePath != null &&
                             selectedPriceValue.isNotEmpty &&
                             capacityValue.isNotEmpty &&
-                        _controllerDescription.text.isNotEmpty
+                            _controllerDescription.text.isNotEmpty
                         ? themeCubit.backgroundColor
                         : ColorConstants.grey1,
                     onPressed: () {

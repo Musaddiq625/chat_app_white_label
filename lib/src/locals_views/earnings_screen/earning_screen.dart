@@ -15,6 +15,8 @@ import 'package:chat_app_white_label/src/constants/font_styles.dart';
 import 'package:chat_app_white_label/src/constants/string_constants.dart';
 import 'package:chat_app_white_label/src/locals_views/earnings_screen/cubit/earning_screen_cubit.dart';
 import 'package:chat_app_white_label/src/models/contact.dart';
+import 'package:chat_app_white_label/src/utils/loading_dialog.dart';
+import 'package:chat_app_white_label/src/utils/navigation_util.dart';
 import 'package:chat_app_white_label/src/utils/theme_cubit/theme_cubit.dart';
 import 'package:chat_app_white_label/src/wrappers/earning_detail_wrapper.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +72,10 @@ class _EarningScreenState extends State<EarningScreen> {
         } else if (state is EarningScreenFailureState) {
           print("Earning Fetch Failed");
         } else if (state is UserBankDetailLoadingState) {
-        } else if (state is UserBankDetailSuccessState) {
+        } else if (state is WithDrawAmountLoadingState) {
+          LoadingDialog.showLoadingDialog(context);
+        }
+        else if (state is UserBankDetailSuccessState) {
           earningCubit
               .initializeBankDetailData(state.userBankDetailWrapper!.data!);
           _accountNumber.text =
@@ -81,10 +86,33 @@ class _EarningScreenState extends State<EarningScreen> {
               ((earningCubit.bankDetails ?? []).first.bankCode).toString();
           id = earningCubit.bankDetails.first.id ?? "";
           setState(() {});
-        } else if (state is UpdateUserBankDetailSuccessState) {
+        }
+        else if (state is WithDrawAmountSuccessState) {
+          _amountWithDraw.clear();
+
+          LoadingDialog.hideLoadingDialog(context);
+          Navigator.pop(context);
+          transactionCompleted();
+          Future.delayed(Duration(seconds: 3), () {
+
+            NavigationUtil.pop(context);
+          });
+        }
+
+        else if (state is UpdateUserBankDetailSuccessState) {
           earningCubit.userBankDetailData();
-        } else if (state is UserBankDetailFailureState) {
+        }
+        else if (state is UserBankDetailFailureState) {
           print("Earning Fetch Failed");
+        }
+        else if (state is WithDrawAmountFailureState) {
+          _amountWithDraw.clear();
+          LoadingDialog.hideLoadingDialog(context);
+          print("Earning Fetch Failed");
+          transactionFailed();
+          Future.delayed(Duration(seconds: 3), () {
+           NavigationUtil.pop(context);
+          });
         }
       },
       builder: (context, state) {
@@ -351,8 +379,9 @@ class _EarningScreenState extends State<EarningScreen> {
                   buttonText: StringConstants.next,
                   textColor: themeCubit.backgroundColor,
                   onPressed: () {
-                    Navigator.pop(context);
-                    transactionCompleted();
+                    earningCubit.withDrawAmountData(_amountWithDraw.text);
+                    // Navigator.pop(context);
+                    // transactionCompleted();
                   },
                   bgcolor: themeCubit.primaryColor,
                 ),
@@ -469,6 +498,18 @@ class _EarningScreenState extends State<EarningScreen> {
         heading: StringConstants.transactionComplete,
         body: StringConstants.transactionStatus,
         image: AssetConstants.transectionComplete,
+        // svg: true,
+      ),
+      // whenComplete:_navigateToBack(),
+    );
+  }
+  void transactionFailed() {
+    BottomSheetComponent.showBottomSheet(
+      context,
+      isShowHeader: false,
+      body: InfoSheetComponent(
+        heading: StringConstants.transactionFailed,
+        image: AssetConstants.warning,
         // svg: true,
       ),
       // whenComplete:_navigateToBack(),

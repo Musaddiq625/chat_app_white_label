@@ -1941,14 +1941,39 @@ class _EventScreenState extends State<EventScreen> {
       );
     }));
   }
+  DateTime convertToUserTimeZone(String dateTime) {
+    DateTime utcDateTime = DateTime.parse(dateTime);
+    // No need to parse again; just use the provided DateTime object
+    // Get the user's local timezone offset
+    Duration offset = DateTime.now().timeZoneOffset;
 
+    // Convert from UTC to user's local time
+    DateTime userDateTime = utcDateTime.add(offset);
+
+    return userDateTime;
+  }
   _getPaymentBottomSheet() {
     BottomSheetComponent.showBottomSheet(context,
         isShowHeader: false,
         takeFullHeightWhenPossible: true,
         isScrollable: false,
         body: StatefulBuilder(builder: (context, setState) {
-      return Container(
+          String? formattedStart;
+          String? formattedEnd;
+          if ((eventCubit.eventModel.venues ?? []).isNotEmpty){
+            final startDateTimeStr = (eventCubit.eventModel.venues ?? []).first.startDatetime.toString();
+            final endDateTimeStr = (eventCubit.eventModel.venues ?? []).first.endDatetime;
+
+            print("startDateTimeStr ${startDateTimeStr}");
+            DateTime startLocal = convertToUserTimeZone(startDateTimeStr);
+            DateTime endLocal = convertToUserTimeZone(endDateTimeStr!);
+            print("startLocal $startLocal");
+
+            formattedStart = DateFormat('d MMM \'at\' hh a').format(startLocal);
+            formattedEnd = DateFormat('d MMM \'at\' hh a').format(endLocal);
+          }
+
+          return Container(
         height: AppConstants.responsiveHeight(context),
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
@@ -2008,23 +2033,13 @@ class _EventScreenState extends State<EventScreen> {
                               if (eventCubit.eventModel.venues != null &&
                                   (eventCubit.eventModel.venues ?? [])
                                       .isNotEmpty)
-                                DateFormat('d MMM \'at\' hh a').format(
-                                    DateTime.parse(
-                                        (eventCubit.eventModel.venues ?? [])
-                                                .first
-                                                .startDatetime ??
-                                            "")),
+                                formattedStart ?? "",
                               // eventCubit.eventModel.venues?.first.startDatetime ?? "",
                               "-",
                               if (eventCubit.eventModel.venues != null &&
                                   (eventCubit.eventModel.venues ?? [])
                                       .isNotEmpty)
-                                DateFormat('d MMM \'at\' hh a').format(
-                                    DateTime.parse(
-                                        (eventCubit.eventModel.venues ?? [])
-                                                .first
-                                                .endDatetime ??
-                                            "")),
+                                formattedEnd ?? "",
                               // eventCubit.eventModel.venues?.first.endDatetime ?? "asdasd",
                               eventCubit.eventModel.venues?.first.location ??
                                   "asdasddasasdasd asdasd asd"

@@ -10,6 +10,7 @@ import 'package:chat_app_white_label/src/wrappers/create_update_user_bank_detail
 import 'package:chat_app_white_label/src/wrappers/earning_detail_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/share_group_wrapper.dart';
 import 'package:chat_app_white_label/src/wrappers/user_bank_detail_wrapper.dart';
+import 'package:chat_app_white_label/src/wrappers/with_draw_amount_wrapper.dart';
 import 'package:flutter/foundation.dart';
 
 part 'earning_screen_state.dart';
@@ -53,6 +54,23 @@ class EarningScreenCubit extends Cubit<EarningScreenState> {
       emit(UpdateUserBankDetailSuccessState(resp));
     } catch (e) {
       emit(UpdateUserBankDetailFailureState(e.toString()));
+    }
+  }
+
+  Future<void> withDrawAmountData(String? amount) async {
+    emit(WithDrawAmountLoadingState());
+    try {
+      var resp = await AuthRepository.withDrawAmount(amount);
+      LoggerUtil.logs("Update bankDetails data${resp.toJson()}");
+
+      if(resp.code == 200){
+        emit(WithDrawAmountSuccessState(resp));
+      }
+      else{
+        emit(WithDrawAmountFailureState(resp.message.toString()));
+      }
+    } catch (e) {
+      emit(WithDrawAmountFailureState(e.toString()));
     }
   }
 

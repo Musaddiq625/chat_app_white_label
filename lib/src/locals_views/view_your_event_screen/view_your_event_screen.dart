@@ -214,6 +214,8 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
       },
     ];
   }
+  String? formattedStart;
+  String? formattedEnd;
 
   @override
   Widget build(BuildContext context) {
@@ -337,6 +339,18 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
     );
   }
 
+  DateTime convertToUserTimeZone(String dateTime) {
+    DateTime utcDateTime = DateTime.parse(dateTime);
+    // No need to parse again; just use the provided DateTime object
+    // Get the user's local timezone offset
+    Duration offset = DateTime.now().timeZoneOffset;
+
+    // Convert from UTC to user's local time
+    DateTime userDateTime = utcDateTime.add(offset);
+
+    return userDateTime;
+  }
+
   Widget _eventWidget() {
     var capacityInt;
     if(viewYourEventCubit.eventModel.venues?.first.capacity == "Unlimited"){
@@ -352,6 +366,18 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
             viewYourEventCubit.eventModel.transectionData?.ticketSold ?? "0") ??
         0;
 
+    if ((viewYourEventCubit.eventModel.venues ?? []).isNotEmpty){
+      final startDateTimeStr = (viewYourEventCubit.eventModel.venues ?? []).first.startDatetime.toString();
+      final endDateTimeStr = (viewYourEventCubit.eventModel.venues ?? []).first.endDatetime;
+
+      print("startDateTimeStr ${startDateTimeStr}");
+      DateTime startLocal = convertToUserTimeZone(startDateTimeStr);
+      DateTime endLocal = convertToUserTimeZone(endDateTimeStr!);
+      print("startLocal $startLocal");
+
+      formattedStart = DateFormat('d MMM \'at\' hh a').format(startLocal);
+      formattedEnd = DateFormat('d MMM \'at\' hh a').format(endLocal);
+    }
 // Calculate the difference
     var remainingTickets = capacityInt - ticketSoldInt;
     return Stack(children: [
@@ -406,22 +432,25 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                                 ? TextComponent(
                                     "",
                                     listOfText: [
-                                      DateFormat('d MMM \'at\' hh a').format(
-                                          DateTime.parse((viewYourEventCubit
-                                                          .eventModel.venues ??
-                                                      [])
-                                                  .first
-                                                  .startDatetime ??
-                                              "")),
+                                      // DateFormat('d MMM \'at\' hh a').format(
+                                      //     DateTime.parse((viewYourEventCubit
+                                      //                     .eventModel.venues ??
+                                      //                 [])
+                                      //             .first
+                                      //             .startDatetime ??
+                                      //         ""))
+                                      formattedStart ?? ""
+                                      ,
                                       //    DateFormat('d MMM \'at\' hh a').format(DateTime.parse(eventCubit.eventModelList[index].venues?.first.endDatetime ?? "")),
                                       "-",
-                                      DateFormat('d MMM \'at\' hh a').format(
-                                          DateTime.parse((viewYourEventCubit
-                                                          .eventModel.venues ??
-                                                      [])
-                                                  .first
-                                                  .endDatetime ??
-                                              "")),
+                                      // DateFormat('d MMM \'at\' hh a').format(
+                                      //     DateTime.parse((viewYourEventCubit
+                                      //                     .eventModel.venues ??
+                                      //                 [])
+                                      //             .first
+                                      //             .endDatetime ??
+                                      //         ""))
+                                      formattedEnd ?? "" ,
                                       "-",
                                       viewYourEventCubit.eventModel.venues
                                               ?.first.location ??
@@ -820,7 +849,8 @@ class _ViewYourEventScreenState extends State<ViewYourEventScreen> {
                   detail: viewYourEventCubit.eventModel.venues != null &&
                           (viewYourEventCubit.eventModel.venues ?? [])
                               .isNotEmpty
-                      ? "${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(viewYourEventCubit.eventModel.venues!.first.startDatetime!))} - ${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(viewYourEventCubit.eventModel.venues?.first.endDatetime ?? ""))}"
+                      // ? "${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(viewYourEventCubit.eventModel.venues!.first.startDatetime!))} - ${DateFormat('d MMM \'at\' hh a').format(DateTime.parse(viewYourEventCubit.eventModel.venues?.first.endDatetime ?? ""))}"
+                      ? "${formattedStart } - ${formattedEnd}"
                       : StringConstants.dateWillbeDecidelater,
                   icon: AssetConstants.calendar,
                 ),

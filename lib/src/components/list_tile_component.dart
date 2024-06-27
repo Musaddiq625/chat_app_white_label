@@ -46,6 +46,7 @@ class ListTileComponent extends StatelessWidget {
   Color? backgroundColor;
   Color? titleColor;
   final Function()? onTap;
+  final Function()? profileImageTap;
   final bool isLeadingImageProfileImage;
   final bool isLeadingImageSVG;
   final bool isSocialConnected;
@@ -66,6 +67,7 @@ class ListTileComponent extends StatelessWidget {
     this.leadingText,
     this.trailingText,
     this.onTap,
+    this.profileImageTap,
     this.trailingIcon,
     this.iconColor = ColorConstants.black,
     this.subIconColor = ColorConstants.lightGray,
@@ -129,21 +131,25 @@ class ListTileComponent extends StatelessWidget {
                 children: [
                   // if (title != null)
                   if (leadingIcon != null)
-                    isLeadingImageProfileImage
-                        ? ProfileImageComponent(
-                            url: leadingIcon,
-                            size: 40,
-                          )
-                        : Container(
-                      // color: ColorConstants.blue,
+                      GestureDetector(
+                        onTap: profileImageTap,
+                        child:  isLeadingImageProfileImage
+                            ? ProfileImageComponent(
+                          url: leadingIcon,
+                          size: 40,
+                        )
+                            : Container(
+                          // color: ColorConstants.blue,
                           child: ImageComponent(
-                              imgUrl: leadingIcon!,
-                              imgProviderCallback: (imgProvider) {},
-                              width: isSocialConnected ? 30 : leadingIconWidth,
-                              height: isSocialConnected ? 30 : leadingIconHeight,
-                              isAsset: isLeadingIconAsset,
-                            ),
+                            imgUrl: leadingIcon!,
+                            imgProviderCallback: (imgProvider) {},
+                            width: isSocialConnected ? 30 : leadingIconWidth,
+                            height: isSocialConnected ? 30 : leadingIconHeight,
+                            isAsset: isLeadingIconAsset,
+                          ),
                         ),
+                      ),
+
 
                   if (title != null)
                     Center(
